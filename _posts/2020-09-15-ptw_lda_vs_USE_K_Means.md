@@ -4,7 +4,7 @@ title: Comparing Two Unsupervised Clustering Algorithms for Text Data
 layout: post
 description: A Short Study comparing PTW_LDA and Transfer Learning powered KMeans on Text Data
 categories: [Topic Modeling, LDA, Seeded LDA, Universal Sentence Encoder, KMeans]
-image: images/https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/data1_evaluation_complete.PNG
+image: images/LDA_vs_KMeans/data1_evaluation_complete.PNG
 ---
 ## A Study comparing two unsupervised clustering algorithms
 - **Prior-topic words** guided *Latent Dirichlet Allocation* and 
@@ -21,13 +21,15 @@ image: images/https://github.com/senthilkumarm1901/learn_by_blogging/tree/master
 - where it can produce better/on-par results compared to USE-K-Means
 </details>
 
-Before diving into the study, <br> let us understand how **USE-KMeans** and **PTW-guided LDA** works 
+- Before diving into the study, let us understand how **USE-KMeans** and **PTW-guided LDA** works 
 
 <details> 
   <summary> 
      2. Briefly about <code>USE</code> </summary>
 <details> 
   <summary> <code>How USE works?</code></summary>
+
+<img src="https://www.learnopencv.com/wp-content/uploads/2018/11/Universal-Sentence-Encoder.png">
   
 ![USE](https://www.learnopencv.com/wp-content/uploads/2018/11/Universal-Sentence-Encoder.png) <br>
     
@@ -56,7 +58,7 @@ Before diving into the study, <br> let us understand how **USE-KMeans** and **PT
 <details>
 <summary> 3. Natural Language Inference </summary>
 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/markdown_table1.PNG)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/markdown_table1.PNG)
 
 </details>
 </details>
@@ -103,13 +105,13 @@ Before diving into the study, <br> let us understand how **USE-KMeans** and **PT
  (0.05, 0.2, 0.15, 0.1, 0.3, 0.2)
 ```
 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/dirichlet_distribution_of_words_topics.PNG)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/dirichlet_distribution_of_words_topics.PNG)
 
 **How Dirichlet Distribution varies w.r.t dirichlet prior**
 - The below image shows Dir(α) <br>
 - As α increases from 0.05 (1/20) to 0.1, 0.2, 0.4 respectively in plots from left to right & top to down, you can see the distribution becoming more uniform. <br>
 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/dirichlet_distribution_with_prior.png)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/dirichlet_distribution_with_prior.png)
 
 </details>
 </details>
@@ -119,23 +121,23 @@ Before diving into the study, <br> let us understand how **USE-KMeans** and **PT
 - LDA is a generative model <br>
 - LDA processes documents as 'bag of words' -- ordering of words is not important
 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/generative_process_1.png)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/generative_process_1.png)
 <br>
 <br>
 In principle, LDA generates a document based on **dirichlet distribution (dd) of topics over documents** and **dd of words over topics**
 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/generative_process_2.png)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/generative_process_2.png)
 
 <br>
 <br>
 
 But we inverse the generative process for statistical inference
 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/generative_process_3.png)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/generative_process_3.png)
 
 <details> <summary>  3C. Understanding the <code>Hyper-parameterspace</code> of LDA</summary> 
 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/plate_notation_LDA.png)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/plate_notation_LDA.png)
 
 D = Total No. of Documents <br>
 N = No. of Words = Vocab Size <br>
@@ -143,12 +145,12 @@ T = No. of Topics <br>
 <br>
 θd = Topic Distribution for a particular document d
 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/plate_notation_2.png)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/plate_notation_2.png)
 
 <br>
 Φt= Word Distribution for a topic t. Here for topic 1 and 2. 
 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/plate_notation_3.png)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/plate_notation_3.png)
 
 (colored books represent words/tokens)
  
@@ -194,11 +196,11 @@ There is also another hyper parameter η - topic coherence or perplexity - which
 <details> <summary>  3D. <code>Now, how does PTW-LDA work?</code> </summary> 
 - Nudge the regular LDA to converge faster and better with human-reviewed words list for each topic <br>
 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/seededlda_1.png)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/seededlda_1.png)
 
 - How the topics are seeded with some seed words
 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/seededlda_3.png)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/seededlda_3.png)
 
 - Chaotic LDA and Clear PTW_LDA outputs... <br>
 - LDA might need several hyperparameter tuning attempts to get to the desired splits <br>
@@ -214,7 +216,7 @@ There is also another hyper parameter η - topic coherence or perplexity - which
 
 - The seeded words are guided towards seeded topics for converging faster
 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/simplistic_guided_LDA_notation.PNG)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/simplistic_guided_LDA_notation.PNG)
 
 </details>
 
@@ -251,17 +253,17 @@ About the Study <br>
 <details> 
   <summary>  5. <code>Data</code> Used for this study </summary> 
     
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/data1vsdata2_1.PNG)
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/data1vsdata2_2.PNG)
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/data1vsdata2_3.PNG)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/data1vsdata2_1.PNG)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/data1vsdata2_2.PNG)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/data1vsdata2_3.PNG)
 
 </details> 
 
 <details> 
   <summary>  6. Data I - <code>20 Newsgroups</code> - <code>Supervised</code> Evaluation </summary> 
 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/data1_evaluation_1.PNG) 
-![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/_posts/LDA_vs_KMeans/data1_evaluation_2.PNG)
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/data1_evaluation_1.PNG) 
+![](https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_posts/LDA_vs_KMeans/data1_evaluation_2.PNG)
 
 </details> 
 
