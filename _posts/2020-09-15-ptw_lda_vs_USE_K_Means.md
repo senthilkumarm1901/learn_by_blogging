@@ -62,7 +62,7 @@ image: images/LDA_vs_KMeans/data1_evaluation_complete.PNG
 <details>
 <summary> 3. Natural Language Inference </summary>
 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/markdown_table1.PNG)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/markdown_table1.PNG)
 
 </details>
 </details>
@@ -105,20 +105,20 @@ image: images/LDA_vs_KMeans/data1_evaluation_complete.PNG
 - The dirichlet distribution is a probability distribution as well <br>
 - but it is not sampling from the space of real numbers. Instead it is sampling over a probability simplex <br>
 
-```
+<blockquote>
  (0.6, 0.4)
  (0.1, 0.1, 0.8)
  (0.05, 0.2, 0.15, 0.1, 0.3, 0.2)
-```
+</blockquote>
 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/dirichlet_distribution_of_words_topics.PNG)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/dirichlet_distribution_of_words_topics.PNG)
 
 **How Dirichlet Distribution varies w.r.t dirichlet prior**
 
 - The below image shows Dir(α) <br>
 - As α increases from 0.05 (1/20) to 0.1, 0.2, 0.4 respectively in plots from left to right & top to down, you can see the distribution becoming more uniform. <br>
 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/dirichlet_distribution_with_prior.png)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/dirichlet_distribution_with_prior.png)
 
 </details>
 </details>
@@ -128,23 +128,23 @@ image: images/LDA_vs_KMeans/data1_evaluation_complete.PNG
 - LDA is a generative model <br>
 - LDA processes documents as 'bag of words' -- ordering of words is not important
 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/generative_process_1.png)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/generative_process_1.png)
 <br>
 <br>
 In principle, LDA generates a document based on **dirichlet distribution (dd) of topics over documents** and **dd of words over topics**
 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/generative_process_2.png)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/generative_process_2.png)
 
 <br>
 <br>
 
 But we inverse the generative process for statistical inference
 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/generative_process_3.png)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/generative_process_3.png)
 
 <details> <summary>  3C. Understanding the <code>Hyper-parameterspace</code> of LDA</summary> 
 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/plate_notation_LDA.png)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/plate_notation_LDA.png)
 
 D = Total No. of Documents <br>
 N = No. of Words = Vocab Size <br>
@@ -152,23 +152,24 @@ T = No. of Topics <br>
 <br>
 θd = Topic Distribution for a particular document d
 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/plate_notation_2.png)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/plate_notation_2.png)
 
 <br>
 Φt= Word Distribution for a topic t. Here for topic 1 and 2. 
 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/plate_notation_3.png)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/plate_notation_3.png)
 
 (colored books represent words/tokens)
  
 <br> 
-``` 
+
+<blockquote> 
 Zd,n = Topic Distribution for n th word in document d
 Wd,n = nth word in dth document
-```
+</blockquote>
 <br>
 
-```
+<blockquote>
 α= parameter that sets the dircihlet prior on the per-document topic distribution (θ)
 = parameter that represents the doc-topic density
 = determines the no. of topics in each doc
@@ -195,7 +196,7 @@ n = base measure for per-topic word distribution; a simplex vector/array (n1, n2
  
  
 There is also another hyper parameter η - topic coherence or perplexity - which can be used to determine the number of topics 
-```
+</blockquote>
 
 </details>
 </details>
@@ -203,11 +204,11 @@ There is also another hyper parameter η - topic coherence or perplexity - which
 <details> <summary>  3D. <code>Now, how does PTW-LDA work?</code> </summary> 
 - Nudge the regular LDA to converge faster and better with human-reviewed words list for each topic <br>
 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/seededlda_1.png)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/seededlda_1.png)
 
 - How the topics are seeded with some seed words
 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/seededlda_3.png)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/seededlda_3.png)
 
 - Chaotic LDA and Clear PTW_LDA outputs... <br>
 - LDA might need several hyperparameter tuning attempts to get to the desired splits <br>
@@ -226,7 +227,7 @@ There is also another hyper parameter η - topic coherence or perplexity - which
 
 - The seeded words are guided towards seeded topics for converging faster
 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/simplistic_guided_LDA_notation.PNG)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/simplistic_guided_LDA_notation.PNG)
 
 </details>
 
@@ -235,26 +236,85 @@ There is also another hyper parameter η - topic coherence or perplexity - which
 
 **Pre-processing**: <br>
 
-| PTW-LDA | USE +   Clustering |  |
-|-|-|-|
-| 1. Stop words removed | No   pre-processing; Comments were used as is |  |
-| 2.   Lemmatized |   |  |
-| 3. Top   20 words per (ground truth) label was extracted |   |  |
-| 4.   Human-reviewed list of 20 word lists (each corresponding to 1 topic) were   chosen as prior topic words input (SAT is useful when there are prior topic   words fed; otherwise it works as normal LDA) |   |  |
+<table>
+    <tr>
+        <td>PTW-LDA</td>
+        <td>USE +   Clustering</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>1. Stop words removed</td>
+        <td>No   pre-processing; Comments were used as is</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>2.   Lemmatized</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>3. Top   20 words per (ground truth) label was extracted</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>4.   Human-reviewed list of 20 word lists (each corresponding to 1 topic) were   chosen as prior topic words input (SAT is useful when there are prior topic   words fed; otherwise it works as normal LDA)</td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
 
 
 **Hyper-parameters**:  <br>
 
-| PTW-LDA   (best possible based on heuristics and limited # of experimentations) | USE +   Clustering  |  |
-|-|-|-|
-| No. Of Topics    | No. Of clusters |  |
-| Max Iterations | Max Iterations (for K-Means) |  |
-| (default) Doc_topic_prior =   alpha = 1/ no_of_topics |   |  |
-| (default) topic_word_prior =   beta = 1/ no_of_topics |   |  |
-| Learning_method:   "batch" (whole dataset is used) |   |  |
-| (alternative is 'online'   which uses only batch size no. Of comments; similar to mini_batch_kmeans) |   |  |
-| Seeded_words_list |  |  |
-| Seed_coefficent/seed   confidence (how much to nudge the seeded words) |  |  |
+
+<table>
+    <tr>
+        <td><b>PTW-LDA   (best possible based on heuristics and limited # of experimentations)</b></td>
+        <td><b>USE +   Clustering</b></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>No. Of Topics</td>
+        <td>No. Of clusters</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Max Iterations</td>
+        <td>Max Iterations (for K-Means)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>(default) Doc_topic_prior =   alpha = 1/ no_of_topics</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>(default) topic_word_prior =   beta = 1/ no_of_topics</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Learning_method:   "batch" (whole dataset is used)</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>(alternative is 'online'   which uses only batch size no. Of comments; similar to mini_batch_kmeans)</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Seeded_words_list</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Seed_coefficent/seed   confidence (how much to nudge the seeded words)</td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
 
 </details>
 
@@ -263,27 +323,40 @@ About the Study <br>
 <details> 
   <summary>  5. <code>Data</code> Used for this study </summary> 
     
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/data1vsdata2_1.PNG)
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/data1vsdata2_2.PNG)
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/data1vsdata2_3.PNG)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/data1vsdata2_1.PNG)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/data1vsdata2_2.PNG)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/data1vsdata2_3.PNG)
 
 </details> 
 
 <details> 
   <summary>  6. Data I - <code>20 Newsgroups</code> - <code>Supervised</code> Evaluation </summary> 
 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/data1_evaluation_1.PNG) 
-![]({{ site.url }}{{ site.baseurl }}/_posts/LDA_vs_KMeans/data1_evaluation_2.PNG)
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/data1_evaluation_1.PNG) 
+![]({{ site.url }}{{ site.baseurl }}/images/LDA_vs_KMeans/data1_evaluation_2.PNG)
 
 </details> 
 
 <details> 
   <summary>  7. Data II - <code>ABC Corpus</code> - <code>Unsupervised</code> Evaluation </summary> 
 
-|     Metric    |     PTW-LDA    |     USE-Clustering    |
-|-|-|-|
-|     Word Embedding   based Coherence Score           |     Coherence   Score for 20 topics 0.159          |
-|     Methodology of   computing the above metric    |                Take the top 10         words that constitute each of the 20 topics          (each topic    comprises of a probability simplex of the words; select the top 10 highly    probable words in that topic)      <br>      <br>      For our case, the    top 10 words used for coherence computation in the 10 topics are   <br>      <br>     [['win',  'cup',     'final',  'wins',  'world',     'afl',  'coach',  'england',     'season',  'day'], <br>       ['council',     'plan',  'market',  'funding',     'boost',  'housing',  'water',     'funds',  'budget',  'rise'],     <br>       ['crash',     'man',  'killed',  'death',     'dies',  'dead',  'injured',     'woman',  'car',  'sydney'], <br>       ['interview',  'michael',     'business',  'abc',  'news',     'market',  'analysis',  'david',     'extended',  'andrew'],  <br>       ['australia',  'australian',  'aussie',     'sydney',  'australians',  'day',     'aussies',  'australias',  'melbourne',  'south'], <br>       ['abc',     'country',  'hour',  'news',     'weather',  'grandstand',  'friday',     'nsw',  'drum',  'monday'], <br>       ['govt',     'election',  'council',  'government',  'minister',  'pm',     'parliament',  'nsw',  'anti',     'trump'], <br>       ['police',     'man',  'court',  'murder',     'charged',  'accused',  'death',     'guilty',  'charges',  'assault'], <br>       ['farmers',     'water',  'drought',  'industry',  'farm',     'coal',  'green',  'cattle',     'mining',  'nsw'], <br>       ['health',     'hospital',  'flu',  'mental',     'doctors',  'treatment',  'cancer',     'drug',  'service',  'care']] <br>      <br>      <br>            Overall         Coherence is sum of similarity scores of all possible pairs of words         for each cluster, normalized by the          no. of clusters          <br>       |
+<table>
+    <tr>
+        <td>Metric</td>
+        <td>PTW-LDA</td>
+        <td>USE-Clustering</td>
+    </tr>
+    <tr>
+        <td>Word Embedding   based Coherence Score</td>
+        <td>Coherence   Score for 20 topics 0.159</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Methodology of   computing the above metric</td>
+        <td>Take the top 10         words that constitute each of the 20 topics          (each topic    comprises of a probability simplex of the words; select the top 10 highly    probable words in that topic)      &lt;br&gt;      &lt;br&gt;      For our case, the    top 10 words used for coherence computation in the 10 topics are   &lt;br&gt;      &lt;br&gt;     [['win',  'cup',     'final',  'wins',  'world',     'afl',  'coach',  'england',     'season',  'day'], &lt;br&gt;       ['council',     'plan',  'market',  'funding',     'boost',  'housing',  'water',     'funds',  'budget',  'rise'],     &lt;br&gt;       ['crash',     'man',  'killed',  'death',     'dies',  'dead',  'injured',     'woman',  'car',  'sydney'], &lt;br&gt;       ['interview',  'michael',     'business',  'abc',  'news',     'market',  'analysis',  'david',     'extended',  'andrew'],  &lt;br&gt;       ['australia',  'australian',  'aussie',     'sydney',  'australians',  'day',     'aussies',  'australias',  'melbourne',  'south'], &lt;br&gt;       ['abc',     'country',  'hour',  'news',     'weather',  'grandstand',  'friday',     'nsw',  'drum',  'monday'], &lt;br&gt;       ['govt',     'election',  'council',  'government',  'minister',  'pm',     'parliament',  'nsw',  'anti',     'trump'], &lt;br&gt;       ['police',     'man',  'court',  'murder',     'charged',  'accused',  'death',     'guilty',  'charges',  'assault'], &lt;br&gt;       ['farmers',     'water',  'drought',  'industry',  'farm',     'coal',  'green',  'cattle',     'mining',  'nsw'], &lt;br&gt;       ['health',     'hospital',  'flu',  'mental',     'doctors',  'treatment',  'cancer',     'drug',  'service',  'care']] &lt;br&gt;      &lt;br&gt;      &lt;br&gt;            Overall         Coherence is sum of similarity scores of all possible pairs of words         for each cluster, normalized by the          no. of clusters          &lt;br&gt;</td>
+        <td></td>
+    </tr>
+</table>
 
 </details>
 
