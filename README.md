@@ -7,6 +7,12 @@
 
 [//]: # (END OF BADGES SECTION)
 
+# My Blog
+
+https://senthilkumarm1901.github.io/learn_by_blogging/
+
+*The rest of the README.md is unedited from the original fastai/fastpages repo*
+
 # Welcome To `fastpages`
 
 > An easy to use blogging platform, with support for Jupyter notebooks, Word docs, and Markdown.
