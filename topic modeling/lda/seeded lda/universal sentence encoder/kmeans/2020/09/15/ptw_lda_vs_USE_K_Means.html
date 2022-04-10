@@ -13,14 +13,14 @@
 <link rel="canonical" href="https://senthilkumarm1901.github.io/learn_by_blogging/topic%20modeling/lda/seeded%20lda/universal%20sentence%20encoder/kmeans/2020/09/15/ptw_lda_vs_USE_K_Means.html" />
 <meta property="og:url" content="https://senthilkumarm1901.github.io/learn_by_blogging/topic%20modeling/lda/seeded%20lda/universal%20sentence%20encoder/kmeans/2020/09/15/ptw_lda_vs_USE_K_Means.html" />
 <meta property="og:site_name" content="Writing to Learn" />
-<meta property="og:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/LDA_vs_KMeans/data1_evaluation_complete.PNG" />
+<meta property="og:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/%7B%7B%20site.baseurl%20%7D%7D/_posts/LDA_vs_KMeans/data1_evaluation_complete.PNG" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-09-15T00:00:00-05:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/LDA_vs_KMeans/data1_evaluation_complete.PNG" />
+<meta property="twitter:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/%7B%7B%20site.baseurl%20%7D%7D/_posts/LDA_vs_KMeans/data1_evaluation_complete.PNG" />
 <meta property="twitter:title" content="Comparing Two Unsupervised Clustering Algorithms for Text Data" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2020-09-15T00:00:00-05:00","datePublished":"2020-09-15T00:00:00-05:00","description":"A Short Study comparing PTW_LDA and Transfer Learning powered KMeans on Text Data","headline":"Comparing Two Unsupervised Clustering Algorithms for Text Data","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/LDA_vs_KMeans/data1_evaluation_complete.PNG","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/topic%20modeling/lda/seeded%20lda/universal%20sentence%20encoder/kmeans/2020/09/15/ptw_lda_vs_USE_K_Means.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/topic%20modeling/lda/seeded%20lda/universal%20sentence%20encoder/kmeans/2020/09/15/ptw_lda_vs_USE_K_Means.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2020-09-15T00:00:00-05:00","datePublished":"2020-09-15T00:00:00-05:00","description":"A Short Study comparing PTW_LDA and Transfer Learning powered KMeans on Text Data","headline":"Comparing Two Unsupervised Clustering Algorithms for Text Data","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/%7B%7B%20site.baseurl%20%7D%7D/_posts/LDA_vs_KMeans/data1_evaluation_complete.PNG","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/topic%20modeling/lda/seeded%20lda/universal%20sentence%20encoder/kmeans/2020/09/15/ptw_lda_vs_USE_K_Means.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/topic%20modeling/lda/seeded%20lda/universal%20sentence%20encoder/kmeans/2020/09/15/ptw_lda_vs_USE_K_Means.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/learn_by_blogging/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml" title="Writing to Learn" /><link rel="shortcut icon" type="image/x-icon" href="/learn_by_blogging/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -73,54 +73,48 @@ window.onload = wrap_img;
 </head>
 <body><header class="site-header">
 
-  <div class="wrapper">
-<a class="site-title" rel="author" href="/learn_by_blogging/">Writing to Learn</a><nav class="site-nav">
-        <input type="checkbox" id="nav-trigger" class="nav-trigger">
+  <div class="wrapper"><a class="site-title" rel="author" href="/learn_by_blogging/">Writing to Learn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
         <label for="nav-trigger">
           <span class="menu-icon">
-            <svg viewbox="0 0 18 15" width="18px" height="15px">
-              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
             </svg>
           </span>
         </label>
 
-        <div class="trigger">
-<a class="page-link" href="/learn_by_blogging/about/">About Me</a><a class="page-link" href="/learn_by_blogging/search/">Search</a><a class="page-link" href="/learn_by_blogging/categories/">Tags</a>
-</div>
-      </nav>
-</div>
+        <div class="trigger"><a class="page-link" href="/learn_by_blogging/about/">About Me</a><a class="page-link" href="/learn_by_blogging/search/">Search</a><a class="page-link" href="/learn_by_blogging/categories/">Tags</a></div>
+      </nav></div>
 </header>
 <main class="page-content" aria-label="Content">
       <div class="wrapper">
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Comparing Two Unsupervised Clustering Algorithms for Text Data</h1>
-<p class="page-description">A Short Study comparing PTW_LDA and Transfer Learning powered KMeans on Text Data</p>
-<p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-09-15T00:00:00-05:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">Comparing Two Unsupervised Clustering Algorithms for Text Data</h1><p class="page-description">A Short Study comparing PTW_LDA and Transfer Learning powered KMeans on Text Data</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-09-15T00:00:00-05:00" itemprop="datePublished">
         Sep 15, 2020
       </time>
        • <span class="read-time" title="Estimated read time">
     
     
-      7 min read
+      6 min read
     
 </span></p>
 
     
-      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i> 
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
       
-        <a class="category-tags-link" href="/learn_by_blogging/categories/#Topic%20Modeling">Topic Modeling</a>
-         
+        <a class="category-tags-link" href="/learn_by_blogging/categories/#Topic Modeling">Topic Modeling</a>
+        &nbsp;
       
         <a class="category-tags-link" href="/learn_by_blogging/categories/#LDA">LDA</a>
-         
+        &nbsp;
       
-        <a class="category-tags-link" href="/learn_by_blogging/categories/#Seeded%20LDA">Seeded LDA</a>
-         
+        <a class="category-tags-link" href="/learn_by_blogging/categories/#Seeded LDA">Seeded LDA</a>
+        &nbsp;
       
-        <a class="category-tags-link" href="/learn_by_blogging/categories/#Universal%20Sentence%20Encoder">Universal Sentence Encoder</a>
-         
+        <a class="category-tags-link" href="/learn_by_blogging/categories/#Universal Sentence Encoder">Universal Sentence Encoder</a>
+        &nbsp;
       
         <a class="category-tags-link" href="/learn_by_blogging/categories/#KMeans">KMeans</a>
         
@@ -133,37 +127,34 @@ window.onload = wrap_img;
   <div class="post-content e-content" itemprop="articleBody">
     <h2 id="a-study-comparing-two-unsupervised-clustering-algorithms">A Study comparing two unsupervised clustering algorithms</h2>
 <ul>
-  <li>
-<strong>Prior-topic words</strong> guided <em>Latent Dirichlet Allocation</em> and</li>
-  <li>
-<strong>Universal Sentence Encoder</strong> powered <em>K-Means</em>
-</li>
+  <li><strong>Prior-topic words</strong> guided <em>Latent Dirichlet Allocation</em> and</li>
+  <li><strong>Universal Sentence Encoder</strong> powered <em>K-Means</em></li>
 </ul>
 
 <details>
-<summary> <img class="emoji" title=":ballot_box_with_check:" alt=":ballot_box_with_check:" src="https://github.githubassets.com/images/icons/emoji/unicode/2611.png" height="20" width="20"> 1. <code>Motivation</code> behind Study  </summary>
-<br>
+<summary>  1. <code>Motivation</code> behind Study  </summary>
+<br />
   
 **Is LDA worthwhile?**
-- given that USE can encode complex semantic information <br>
+- given that USE can encode complex semantic information <br />
 
 **Can LDA be used for at least some type of data?** 
 - where it can produce better/on-par results compared to USE-K-Means
 </details>
 
-<p>Before diving into the study, <br> let us understand how <strong>USE-KMeans</strong> and <strong>PTW-guided LDA</strong> works</p>
+<p>Before diving into the study, <br /> let us understand how <strong>USE-KMeans</strong> and <strong>PTW-guided LDA</strong> works</p>
 
 <details> 
   <summary> 
-    <img class="emoji" title=":ballot_box_with_check:" alt=":ballot_box_with_check:" src="https://github.githubassets.com/images/icons/emoji/unicode/2611.png" height="20" width="20"> 2. Briefly about <code>USE</code> </summary>
+     2. Briefly about <code>USE</code> </summary>
 <details> 
   <summary> <code>How USE works?</code></summary>
   
-![USE](https://www.learnopencv.com/wp-content/uploads/2018/11/Universal-Sentence-Encoder.png) <br>
+![USE](https://www.learnopencv.com/wp-content/uploads/2018/11/Universal-Sentence-Encoder.png) <br />
     
-![](https://2.bp.blogspot.com/-9Qk1fubLpzg/Wv2QGgKVVmI/AAAAAAAACvs/Gm-XF3prXVIIvaIkrTmkcIcYz-4qSxLKwCLcBGAs/s400/image2.png) <br>
+![](https://2.bp.blogspot.com/-9Qk1fubLpzg/Wv2QGgKVVmI/AAAAAAAACvs/Gm-XF3prXVIIvaIkrTmkcIcYz-4qSxLKwCLcBGAs/s400/image2.png) <br />
     
-![](https://1.bp.blogspot.com/-w2kAi39zPrE/Wv2OPHTwDgI/AAAAAAAACvY/aQzvBcaIqYkw8McCBcXlTx0pj9FbILH0ACLcBGAs/s400/image4.png) <br>
+![](https://1.bp.blogspot.com/-w2kAi39zPrE/Wv2OPHTwDgI/AAAAAAAACvY/aQzvBcaIqYkw8McCBcXlTx0pj9FbILH0ACLcBGAs/s400/image4.png) <br />
 
 </details>
 <details> 
@@ -186,13 +177,13 @@ window.onload = wrap_img;
 <details>
 <summary> 3. Natural Language Inference </summary>
 
-![](../docs/images/markdown_table1.PNG)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/markdown_table1.PNG)
 
 </details>
 </details>
 </details>
 <details> 
-  <summary> <img class="emoji" title=":ballot_box_with_check:" alt=":ballot_box_with_check:" src="https://github.githubassets.com/images/icons/emoji/unicode/2611.png" height="20" width="20"> 3A. Briefly about <code>LDA</code> </summary> 
+  <summary>  3A. Briefly about <code>LDA</code> </summary> 
     <details> 
       <summary> <code>Latent</code> </summary> 
   
@@ -202,8 +193,8 @@ window.onload = wrap_img;
     <details> 
       <summary> <code>Dirichlet</code> </summary> 
       
-  The **Dirichlet** distribution determines the mixture proportions of <br> 
-        i) the topics in the documents and <br>
+  The **Dirichlet** distribution determines the mixture proportions of <br /> 
+        i) the topics in the documents and <br />
         ii) the words in each topic.
     </details> 
     <details>
@@ -223,9 +214,9 @@ window.onload = wrap_img;
 
 ![](https://upload.wikimedia.org/wikipedia/commons/1/16/Poisson_pmf.svg)
 
-- Now, what is Dirichlet Distribution? <br>
-- The dirichlet distribution is a probability distribution as well <br>
-- but it is not sampling from the space of real numbers. Instead it is sampling over a probability simplex <br>
+- Now, what is Dirichlet Distribution? <br />
+- The dirichlet distribution is a probability distribution as well <br />
+- but it is not sampling from the space of real numbers. Instead it is sampling over a probability simplex <br />
 
 ```
  (0.6, 0.4)
@@ -233,61 +224,61 @@ window.onload = wrap_img;
  (0.05, 0.2, 0.15, 0.1, 0.3, 0.2)
 ```
 
-![](../docs/images/dirichlet_distribution_of_words_topics.PNG)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/dirichlet_distribution_of_words_topics.PNG)
 
 **How Dirichlet Distribution varies w.r.t dirichlet prior**
-- The below image shows Dir(α) <br>
-- As α increases from 0.05 (1/20) to 0.1, 0.2, 0.4 respectively in plots from left to right &amp; top to down, you can see the distribution becoming more uniform. <br>
+- The below image shows Dir(α) <br />
+- As α increases from 0.05 (1/20) to 0.1, 0.2, 0.4 respectively in plots from left to right &amp; top to down, you can see the distribution becoming more uniform. <br />
 
-![](../docs/images/dirichlet_distribution_with_prior.png)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/dirichlet_distribution_with_prior.png)
 
 </details>
 </details>
 
 <details> 
-  <summary> <img class="emoji" title=":ballot_box_with_check:" alt=":ballot_box_with_check:" src="https://github.githubassets.com/images/icons/emoji/unicode/2611.png" height="20" width="20"> 3B. <code>How LDA works (without the math)</code> </summary> 
-- LDA is a generative model <br>
+  <summary>  3B. <code>How LDA works (without the math)</code> </summary> 
+- LDA is a generative model <br />
 - LDA processes documents as 'bag of words' -- ordering of words is not important
 
-![](../docs/images/generative_process_1.png)
-<br>
-<br>
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/generative_process_1.png)
+<br />
+<br />
 In principle, LDA generates a document based on **dirichlet distribution (dd) of topics over documents** and **dd of words over topics**
 
-![](../docs/images/generative_process_2.png)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/generative_process_2.png)
 
-<br>
-<br>
+<br />
+<br />
 
 But we inverse the generative process for statistical inference
 
-![](../docs/images/generative_process_3.png)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/generative_process_3.png)
 
-<details> <summary> <img class="emoji" title=":ballot_box_with_check:" alt=":ballot_box_with_check:" src="https://github.githubassets.com/images/icons/emoji/unicode/2611.png" height="20" width="20"> 3C. Understanding the <code>Hyper-parameterspace</code> of LDA</summary> 
+<details> <summary>  3C. Understanding the <code>Hyper-parameterspace</code> of LDA</summary> 
 
-![](../docs/images/plate_notation_LDA.png)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/plate_notation_LDA.png)
 
-D = Total No. of Documents <br>
-N = No. of Words = Vocab Size <br>
-T = No. of Topics <br>
-<br>
+D = Total No. of Documents <br />
+N = No. of Words = Vocab Size <br />
+T = No. of Topics <br />
+<br />
 θd = Topic Distribution for a particular document d
 
-![](../docs/images/plate_notation_2.png)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/plate_notation_2.png)
 
-<br>
+<br />
 Φt= Word Distribution for a topic t. Here for topic 1 and 2. 
 
-![](../docs/images/plate_notation_3.png)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/plate_notation_3.png)
 
 (colored books represent words/tokens)
  
-<br> 
+<br /> 
 ``` 
 Zd,n = Topic Distribution for n th word in document d
 Wd,n = nth word in dth document
 ```
-<br>
+<br />
 
 ```
 α= parameter that sets the dircihlet prior on the per-document topic distribution (θ)
@@ -321,20 +312,20 @@ There is also another hyper parameter η - topic coherence or perplexity - which
 </details>
 </details>
 
-<details> <summary> <img class="emoji" title=":ballot_box_with_check:" alt=":ballot_box_with_check:" src="https://github.githubassets.com/images/icons/emoji/unicode/2611.png" height="20" width="20"> 3D. <code>Now, how does PTW-LDA work?</code> </summary> 
-- Nudge the regular LDA to converge faster and better with human-reviewed words list for each topic <br>
+<details> <summary>  3D. <code>Now, how does PTW-LDA work?</code> </summary> 
+- Nudge the regular LDA to converge faster and better with human-reviewed words list for each topic <br />
 
-![](../docs/images/seededlda_1.png)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/seededlda_1.png)
 
 - How the topics are seeded with some seed words
 
-![](../docs/images/seededlda_3.png)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/seededlda_3.png)
 
-- Chaotic LDA and Clear PTW_LDA outputs... <br>
-- LDA might need several hyperparameter tuning attempts to get to the desired splits <br>
+- Chaotic LDA and Clear PTW_LDA outputs... <br />
+- LDA might need several hyperparameter tuning attempts to get to the desired splits <br />
     
-<br>
-- Default initialization with uniform word topic distribution <br>
+<br />
+- Default initialization with uniform word topic distribution <br />
 
 ![](https://cdn-media-1.freecodecamp.org/images/1*RojQi7m5yBGHSD0Q0HGGYg.png)
 
@@ -344,12 +335,12 @@ There is also another hyper parameter η - topic coherence or perplexity - which
 
 - The seeded words are guided towards seeded topics for converging faster
 
-![](../docs/images/simplistic_guided_LDA_notation.PNG)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/simplistic_guided_LDA_notation.PNG)
 
 </details>
 
 <details> 
-  <summary> <img class="emoji" title=":ballot_box_with_check:" alt=":ballot_box_with_check:" src="https://github.githubassets.com/images/icons/emoji/unicode/2611.png" height="20" width="20"> 4. <code>Pre-processing and Hyper-parameters</code> that can be tuned </summary> 
+  <summary>  4. <code>Pre-processing and Hyper-parameters</code> that can be tuned </summary> 
 
 **Pre-processing**
 
@@ -376,50 +367,48 @@ There is also another hyper parameter η - topic coherence or perplexity - which
 
 </details>
 
-<p>About the Study <br></p>
+<p>About the Study <br /></p>
 
 <details> 
-  <summary> <img class="emoji" title=":ballot_box_with_check:" alt=":ballot_box_with_check:" src="https://github.githubassets.com/images/icons/emoji/unicode/2611.png" height="20" width="20"> 5. <code>Data</code> Used for this study </summary> 
+  <summary>  5. <code>Data</code> Used for this study </summary> 
     
-![](../docs/images/data1vsdata2_1.PNG)
-![](../docs/images/data1vsdata2_2.PNG)
-![](../docs/images/data1vsdata2_3.PNG)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/data1vsdata2_1.PNG)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/data1vsdata2_2.PNG)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/data1vsdata2_3.PNG)
 
 </details>
 
 <details> 
-  <summary> <img class="emoji" title=":ballot_box_with_check:" alt=":ballot_box_with_check:" src="https://github.githubassets.com/images/icons/emoji/unicode/2611.png" height="20" width="20"> 6. Data I - <code>20 Newsgroups</code> - <code>Supervised</code> Evaluation </summary> 
+  <summary>  6. Data I - <code>20 Newsgroups</code> - <code>Supervised</code> Evaluation </summary> 
 
-![](../docs/images/data1_evaluation_1.PNG) 
-![](../docs/images/data1_evaluation_2.PNG)
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/data1_evaluation_1.PNG) 
+![](/learn_by_blogging/_posts/LDA_vs_KMeans/data1_evaluation_2.PNG)
 
 </details>
 
 <details> 
-  <summary> <img class="emoji" title=":ballot_box_with_check:" alt=":ballot_box_with_check:" src="https://github.githubassets.com/images/icons/emoji/unicode/2611.png" height="20" width="20"> 7. Data II - <code>ABC Corpus</code> - <code>Unsupervised</code> Evaluation </summary> 
+  <summary>  7. Data II - <code>ABC Corpus</code> - <code>Unsupervised</code> Evaluation </summary> 
 
 |     Metric    |     PTW-LDA    |     USE-Clustering    |
 |-|-|-|
-|     Word Embedding   based Coherence Score           |     Coherence   Score for 20 topics: 0.091 <br>     (more the coherence score, better is the clustering output)   <br>    |     Coherence   Score for 20 clusters : 0.159          |
-|     Methodology of   computing the above metric    |                Take the top 10         words that constitute each of the 20 topics          (each topic    comprises of a probability simplex of the words; select the top 10 highly    probable words in that topic)      <br>      <br>      For our case, the    top 10 words used for coherence computation in the 10 topics are:       <br>      <br>      [['police',  'baghdad',     'war',  'probe',  'protest',     'anti',  'missing',  'man',     'fight',  'coalition'],    <br>      ['report',  'pm',     'death',  'korea',  'claim',     'war',  'north',  'nt',     'toll',  'protesters'],    <br>      ['win',  'govt',     'set',  'community',  'end',     'wins',  'vic',  'indigenous',  'road',     'help'], <br>      ['world',  'cup',     'australia',  'found',  'ban',     'plans',  'lead',  'gets',     'expected',  'match'],    <br>      ['un',  'coast',     'title',  'takes',  'peace',     'iraq',  'gold',  'defence',     'residents',  'play'],    <br>      ['iraq',  'iraqi',     'war',  'says',  'troops',     'killed',  'dead',  'hospital',  'clash',     'forces'], <br>      ['council',  'boost',     'mp',  'fire',  'group',     'qld',  'minister',  'defends',     'land',  'welcomes'],    <br>      ['man',  'court',     'charged',  'face',  'plan',     'open',  'murder',  'urged',     'case',  'charges'], <br>      ['new',  'oil',     'dies',  'security',  'crash',     'sars',  'high',  'year',     'house',  'car'], <br>      ['water',  'rain',     'claims',  'wa',  'nsw',     'farmers',  'drought',  'howard',     'centre',  'union']] <br>      <br>                   For each topic,         taking 2 out of the top 10 words at a time,  compute cosine similarity using         pre-trained W2V embedding          <br>            Overall         Coherence is sum of similarity scores of all possible pairs of words         for each topic, normalized by the          no. of topics                  |                Take the top 10         words that constitute each of the 20 clusters          (top 10 words    (from stop-words removed set) are computed based on their TF-IDF weighted    scores in that cluster)      <br>      <br>            For each         cluster, taking 2 out of the top 10 words at a time,  compute similarity using pre-trained         W2V embedding          <br>      <br>      For our case, the    top 10 words used for coherence computation in the 10 clusters are:   <br>      <br>     [['win',  'cup',     'final',  'wins',  'world',     'afl',  'coach',  'england',     'season',  'day'], <br>       ['council',     'plan',  'market',  'funding',     'boost',  'housing',  'water',     'funds',  'budget',  'rise'],     <br>       ['crash',     'man',  'killed',  'death',     'dies',  'dead',  'injured',     'woman',  'car',  'sydney'], <br>       ['interview',  'michael',     'business',  'abc',  'news',     'market',  'analysis',  'david',     'extended',  'andrew'],  <br>       ['australia',  'australian',  'aussie',     'sydney',  'australians',  'day',     'aussies',  'australias',  'melbourne',  'south'], <br>       ['abc',     'country',  'hour',  'news',     'weather',  'grandstand',  'friday',     'nsw',  'drum',  'monday'], <br>       ['govt',     'election',  'council',  'government',  'minister',  'pm',     'parliament',  'nsw',  'anti',     'trump'], <br>       ['police',     'man',  'court',  'murder',     'charged',  'accused',  'death',     'guilty',  'charges',  'assault'], <br>       ['farmers',     'water',  'drought',  'industry',  'farm',     'coal',  'green',  'cattle',     'mining',  'nsw'], <br>       ['health',     'hospital',  'flu',  'mental',     'doctors',  'treatment',  'cancer',     'drug',  'service',  'care']] <br>      <br>      <br>            Overall         Coherence is sum of similarity scores of all possible pairs of words         for each cluster, normalized by the          no. of clusters          <br>       |
+|     Word Embedding   based Coherence Score           |     Coherence   Score for 20 topics 0.159          |
+|     Methodology of   computing the above metric    |                Take the top 10         words that constitute each of the 20 topics          (each topic    comprises of a probability simplex of the words; select the top 10 highly    probable words in that topic)      <br />      <br />      For our case, the    top 10 words used for coherence computation in the 10 topics are   <br />      <br />     [['win',  'cup',     'final',  'wins',  'world',     'afl',  'coach',  'england',     'season',  'day'], <br />       ['council',     'plan',  'market',  'funding',     'boost',  'housing',  'water',     'funds',  'budget',  'rise'],     <br />       ['crash',     'man',  'killed',  'death',     'dies',  'dead',  'injured',     'woman',  'car',  'sydney'], <br />       ['interview',  'michael',     'business',  'abc',  'news',     'market',  'analysis',  'david',     'extended',  'andrew'],  <br />       ['australia',  'australian',  'aussie',     'sydney',  'australians',  'day',     'aussies',  'australias',  'melbourne',  'south'], <br />       ['abc',     'country',  'hour',  'news',     'weather',  'grandstand',  'friday',     'nsw',  'drum',  'monday'], <br />       ['govt',     'election',  'council',  'government',  'minister',  'pm',     'parliament',  'nsw',  'anti',     'trump'], <br />       ['police',     'man',  'court',  'murder',     'charged',  'accused',  'death',     'guilty',  'charges',  'assault'], <br />       ['farmers',     'water',  'drought',  'industry',  'farm',     'coal',  'green',  'cattle',     'mining',  'nsw'], <br />       ['health',     'hospital',  'flu',  'mental',     'doctors',  'treatment',  'cancer',     'drug',  'service',  'care']] <br />      <br />      <br />            Overall         Coherence is sum of similarity scores of all possible pairs of words         for each cluster, normalized by the          no. of clusters          <br />       |
 
 </details>
 
 <details> 
-  <summary> <img class="emoji" title=":ballot_box_with_check:" alt=":ballot_box_with_check:" src="https://github.githubassets.com/images/icons/emoji/unicode/2611.png" height="20" width="20"> 8. <code>Conclusion</code> </summary>
+  <summary>  8. <code>Conclusion</code> </summary>
 
-```
-We have used two News corpus of varying text length. One dataset has ground truth labels and the other doesn't have labels
 
-```
+- We have used two News corpus of varying text length. One dataset has ground truth labels and the other doesn't have labels
 
-```
-In our comparison of **PTW-LDA vs USE-Clustering**, both based on 'Supervised' and 'Unsupervised' evaluation metrics, USE-clustering performs far superior to PTW-LDA despite repeated attempts at different set of hyper-parameters for PTW-LDA
-```
+
+- In our comparison of **PTW-LDA vs USE-Clustering**, both based on 'Supervised' and 'Unsupervised' evaluation metrics, USE-clustering performs far superior to PTW-LDA despite repeated attempts at different set of hyper-parameters for PTW-LDA
+
+
 </details>
 
-  </div>
-<a class="u-url" href="/learn_by_blogging/topic%20modeling/lda/seeded%20lda/universal%20sentence%20encoder/kmeans/2020/09/15/ptw_lda_vs_USE_K_Means.html" hidden></a>
+  </div><a class="u-url" href="/learn_by_blogging/topic%20modeling/lda/seeded%20lda/universal%20sentence%20encoder/kmeans/2020/09/15/ptw_lda_vs_USE_K_Means.html" hidden></a>
 </article>
 
       </div>
@@ -439,12 +428,11 @@ In our comparison of **PTW-LDA vs USE-Clustering**, both based on 'Supervised' a
         </p>
       </div>
       <div class="footer-col">
-        <p>Hi I'm Senthil Kumar. I am here to pen my learnings in Data Science and Coding</p>
+        <p>Hi I&#39;m Senthil Kumar. I am here to pen my learnings in Data Science and Coding</p>
       </div>
     </div>
 
-    <div class="social-links">
-<ul class="social-media-list"><li><a rel="me" href="https://github.com/senthilkumarm1901" target="_blank" title="senthilkumarm1901"><svg class="svg-icon grey"><use xlink:href="/learn_by_blogging/assets/minima-social-icons.svg#github"></use></svg></a></li></ul>
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/senthilkumarm1901" target="_blank" title="senthilkumarm1901"><svg class="svg-icon grey"><use xlink:href="/learn_by_blogging/assets/minima-social-icons.svg#github"></use></svg></a></li></ul>
 </div>
 
   </div>
