@@ -11,7 +11,7 @@ image: images/LDA_vs_KMeans/data1_evaluation_complete.PNG
 - **Universal Sentence Encoder** powered *K-Means*
 
 <details>
-<summary> :ballot_box_with_check: 1. <code>Motivation</code> behind Study  </summary>
+<summary>  1. <code>Motivation</code> behind Study  </summary>
 <br>
   
 **Is LDA worthwhile?**
@@ -25,7 +25,7 @@ Before diving into the study, <br> let us understand how **USE-KMeans** and **PT
 
 <details> 
   <summary> 
-    :ballot_box_with_check: 2. Briefly about <code>USE</code> </summary>
+     2. Briefly about <code>USE</code> </summary>
 <details> 
   <summary> <code>How USE works?</code></summary>
   
@@ -56,13 +56,13 @@ Before diving into the study, <br> let us understand how **USE-KMeans** and **PT
 <details>
 <summary> 3. Natural Language Inference </summary>
 
-![](../docs/images/markdown_table1.PNG)
+![](LDA_vs_KMeans/markdown_table1.PNG)
 
 </details>
 </details>
 </details>
 <details> 
-  <summary> :ballot_box_with_check: 3A. Briefly about <code>LDA</code> </summary> 
+  <summary>  3A. Briefly about <code>LDA</code> </summary> 
     <details> 
       <summary> <code>Latent</code> </summary> 
   
@@ -103,39 +103,39 @@ Before diving into the study, <br> let us understand how **USE-KMeans** and **PT
  (0.05, 0.2, 0.15, 0.1, 0.3, 0.2)
 ```
 
-![](../docs/images/dirichlet_distribution_of_words_topics.PNG)
+![](LDA_vs_KMeans/dirichlet_distribution_of_words_topics.PNG)
 
 **How Dirichlet Distribution varies w.r.t dirichlet prior**
 - The below image shows Dir(α) <br>
 - As α increases from 0.05 (1/20) to 0.1, 0.2, 0.4 respectively in plots from left to right & top to down, you can see the distribution becoming more uniform. <br>
 
-![](../docs/images/dirichlet_distribution_with_prior.png)
+![](LDA_vs_KMeans/dirichlet_distribution_with_prior.png)
 
 </details>
 </details>
 
 <details> 
-  <summary> :ballot_box_with_check: 3B. <code>How LDA works (without the math)</code> </summary> 
+  <summary>  3B. <code>How LDA works (without the math)</code> </summary> 
 - LDA is a generative model <br>
 - LDA processes documents as 'bag of words' -- ordering of words is not important
 
-![](../docs/images/generative_process_1.png)
+![](LDA_vs_KMeans/generative_process_1.png)
 <br>
 <br>
 In principle, LDA generates a document based on **dirichlet distribution (dd) of topics over documents** and **dd of words over topics**
 
-![](../docs/images/generative_process_2.png)
+![](LDA_vs_KMeans/generative_process_2.png)
 
 <br>
 <br>
 
 But we inverse the generative process for statistical inference
 
-![](../docs/images/generative_process_3.png)
+![](LDA_vs_KMeans/generative_process_3.png)
 
-<details> <summary> :ballot_box_with_check: 3C. Understanding the <code>Hyper-parameterspace</code> of LDA</summary> 
+<details> <summary>  3C. Understanding the <code>Hyper-parameterspace</code> of LDA</summary> 
 
-![](../docs/images/plate_notation_LDA.png)
+![](LDA_vs_KMeans/plate_notation_LDA.png)
 
 D = Total No. of Documents <br>
 N = No. of Words = Vocab Size <br>
@@ -143,12 +143,12 @@ T = No. of Topics <br>
 <br>
 θd = Topic Distribution for a particular document d
 
-![](../docs/images/plate_notation_2.png)
+![](LDA_vs_KMeans/plate_notation_2.png)
 
 <br>
 Φt= Word Distribution for a topic t. Here for topic 1 and 2. 
 
-![](../docs/images/plate_notation_3.png)
+![](LDA_vs_KMeans/plate_notation_3.png)
 
 (colored books represent words/tokens)
  
@@ -191,14 +191,14 @@ There is also another hyper parameter η - topic coherence or perplexity - which
 </details>
 </details>
 
-<details> <summary> :ballot_box_with_check: 3D. <code>Now, how does PTW-LDA work?</code> </summary> 
+<details> <summary>  3D. <code>Now, how does PTW-LDA work?</code> </summary> 
 - Nudge the regular LDA to converge faster and better with human-reviewed words list for each topic <br>
 
-![](../docs/images/seededlda_1.png)
+![](LDA_vs_KMeans/seededlda_1.png)
 
 - How the topics are seeded with some seed words
 
-![](../docs/images/seededlda_3.png)
+![](LDA_vs_KMeans/seededlda_3.png)
 
 - Chaotic LDA and Clear PTW_LDA outputs... <br>
 - LDA might need several hyperparameter tuning attempts to get to the desired splits <br>
@@ -214,12 +214,12 @@ There is also another hyper parameter η - topic coherence or perplexity - which
 
 - The seeded words are guided towards seeded topics for converging faster
 
-![](../docs/images/simplistic_guided_LDA_notation.PNG)
+![](LDA_vs_KMeans/simplistic_guided_LDA_notation.PNG)
 
 </details>
 
 <details> 
-  <summary> :ballot_box_with_check: 4. <code>Pre-processing and Hyper-parameters</code> that can be tuned </summary> 
+  <summary>  4. <code>Pre-processing and Hyper-parameters</code> that can be tuned </summary> 
 
 **Pre-processing**
 
@@ -249,41 +249,40 @@ There is also another hyper parameter η - topic coherence or perplexity - which
 About the Study <br>
 
 <details> 
-  <summary> :ballot_box_with_check: 5. <code>Data</code> Used for this study </summary> 
+  <summary>  5. <code>Data</code> Used for this study </summary> 
     
-![](../docs/images/data1vsdata2_1.PNG)
-![](../docs/images/data1vsdata2_2.PNG)
-![](../docs/images/data1vsdata2_3.PNG)
+![](LDA_vs_KMeans/data1vsdata2_1.PNG)
+![](LDA_vs_KMeans/data1vsdata2_2.PNG)
+![](LDA_vs_KMeans/data1vsdata2_3.PNG)
 
 </details> 
 
 <details> 
-  <summary> :ballot_box_with_check: 6. Data I - <code>20 Newsgroups</code> - <code>Supervised</code> Evaluation </summary> 
+  <summary>  6. Data I - <code>20 Newsgroups</code> - <code>Supervised</code> Evaluation </summary> 
 
-![](../docs/images/data1_evaluation_1.PNG) 
-![](../docs/images/data1_evaluation_2.PNG)
+![](LDA_vs_KMeans/data1_evaluation_1.PNG) 
+![](LDA_vs_KMeans/data1_evaluation_2.PNG)
 
 </details> 
 
 <details> 
-  <summary> :ballot_box_with_check: 7. Data II - <code>ABC Corpus</code> - <code>Unsupervised</code> Evaluation </summary> 
+  <summary>  7. Data II - <code>ABC Corpus</code> - <code>Unsupervised</code> Evaluation </summary> 
 
 |     Metric    |     PTW-LDA    |     USE-Clustering    |
 |-|-|-|
-|     Word Embedding   based Coherence Score           |     Coherence   Score for 20 topics: 0.091 <br>     (more the coherence score, better is the clustering output)   <br>    |     Coherence   Score for 20 clusters : 0.159          |
-|     Methodology of   computing the above metric    |                Take the top 10         words that constitute each of the 20 topics          (each topic    comprises of a probability simplex of the words; select the top 10 highly    probable words in that topic)      <br>      <br>      For our case, the    top 10 words used for coherence computation in the 10 topics are:       <br>      <br>      [['police',  'baghdad',     'war',  'probe',  'protest',     'anti',  'missing',  'man',     'fight',  'coalition'],    <br>      ['report',  'pm',     'death',  'korea',  'claim',     'war',  'north',  'nt',     'toll',  'protesters'],    <br>      ['win',  'govt',     'set',  'community',  'end',     'wins',  'vic',  'indigenous',  'road',     'help'], <br>      ['world',  'cup',     'australia',  'found',  'ban',     'plans',  'lead',  'gets',     'expected',  'match'],    <br>      ['un',  'coast',     'title',  'takes',  'peace',     'iraq',  'gold',  'defence',     'residents',  'play'],    <br>      ['iraq',  'iraqi',     'war',  'says',  'troops',     'killed',  'dead',  'hospital',  'clash',     'forces'], <br>      ['council',  'boost',     'mp',  'fire',  'group',     'qld',  'minister',  'defends',     'land',  'welcomes'],    <br>      ['man',  'court',     'charged',  'face',  'plan',     'open',  'murder',  'urged',     'case',  'charges'], <br>      ['new',  'oil',     'dies',  'security',  'crash',     'sars',  'high',  'year',     'house',  'car'], <br>      ['water',  'rain',     'claims',  'wa',  'nsw',     'farmers',  'drought',  'howard',     'centre',  'union']] <br>      <br>                   For each topic,         taking 2 out of the top 10 words at a time,  compute cosine similarity using         pre-trained W2V embedding          <br>            Overall         Coherence is sum of similarity scores of all possible pairs of words         for each topic, normalized by the          no. of topics                  |                Take the top 10         words that constitute each of the 20 clusters          (top 10 words    (from stop-words removed set) are computed based on their TF-IDF weighted    scores in that cluster)      <br>      <br>            For each         cluster, taking 2 out of the top 10 words at a time,  compute similarity using pre-trained         W2V embedding          <br>      <br>      For our case, the    top 10 words used for coherence computation in the 10 clusters are:   <br>      <br>     [['win',  'cup',     'final',  'wins',  'world',     'afl',  'coach',  'england',     'season',  'day'], <br>       ['council',     'plan',  'market',  'funding',     'boost',  'housing',  'water',     'funds',  'budget',  'rise'],     <br>       ['crash',     'man',  'killed',  'death',     'dies',  'dead',  'injured',     'woman',  'car',  'sydney'], <br>       ['interview',  'michael',     'business',  'abc',  'news',     'market',  'analysis',  'david',     'extended',  'andrew'],  <br>       ['australia',  'australian',  'aussie',     'sydney',  'australians',  'day',     'aussies',  'australias',  'melbourne',  'south'], <br>       ['abc',     'country',  'hour',  'news',     'weather',  'grandstand',  'friday',     'nsw',  'drum',  'monday'], <br>       ['govt',     'election',  'council',  'government',  'minister',  'pm',     'parliament',  'nsw',  'anti',     'trump'], <br>       ['police',     'man',  'court',  'murder',     'charged',  'accused',  'death',     'guilty',  'charges',  'assault'], <br>       ['farmers',     'water',  'drought',  'industry',  'farm',     'coal',  'green',  'cattle',     'mining',  'nsw'], <br>       ['health',     'hospital',  'flu',  'mental',     'doctors',  'treatment',  'cancer',     'drug',  'service',  'care']] <br>      <br>      <br>            Overall         Coherence is sum of similarity scores of all possible pairs of words         for each cluster, normalized by the          no. of clusters          <br>       |
+|     Word Embedding   based Coherence Score           |     Coherence   Score for 20 topics 0.159          |
+|     Methodology of   computing the above metric    |                Take the top 10         words that constitute each of the 20 topics          (each topic    comprises of a probability simplex of the words; select the top 10 highly    probable words in that topic)      <br>      <br>      For our case, the    top 10 words used for coherence computation in the 10 topics are   <br>      <br>     [['win',  'cup',     'final',  'wins',  'world',     'afl',  'coach',  'england',     'season',  'day'], <br>       ['council',     'plan',  'market',  'funding',     'boost',  'housing',  'water',     'funds',  'budget',  'rise'],     <br>       ['crash',     'man',  'killed',  'death',     'dies',  'dead',  'injured',     'woman',  'car',  'sydney'], <br>       ['interview',  'michael',     'business',  'abc',  'news',     'market',  'analysis',  'david',     'extended',  'andrew'],  <br>       ['australia',  'australian',  'aussie',     'sydney',  'australians',  'day',     'aussies',  'australias',  'melbourne',  'south'], <br>       ['abc',     'country',  'hour',  'news',     'weather',  'grandstand',  'friday',     'nsw',  'drum',  'monday'], <br>       ['govt',     'election',  'council',  'government',  'minister',  'pm',     'parliament',  'nsw',  'anti',     'trump'], <br>       ['police',     'man',  'court',  'murder',     'charged',  'accused',  'death',     'guilty',  'charges',  'assault'], <br>       ['farmers',     'water',  'drought',  'industry',  'farm',     'coal',  'green',  'cattle',     'mining',  'nsw'], <br>       ['health',     'hospital',  'flu',  'mental',     'doctors',  'treatment',  'cancer',     'drug',  'service',  'care']] <br>      <br>      <br>            Overall         Coherence is sum of similarity scores of all possible pairs of words         for each cluster, normalized by the          no. of clusters          <br>       |
 
 </details>
 
 <details> 
-  <summary> :ballot_box_with_check: 8. <code>Conclusion</code> </summary>
+  <summary>  8. <code>Conclusion</code> </summary>
 
-```
-We have used two News corpus of varying text length. One dataset has ground truth labels and the other doesn't have labels
 
-```
+- We have used two News corpus of varying text length. One dataset has ground truth labels and the other doesn't have labels
 
-```
-In our comparison of **PTW-LDA vs USE-Clustering**, both based on 'Supervised' and 'Unsupervised' evaluation metrics, USE-clustering performs far superior to PTW-LDA despite repeated attempts at different set of hyper-parameters for PTW-LDA
-```
+
+- In our comparison of **PTW-LDA vs USE-Clustering**, both based on 'Supervised' and 'Unsupervised' evaluation metrics, USE-clustering performs far superior to PTW-LDA despite repeated attempts at different set of hyper-parameters for PTW-LDA
+
+
 </details>
