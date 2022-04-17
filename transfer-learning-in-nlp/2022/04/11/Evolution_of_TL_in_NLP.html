@@ -100,7 +100,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      2 min read
+      3 min read
     
 </span></p>
 
@@ -154,18 +154,34 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h3"><a href="#Why-Language-Model?">Why Language Model? </a></li>
 <li class="toc-entry toc-h3"><a href="#Ok,-What-is-a-Language-Model?">Ok, What is a Language Model? </a></li>
 <li class="toc-entry toc-h3"><a href="#What-are-those-Language-Models?">What are those Language Models? </a></li>
-<li class="toc-entry toc-h3"><a href="#In-short,-How-has-transfer-learning-evolved-in-NLP?">In short, How has transfer learning evolved in NLP? </a></li>
+<li class="toc-entry toc-h3"><a href="#What-are-the-two-types-of-Transfer-Learning-built-using-the-LMs?">What are the two types of Transfer Learning built using the LMs? </a></li>
+<li class="toc-entry toc-h3"><a href="#In-short,-how-has-transfer-learning-evolved-in-NLP?">In short, how has transfer learning evolved in NLP? </a></li>
 </ul>
 </li>
-<li class="toc-entry toc-h2"><a href="#2.-Introduction-to-Language-Modeling">2. Introduction to Language Modeling </a></li>
-<li class="toc-entry toc-h2"><a href="#3.-Evolution-of-RNN-Architecture-till-LSTM-+-Attention">3. Evolution of RNN Architecture till LSTM + Attention </a></li>
-<li class="toc-entry toc-h2"><a href="#4.-Transformer-(Attention-without-LSTM-)">4. Transformer (Attention without LSTM ) </a></li>
-<li class="toc-entry toc-h2"><a href="#5.-The-advent-of-BERT---Pre-trained-Transformer-based-LMs">5. The advent of BERT - Pre-trained Transformer-based LMs </a></li>
-<li class="toc-entry toc-h2"><a href="#6.-Conclusion">6. Conclusion </a>
+<li class="toc-entry toc-h2"><a href="#2.-Types-of-Language-Models">2. Types of Language Models </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Count-based-Language-Models">Count-based Language Models </a></li>
+<li class="toc-entry toc-h3"><a href="#Context-prediction-based-Pre-trained-Language-Models">Context-prediction based Pre-trained Language Models </a></li>
+<li class="toc-entry toc-h3"><a href="#LSTM-based-Pre-trained-Language-Models">LSTM-based Pre-trained Language Models </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Evolution-of-RNN-Architecture-till-LSTM">Evolution of RNN Architecture till LSTM </a></li>
+<li class="toc-entry toc-h4"><a href="#The-ImageNet-moment-in-NLP;-advent-of-ULMFiT-and-ELMo">The ImageNet moment in NLP; advent of ULMFiT and ELMo </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Transformer-based-Pre-trained-Language-Models">Transformer-based Pre-trained Language Models </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#LSTM-Seq2Seq-Model-with-Attention">LSTM Seq2Seq Model with Attention </a></li>
+<li class="toc-entry toc-h4"><a href="#Transformer-Seq2Seq-Model-with-Attention-Or-Attention-Model-without-Recurrent-LSTMs">Transformer Seq2Seq Model with Attention Or Attention Model without Recurrent LSTMs </a></li>
+<li class="toc-entry toc-h4"><a href="#The-Advent-of-BERT-and-similar-Transformers">The Advent of BERT and similar Transformers </a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#3.-Conclusion">3. Conclusion </a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#Why-Transformers-are-awesome?">Why Transformers are awesome? </a></li>
 <li class="toc-entry toc-h3"><a href="#But-what-do-Transformers-lack?">But what do Transformers lack? </a></li>
-<li class="toc-entry toc-h3"><a href="#What-is-the-future-of-Transfer-Learning-in-NLP??">What is the future of Transfer Learning in NLP?? </a></li>
+<li class="toc-entry toc-h3"><a href="#What-is-the-future-of-Transfer-Learning-in-NLP?">What is the future of Transfer Learning in NLP? </a></li>
 </ul>
 </li>
 </ul><!--
@@ -242,6 +258,7 @@ Source: ULMFiT Paper | <a href="https://humboldt-wi.github.io/blog/research/info
 <ul>
 <li>A language model (LM) is a model that generates a probability distribution over sequences of words</li>
 <li>In simpler words, LM is a model to predict the next word in a sequence of words</li>
+<li>It is <code>unsupervised</code> or <code>self-supervised</code> (since we already know what is the next word in the corpus)</li>
 </ul>
 <hr>
 
@@ -249,13 +266,37 @@ Source: ULMFiT Paper | <a href="https://humboldt-wi.github.io/blog/research/info
 <a class="anchor" href="#What-are-those-Language-Models?" aria-hidden="true"><span class="octicon octicon-link"></span></a>What are those Language Models?<a class="anchor-link" href="#What-are-those-Language-Models?"> </a>
 </h3>
 <ul>
-<li>Word2Vec, Glove, ELMo, ULMFiT, BERT, and many more </li>
+<li>Examples of Language Models:Word2Vec, Glove, ELMo, ULMFiT, BERT, and many more 
+<img src="https://ruder.io/content/images/2021/02/pretraining_finetuning.png" alt="">
+Source: A article by Sebastian Ruder: <code>State of Transfer Learning in NLP</code> | <a href="https://ruder.io/state-of-transfer-learning-in-nlp/">Link</a>
+</li>
 </ul>
-<p><img src="https://ruder.io/content/images/2021/02/pretraining_finetuning.png" alt="">Source: A article by Sebastian Ruder: <code>State of Transfer Learning in NLP</code> | <a href="https://ruder.io/state-of-transfer-learning-in-nlp/">Link</a></p>
 <hr>
 
-<h3 id="In-short,-How-has-transfer-learning-evolved-in-NLP?">
-<a class="anchor" href="#In-short,-How-has-transfer-learning-evolved-in-NLP?" aria-hidden="true"><span class="octicon octicon-link"></span></a>In short, How has transfer learning evolved in NLP?<a class="anchor-link" href="#In-short,-How-has-transfer-learning-evolved-in-NLP?"> </a>
+<h3 id="What-are-the-two-types-of-Transfer-Learning-built-using-the-LMs?">
+<a class="anchor" href="#What-are-the-two-types-of-Transfer-Learning-built-using-the-LMs?" aria-hidden="true"><span class="octicon octicon-link"></span></a>What are the two types of Transfer Learning built using the LMs?<a class="anchor-link" href="#What-are-the-two-types-of-Transfer-Learning-built-using-the-LMs?"> </a>
+</h3>
+<ul>
+<li>Type 1: <code>Feature Extraction</code><ul>
+<li>Example: <code>Universal Sentence Encoder</code> produces just an embedding/numerical representation and that gets used by a downstream application
+<img src="https://www.gstatic.com/aihub/tfhub/universal-sentence-encoder/example-classification.png" alt="">
+</li>
+</ul>
+</li>
+</ul>
+<p>Source of image: TF Hub Article on Universal Sentence Encoder | <a href="https://www.tensorflow.org/hub/tutorials/text_cookbook">Link</a></p>
+<p><br></p>
+<ul>
+<li>Type 2: <code>Fine Tuning</code><ul>
+<li>E.g.: <code>BERT</code> Fine-tuned for Text Classification
+<img src="https://www.researchgate.net/publication/351386823/figure/fig4/AS:1024183752478725@1621195843655/BERT-Fine-tuning-pipeline-for-a-sample-sentiment-identification-task.jpg" alt="">
+</li>
+</ul>
+</li>
+</ul>
+<p>Source of image: An article in Research Gate | <a href="https://www.researchgate.net/figure/BERT-Fine-tuning-pipeline-for-a-sample-sentiment-identification-task_fig4_351386823">Link</a></p>
+<h3 id="In-short,-how-has-transfer-learning-evolved-in-NLP?">
+<a class="anchor" href="#In-short,-how-has-transfer-learning-evolved-in-NLP?" aria-hidden="true"><span class="octicon octicon-link"></span></a>In short, how has transfer learning evolved in NLP?<a class="anchor-link" href="#In-short,-how-has-transfer-learning-evolved-in-NLP?"> </a>
 </h3>
 <ul>
 <li>Step -2: NLP started with rule-based and statistical methodologies</li>
@@ -275,8 +316,8 @@ Source: ULMFiT Paper | <a href="https://humboldt-wi.github.io/blog/research/info
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="2.-Introduction-to-Language-Modeling">
-<a class="anchor" href="#2.-Introduction-to-Language-Modeling" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Introduction to Language Modeling<a class="anchor-link" href="#2.-Introduction-to-Language-Modeling"> </a>
+<h2 id="2.-Types-of-Language-Models">
+<a class="anchor" href="#2.-Types-of-Language-Models" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Types of Language Models<a class="anchor-link" href="#2.-Types-of-Language-Models"> </a>
 </h2>
 </div>
 </div>
@@ -284,35 +325,41 @@ Source: ULMFiT Paper | <a href="https://humboldt-wi.github.io/blog/research/info
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="3.-Evolution-of-RNN-Architecture-till-LSTM-+-Attention">
-<a class="anchor" href="#3.-Evolution-of-RNN-Architecture-till-LSTM-+-Attention" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Evolution of RNN Architecture till LSTM + Attention<a class="anchor-link" href="#3.-Evolution-of-RNN-Architecture-till-LSTM-+-Attention"> </a>
-</h2>
+<h3 id="Count-based-Language-Models">
+<a class="anchor" href="#Count-based-Language-Models" aria-hidden="true"><span class="octicon octicon-link"></span></a>Count-based Language Models<a class="anchor-link" href="#Count-based-Language-Models"> </a>
+</h3>
+<h3 id="Context-prediction-based-Pre-trained-Language-Models">
+<a class="anchor" href="#Context-prediction-based-Pre-trained-Language-Models" aria-hidden="true"><span class="octicon octicon-link"></span></a>Context-prediction based <code>Pre-trained</code> Language Models<a class="anchor-link" href="#Context-prediction-based-Pre-trained-Language-Models"> </a>
+</h3>
+<h3 id="LSTM-based-Pre-trained-Language-Models">
+<a class="anchor" href="#LSTM-based-Pre-trained-Language-Models" aria-hidden="true"><span class="octicon octicon-link"></span></a>LSTM-based <code>Pre-trained</code> Language Models<a class="anchor-link" href="#LSTM-based-Pre-trained-Language-Models"> </a>
+</h3>
+<h4 id="Evolution-of-RNN-Architecture-till-LSTM">
+<a class="anchor" href="#Evolution-of-RNN-Architecture-till-LSTM" aria-hidden="true"><span class="octicon octicon-link"></span></a>Evolution of RNN Architecture till LSTM<a class="anchor-link" href="#Evolution-of-RNN-Architecture-till-LSTM"> </a>
+</h4>
+<h4 id="The-ImageNet-moment-in-NLP;-advent-of-ULMFiT-and-ELMo">
+<a class="anchor" href="#The-ImageNet-moment-in-NLP;-advent-of-ULMFiT-and-ELMo" aria-hidden="true"><span class="octicon octicon-link"></span></a>The <code>ImageNet</code> moment in NLP; advent of <code>ULMFiT</code> and <code>ELMo</code><a class="anchor-link" href="#The-ImageNet-moment-in-NLP;-advent-of-ULMFiT-and-ELMo"> </a>
+</h4>
+<h3 id="Transformer-based-Pre-trained-Language-Models">
+<a class="anchor" href="#Transformer-based-Pre-trained-Language-Models" aria-hidden="true"><span class="octicon octicon-link"></span></a>Transformer-based <code>Pre-trained</code> Language Models<a class="anchor-link" href="#Transformer-based-Pre-trained-Language-Models"> </a>
+</h3>
+<h4 id="LSTM-Seq2Seq-Model-with-Attention">
+<a class="anchor" href="#LSTM-Seq2Seq-Model-with-Attention" aria-hidden="true"><span class="octicon octicon-link"></span></a>LSTM Seq2Seq Model with Attention<a class="anchor-link" href="#LSTM-Seq2Seq-Model-with-Attention"> </a>
+</h4>
+<h4 id="Transformer-Seq2Seq-Model-with-Attention-Or-Attention-Model-without-Recurrent-LSTMs">
+<a class="anchor" href="#Transformer-Seq2Seq-Model-with-Attention-Or-Attention-Model-without-Recurrent-LSTMs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Transformer Seq2Seq Model with Attention Or Attention Model without Recurrent LSTMs<a class="anchor-link" href="#Transformer-Seq2Seq-Model-with-Attention-Or-Attention-Model-without-Recurrent-LSTMs"> </a>
+</h4>
+<h4 id="The-Advent-of-BERT-and-similar-Transformers">
+<a class="anchor" href="#The-Advent-of-BERT-and-similar-Transformers" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Advent of BERT and similar Transformers<a class="anchor-link" href="#The-Advent-of-BERT-and-similar-Transformers"> </a>
+</h4>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="4.-Transformer-(Attention-without-LSTM-)">
-<a class="anchor" href="#4.-Transformer-(Attention-without-LSTM-)" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. Transformer (Attention without LSTM )<a class="anchor-link" href="#4.-Transformer-(Attention-without-LSTM-)"> </a>
-</h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="5.-The-advent-of-BERT---Pre-trained-Transformer-based-LMs">
-<a class="anchor" href="#5.-The-advent-of-BERT---Pre-trained-Transformer-based-LMs" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. The advent of BERT - Pre-trained Transformer-based LMs<a class="anchor-link" href="#5.-The-advent-of-BERT---Pre-trained-Transformer-based-LMs"> </a>
-</h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="6.-Conclusion">
-<a class="anchor" href="#6.-Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>6. Conclusion<a class="anchor-link" href="#6.-Conclusion"> </a>
+<h2 id="3.-Conclusion">
+<a class="anchor" href="#3.-Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Conclusion<a class="anchor-link" href="#3.-Conclusion"> </a>
 </h2>
 <h3 id="Why-Transformers-are-awesome?">
 <a class="anchor" href="#Why-Transformers-are-awesome?" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why Transformers are awesome?<a class="anchor-link" href="#Why-Transformers-are-awesome?"> </a>
@@ -324,8 +371,8 @@ Source: ULMFiT Paper | <a href="https://humboldt-wi.github.io/blog/research/info
 </h3>
 <hr>
 
-<h3 id="What-is-the-future-of-Transfer-Learning-in-NLP??">
-<a class="anchor" href="#What-is-the-future-of-Transfer-Learning-in-NLP??" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is the future of Transfer Learning in NLP??<a class="anchor-link" href="#What-is-the-future-of-Transfer-Learning-in-NLP??"> </a>
+<h3 id="What-is-the-future-of-Transfer-Learning-in-NLP?">
+<a class="anchor" href="#What-is-the-future-of-Transfer-Learning-in-NLP?" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is the future of Transfer Learning in NLP?<a class="anchor-link" href="#What-is-the-future-of-Transfer-Learning-in-NLP?"> </a>
 </h3>
 <hr>
 </div>
