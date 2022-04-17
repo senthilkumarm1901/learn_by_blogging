@@ -6,8 +6,6 @@ permalink: /about/
 
 Hi! I am Senthil Kumar. 
 
-![](https://github.com/senthilkumarm1901/senthilkumarm1901/blob/main/images/Senthil_Photo_Mar_2022.jpg?raw=true)
-
 I am a Data Scientist specialized in building production-grade NLP applications utilizing Machine Learning and Deep Learning techniques.
 
 *Updated in April 2022*
@@ -17,11 +15,13 @@ My experience could almost evenly be distributed among three companies - Ford (c
 
 All the above career shifts have been deliberate. In my arguably biased opinion, these different experiences have thankfully moulded me into a better professional than I was previously. 
 
-I hold a Bachelor's degree in Electronics and Communication Engineering from Madras Institute of Technology (alma mater of Late Dr. APJ Abdul Kalam). 
+I hold a Bachelor's degree in Electronics and Communication Engineering from Madras Institute of Technology (UG alma mater of Scientist and President of India Late Dr. APJ Abdul Kalam). 
 
+On the personal side, 
+I am grateful for being mentored by my wiser wife in all my personal and professional decisions. 
+And, I am thankful to my toddler son for maintaining my weight despite being well into my 30s.
 
- - [my resume](senthilkumarm1901.github.io/)
- - [more detailed profile](github.com/senthilkumarm1901)
+<hr>
 
 <p align='center'>
 	If interested, do review 
@@ -36,9 +36,7 @@ I hold a Bachelor's degree in Electronics and Communication Engineering from Mad
   </a>&nbsp;&nbsp;
 </p>
 
-On the personal side, 
-I am grateful for being mentored by my wiser wife in all my personal and professional decisions. 
-And, I am thankful to my toddler son for maintaining my weight despite being well into my 30s.
+<hr>
 
 <p align='center'>
   If you'd like to get in touch, you can reach me via
