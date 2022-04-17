@@ -4,7 +4,9 @@ title: About Me
 permalink: /about/
 ---
 
-I am Senthil Kumar. 
+Hi! I am Senthil Kumar. 
+
+![](https://github.com/senthilkumarm1901/senthilkumarm1901/blob/main/images/Senthil_Photo_Mar_2022.jpg?raw=true)
 
 I am a Data Scientist specialized in building production-grade NLP applications utilizing Machine Learning and Deep Learning techniques.
 
@@ -17,10 +19,22 @@ All the above career shifts have been deliberate. In my arguably biased opinion,
 
 I hold a Bachelor's degree in Electronics and Communication Engineering from Madras Institute of Technology (alma mater of Late Dr. APJ Abdul Kalam). 
 
-If interested, do review 
+
  - [my resume](senthilkumarm1901.github.io/)
  - [more detailed profile](github.com/senthilkumarm1901)
 
+<p align='center'>
+	If interested, do review 
+</p>
+
+<p align='center'>
+  <a href="https://senthilkumarm1901.github.io/myResume/">
+    <img src="https://img.shields.io/badge/-/my/Resume/-blue?&style=for-the-badge&logoColor=white" />
+  </a>&nbsp;&nbsp;
+  <a href="https://github.com/senthilkumarm1901">
+    <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" />
+  </a>&nbsp;&nbsp;
+</p>
 
 On the personal side, 
 I am grateful for being mentored by my wiser wife in all my personal and professional decisions. 
@@ -33,9 +47,6 @@ And, I am thankful to my toddler son for maintaining my weight despite being wel
 <p align='center'>
   <a href="https://www.linkedin.com/in/senthilkumarm1901/">
     <img src="https://img.shields.io/badge/-/in/senthilkumarm1901/-blue?&style=for-the-badge&logo=linkedin&logoColor=white" />
-  </a>&nbsp;&nbsp;
-  <a href="https://senthilkumarm1901.github.io/myResume/">
-    <img src="https://img.shields.io/badge/-/PDF/Resume/-blue?&style=for-the-badge&logoColor=white" />
   </a>&nbsp;&nbsp;
   <a href="mailto:senthilkumar.m1901@gmail.com">
     <img src="https://img.shields.io/badge/-senthilkumar.m1901@gmail.com-c14438?style=for-the-badge&logo=Gmail&logoColor=white&link=mailto:senthilkumar.m1901@gmail.com" />        
