@@ -6,21 +6,25 @@ permalink: /about/
 
 Hi! I am Senthil Kumar. 
 
-I am a Data Scientist specialized in building production-grade NLP applications utilizing Machine Learning and Deep Learning techniques.
-Of my overall 12 years of experience (updated in April 2022), the last 8 years have in the field of Data Science and NLP. 
+- I am a Data Scientist specialized in building production-grade NLP applications utilizing Machine Learning and Deep Learning techniques.
+- Of my overall 12 years of experience (updated in April 2022), the last 8 years have in the field of Data Science and NLP. 
 
-My experience could almost evenly be distributed among three companies - `Ford` (current firm), `LatentView` and `Beroe`. <br>
-The nature of the work in each of these companies has been different. <br>
-&#9;From performing a Market Research role at Beroe to delivering/managing Data Analytics Services at LatentView. <br>
-&#9;And, from there on to being a data science developer at Ford. <br>
-All the above career shifts have been deliberate. In my arguably biased opinion, these different experiences have thankfully moulded me into a better professional than I was previously. 
+<br>
 
-I hold a Bachelor's degree in Electronics and Communication Engineering from Madras Institute of Technology, Chennai, India. 
-<small>(UG alma mater of Scientist and President of India Late Dr. APJ Abdul Kalam)</small>
+- My experience could almost evenly be distributed among three companies - `Ford` (current firm), `LatentView` and `Beroe`. <br>
+- The nature of the work in each of these companies has been different. <br>
+    - From performing a Market Research role at Beroe to delivering/managing Data Analytics Services at LatentView. <br>
+    - And, from there on to being a data science developer at Ford. <br>
+- All the above career shifts have been deliberate. In my arguably biased opinion, these different experiences have thankfully moulded me into a better professional than I was previously. 
 
-On the personal side, 
-I am grateful for being mentored by my wiser wife in all my personal and professional decisions. 
-And, I am thankful to my toddler son for maintaining my weight despite being well into my 30s.
+<br>
+
+- I hold a Bachelor's degree in Electronics and Communication Engineering from Madras Institute of Technology, Chennai, India. 
+[UG alma mater of Late President of India Dr. APJ Abdul Kalam](https://en.wikipedia.org/wiki/A._P._J._Abdul_Kalam)
+
+- On the personal side, 
+    - I am grateful for being mentored by my wiser wife in all my personal and professional decisions. 
+    - And, I am thankful to my toddler son for maintaining my weight despite me being well into my 30s.
 
 <hr>
 
