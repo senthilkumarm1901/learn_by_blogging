@@ -14,14 +14,14 @@
 <link rel="canonical" href="https://senthilkumarm1901.github.io/learn_by_blogging/markov_langugage_model/log_probability/perplexity/2020/03/17/Introduction_to_Statistical_Language_Modeling.html" />
 <meta property="og:url" content="https://senthilkumarm1901.github.io/learn_by_blogging/markov_langugage_model/log_probability/perplexity/2020/03/17/Introduction_to_Statistical_Language_Modeling.html" />
 <meta property="og:site_name" content="Writing to Learn" />
-<meta property="og:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/language_model_intro/Transfer_learning_evolution_pic_1.png" />
+<meta property="og:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images%5Clanguage_model_intro%5Cintroduction_to_statistical_language_model.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-03-17T00:00:00-05:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/language_model_intro/Transfer_learning_evolution_pic_1.png" />
+<meta property="twitter:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images%5Clanguage_model_intro%5Cintroduction_to_statistical_language_model.png" />
 <meta property="twitter:title" content="Introduction to Statistical Language Modeling" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2020-03-17T00:00:00-05:00","datePublished":"2020-03-17T00:00:00-05:00","description":"A gentle introduction to understand the ABCs of NLP in the era of Transformer LMs generating Poems.","headline":"Introduction to Statistical Language Modeling","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/language_model_intro/Transfer_learning_evolution_pic_1.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/markov_langugage_model/log_probability/perplexity/2020/03/17/Introduction_to_Statistical_Language_Modeling.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/markov_langugage_model/log_probability/perplexity/2020/03/17/Introduction_to_Statistical_Language_Modeling.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2020-03-17T00:00:00-05:00","datePublished":"2020-03-17T00:00:00-05:00","description":"A gentle introduction to understand the ABCs of NLP in the era of Transformer LMs generating Poems.","headline":"Introduction to Statistical Language Modeling","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images%5Clanguage_model_intro%5Cintroduction_to_statistical_language_model.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/markov_langugage_model/log_probability/perplexity/2020/03/17/Introduction_to_Statistical_Language_Modeling.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/markov_langugage_model/log_probability/perplexity/2020/03/17/Introduction_to_Statistical_Language_Modeling.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/learn_by_blogging/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml" title="Writing to Learn" /><link rel="shortcut icon" type="image/x-icon" href="/learn_by_blogging/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -145,16 +145,24 @@ window.onload = wrap_img;
 
   <div class="post-content e-content" itemprop="articleBody">
     <ul id="toc" class="section-nav">
-<li class="toc-entry toc-h2"><a href="#What-is-a-Language-Model?">What is a Language Model? </a></li>
-<li class="toc-entry toc-h2"><a href="#Applications-of-LMs">Applications of LMs </a></li>
-<li class="toc-entry toc-h2"><a href="#N-gram-Language-Modelling">N-gram Language Modelling </a></li>
-<li class="toc-entry toc-h2"><a href="#Out-of-Vocabulary">Out of Vocabulary </a></li>
+<li class="toc-entry toc-h2"><a href="#1.-What-is-a-Language-Model?">1. What is a Language Model? </a></li>
+<li class="toc-entry toc-h2"><a href="#2.-Applications-of-LMs">2. Applications of LMs </a></li>
+<li class="toc-entry toc-h2"><a href="#3.-N-gram-Language-Modelling">3. N-gram Language Modelling </a></li>
+<li class="toc-entry toc-h2"><a href="#4.-Out-of-Vocabulary">4. Out of Vocabulary </a></li>
 <li class="toc-entry toc-h2"><a href="#One-way-to-avoid,-Smoothing!">One way to avoid, Smoothing! </a></li>
-<li class="toc-entry toc-h2"><a href="#What-is-Markov-Assumption?">What is Markov Assumption? </a></li>
-<li class="toc-entry toc-h2"><a href="#Evaluation-–-Perplexity">Evaluation – Perplexity </a></li>
-<li class="toc-entry toc-h2"><a href="#Evaluation---Log-Probability">Evaluation - Log Probability </a></li>
-<li class="toc-entry toc-h2"><a href="#Application-in-Text-Classification">Application in Text Classification </a></li>
-<li class="toc-entry toc-h2"><a href="#Application-in-Text-Generation">Application in Text Generation </a></li>
+<li class="toc-entry toc-h2"><a href="#5.-What-is-Markov-Assumption?">5. What is Markov Assumption? </a></li>
+<li class="toc-entry toc-h2"><a href="#6.-Evaluation">6. Evaluation </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Perplexity">Perplexity </a></li>
+<li class="toc-entry toc-h3"><a href="#Log-Probability">Log Probability </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#7.-Application">7. Application </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Text-Classification">Text Classification </a></li>
+<li class="toc-entry toc-h3"><a href="#Text-Generation">Text Generation </a></li>
+</ul>
+</li>
 </ul><!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
@@ -167,8 +175,8 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="What-is-a-Language-Model?">
-<a class="anchor" href="#What-is-a-Language-Model?" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is a Language Model?<a class="anchor-link" href="#What-is-a-Language-Model?"> </a>
+<h2 id="1.-What-is-a-Language-Model?">
+<a class="anchor" href="#1.-What-is-a-Language-Model?" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. What is a Language Model?<a class="anchor-link" href="#1.-What-is-a-Language-Model?"> </a>
 </h2>
 <ul>
 <li>A language model (LM) is a model that generates a probability distribution over sequences of words</li>
@@ -181,8 +189,8 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Applications-of-LMs">
-<a class="anchor" href="#Applications-of-LMs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Applications of LMs<a class="anchor-link" href="#Applications-of-LMs"> </a>
+<h2 id="2.-Applications-of-LMs">
+<a class="anchor" href="#2.-Applications-of-LMs" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Applications of LMs<a class="anchor-link" href="#2.-Applications-of-LMs"> </a>
 </h2>
 </div>
 </div>
@@ -207,8 +215,8 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="N-gram-Language-Modelling">
-<a class="anchor" href="#N-gram-Language-Modelling" aria-hidden="true"><span class="octicon octicon-link"></span></a>N-gram Language Modelling<a class="anchor-link" href="#N-gram-Language-Modelling"> </a>
+<h2 id="3.-N-gram-Language-Modelling">
+<a class="anchor" href="#3.-N-gram-Language-Modelling" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. N-gram Language Modelling<a class="anchor-link" href="#3.-N-gram-Language-Modelling"> </a>
 </h2>
 <p><strong>Sample Corpus</strong>: <br></p>
 <blockquote>
@@ -294,8 +302,8 @@ $$ Prob \ ({ A_4,\ A_3,\ A_2,\ A_1}) = Prob\ ( {A_4 \ |\ {A_{3},\ A_2,\ A_1}} ) 
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Out-of-Vocabulary">
-<a class="anchor" href="#Out-of-Vocabulary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Out of Vocabulary<a class="anchor-link" href="#Out-of-Vocabulary"> </a>
+<h2 id="4.-Out-of-Vocabulary">
+<a class="anchor" href="#4.-Out-of-Vocabulary" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. Out of Vocabulary<a class="anchor-link" href="#4.-Out-of-Vocabulary"> </a>
 </h2>
 <p>Suppose we have a new sentence like the below one:<br>
 If we calculate the Probability of the below sentence, it would be zero<br>
@@ -350,8 +358,8 @@ $$ P_{smooth}({B\  | \ A}) = {Count\ (\ A,\ B\ )\ +\ \delta \over Count\ (\ B\ )
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="What-is-Markov-Assumption?">
-<a class="anchor" href="#What-is-Markov-Assumption?" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is Markov Assumption?<a class="anchor-link" href="#What-is-Markov-Assumption?"> </a>
+<h2 id="5.-What-is-Markov-Assumption?">
+<a class="anchor" href="#5.-What-is-Markov-Assumption?" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. What is Markov Assumption?<a class="anchor-link" href="#5.-What-is-Markov-Assumption?"> </a>
 </h2>
 <p>So the probability of occurrence of a 4-word sentence, by markov assumption is: 
 
@@ -383,9 +391,12 @@ For e.g.: <br><ul>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Evaluation-–-Perplexity">
-<a class="anchor" href="#Evaluation-%E2%80%93-Perplexity" aria-hidden="true"><span class="octicon octicon-link"></span></a>Evaluation – Perplexity<a class="anchor-link" href="#Evaluation-%E2%80%93-Perplexity"> </a>
+<h2 id="6.-Evaluation">
+<a class="anchor" href="#6.-Evaluation" aria-hidden="true"><span class="octicon octicon-link"></span></a>6. Evaluation<a class="anchor-link" href="#6.-Evaluation"> </a>
 </h2>
+<h3 id="Perplexity">
+<a class="anchor" href="#Perplexity" aria-hidden="true"><span class="octicon octicon-link"></span></a>Perplexity<a class="anchor-link" href="#Perplexity"> </a>
+</h3>
 </div>
 </div>
 </div>
@@ -435,9 +446,9 @@ $$ {\sqrt[N]{\prod\limits_{i=1}^{N} {1 \over P(w_i,\ |\ {w_{i-1},\ ....,\ w_1})}
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Evaluation---Log-Probability">
-<a class="anchor" href="#Evaluation---Log-Probability" aria-hidden="true"><span class="octicon octicon-link"></span></a>Evaluation - Log Probability<a class="anchor-link" href="#Evaluation---Log-Probability"> </a>
-</h2>
+<h3 id="Log-Probability">
+<a class="anchor" href="#Log-Probability" aria-hidden="true"><span class="octicon octicon-link"></span></a>Log Probability<a class="anchor-link" href="#Log-Probability"> </a>
+</h3>
 <ul>
 <li>
 <p>But multiply probabilities like these could end up giving you the result closer to zero.</p>
@@ -485,7 +496,7 @@ $$ {1 \over N} \log P(w_1,\ w_2,\ ....,\ w_N) = {1 \over N} \left [\ \sum\limits
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Comparison between Perplexity and Log-Probability metrics for a Bigram Markov Language Model</strong></p>
+<p><strong>Perplexity and Log-Probability metrics for a Bigram Markov Language Model</strong></p>
 $$ Perplexity\ for\ a\ bigram\ model = {\sqrt[N]{\prod\limits_{i=1}^{N} {1 \over P(w_i,\ |\ {w_{i-1}})}}}$$<p></p>
 <p>Comparing with normalized log probability for a bigram model:<br>
 $$ LogProbability\ for\ a\ bigram\ model = {1 \over N} \left [\ \sum\limits_{\ i\ =\ 2}^{N} {\log P(w_i\ |\ w_{i-1})}\ +\ \log P(w_1) \right] $$</p>
@@ -496,9 +507,12 @@ $$ LogProbability\ for\ a\ bigram\ model = {1 \over N} \left [\ \sum\limits_{\ i
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Application-in-Text-Classification">
-<a class="anchor" href="#Application-in-Text-Classification" aria-hidden="true"><span class="octicon octicon-link"></span></a>Application in Text Classification<a class="anchor-link" href="#Application-in-Text-Classification"> </a>
+<h2 id="7.-Application">
+<a class="anchor" href="#7.-Application" aria-hidden="true"><span class="octicon octicon-link"></span></a>7. Application<a class="anchor-link" href="#7.-Application"> </a>
 </h2>
+<h3 id="Text-Classification">
+<a class="anchor" href="#Text-Classification" aria-hidden="true"><span class="octicon octicon-link"></span></a>Text Classification<a class="anchor-link" href="#Text-Classification"> </a>
+</h3>
 <p>In this <a href="https://github.com/senthilkumarm1901/LanguageModels_pre_W2V/blob/master/Codes/Bigram_Models--Text_Classification.ipynb">notebook</a>, Markov Bigram model is implemented on a text classification problem. We can build a deterministic classifier where class is attributed to the class with highest log probability score.</p>
 <div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">bigram_markov</span><span class="p">(</span><span class="s2">"economic growth slows down"</span><span class="p">))</span>
 </pre></div>
@@ -529,9 +543,9 @@ Class attributed: 'business'</code></pre>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Application-in-Text-Generation">
-<a class="anchor" href="#Application-in-Text-Generation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Application in Text Generation<a class="anchor-link" href="#Application-in-Text-Generation"> </a>
-</h2>
+<h3 id="Text-Generation">
+<a class="anchor" href="#Text-Generation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Text Generation<a class="anchor-link" href="#Text-Generation"> </a>
+</h3>
 <p>In this <a href="https://github.com/senthilkumarm1901/LanguageModels_pre_W2V/blob/master/Codes/Char-level%20N-gram%20Language%20Generation%20Model.ipynb">notebook</a>, a char-level LM, using trigrams and bigrams of characters, was used to generate dianosour names.</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="o">&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">names</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 <span class="c1"># Names of Dianosours used as input</span>
