@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>The Theory of Word2Vec Algorithm | Learn By Blogging</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="The Theory of Word2Vec Algorithm" />
+<meta name="author" content="Senthil Kumar" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This blog post attempts to explain one of the important pretrained Word Embedding algorithms in NLP" />
+<meta property="og:description" content="This blog post attempts to explain one of the important pretrained Word Embedding algorithms in NLP" />
+<link rel="canonical" href="https://senthilkumarm1901.github.io/learn_by_blogging/word2vec/2020/05/03/Pretrained_Word_Embeddings.html" />
+<meta property="og:url" content="https://senthilkumarm1901.github.io/learn_by_blogging/word2vec/2020/05/03/Pretrained_Word_Embeddings.html" />
+<meta property="og:site_name" content="Learn By Blogging" />
+<meta property="og:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/word_embeddings/cbow_vs_skip_gram.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-03T00:00:00-05:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/word_embeddings/cbow_vs_skip_gram.png" />
+<meta property="twitter:title" content="The Theory of Word2Vec Algorithm" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2020-05-03T00:00:00-05:00","datePublished":"2020-05-03T00:00:00-05:00","description":"This blog post attempts to explain one of the important pretrained Word Embedding algorithms in NLP","headline":"The Theory of Word2Vec Algorithm","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/word_embeddings/cbow_vs_skip_gram.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/word2vec/2020/05/03/Pretrained_Word_Embeddings.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/word2vec/2020/05/03/Pretrained_Word_Embeddings.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/learn_by_blogging/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml" title="Learn By Blogging" /><link rel="shortcut icon" type="image/x-icon" href="/learn_by_blogging/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/learn_by_blogging/">Learn By Blogging</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/learn_by_blogging/about/">About Me</a><a class="page-link" href="/learn_by_blogging/search/">Search</a><a class="page-link" href="/learn_by_blogging/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">The Theory of Word2Vec Algorithm</h1><p class="page-description">This blog post attempts to explain one of the important pretrained Word Embedding algorithms in NLP</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-05-03T00:00:00-05:00" itemprop="datePublished">
+        May 3, 2020
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Senthil Kumar</span></span>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      11 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/learn_by_blogging/categories/#Word2Vec">Word2Vec</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_notebooks/2020-05-03-Pretrained_Word_Embeddings.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/senthilkumarm1901/learn_by_blogging/master?filepath=_notebooks%2F2020-05-03-Pretrained_Word_Embeddings.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/senthilkumarm1901/learn_by_blogging/blob/master/_notebooks/2020-05-03-Pretrained_Word_Embeddings.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsenthilkumarm1901%2Flearn_by_blogging%2Fblob%2Fmaster%2F_notebooks%2F2020-05-03-Pretrained_Word_Embeddings.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#1.-The-Precursor-Language-Models-to-Word2Vec">1. The Precursor Language Models to Word2Vec </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#1A.-The-Counting-based-Bigram-Language-Model">1A. The Counting based Bigram Language Model </a></li>
+<li class="toc-entry toc-h3"><a href="#1B.-Evolution-of-Word2Vec-from-Context-Predicting-based-Language-Models">1B. Evolution of Word2Vec from Context Predicting based Language Models </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#How-Word2Vec-Evolved-from-Logistic-Bigram-Language-Model">How Word2Vec Evolved from Logistic Bigram Language Model </a></li>
+<li class="toc-entry toc-h4"><a href="#A.-Simpler-(Linear)-Logistic-Bigram-Model">A. Simpler (Linear) Logistic Bigram Model </a></li>
+<li class="toc-entry toc-h4"><a href="#B.-Feed-Forward-Neural-Network-Bigram-Model">B. Feed Forward Neural Network Bigram Model </a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#2.-Theory-of-Word2Vec">2. Theory of Word2Vec </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#2A.-What-are-the-two-types-of-Word2Vec-Models?">2A. What are the two types of Word2Vec Models? </a>
+<ul>
+<li class="toc-entry toc-h5"><a href="#1.-Continuous-Bag-of-Words:">1. Continuous Bag of Words: </a></li>
+<li class="toc-entry toc-h5"><a href="#How-CBOW-works?">How CBOW works? </a></li>
+<li class="toc-entry toc-h5"><a href="#2.-Skipgram:">2. Skipgram: </a></li>
+<li class="toc-entry toc-h5"><a href="#How-Skip-Gram-works?">How Skip Gram works? </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#2B.-How-is-Word2Vec-training-optimized-(objective-function-and-optimization-methods)?">2B. How is Word2Vec training optimized (objective function and optimization methods)? </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Why-ordinary-softmax-could-be-problematic?">Why ordinary softmax could be problematic? </a></li>
+<li class="toc-entry toc-h4"><a href="#Hierarchical-Softmax">Hierarchical Softmax </a></li>
+<li class="toc-entry toc-h4"><a href="#Negative-Sampling">Negative Sampling </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#2D.-How-Word2vec-was-implemented?">2D. How Word2vec was implemented? </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#3.-Applications-of-Word2Vec">3. Applications of Word2Vec </a></li>
+<li class="toc-entry toc-h2"><a href="#4.-Conclusion">4. Conclusion </a></li>
+<li class="toc-entry toc-h2"><a href="#5.-References-and-Useful-Links">5. References and Useful Links </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-05-03-Pretrained_Word_Embeddings.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.-The-Precursor-Language-Models-to-Word2Vec">
+<a class="anchor" href="#1.-The-Precursor-Language-Models-to-Word2Vec" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. The Precursor Language Models to Word2Vec<a class="anchor-link" href="#1.-The-Precursor-Language-Models-to-Word2Vec"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="1A.-The-Counting-based-Bigram-Language-Model">
+<a class="anchor" href="#1A.-The-Counting-based-Bigram-Language-Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>1A. The Counting based Bigram Language Model<a class="anchor-link" href="#1A.-The-Counting-based-Bigram-Language-Model"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Sample Corpus</strong>: <br></p>
+<blockquote>
+<p>This is <strong>the house</strong> that Jack built.<br>
+This is <strong>the</strong> malt<br>
+That lay in <strong>the house</strong> that Jack built.<br>
+This is <strong>the</strong> rat,<br>
+That ate <strong>the</strong> malt<br>
+That lay in <strong>the house</strong> that Jack built.<br>
+This is <strong>the</strong> cat,<br>
+That killed <strong>the</strong> rat,<br>
+That ate <strong>the</strong> malt<br>
+That lay in <strong>the house</strong> that Jack built.<br></p>
+</blockquote>
+<p>What is the probability of <strong>house</strong> occurring given <strong>the</strong> before it?</p>
+<p>Intuitively, we count,</p>
+<p>
+$$ Prob \ ({ house \over the }) = { Count \ ( the \ house ) \over Count \ (the) } $$
+</p>
+<p>Mathematically, the above formula can be writen as $$ P({ B \over A }) = { P( A, \ B ) \over \ P(B) } $$</p>
+<p>What we have computed above is a <strong>Bigram Language Model</strong>:$$ Bigram \ Model : { p ( W_t|W_{t-1} ) } $$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you want to read more about Count-based Language Models, refer <a href="https://senthilkumarm1901.github.io/learn_by_blogging/markov_langugage_model/log_probability/perplexity/2020/03/17/Introduction_to_Statistical_Language_Modeling.html">here</a></p>
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="1B.-Evolution-of-Word2Vec-from-Context-Predicting-based-Language-Models">
+<a class="anchor" href="#1B.-Evolution-of-Word2Vec-from-Context-Predicting-based-Language-Models" aria-hidden="true"><span class="octicon octicon-link"></span></a>1B. Evolution of Word2Vec from Context Predicting based Language Models<a class="anchor-link" href="#1B.-Evolution-of-Word2Vec-from-Context-Predicting-based-Language-Models"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="How-Word2Vec-Evolved-from-Logistic-Bigram-Language-Model">
+<a class="anchor" href="#How-Word2Vec-Evolved-from-Logistic-Bigram-Language-Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>How Word2Vec Evolved from Logistic Bigram Language Model<a class="anchor-link" href="#How-Word2Vec-Evolved-from-Logistic-Bigram-Language-Model"> </a>
+</h4>
+<p><img src="/learn_by_blogging/images/copied_from_nb/transfer_learning_evolution/context_prediction_based_language_models.png" alt=""></p>
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="A.-Simpler-(Linear)-Logistic-Bigram-Model">
+<a class="anchor" href="#A.-Simpler-(Linear)-Logistic-Bigram-Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>A. Simpler (Linear) Logistic Bigram Model<a class="anchor-link" href="#A.-Simpler-(Linear)-Logistic-Bigram-Model"> </a>
+</h4>
+<p><img src="/learn_by_blogging/images/copied_from_nb/word_embeddings/simpler_LR_bigram_model.png" alt=""></p>
+<p><strong>Forward Propagation</strong>:</p>
+<ul>
+<li>
+<p>If x is the current word vector and y is the vector of next word, <br></p>
+<ul>
+<li>
+<p>Prob of y being the next word given the current word is  is given by 
+$$ y' = p(y \ | x) \ = \ softmax(W^Tx + B) $$</p>
+<p>$$ y' = p(y=j |x) \ =  \over \sum \limits_{k=1}^K {e^{(w_k^T x + b_k)}}} $$
+$$ Where\ j\ is\ one\ of\ the\ output\ words\ from\ a\ vocabulary\ size\ of\ K\ words $$</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Cost Function Equation</strong>:</p>
+<ul>
+<li>How do we optimize W by finding gradient descent on the cost function $J$ $ \delta J $ </li>
+<li>The typical cost function over all N samples and K vocabulary features is </li>
+</ul>
+<p>
+$$ J = {{- 1 \over N } \sum \limits_{n=1}^N \sum \limits_{k=1}^K y_{n,k} \log {p(y_{n,k} | x_n)}} $$
+</p>
+<ul>
+<li>The cost function in our case is</li>
+</ul>
+<p>
+$$ J = {{- 1 \over K } \sum \limits_{k1=1}^K \sum \limits_{k2=1}^K y_{k1,k2} \log {y'_{k1,k2}}} $$
+</p>
+<p>
+$$ J = {{- 1 \over K } \sum \limits_{k1=1}^K \sum \limits_{k2=1}^K y_{k1,k2} \log {p(y_{k1,k2} | x_{k1})}} $$
+
+(since number of output class is same as the number of input words in a bigram language model)</p>
+<p><strong>Computing Gradient Descent on the Cost Function</strong>:</p>
+<ul>
+<li>Step 1: <strong>Initalizing parameters to learn with Random Weights</strong>:  Initialize W to random weights of size K x K (where K is the vocab size) and B to random weights of size K x 1</li>
+<li>Step 2: <strong>Compute gradient</strong> (a.k.a partial derivative) on $ J $ w.r.t W and B </li>
+<li>Step 3: <strong>Perform Gradient Descent</strong> Update W based on $ \delta J $ as <ul>
+<li>$ W = W - \eta \ \delta_W J $ </li>
+<li>$ B = B - \eta \ \delta_B J $
+where $\eta$ is the learning rate</li>
+</ul>
+</li>
+<li>Repeat steps 1, 2, and 3 for an entire round of data, then one <code>epoch</code> of training is over. For every minibatch there is only a small shift in the weights. The size of the shifting of weights is determined by learning_rate parameter</li>
+</ul>
+<p><strong>Model Training Process</strong>:</p>
+<ul>
+<li>While loss_curve not stagnating or <code>X</code> number of epochs are not over:<ul>
+<li>Repeat steps 1, 2, and 3 </li>
+</ul>
+</li>
+<li>Final <code>W</code> and <code>B</code> weights are used for model inferencing in the $ y' = p(y \ | x) \ = \ softmax(W^Tx + B) $</li>
+</ul>
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="B.-Feed-Forward-Neural-Network-Bigram-Model">
+<a class="anchor" href="#B.-Feed-Forward-Neural-Network-Bigram-Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>B. Feed Forward Neural Network Bigram Model<a class="anchor-link" href="#B.-Feed-Forward-Neural-Network-Bigram-Model"> </a>
+</h4>
+<p>A Typical Logistic Regression based Model: <br>
+    $$ p(y|x) = softmax(W^T\ x) $$</p>
+<p>A Neural Network based Model: <br>
+    $$ h = tanh(W_1^T\ x)$$ 
+    $$ p(y|x) = softmax(W_2^T\ h) $$</p>
+<p>A Neural Network Bigram Model: <br>
+    $$ p(x_{t+1} | x_t) = softmax(W_2^T tanh(W_1^T x_t)) $$
+    <br>
+    $$ Where\ x_t\ and\ x_{t+1} are words at positions t and t+1 $$
+    <br>
+    $$ Where\ W_1\ is\ of\ dimension\ K\ X\ D\ and\ W_2\ is\ of\ dimension\ D\ X\ K\ $$
+    <br>
+    $$ Where\ K\ is\ the\ vocabulary\ size$$
+    $$ Where D\ is\ the\ number\ of\ neurons\ in\ the\ hidden\ layer\$$</p>
+<p>The Cost Function and Model Training are similar to <strong>Logistic Bigram Model</strong></p>
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="2.-Theory-of-Word2Vec">
+<a class="anchor" href="#2.-Theory-of-Word2Vec" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Theory of Word2Vec<a class="anchor-link" href="#2.-Theory-of-Word2Vec"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="2A.-What-are-the-two-types-of-Word2Vec-Models?">
+<a class="anchor" href="#2A.-What-are-the-two-types-of-Word2Vec-Models?" aria-hidden="true"><span class="octicon octicon-link"></span></a>2A. What are the two types of Word2Vec Models?<a class="anchor-link" href="#2A.-What-are-the-two-types-of-Word2Vec-Models?"> </a>
+</h3>
+<h5 id="1.-Continuous-Bag-of-Words:">
+<a class="anchor" href="#1.-Continuous-Bag-of-Words:" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Continuous Bag of Words:<a class="anchor-link" href="#1.-Continuous-Bag-of-Words:"> </a>
+</h5>
+<ul>
+<li>Predict focus word given bag-of-words context<ul>
+<li>E.g. The quick brown fox jumps over the lazy dog<ul>
+<li>current_slide_position = 4</li>
+<li>focus_word = sentence.split()[4] = "jumps"</li>
+<li>context_window_size = 2 (one of the hyperparameters)</li>
+<li>context_words = sentence.split()[4-2:4] + sentence.split()[4:4+2] = [brown, fox, over, the] </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/learn_by_blogging/images/copied_from_nb/word_embeddings/continuous_bow.png" alt=""></p>
+
+<pre><code>- Training Data:
+    - p(jumps | brown), p(jumps | fox), p(jumps | over), p(jumps|the)</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="How-CBOW-works?">
+<a class="anchor" href="#How-CBOW-works?" aria-hidden="true"><span class="octicon octicon-link"></span></a>How CBOW works?<a class="anchor-link" href="#How-CBOW-works?"> </a>
+</h5>
+<ul>
+<li>Context size is one of the hyper paramaters of Word2Vec</li>
+<li>Usual size: 5-10 words. We can widen the context words by dropping stop words like "the"</li>
+</ul>
+<p><strong>Forward Propagation</strong>:</p>
+<ul>
+<li>Step 1: Find the mean ofthe input word vectors
+<pre><code>- Compute the dot product of  Weight matrix $W_1$ with each of the context word vector $c$ and then average the resulting word embeddings
+- Since we compute mean, the order of the context words does not influence the prediction (hence the bag-of-words name)</code></pre>
+</li>
+</ul>
+<p>
+$$ h = {{1 \over \vert{C}\vert} {\sum \limits_{c \epsilon C} W_1^T c}}$$
+
+
+$$ Where\ h\ is\ the\ mean\ of\ the\ input\ context\ word\ embeddings $$
+</p>
+<p>
+$$ Where\ C\ is\ the\ no.\ of\ Context\ Words $$
+</p>
+<p>
+$$ Where\ c\ is\ the\ one-hot\ encoded\ vector\ of\ every\ input\ context\ word$$
+
+<br></p>
+<ul>
+<li>Step 2: Get the output prediction
+<pre><code>- Multiply the mean word embeding $h$ by the second weight matrix $W_2$ and then do `softmax` on the product 
+- The above operations gives the predicted probability of output word given all the context words</code></pre>
+</li>
+</ul>
+<p>
+$$ p(y | C) = softmax(W_2^T h) $$
+</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Key learnings from the above CBoW Equations</strong>:</p>
+<ul>
+<li>Word2Vec is a linear model (there is no activation function like tanh)</li>
+<li>To be specific, Word2Vec is a log-linear model</li>
+<li>Since Word2Vec is linear
+<pre><code>- the training is faster than a typical NN because backpropagation through linear layer is faster than through a non-linear layer</code></pre>
+</li>
+</ul>
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="2.-Skipgram:">
+<a class="anchor" href="#2.-Skipgram:" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Skipgram:<a class="anchor-link" href="#2.-Skipgram:"> </a>
+</h5>
+<ul>
+<li>
+<p>Predict context words given the focus word</p>
+<ul>
+<li>E.g. The quick brown fox jumps over the lazy dog<ul>
+<li>current_slide_position = 4</li>
+<li>focus_word = sentence.split()[4] = "jumps"</li>
+<li>context_window_size = 2 (one of the hyperparameters)</li>
+<li>context_words = sentence.split()[4-2:4] + sentence.split()[4:4+2] = [brown, fox, over, the] </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Skip Gram is a like a bigram where we skip a few word positions</strong>
+<img src="/learn_by_blogging/images/copied_from_nb/word_embeddings/skip_gram.png" alt="">
+Image Source: NLP Udemy Course by Lazy Programmer</p>
+
+<pre><code>- Training Data:
+    - p(brown | jumps), p(fox|jumps), p(over|jumps), p(the|jumps)</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="How-Skip-Gram-works?">
+<a class="anchor" href="#How-Skip-Gram-works?" aria-hidden="true"><span class="octicon octicon-link"></span></a>How Skip Gram works?<a class="anchor-link" href="#How-Skip-Gram-works?"> </a>
+</h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Forward Propagation:</strong></p>
+<p>
+$$ h = W_1^T\ input\_focus\_word $$
+</p>
+<p>
+$$ p(y|input\_focus\_word) = softmax(W_2^T\ h) $$
+</p>
+<p><em>Where input_focus_word = one-hot encoding of the input focus word</em></p>
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="2B.-How-is-Word2Vec-training-optimized-(objective-function-and-optimization-methods)?">
+<a class="anchor" href="#2B.-How-is-Word2Vec-training-optimized-(objective-function-and-optimization-methods)?" aria-hidden="true"><span class="octicon octicon-link"></span></a>2B. How is Word2Vec training optimized (objective function and optimization methods)?<a class="anchor-link" href="#2B.-How-is-Word2Vec-training-optimized-(objective-function-and-optimization-methods)?"> </a>
+</h3>
+<h4 id="Why-ordinary-softmax-could-be-problematic?">
+<a class="anchor" href="#Why-ordinary-softmax-could-be-problematic?" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why ordinary softmax could be problematic?<a class="anchor-link" href="#Why-ordinary-softmax-could-be-problematic?"> </a>
+</h4>
+<p>K = Vocab Size = No. of Output Classes</p>
+<p>Suppose a large dataset has 100,000 unique tokens as K</p>
+<ul>
+<li>Large number of output classes - affect accuracy</li>
+<li>P(output_word|focus_word) = 1/ 100,000 = 99.99999% chance of failure</li>
+<li>Order of complexity of softmax calculation is $O(K)$</li>
+</ul>
+<p>
+$$ p(y=j |x) \ = {{e^{(w_j^T+ b_j)}} \over \sum \limits_{k=1}^K {e^{(w_k^T x + b_k)}}} $$
+</p>
+<hr>
+
+<h4 id="Hierarchical-Softmax">
+<a class="anchor" href="#Hierarchical-Softmax" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hierarchical Softmax<a class="anchor-link" href="#Hierarchical-Softmax"> </a>
+</h4>
+<ul>
+<li>An approximation to the normal softmax.</li>
+<li>It uses a binary tree method to find the probability of a word being the output word</li>
+<li>Reduces the number of classes in the denominator</li>
+<li>Reduces the complexity from $O(K)$ to $O(\log_2 K)$</li>
+</ul>
+<p><img src="/learn_by_blogging/images/copied_from_nb/word_embeddings/hierarchical_softmax_binary_tree.png" alt="">
+Source: <a href="https://www.oreilly.com/library/view/python-natural-language/9781787121423/a63263c0-bd79-4c15-88d0-8898186e03a5.xhtml">Oreilly Link</a></p>
+<p><strong>Key points</strong>:</p>
+<p>The error is propagated backwards to only those nodes that are activated at the time of prediction</p>
+<ul>
+<li>To train the model, our goal is still to minimize the negative log Likelihood (since this also a softmax). </li>
+<li>But instead of updating all output vectors per word, we update the vectors of the nodes in the binary tree that are in the path from root to leaf node.</li>
+<li>"Huffman coding" is used to construct this binary tree. <ul>
+<li>Frequent words are closer to the top</li>
+<li>Infrequent words are closer to the bottom</li>
+</ul>
+</li>
+</ul>
+<hr>
+
+<h4 id="Negative-Sampling">
+<a class="anchor" href="#Negative-Sampling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Negative Sampling<a class="anchor-link" href="#Negative-Sampling"> </a>
+</h4>
+<ul>
+<li>
+<p>The basic idea is to convert a multinomial classification problem (as it is the problem of predicting the next word) to a binary classification problem.</p>
+</li>
+<li>
+<p>That is, instead of using softmax to estimate a true probability distribution of the output word, a binary logistic regression is used instead</p>
+</li>
+</ul>
+<p><strong>Usual Softmax</strong></p>
+<p><img src="/learn_by_blogging/images/copied_from_nb/word_embeddings/usual_softmax.png" alt=""></p>
+<p><strong>Negative Sampling Softmax</strong></p>
+<p><img src="/learn_by_blogging/images/copied_from_nb/word_embeddings/negative_sampling_softmax.png" alt=""></p>
+<ul>
+<li>For each training sample, the classifier is fed 
+<pre><code>- a true pair (a center word and another word that appears in its context) and 
+- a number of k randomly corrupted pairs (consisting of the center word and a randomly chosen word from the vocabulary)</code></pre>
+</li>
+<li>
+<p>By learning to distinguish the true pairs from corrupted ones, the classifier will ultimately learn the word vectors.</p>
+</li>
+<li>
+<p>This is important: instead of predicting the next word (the "standard" training technique), the optimized classifier simply predicts whether a pair of words is good or bad (which makes this a binary classification problem)</p>
+</li>
+</ul>
+<p>A model is trained to predict whether the output word is a correct or corrupt one. ?
+<br></p>
+<ul>
+<li>Hyperparameter in Word2Vec w.r.t Negative Sampling: Number of Negative samples<ul>
+<li>Original Word2Vec paper suggests using 5-20 negative sampling words for smaller datasets, and 2-5 for large datasets </li>
+</ul>
+</li>
+</ul>
+<p>Source: Advanced NLP Udemy Course by Lazy Programmer</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="2D.-How-Word2vec-was-implemented?">
+<a class="anchor" href="#2D.-How-Word2vec-was-implemented?" aria-hidden="true"><span class="octicon octicon-link"></span></a>2D. How Word2vec was implemented?<a class="anchor-link" href="#2D.-How-Word2vec-was-implemented?"> </a>
+</h3>
+<p><strong>1. There is a twist in the way negative sampling logic was implemented</strong></p>
+<p><strong>Expected Method</strong> <br> 
+Ex. "The quick brown fox jumps over the lazy dog." <br></p>
+<ul>
+<li>Word2Vec Model Type: Skipgram</li>
+<li>Focus Word (input): jumps</li>
+<li>Context Words (correct output/positive samples): brown, fox, over, the</li>
+<li>Negative Samples (corrupted outputs/ negative samples): apple, orange, london, ship</li>
+</ul>
+<p><strong>Actual Method</strong> <br></p>
+<p>Ex. "The quick brown fox jumps over the lazy dog." <br>
+Negative sentence = "The quick brown fox lighthouse over the lazy dog."</p>
+<ul>
+<li>Word2Vec Model Type: Skipgram</li>
+<li>Focus Word (positive input): jumps</li>
+<li>Negative input: lighthouse</li>
+<li>Context Words (correct output/ positive samples): Predicting <code>brown</code>, <code>fox</code>, <code>over</code> or <code>the</code> given <code>jumps</code>
+</li>
+<li>Context Words (corrupted outputs/ positive samples): Predicting <code>brown</code>, <code>fox</code>, <code>over</code> or <code>the</code> given <code>lighthouse</code>
+</li>
+</ul>
+<hr>
+
+<p><strong>2. Dropping high frequency words increases context window</strong></p>
+<p>Ex. "The quick brown fox jumps over the lazy dog." <br>
+New sentence = "quick brown fox jumps lazy dog."</p>
+<hr>
+
+<p><strong>3. Decaying Learning Rate</strong></p>
+<ul>
+<li>Decay the learning rate from max to min</li>
+</ul>
+<hr>
+
+<p><strong>4. Typical Hyper Parameters used in Word2Vec Training</strong></p>
+<ul>
+<li>no_of_epochs = 20</li>
+<li>context_window_size = 5</li>
+<li>Learning Rate
+<pre><code>- starting_learning_rate = 0.025 
+- final_learning_rate = 0.0001
+- (automatic calculation of learning rate decay above two values)</code></pre>
+</li>
+<li>Hidden Dimension = Word2Vec Embedding Size = 300</li>
+</ul>
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.-Applications-of-Word2Vec">
+<a class="anchor" href="#3.-Applications-of-Word2Vec" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Applications of Word2Vec<a class="anchor-link" href="#3.-Applications-of-Word2Vec"> </a>
+</h2>
+<ul>
+<li>Word2Vec is used to <strong>measure similarity</strong> between 2 documents</li>
+<li>Pre-trained Word2Vec or Custom-trained Word2Vec bettered <strong>Text Classification</strong> results (compared to ones with bag-of-words apporach)</li>
+<li>Word2Vec as a way to augment text data | <a href="https://www.kaggle.com/code/theoviel/using-word-embeddings-for-data-augmentation/notebook">link</a>
+</li>
+<li>Word2Vec Coherence Score Computation for Topic Modeling</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="n">overall_coherence_score</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">For</span> <span class="n">each_topic</span> <span class="ow">in</span> <span class="n">topics</span><span class="p">:</span>
+  <span class="n">Coherence_score_for_this_topic</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">do</span><span class="p">(</span><span class="n">Each</span> <span class="n">of</span> <span class="n">the</span> <span class="mi">20</span> <span class="n">topics</span> <span class="n">consists</span> <span class="n">of</span>  <span class="n">probability</span> <span class="n">simplex</span> <span class="n">of</span> <span class="n">words</span><span class="p">)</span>
+  <span class="n">do</span><span class="p">(</span><span class="n">Select</span> <span class="n">the</span> <span class="n">top</span> <span class="mi">10</span> <span class="n">highly</span> <span class="n">problems</span> <span class="ow">in</span> <span class="n">each</span> <span class="n">topic</span><span class="p">)</span>
+  <span class="n">do</span><span class="p">(</span><span class="n">Take</span> <span class="mi">2</span> <span class="n">out</span> <span class="n">of</span> <span class="n">the</span> <span class="n">top</span> <span class="mi">10</span> <span class="n">words</span><span class="p">):</span>
+    <span class="n">Coherence_score_for_this_topic</span> <span class="o">=</span> <span class="n">Coherence_score_for_this_topic</span> <span class="o">+</span> 
+                                      <span class="n">pre</span><span class="o">-</span><span class="n">trained_W2V_embedding_based_similarity</span><span class="p">(</span><span class="n">word1</span><span class="p">,</span><span class="n">word2</span><span class="p">)</span>
+  <span class="n">overall_coherence_score</span> <span class="o">=</span> <span class="n">Overall_coherence_score</span> <span class="o">+</span> <span class="n">Coherence_score_for_this_topic</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4.-Conclusion">
+<a class="anchor" href="#4.-Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. Conclusion<a class="anchor-link" href="#4.-Conclusion"> </a>
+</h2>
+<ul>
+<li>Your choice of Word2Vec model depends on the below rationale<ul>
+<li>
+<strong>Skip-gram</strong>: Works well with small amount of the training data, represents well even rare words or phrases.</li>
+<li>
+<strong>CBOW</strong>: Several times faster to train than the skip-gram, slightly better accuracy for the frequent words.</li>
+</ul>
+</li>
+</ul>
+<hr>
+
+<ul>
+<li>What made <code>Word2Vec</code> popular?
+<pre><code>- `Word2Vec` was the first scalable model that generated word embeddings for large corpus (millions of unique words). 
+- One of the first useful Transfer Learning embedding that improved accuracy of Text Classification (compared to bag of words approaches)</code></pre>
+</li>
+<li>What are the competing pre-trained embeddings? 
+<pre><code>- `GloVe` - a Word Embedding algorithm trained using word co-occurrences - achieved similar results as Word2Vec but with less training time. However, memory foot-print needd to store co-occurrence matrix made it disadvantageous for large corpuses
+- Both `Word2Vec` and `GloVe` did not handle **out of vocabulary (OOV)** cases. All OOV words were given the same embedding. 
+- `FastText` - an algorithm very similar to `Word2Vec` but at character level - solved the OOV issue to some extent. This is possible because FastText aggregates embeddings of individual ngrams of the word. There are more chances of presence of ngrams of a word than the whole word. </code></pre>
+</li>
+</ul>
+<hr>
+
+<ul>
+<li>The need for more contextualized embeddings: 
+<pre><code>- Polysemy is not captured. E.g.: "cell" could be "biological cell", "prison cell" or "phone"
+- All above 3 algorithms sufferred with respect to polysemy. The contextualized embeddings from ELMo, ULMFiT and transformer models since BERT solved the polysemy problem better</code></pre>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5.-References-and-Useful-Links">
+<a class="anchor" href="#5.-References-and-Useful-Links" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. References and Useful Links<a class="anchor-link" href="#5.-References-and-Useful-Links"> </a>
+</h2>
+<ul>
+<li>Advanced NLP and Deep Learning Course in Udemy by Lazy Programmer | <a href="https://www.udemy.com/course/natural-language-processing-with-deep-learning-in-python/">link</a>
+</li>
+<li>Mathjax Cheatsheet | <a href="https://jojozhuang.github.io/tutorial/mathjax-cheat-sheet-for-mathematical-notation/">link</a>
+</li>
+<li>Efficient Estimation of Word Representations in Vector Space | <a href="https://arxiv.org/pdf/1301.3781.pdf">Paper</a>
+</li>
+</ul>
+<p>Glove (though not discussed here, in case you are interested to read theory of Glove):</p>
+<ul>
+<li><a href="http://www.foldl.me/2014/glove-python/">http://www.foldl.me/2014/glove-python/</a></li>
+<li><a href="http://nbviewer.jupyter.org/github/hans/glove.py/blob/master/demo/glove.py%20exploration.ipynb">http://nbviewer.jupyter.org/github/hans/glove.py/blob/master/demo/glove.py%20exploration.ipynb</a></li>
+<li><a href="https://gist.github.com/shagunsodhani/efea5a42d17e0fcf18374df8e3e4b3e8">https://gist.github.com/shagunsodhani/efea5a42d17e0fcf18374df8e3e4b3e8</a></li>
+<li>Good glove numpy implementation (implemented using adaptive gradient descent method): <a href="https://github.com/hans/glove.py">https://github.com/hans/glove.py</a>
+  <a href="https://github.com/hans/glove.py/blob/master/glove.py">https://github.com/hans/glove.py/blob/master/glove.py</a>
+  <a href="http://nbviewer.jupyter.org/github/hans/glove.py/blob/master/demo/glove.py%20exploration.ipynb">http://nbviewer.jupyter.org/github/hans/glove.py/blob/master/demo/glove.py%20exploration.ipynb</a>
+</li>
+<li>Glove implementation using Alternating Least Squares method:
+  <a href="https://github.com/lazyprogrammer/machine_learning_examples/blob/master/nlp_class2/glove.py">https://github.com/lazyprogrammer/machine_learning_examples/blob/master/nlp_class2/glove.py</a>
+</li>
+<li><a href="https://towardsdatascience.com/emnlp-what-is-glove-part-i-3b6ce6a7f970">https://towardsdatascience.com/emnlp-what-is-glove-part-i-3b6ce6a7f970</a></li>
+<li><a href="https://towardsdatascience.com/emnlp-what-is-glove-part-ii-9e5ad227ee0">https://towardsdatascience.com/emnlp-what-is-glove-part-ii-9e5ad227ee0</a></li>
+</ul>
+<p>Word2Vec:</p>
+<ul>
+<li>
+<a href="https://towardsdatascience.com/an-implementation-guide-to-word2vec-using-numpy-and-google-sheets-13445eebd281">https://towardsdatascience.com/an-implementation-guide-to-word2vec-using-numpy-and-google-sheets-13445eebd281</a> (part 1)</li>
+<li>
+<a href="http://mccormickml.com/2017/01/11/word2vec-tutorial-part-2-negative-sampling/">http://mccormickml.com/2017/01/11/word2vec-tutorial-part-2-negative-sampling/</a> (part 2)</li>
+<li>
+<a href="https://machinelearningmastery.com/develop-word-embeddings-python-gensim/">https://machinelearningmastery.com/develop-word-embeddings-python-gensim/</a> (practical)</li>
+</ul>
+<p>W2V implementations in Python</p>
+<ul>
+<li><a href="https://nathanrooy.github.io/posts/2018-03-22/word2vec-from-scratch-with-python-and-numpy/">https://nathanrooy.github.io/posts/2018-03-22/word2vec-from-scratch-with-python-and-numpy/</a></li>
+<li><a href="https://github.com/lazyprogrammer/machine_learning_examples/blob/master/nlp_class2/">https://github.com/lazyprogrammer/machine_learning_examples/blob/master/nlp_class2/</a></li>
+<li><a href="https://github.com/nathanrooy/word2vec-from-scratch-with-python/blob/master/word2vec.py">https://github.com/nathanrooy/word2vec-from-scratch-with-python/blob/master/word2vec.py</a></li>
+<li>
+<a href="https://www.tensorflow.org/tutorials/representation/word2vec">https://www.tensorflow.org/tutorials/representation/word2vec</a>
+  <a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/tutorials/word2vec/word2vec_basic.py">https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/tutorials/word2vec/word2vec_basic.py</a>
+  <a href="https://github.com/tensorflow/models/blob/master/tutorials/embedding/word2vec.py">https://github.com/tensorflow/models/blob/master/tutorials/embedding/word2vec.py</a>
+</li>
+</ul>
+<p>Comparison:</p>
+<ul>
+<li><a href="https://towardsdatascience.com/word-embedding-with-word2vec-and-fasttext-a209c1d3e12c">https://towardsdatascience.com/word-embedding-with-word2vec-and-fasttext-a209c1d3e12c</a></li>
+<li><a href="https://rare-technologies.com/wordrank-embedding-crowned-is-most-similar-to-king-not-word2vecs-canute/">https://rare-technologies.com/wordrank-embedding-crowned-is-most-similar-to-king-not-word2vecs-canute/</a></li>
+<li>
+<a href="https://github.com/parulsethi/gensim/blob/wordrank_wrapper/docs/notebooks/Wordrank_comparisons.ipynb">https://github.com/parulsethi/gensim/blob/wordrank_wrapper/docs/notebooks/Wordrank_comparisons.ipynb</a> (use brown corpus from nltk easy to download and compare)</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="senthilkumarm1901/learn_by_blogging"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/learn_by_blogging/word2vec/2020/05/03/Pretrained_Word_Embeddings.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/learn_by_blogging/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/learn_by_blogging/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/learn_by_blogging/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Hi I&#39;m Senthil Kumar. I am here to pen my learnings in Data Science and Coding</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/senthilkumarm1901" target="_blank" title="senthilkumarm1901"><svg class="svg-icon grey"><use xlink:href="/learn_by_blogging/assets/minima-social-icons.svg#github"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
