@@ -285,14 +285,12 @@ $$ Where\ j\ is\ one\ of\ the\ output\ words\ from\ a\ vocabulary\ size\ of\ K\ 
 </ul>
 <p><strong>Cost Function Equation</strong>:</p>
 <ul>
-<li>How do we optimize W by finding gradient descent on the cost function $J$ $ \delta J $ </li>
-<li>The typical cost function over all N samples and K vocabulary features is </li>
-</ul>
-<p>
-$$ J = {{- 1 \over N } \sum \limits_{n=1}^N \sum \limits_{k=1}^K y_{n,k} \log {p(y_{n,k} | x_n)}} $$
-</p>
-<ul>
-<li>The cost function in our case is</li>
+<li>
+<p>How do we optimize W by finding gradient descent on the cost function $J$ $ \delta J $</p>
+</li>
+<li>
+<p>The cost function in our case is</p>
+</li>
 </ul>
 <p>
 $$ J = {{- 1 \over K } \sum \limits_{k1=1}^K \sum \limits_{k2=1}^K y_{k1,k2} \log {y'_{k1,k2}}} $$
@@ -381,9 +379,9 @@ where $\eta$ is the learning rate</li>
 </li>
 </ul>
 <p><img src="/learn_by_blogging/images/copied_from_nb/word_embeddings/continuous_bow.png" alt=""></p>
-
-<pre><code>- Training Data:
-    - p(jumps | brown), p(jumps | fox), p(jumps | over), p(jumps|the)</code></pre>
+<ul>
+<li>Training Data: p(jumps | brown), p(jumps | fox), p(jumps | over), p(jumps|the)</li>
+</ul>
 
 </div>
 </div>
@@ -398,12 +396,11 @@ where $\eta$ is the learning rate</li>
 <li>Context size is one of the hyper paramaters of Word2Vec</li>
 <li>Usual size: 5-10 words. We can widen the context words by dropping stop words like "the"</li>
 </ul>
-<p><strong>Forward Propagation</strong>:</p>
+<p><strong>Forward Propagation</strong>: <br>
+Step 1: Find the mean of the input word vectors</p>
 <ul>
-<li>Step 1: Find the mean ofthe input word vectors
-<pre><code>- Compute the dot product of  Weight matrix $W_1$ with each of the context word vector $c$ and then average the resulting word embeddings
-- Since we compute mean, the order of the context words does not influence the prediction (hence the bag-of-words name)</code></pre>
-</li>
+<li>Compute the dot product of  Weight matrix $W_1$ with each of the context word vector $c$ and then average the resulting word embeddings</li>
+<li>Since we compute mean, the order of the context words does not influence the prediction (hence the bag-of-words name)</li>
 </ul>
 <p>
 $$ h = {{1 \over \vert{C}\vert} {\sum \limits_{c \epsilon C} W_1^T c}}$$
@@ -418,11 +415,10 @@ $$ Where\ C\ is\ the\ no.\ of\ Context\ Words $$
 $$ Where\ c\ is\ the\ one-hot\ encoded\ vector\ of\ every\ input\ context\ word$$
 
 <br></p>
+<p>Step 2: Get the output prediction</p>
 <ul>
-<li>Step 2: Get the output prediction
-<pre><code>- Multiply the mean word embeding $h$ by the second weight matrix $W_2$ and then do `softmax` on the product 
-- The above operations gives the predicted probability of output word given all the context words</code></pre>
-</li>
+<li>Multiply the mean word embeding $h$ by the second weight matrix $W_2$ and then do <code>softmax</code> on the product </li>
+<li>The above operations gives the predicted probability of output word given all the context words</li>
 </ul>
 <p>
 $$ p(y | C) = softmax(W_2^T h) $$
@@ -438,9 +434,7 @@ $$ p(y | C) = softmax(W_2^T h) $$
 <ul>
 <li>Word2Vec is a linear model (there is no activation function like tanh)</li>
 <li>To be specific, Word2Vec is a log-linear model</li>
-<li>Since Word2Vec is linear
-<pre><code>- the training is faster than a typical NN because backpropagation through linear layer is faster than through a non-linear layer</code></pre>
-</li>
+<li>Since Word2Vec is linear, the training is faster than a typical NN because backpropagation through linear layer is faster than through a non-linear layer</li>
 </ul>
 <hr>
 </div>
@@ -469,9 +463,9 @@ $$ p(y | C) = softmax(W_2^T h) $$
 <p><strong>Skip Gram is a like a bigram where we skip a few word positions</strong>
 <img src="/learn_by_blogging/images/copied_from_nb/word_embeddings/skip_gram.png" alt="">
 Image Source: NLP Udemy Course by Lazy Programmer</p>
-
-<pre><code>- Training Data:
-    - p(brown | jumps), p(fox|jumps), p(over|jumps), p(the|jumps)</code></pre>
+<ul>
+<li>Training Data: p(brown | jumps), p(fox|jumps), p(over|jumps), p(the|jumps)</li>
+</ul>
 
 </div>
 </div>
@@ -560,17 +554,14 @@ Source: <a href="https://www.oreilly.com/library/view/python-natural-language/97
 <p><img src="/learn_by_blogging/images/copied_from_nb/word_embeddings/usual_softmax.png" alt=""></p>
 <p><strong>Negative Sampling Softmax</strong></p>
 <p><img src="/learn_by_blogging/images/copied_from_nb/word_embeddings/negative_sampling_softmax.png" alt=""></p>
+<p>For each training sample, the classifier is fed</p>
 <ul>
-<li>For each training sample, the classifier is fed 
-<pre><code>- a true pair (a center word and another word that appears in its context) and 
-- a number of k randomly corrupted pairs (consisting of the center word and a randomly chosen word from the vocabulary)</code></pre>
-</li>
-<li>
+<li>a true pair (a center word and another word that appears in its context) and </li>
+<li>a number of k randomly corrupted pairs (consisting of the center word and a randomly chosen word from the vocabulary)</li>
+</ul>
 <p>By learning to distinguish the true pairs from corrupted ones, the classifier will ultimately learn the word vectors.</p>
-</li>
-<li>
-<p>This is important: instead of predicting the next word (the "standard" training technique), the optimized classifier simply predicts whether a pair of words is good or bad (which makes this a binary classification problem)</p>
-</li>
+<ul>
+<li>This is important: instead of predicting the next word (the "standard" training technique), the optimized classifier simply predicts whether a pair of words is good or bad (which makes this a binary classification problem)</li>
 </ul>
 <p>A model is trained to predict whether the output word is a correct or corrupt one. ?
 <br></p>
@@ -581,7 +572,7 @@ Source: <a href="https://www.oreilly.com/library/view/python-natural-language/97
 </li>
 </ul>
 <p>Source: Advanced NLP Udemy Course by Lazy Programmer</p>
-
+<hr>
 </div>
 </div>
 </div>
@@ -629,12 +620,10 @@ New sentence = "quick brown fox jumps lazy dog."</p>
 <ul>
 <li>no_of_epochs = 20</li>
 <li>context_window_size = 5</li>
-<li>Learning Rate
-<pre><code>- starting_learning_rate = 0.025 
-- final_learning_rate = 0.0001
-- (automatic calculation of learning rate decay above two values)</code></pre>
-</li>
-<li>Hidden Dimension = Word2Vec Embedding Size = 300</li>
+<li>starting_learning_rate = 0.025 </li>
+<li>final_learning_rate = 0.0001</li>
+<li>(automatic calculation of learning rate decay above two values)</li>
+<li>Hidden layer dimension size = Word2Vec Embedding Size = 300</li>
 </ul>
 <hr>
 </div>
@@ -663,7 +652,7 @@ New sentence = "quick brown fox jumps lazy dog."</p>
                                       <span class="n">pre</span><span class="o">-</span><span class="n">trained_W2V_embedding_based_similarity</span><span class="p">(</span><span class="n">word1</span><span class="p">,</span><span class="n">word2</span><span class="p">)</span>
   <span class="n">overall_coherence_score</span> <span class="o">=</span> <span class="n">Overall_coherence_score</span> <span class="o">+</span> <span class="n">Coherence_score_for_this_topic</span>
 </pre></div>
-
+<hr>
 </div>
 </div>
 </div>
@@ -703,7 +692,7 @@ New sentence = "quick brown fox jumps lazy dog."</p>
 - All above 3 algorithms sufferred with respect to polysemy. The contextualized embeddings from ELMo, ULMFiT and transformer models since BERT solved the polysemy problem better</code></pre>
 </li>
 </ul>
-
+<hr>
 </div>
 </div>
 </div>
