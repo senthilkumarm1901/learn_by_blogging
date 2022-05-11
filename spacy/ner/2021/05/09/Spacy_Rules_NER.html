@@ -100,7 +100,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      7 min read
+      8 min read
     
 </span></p>
 
@@ -764,30 +764,9 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
                                      <span class="s2">"phone_nlp_rules"</span><span class="p">,</span> <span class="c1"># give a name to the pipe</span>
                                      <span class="n">config</span><span class="o">=</span><span class="n">rules_config</span><span class="p">)</span>
 <span class="n">phone_nlp_rules</span><span class="o">.</span><span class="n">add_patterns</span><span class="p">(</span><span class="n">loaded_spacy_patterns</span><span class="p">)</span> <span class="c1"># load patterns to the `phone_nlp_rules` pipe of `phone_nlp` model</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe_names</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"What are the entities tracked in phone_nlp_rules"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe_labels</span><span class="p">[</span><span class="s1">'phone_nlp_rules'</span><span class="p">])</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules']
-
-What are the entities tracked in phone_nlp_rules
-['PHONE']
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -819,6 +798,8 @@ What are the entities tracked in phone_nlp_rules
                <span class="s2">"9019854567"</span>
               <span class="p">]</span>
 
+
+
 <span class="n">sample_phone_sentences</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"If you want to talk more. Reach me at </span><span class="si">{</span><span class="n">each</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">phones_list</span><span class="p">]</span>
 <span class="n">sample_phone_sentences</span>
 </pre></div>
@@ -836,10 +817,7 @@ What are the entities tracked in phone_nlp_rules
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>['If you want to talk more. Reach me at +1 (901)-985-4567',
- 'If you want to talk more. Reach me at +1(901)-985-4567',
- 'If you want to talk more. Reach me at (901) 985 4567',
- 'If you want to talk more. Reach me at 9019854567']</pre>
+<pre>['If you want to talk more. Reach me at +1 (901)-985-4567', 'If you want to talk more. Reach me at +1(901)-985-4567', 'If you want to talk more. Reach me at (901) 985 4567', 'If you want to talk more. Reach me at 9019854567']</pre>
 </div>
 
 </div>
@@ -869,7 +847,6 @@ What are the entities tracked in phone_nlp_rules
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m"</span><span class="p">)</span>
     <span class="n">displacy</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span>
                     <span class="n">style</span><span class="o">=</span><span class="s1">'ent'</span><span class="p">,</span>
-    
                    <span class="p">)</span>
 </pre></div>
 
@@ -1001,19 +978,74 @@ What are the entities tracked in phone_nlp_rules
 <span class="kn">from</span> <span class="nn">spacy</span> <span class="kn">import</span> <span class="n">Language</span>
 <span class="kn">from</span> <span class="nn">spacy.tokens</span> <span class="kn">import</span> <span class="n">Span</span>
 
+<span class="k">def</span> <span class="nf">load_entity_ruler_based_phone_pattern</span><span class="p">(</span><span class="n">location_spacy_json</span><span class="p">):</span>
+    <span class="n">loaded_spacy_patterns</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">location_spacy_json</span><span class="p">,</span><span class="s1">'r'</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">))</span>
+    <span class="n">phone_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'en_core_web_sm'</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">'ner'</span><span class="p">])</span>
+    <span class="n">rules_config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"validate"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"overwrite_ents"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">phone_nlp_rules</span> <span class="o">=</span> <span class="n">phone_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"entity_ruler"</span><span class="p">,</span> <span class="c1"># invoke entity_ruler pipe </span>
+                                         <span class="s2">"phone_nlp_rules"</span><span class="p">,</span> <span class="c1"># give a name to the pipe</span>
+                                         <span class="n">config</span><span class="o">=</span><span class="n">rules_config</span><span class="p">)</span>
+    <span class="n">phone_nlp_rules</span><span class="o">.</span><span class="n">add_patterns</span><span class="p">(</span><span class="n">loaded_spacy_patterns</span><span class="p">)</span> <span class="c1"># load patterns to the `phone_nlp_rules` pipe of `phone_nlp` model</span>
+    <span class="k">return</span> <span class="n">phone_nlp</span>
+       
+<span class="n">location_spacy_json</span> <span class="o">=</span> <span class="s1">'spacy_rules_ner/phone_patterns.json'</span>
+
+<span class="n">phone_nlp</span> <span class="o">=</span> <span class="n">load_entity_ruler_based_phone_pattern</span><span class="p">(</span><span class="n">location_spacy_json</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Pipeline Components before adding regex custom component:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe_names</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Entities tracked in phone_nlp_rules"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe_labels</span><span class="p">[</span><span class="s1">'phone_nlp_rules'</span><span class="p">])</span>
+
+<span class="n">phone_regex_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"([+]?[\d]?[\d]?.?[(]?\d</span><span class="si">{3}</span><span class="s2">[)]?.?\d</span><span class="si">{3}</span><span class="s2">.?\d</span><span class="si">{4}</span><span class="s2">)"</span>
+
+<span class="c1">#noting the token position for every character in a doc</span>
+
+<span class="k">def</span> <span class="nf">generate_chars2tokens_dict</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+    <span class="n">chars_to_tokens</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">idx</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">idx</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">)):</span>
+            <span class="n">chars_to_tokens</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">i</span>
+    <span class="k">return</span> <span class="n">chars_to_tokens</span>
+
+
 <span class="nd">@Language</span><span class="o">.</span><span class="n">component</span><span class="p">(</span><span class="s2">"phone_multitoken_regex_capture"</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">phone_multitoken_regex_capture</span><span class="p">(</span><span class="n">phone_regex_pattern</span><span class="p">,</span>
-               <span class="n">doc</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">phone_multitoken_regex_capture</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
     <span class="n">original_ents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">ents</span><span class="p">)</span>
-    <span class="n">matches</span> <span class="o">=</span> <span class="n">token_matcher</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="o">+</span> <span class="n">phrase_matcher</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">match_id</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
-        <span class="n">span</span> <span class="o">=</span> <span class="n">Span</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">match_id</span><span class="p">)</span>
-        <span class="n">original_ents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">span</span><span class="p">)</span>
-    <span class="n">filtered</span> <span class="o">=</span> <span class="n">filter_spans</span><span class="p">(</span><span class="n">original_ents</span><span class="p">)</span>
+    <span class="n">chars_to_tokens</span> <span class="o">=</span> <span class="n">generate_chars2tokens_dict</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class="n">phone_regex_ents</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">phone_regex_pattern</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">):</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">span</span><span class="p">()</span>
+        <span class="n">span</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">char_span</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">span</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">phone_regex_ents</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">span</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">span</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">span</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start_token</span> <span class="o">=</span> <span class="n">chars_to_tokens</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+            <span class="n">end_token</span> <span class="o">=</span> <span class="n">chars_to_tokens</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">start_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">span</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="n">start_token</span><span class="p">:</span><span class="n">end_token</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">phone_regex_ents</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">span</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">span</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">span</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">regex_ent</span> <span class="ow">in</span> <span class="n">phone_regex_ents</span><span class="p">:</span>
+        <span class="n">start_char</span><span class="p">,</span> <span class="n">end_char</span><span class="p">,</span> <span class="n">span_text</span> <span class="o">=</span> <span class="n">regex_ent</span>
+        <span class="n">proper_spacy_ent</span> <span class="o">=</span> <span class="n">Span</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">start_char</span><span class="p">,</span> <span class="n">end_char</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"PHONE"</span><span class="p">)</span>
+        <span class="n">original_ents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proper_spacy_ent</span><span class="p">)</span>     
+    <span class="n">filtered</span> <span class="o">=</span> <span class="n">filter_spans</span><span class="p">(</span><span class="n">original_ents</span><span class="p">)</span> <span class="c1">#removes overlapping ents</span>
     <span class="n">doc</span><span class="o">.</span><span class="n">ents</span> <span class="o">=</span> <span class="n">filtered</span>
     <span class="k">return</span> <span class="n">doc</span>
 
-<span class="c1"># Source: https://spacy.io/usage/rule-based-matching#regex-text</span>
+
+<span class="n">phone_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"phone_multitoken_regex_capture"</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="s2">"phone_nlp_rules"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Pipeline Components after adding regex custom component:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe_names</span><span class="p">)</span>
+
+<span class="c1"># inspiration for the above code piece: </span>
+<span class="c1"># https://spacy.io/usage/rule-based-matching#regex-text</span>
 </pre></div>
 
     </div>
@@ -1021,6 +1053,26 @@ What are the entities tracked in phone_nlp_rules
 </div>
 
     </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Pipeline Components before adding regex custom component:
+['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules']
+
+Entities tracked in phone_nlp_rules
+['PHONE']
+Pipeline Components after adding regex custom component:
+['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules', 'phone_multitoken_regex_capture']
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     
 
@@ -1031,16 +1083,138 @@ What are the entities tracked in phone_nlp_rules
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">sample_phone_sentences</span><span class="p">,</span>
+             <span class="n">as_tuples</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m"</span><span class="p">)</span>
+    <span class="n">displacy</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span>
+                    <span class="n">style</span><span class="o">=</span><span class="s1">'ent'</span><span class="p">,</span>
+                   <span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre><span class="ansi-bold">Processing Sentence 0 </span><span class="ansi-bold">
+</span></pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    +1 (901)-985-4567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre><span class="ansi-bold">Processing Sentence 1 </span><span class="ansi-bold">
+</span></pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    +1(901)-985-4567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre><span class="ansi-bold">Processing Sentence 2 </span><span class="ansi-bold">
+</span></pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    (901) 985 4567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre><span class="ansi-bold">Processing Sentence 3 </span><span class="ansi-bold">
+</span></pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    9019854567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<blockquote>
+<p>By adding the custom component, we are able to capture the missed out sentences also</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>3B. Chaining Spacy NER components</p>
+<blockquote>
+<p>Chaining spacy NER components makes the patterns more manageable <br>
+It is similar to modular programming but for complex spacy NER rules</p>
+</blockquote>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
