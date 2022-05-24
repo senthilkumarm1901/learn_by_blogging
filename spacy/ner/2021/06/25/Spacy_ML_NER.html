@@ -4,9 +4,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>How to train a Spacy NER Model_WIP | Learn By Blogging</title>
+<title>How to train a Spacy NER Model | Learn By Blogging</title>
 <meta name="generator" content="Jekyll v4.1.1" />
-<meta property="og:title" content="How to train a Spacy NER Model_WIP" />
+<meta property="og:title" content="How to train a Spacy NER Model" />
 <meta name="author" content="Senthil Kumar" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="In this blog post, I cover the process of creating trained ML NER model from Unlabeled data" />
@@ -19,9 +19,9 @@
 <meta property="article:published_time" content="2021-06-25T00:00:00-05:00" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta property="twitter:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/spacy/spacy_ML_model_training_on_unlabeld_data.png" />
-<meta property="twitter:title" content="How to train a Spacy NER Model_WIP" />
+<meta property="twitter:title" content="How to train a Spacy NER Model" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2021-06-25T00:00:00-05:00","datePublished":"2021-06-25T00:00:00-05:00","description":"In this blog post, I cover the process of creating trained ML NER model from Unlabeled data","headline":"How to train a Spacy NER Model_WIP","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/spacy/spacy_ML_model_training_on_unlabeld_data.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/spacy/ner/2021/06/25/Spacy_ML_NER.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/spacy/ner/2021/06/25/Spacy_ML_NER.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2021-06-25T00:00:00-05:00","datePublished":"2021-06-25T00:00:00-05:00","description":"In this blog post, I cover the process of creating trained ML NER model from Unlabeled data","headline":"How to train a Spacy NER Model","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/spacy/spacy_ML_model_training_on_unlabeld_data.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/spacy/ner/2021/06/25/Spacy_ML_NER.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/spacy/ner/2021/06/25/Spacy_ML_NER.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/learn_by_blogging/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml" title="Learn By Blogging" /><link rel="shortcut icon" type="image/x-icon" href="/learn_by_blogging/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -92,7 +92,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">How to train a Spacy NER Model_WIP</h1><p class="page-description">In this blog post, I cover the process of creating trained ML NER model from Unlabeled data</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-06-25T00:00:00-05:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">How to train a Spacy NER Model</h1><p class="page-description">In this blog post, I cover the process of creating trained ML NER model from Unlabeled data</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-06-25T00:00:00-05:00" itemprop="datePublished">
         Jun 25, 2021
       </time>• 
           <span itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -100,7 +100,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      5 min read
+      10 min read
     
 </span></p>
 
@@ -161,9 +161,9 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#3.-Human-Review-of-the-Rules-Output">3. Human Review of the Rules Output </a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#3A.-Edit-token-level-results-in-csv-by-human-annotation/review">3A. Edit token-level results in csv by human annotation/review </a></li>
-<li class="toc-entry toc-h3"><a href="#4.-Stratify-Split-the-Data-based-on-human-annotations">4. Stratify Split the Data based on human annotations </a></li>
 </ul>
 </li>
+<li class="toc-entry toc-h2"><a href="#4.-Stratify-Split-the-Data-based-on-human-annotations">4. Stratify Split the Data based on human annotations </a></li>
 <li class="toc-entry toc-h2"><a href="#5.-Train-ML-Model">5. Train ML Model </a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#5A.-Convert-token-level-Results-2-Spacy-Model-acceptable-Conll-Data">5A. Convert token-level Results 2 Spacy Model-acceptable Conll Data </a></li>
@@ -216,12 +216,15 @@ window.onload = wrap_img;
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>How do we create ML NER Model from no labeled data?</strong>:</p>
 <ul>
-<li>Prepare <strong>rules-bootstrapped training data</strong> from unlabeled corpus
-<pre><code> - If it is possible/easy  to annotate directly, one can do that. 
- - However, if rules taggging is possible 
-     - In the **Medical NER dataset** example here
-     - there is an opportunity to use a huge list of words to tag via rules first
-     - then labeling becomes easier than labeling from scratch</code></pre>
+<li>Prepare <strong>rules-bootstrapped training data</strong> from unlabeled corpus<ul>
+<li>If it is possible/easy  to annotate directly, one can do that. </li>
+<li>However, if rules taggging is possible <ul>
+<li>In the <strong>Disease NER dataset</strong> example here</li>
+<li>there is an opportunity to use a huge list of words to tag via rules first</li>
+<li>then labeling becomes easier than labeling from scratch</li>
+</ul>
+</li>
+</ul>
 </li>
 <li>Rules-boostrapped data is then <strong>reviewed/edited by human annotators</strong> </li>
 <li>
@@ -238,7 +241,7 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>With a DISEASE NER example ...</strong></p>
+<p><strong>Now, we can list the above steps with a DISEASE NER example ...</strong></p>
 
 </div>
 </div>
@@ -911,9 +914,9 @@ Refer the below blog article <br><a href="https://senthilkumarm1901.github.io/le
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.-Stratify-Split-the-Data-based-on-human-annotations">
+<h2 id="4.-Stratify-Split-the-Data-based-on-human-annotations">
 <a class="anchor" href="#4.-Stratify-Split-the-Data-based-on-human-annotations" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. Stratify Split the Data based on human annotations<a class="anchor-link" href="#4.-Stratify-Split-the-Data-based-on-human-annotations"> </a>
-</h3>
+</h2>
 </div>
 </div>
 </div>
@@ -1026,7 +1029,7 @@ We have to ensure all three splits - train, dev and test - have the same percent
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>After spliting into train-dev-test in a 80-10-10 split</p>
+<p>After spliting into train-dev-test in a 80-10-10 split ...</p>
 
 </div>
 </div>
@@ -1319,6 +1322,98 @@ We have to ensure all three splits - train, dev and test - have the same percent
 </div>
 </div>
 </div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description" open="">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">convert_token_df_2_conll_string</span><span class="p">(</span><span class="n">token_tag_df</span><span class="p">,</span>
+                                    <span class="n">token_column_name</span><span class="p">,</span>
+                                    <span class="n">tag_column_name</span>
+                                   <span class="p">):</span>
+    <span class="n">token_string</span> <span class="o">=</span> <span class="s1">''</span>
+    <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">token_tag_df</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">each</span> <span class="o">%</span><span class="k">1000</span> == 0:
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">each</span><span class="si">}</span><span class="s2"> tokens processed"</span><span class="p">)</span>
+        <span class="n">current_token_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">token_tag_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">each</span><span class="p">,</span><span class="n">token_column_name</span><span class="p">])</span>
+        <span class="n">current_tag_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">token_tag_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">each</span><span class="p">,</span><span class="n">tag_column_name</span><span class="p">])</span>
+        
+        <span class="k">if</span> <span class="n">current_token_string</span> <span class="o">!=</span><span class="s1">'[SEP]'</span><span class="p">:</span>
+            <span class="n">current_line</span> <span class="o">=</span> <span class="n">current_token_string</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\t</span><span class="s2">"</span> <span class="o">+</span> <span class="n">current_tag_string</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">current_line</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="n">token_string</span> <span class="o">=</span> <span class="n">token_string</span> <span class="o">+</span> <span class="n">current_line</span>
+    <span class="k">return</span> <span class="n">token_string</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>tail -n <span class="m">25</span> ../data/diease_ner/train_dev_test_split_conll_data/test_data.conll
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>investigate	O
+the	O
+rate	O
+of	O
+BRCA2	O
+mutation	O
+in	O
+sporadic	B-DISEASE
+breast	I-DISEASE
+cancers	I-DISEASE
+and	O
+in	O
+a	O
+set	O
+of	O
+cell	O
+lines	O
+that	O
+represent	O
+twelve	O
+other	O
+tumour	B-DISEASE
+types	O
+.	O
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1331,9 +1426,172 @@ We have to ensure all three splits - train, dev and test - have the same percent
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>CLI command for Spacy Model Training</strong>:</p>
+
+<pre><code>!python3 -m spacy train $CONFIG_DIR/original_spacy_small_ner_config.cfg \
+--output $SPACY_SMALL_MODEL_DIR_GPU \
+--paths.train $SPACY_DATA_DIR/train_data.spacy \
+--paths.dev $SPACY_DATA_DIR/dev_data.spacy \
+--verbose \
+-g 0</code></pre>
+<p><strong>The output from the Spacy Model Training</strong>:</p>
+
+<pre><code>[2022-05-24 07:09:39,410] [DEBUG] Config overrides from CLI: ['paths.train', 'paths.dev']
+ℹ Saving to output directory:
+../data/model_weights/spacy_small
+ℹ Using GPU: 0
+
+=========================== Initializing pipeline ===========================
+[2022-05-24 07:09:41,789] [INFO] Set up nlp object from config
+[2022-05-24 07:09:41,797] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/dev_data.spacy
+[2022-05-24 07:09:41,798] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/train_data.spacy
+[2022-05-24 07:09:41,798] [INFO] Pipeline: ['tok2vec', 'ner']
+[2022-05-24 07:09:41,803] [INFO] Created vocabulary
+[2022-05-24 07:09:41,804] [INFO] Finished initializing nlp object
+
+[2022-05-24 07:09:51,839] [INFO] Initialized pipeline components: ['tok2vec', 'ner']
+✔ Initialized pipeline
+
+============================= Training pipeline =============================
+[2022-05-24 07:09:51,852] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/dev_data.spacy
+[2022-05-24 07:09:51,853] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/train_data.spacy
+ℹ Pipeline: ['tok2vec', 'ner']
+ℹ Initial learn rate: 0.001
+E    #       LOSS TOK2VEC  LOSS NER  ENTS_F  ENTS_P  ENTS_R  SCORE 
+---  ------  ------------  --------  ------  ------  ------  ------
+  0       0          0.00     41.00    0.31    0.33    0.29    0.00
+  0     200        195.83   1820.96   41.44   55.56   33.05    0.41             
+  0     400        106.20   1131.87   47.27   66.58   36.64    0.47             
+  0     600         64.99    969.69   74.94   77.17   72.84    0.75             
+  0     800         87.66   1096.80   74.39   76.96   71.98    0.74             
+  1    1000         82.51   1134.93   77.53   79.28   75.86    0.78             
+  1    1200        113.61   1122.73   80.73   82.36   79.17    0.81             
+  1    1400        128.84   1178.08   84.40   86.10   82.76    0.84             
+...   
+ 26    5400        287.07    591.02   85.96   87.04   84.91    0.86             
+ 27    5600        382.16    540.78   86.21   87.56   84.91    0.86             
+ 28    5800        406.03    615.57   86.29   86.67   85.92    0.86             
+Epoch 29:   0%|                                         | 0/200 [00:00&lt;?, ?it/s]✔ Saved pipeline to output directory
+../data/model_weights/spacy_small/model-last</code></pre>
+<p><strong>Command for Evaluating the Model Results</strong>:</p>
+
+<pre><code>!python3 -m spacy evaluate $SPACY_SMALL_MODEL_DIR_GPU/model-best $SPACY_DATA_DIR/test_data.spacy \
+--output $SPACY_SMALL_MODEL_DIR_GPU/model-best/spacy_small_model_evaluation.json \
+--gpu-id 0</code></pre>
+<p><strong>Output of Evaluate Command</strong> :</p>
+
+<pre><code>ℹ Using GPU: 0
+
+================================== Results ==================================
+
+TOK     -    
+NER P   89.75
+NER R   82.81
+NER F   86.14
+SPEED   20752
+
+
+=============================== NER (per type) ===============================
+
+              P       R       F
+DISEASE   89.75   82.81   86.14
+
+✔ Saved results to
+../data/model_weights/spacy_small/model-best/spacy_small_model_evaluation.json</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="5C.-Train-a-Spacy-Roberta-Base-ML-Model">
 <a class="anchor" href="#5C.-Train-a-Spacy-Roberta-Base-ML-Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>5C. Train a Spacy Roberta Base ML Model<a class="anchor-link" href="#5C.-Train-a-Spacy-Roberta-Base-ML-Model"> </a>
 </h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>CLI command for Spacy Model Training</strong>:</p>
+
+<pre><code>!python3 -m spacy train $CONFIG_DIR/original_trf_config.cfg \
+--output $SPACY_ROBERTA_MODEL_DIR_GPU \
+--paths.train $SPACY_DATA_DIR/train_data.spacy \
+--paths.dev $SPACY_DATA_DIR/dev_data.spacy \
+--verbose \
+-g 0</code></pre>
+<p><strong>The output from the Spacy Model Training</strong>:</p>
+
+<pre><code>
+[2022-05-24 07:44:08,351] [DEBUG] Config overrides from CLI: ['paths.train', 'paths.dev']
+✔ Created output directory:
+../data/model_weights/spacy_roberta_base_
+ℹ Saving to output directory:
+../data/model_weights/spacy_roberta_base_
+ℹ Using GPU: 0
+
+=========================== Initializing pipeline ===========================
+[2022-05-24 07:44:11,169] [INFO] Set up nlp object from config
+[2022-05-24 07:44:11,178] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/dev_data.spacy
+[2022-05-24 07:44:11,180] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/train_data.spacy
+[2022-05-24 07:44:11,180] [INFO] Pipeline: ['transformer', 'ner']
+[2022-05-24 07:44:11,184] [INFO] Created vocabulary
+[2022-05-24 07:44:11,185] [INFO] Finished initializing nlp object
+
+[2022-05-24 07:44:22,286] [INFO] Initialized pipeline components: ['transformer', 'ner']
+✔ Initialized pipeline
+
+============================= Training pipeline =============================
+[2022-05-24 07:44:22,298] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/dev_data.spacy
+[2022-05-24 07:44:22,299] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/train_data.spacy
+ℹ Pipeline: ['transformer', 'ner']
+ℹ Initial learn rate: 0.0
+E    #       LOSS TRANS...  LOSS NER  ENTS_F  ENTS_P  ENTS_R  SCORE 
+---  ------  -------------  --------  ------  ------  ------  ------
+  0       0        4392.55    285.04    0.21    0.17    0.29    0.00
+  1     200      126102.97  33471.51   84.94   81.78   88.36    0.85
+  3     400        1782.34   2642.55   89.50   90.83   88.22    0.90
+  5     600        1123.23   1596.50   90.69   89.06   92.39    0.91
+...
+ 27    2800         153.06    176.41   90.94   90.35   91.52    0.91
+ 29    3000         103.80    128.69   90.86   88.98   92.82    0.91
+ 30    3200         121.04    141.70   91.47   90.56   92.39    0.91
+ 32    3400          90.05    116.95   90.51   89.93   91.09    0.91
+ 34    3600         111.25    131.25   91.12   90.15   92.10    0.91
+ 36    3800          79.87     82.69   90.30   89.66   90.95    0.90
+ 38    4000          82.07     82.97   90.97   90.01   91.95    0.91
+✔ Saved pipeline to output directory
+../data/model_weights/spacy_roberta_base_/model-last
+CPU times: user 11.1 s, sys: 2.78 s, total: 13.9 s
+Wall time: 22min 37s</code></pre>
+<p><strong>Command for Evaluating the Model Results</strong>:</p>
+
+<pre><code>!python3 -m spacy evaluate $SPACY_SMALL_MODEL_DIR_GPU/model-best $SPACY_DATA_DIR/test_data.spacy \
+--output $SPACY_SMALL_MODEL_DIR_GPU/model-best/spacy_small_model_evaluation.json \
+--gpu-id 0</code></pre>
+<p><strong>Output of Evaluate Command</strong> :</p>
+
+<pre><code>ℹ Using GPU: 0
+
+================================== Results ==================================
+
+TOK     -    
+NER P   88.61
+NER R   90.26
+NER F   89.43
+SPEED   12020
+
+
+=============================== NER (per type) ===============================
+
+              P       R       F
+DISEASE   88.61   90.26   89.43
+
+✔ Saved results to
+../data/model_weights/spacy_roberta_base_/model-best/spacy_roberta_base_evaluation.json</code></pre>
+
 </div>
 </div>
 </div>
@@ -1355,6 +1613,99 @@ We have to ensure all three splits - train, dev and test - have the same percent
 </div>
 </div>
 </div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'spacy_model_ner/results_of_the_models.csv'</span><span class="p">,</span><span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">results</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Precision</th>
+      <th>Recall</th>
+      <th>F1_Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Rules_Model</th>
+      <td>39.85</td>
+      <td>2.21</td>
+      <td>28.52</td>
+    </tr>
+    <tr>
+      <th>Spacy_Small_Model</th>
+      <td>89.75</td>
+      <td>82.81</td>
+      <td>86.14</td>
+    </tr>
+    <tr>
+      <th>Spacy_Roberta_Base_Model</th>
+      <td>88.61</td>
+      <td>90.26</td>
+      <td>89.43</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1367,10 +1718,23 @@ We have to ensure all three splits - train, dev and test - have the same percent
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>In this blog article, we have shown how to effectively build a NER model on unlabeled data. <br></p>
 <ul>
-<li>In this blog article, we have shown how to effectively build a NER model on unlabeled data. </li>
 <li>We have compared Rules NER, a Spacy Small NER and roberta-base NER models. </li>
+<li>We found <code>roberta_base</code> model is having the highest F1 score of 89%.  </li>
+<li>We can also ensemble results of <code>Spacy Small NER</code> and <code>Spacy Roberta Base NER</code> models.  </li>
 <li>A digression from the scope of this article: There are umpteen good tools (paid mostly) aiding the annotation. Sometimes, for simple NER problem (like tagging only one entity like this <code>Disease NER</code>), even excel is good for annotation</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Main Source:</p>
+<ul>
+<li><a href="https://spacy.io/api/cli#evaluate">https://spacy.io/api/cli#evaluate</a></li>
 </ul>
 
 </div>
