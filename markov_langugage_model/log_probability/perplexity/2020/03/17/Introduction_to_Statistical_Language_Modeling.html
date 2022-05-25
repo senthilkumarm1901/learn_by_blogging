@@ -179,7 +179,7 @@ window.onload = wrap_img;
 <a class="anchor" href="#1.-What-is-a-Language-Model?" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. What is a Language Model?<a class="anchor-link" href="#1.-What-is-a-Language-Model?"> </a>
 </h2>
 <ul>
-<li>A language model (LM) is a model that generates a probability distribution over sequences of words</li>
+<li>A model that generates a probability distribution over sequences of words</li>
 <li>In simpler words, LM is a model to predict the next word in a sequence of words</li>
 </ul>
 
@@ -198,8 +198,8 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Predicting upcoming words or estimating probability of a phrase or sentence is useful in noisy, ambiguous text data sources</p>
 <ul>
-<li>Predicting upcoming words or estimating probability of a phrase or sentence is useful in noisy, ambiguous text data sources </li>
 <li>Speech Recognition: E.g.: P('recognize speech') &gt;&gt; P('wreck a nice beach')</li>
 <li>Spelling Correction: E.g.: P('I have a gub') &lt;&lt; P('I have a gun')</li>
 <li>Machine Translation: E.g.: P('strong winds') &gt; P('large winds')</li>
@@ -231,7 +231,8 @@ That killed <strong>the</strong> rat,<br>
 That ate <strong>the</strong> malt<br>
 That lay in <strong>the house</strong> that Jack built.<br></p>
 </blockquote>
-<p>What is the probability of <strong>house</strong> occurring given <strong>the</strong> before it?</p>
+<p>Source:"<em>The house that jack built</em>" Nursery Rhyme
+What is the probability of <strong>house</strong> occurring given <strong>the</strong> before it?</p>
 <p>Intuitively, we count,</p>
 <p>
 $$ Prob \ ({ house \over the }) = { Count \ ( the \ house ) \over Count \ (the) } $$
@@ -314,7 +315,7 @@ That killed the rat,<br>
 That ate the malt,<br>
 That lay in the house that Jack built.<br></p>
 </blockquote>
-<p>If we calculate the Probability of the above sentence, based on the language model trained on the previous <strong>sample corpus</strong>, it would be zero (because "the dog" has not occurred in <code>This is the house ....that Jack built</code> ) <br></p>
+<p>If we calculate the Probability of the above sentence, based on the language model trained on the previous <strong>sample corpus (<em>The house that Jack built</em> Nursery Rhyme)</strong>, it would be zero (because "the dog" has not occurred in the LM training corpus.</p>
 <p>By our <strong>chain rule of probabilities</strong> where we keep multiplying probabilities,
 we would encounter $ P({dog \over the}) = 0 $ , hence the overall probability of the above example sentence would be zero</p>
 <hr>
@@ -341,7 +342,8 @@ $$ P_{smooth}({B\  | \ A}) = {Count\ (\ A,\ B\ )\ +\ 1 \over Count\ (\ B\ )\ +\ 
 </p>
 <ul>
 <li>We pretend that each unique bigram occurs once more than it actually did! </li>
-<li>Since we have added 1 to each bigram, we have added |V| bigrams in total. Hence normalizing by adding |V| to the denominator </li>
+<li>Since we have added 1 to each bigram, we have added |V| bigrams in total. Hence normalizing by adding |V| to the denominator</li>
+<li>Disadvantage: It reduces the probability of high frequency words</li>
 </ul>
 <p><strong>Add- $ \delta $ Smoothing!</strong>
 
@@ -349,7 +351,7 @@ $$ P_{smooth}({B\  | \ A}) = {Count\ (\ A,\ B\ )\ +\ \delta \over Count\ (\ B\ )
 </p>
 <ul>
 <li>$\delta$ is any fraction such as 0.1, 0.05, etc.,</li>
-<li>Unlike Add one smoothing, which reduces drastically the prob of high occurring words, this solves the zero prob issue </li>
+<li>Unlike Add one smoothing, this solves the zero prob issue and avoids reducing the prob of high frequency words</li>
 </ul>
 <hr>
 </div>
@@ -377,7 +379,7 @@ $$ P(w_i,\ |\ {w_{i-1},\ ....,\ w_1}) = P(w_i,\ |\ {w_{i-1}}) $$
 <li>Probability of an entire sentence could be very low but individual phrases could be more probable. <br>
 For e.g.: <br><ul>
 <li>Actual Data: “The quick fox jumps over the lazy dog”  </li>
-<li>Probability of a new sentence: Prob(“The quick fox jumps over the lazy cat”) = 0 (though probable 'cat' is not there in vocab)</li>
+<li>Probability of a new sentence: Prob(“The quick fox jumps over the lazy cat”) = 0 (though probable to occur,'cat' is not there in vocab, hence zero)</li>
 <li>In Markov assumption (with additive smoothing), the above sentence will have a realistic probability</li>
 </ul>
 </li>
@@ -438,7 +440,7 @@ $$ {\sqrt[N]{\prod\limits_{i=1}^{N} {1 \over P(w_i,\ |\ {w_{i-1},\ ....,\ w_1})}
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>the lower the perplexity, the better is the model</strong></p>
+<p><strong>the lower the perplexity of a LM for predicting a sample, higher is the confidence for that sample to occur in the distribution</strong></p>
 <hr>
 </div>
 </div>
@@ -451,7 +453,7 @@ $$ {\sqrt[N]{\prod\limits_{i=1}^{N} {1 \over P(w_i,\ |\ {w_{i-1},\ ....,\ w_1})}
 </h3>
 <ul>
 <li>
-<p>But multiply probabilities like these could end up giving you the result closer to zero.</p>
+<p>But multiplying probabilities like these could end up giving you the result closer to zero.</p>
 <ul>
 <li>For e.g.: P(D|C) = 0.1, P(C|B) = 0.07, P(B|A) = 0.05, P(A) = 0.2</li>
 <li>P(A before B before C before D before E) = 0.00007 $--&gt;$ too low or almost zero !</li>
@@ -484,11 +486,11 @@ $$ {\sqrt[N]{\prod\limits_{i=1}^{N} {1 \over P(w_i,\ |\ {w_{i-1},\ ....,\ w_1})}
 $$ \log P(w_1,\ w_2,\ ....,\ w_N) = \sum\limits_{\ i\ =\ 2}^{N} {\log P(w_i\ |\ w_{i-1})}\ +\ \log P(w_1) $$<p></p>
 <ul>
 <li>where N  is the number of words in the sentence. </li>
-<li>Since log (probabilities) are always negative (see graph), shorter sentences will have higher probability of occurrence. </li>
+<li>Since log (probabilities) are always negative (see graph: log of values less than 1 is negative), shorter sentences will have higher probability of occurrence. </li>
 </ul>
-<p><strong>To normalize it</strong>, 
+<p><strong>To normalize for length of sentences</strong>, 
 $$ {1 \over N} \log P(w_1,\ w_2,\ ....,\ w_N) = {1 \over N} \left [\ \sum\limits_{\ i\ =\ 2}^{N} {\log P(w_i\ |\ w_{i-1})}\ +\ \log P(w_1) \right] $$</p>
-<p><strong>Higher the log probability value, better is the model</strong></p>
+<p><strong>Higher the log probability value of a LM in predicting a sample, higher is the confidence for that sample to occur in the distribution</strong></p>
 <hr>
 </div>
 </div>

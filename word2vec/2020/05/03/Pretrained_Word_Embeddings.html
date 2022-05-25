@@ -9,8 +9,8 @@
 <meta property="og:title" content="The Theory of Word2Vec Algorithm" />
 <meta name="author" content="Senthil Kumar" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This blog post attempts to explain one of the important pretrained Word Embedding algorithms in NLP" />
-<meta property="og:description" content="This blog post attempts to explain one of the important pretrained Word Embedding algorithms in NLP" />
+<meta name="description" content="This blog post attempts to explain one of the seminal algorithms in NLP for embedding creation" />
+<meta property="og:description" content="This blog post attempts to explain one of the seminal algorithms in NLP for embedding creation" />
 <link rel="canonical" href="https://senthilkumarm1901.github.io/learn_by_blogging/word2vec/2020/05/03/Pretrained_Word_Embeddings.html" />
 <meta property="og:url" content="https://senthilkumarm1901.github.io/learn_by_blogging/word2vec/2020/05/03/Pretrained_Word_Embeddings.html" />
 <meta property="og:site_name" content="Learn By Blogging" />
@@ -21,7 +21,7 @@
 <meta property="twitter:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/word_embeddings/cbow_vs_skip_gram.png" />
 <meta property="twitter:title" content="The Theory of Word2Vec Algorithm" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2020-05-03T00:00:00-05:00","datePublished":"2020-05-03T00:00:00-05:00","description":"This blog post attempts to explain one of the important pretrained Word Embedding algorithms in NLP","headline":"The Theory of Word2Vec Algorithm","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/word_embeddings/cbow_vs_skip_gram.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/word2vec/2020/05/03/Pretrained_Word_Embeddings.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/word2vec/2020/05/03/Pretrained_Word_Embeddings.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2020-05-03T00:00:00-05:00","datePublished":"2020-05-03T00:00:00-05:00","description":"This blog post attempts to explain one of the seminal algorithms in NLP for embedding creation","headline":"The Theory of Word2Vec Algorithm","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/word_embeddings/cbow_vs_skip_gram.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/word2vec/2020/05/03/Pretrained_Word_Embeddings.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/word2vec/2020/05/03/Pretrained_Word_Embeddings.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/learn_by_blogging/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml" title="Learn By Blogging" /><link rel="shortcut icon" type="image/x-icon" href="/learn_by_blogging/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -92,7 +92,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">The Theory of Word2Vec Algorithm</h1><p class="page-description">This blog post attempts to explain one of the important pretrained Word Embedding algorithms in NLP</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-05-03T00:00:00-05:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">The Theory of Word2Vec Algorithm</h1><p class="page-description">This blog post attempts to explain one of the seminal algorithms in NLP for embedding creation</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-05-03T00:00:00-05:00" itemprop="datePublished">
         May 3, 2020
       </time>• 
           <span itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -598,9 +598,9 @@ Negative sentence = "The quick brown fox lighthouse over the lazy dog."</p>
 <li>Word2Vec Model Type: Skipgram</li>
 <li>Focus Word (positive input): jumps</li>
 <li>Negative input: lighthouse</li>
-<li>Context Words (correct output/ positive samples): Predicting <code>brown</code>, <code>fox</code>, <code>over</code> or <code>the</code> given <code>jumps</code>
+<li>Context Words (positive samples): Predicting <code>brown</code>, <code>fox</code>, <code>over</code> or <code>the</code> given <code>jumps</code>
 </li>
-<li>Context Words (corrupted outputs/ positive samples): Predicting <code>brown</code>, <code>fox</code>, <code>over</code> or <code>the</code> given <code>lighthouse</code>
+<li>Context Words (corrupted outputs or negative samples): Predicting <code>brown</code>, <code>fox</code>, <code>over</code> or <code>the</code> given <code>lighthouse</code>
 </li>
 </ul>
 <hr>
@@ -616,13 +616,13 @@ New sentence = "quick brown fox jumps lazy dog."</p>
 </ul>
 <hr>
 
-<p><strong>4. Typical Hyper Parameters used in Word2Vec Training</strong></p>
+<p><strong>4. Typical Hyper Parameters used for Word2Vec model Training</strong></p>
 <ul>
 <li>no_of_epochs = 20</li>
 <li>context_window_size = 5</li>
 <li>starting_learning_rate = 0.025 </li>
 <li>final_learning_rate = 0.0001</li>
-<li>(automatic calculation of learning rate decay above two values)</li>
+<li>(automatic calculation of learning rate decay using above two values)</li>
 <li>Hidden layer dimension size = Word2Vec Embedding Size = 300</li>
 </ul>
 <hr>
