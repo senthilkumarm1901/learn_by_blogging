@@ -369,49 +369,39 @@ Source: A article by Sebastian Ruder: <code>State of Transfer Learning in NLP</c
 <h4 id="Evolution-of-RNN-Architecture-till-LSTM">
 <a class="anchor" href="#Evolution-of-RNN-Architecture-till-LSTM" aria-hidden="true"><span class="octicon octicon-link"></span></a>Evolution of RNN Architecture till LSTM<a class="anchor-link" href="#Evolution-of-RNN-Architecture-till-LSTM"> </a>
 </h4>
+<p><strong>Why RNNs came into existence?</strong> <br></p>
 <ul>
-<li>
-<strong>Why RNNs came into existence?</strong>
-<pre><code>- Models such as the Multi-layer Perceptron Network, vector machines and logistic regression did not perform well on sequence modelling tasks (e.g.: text_sequence2sentiment_classification) 
-- Why? Lack of memory element ; No information retention
-- RNNs attempted to redress this shortcoming by introducing loops within the network, thus allowing the retention of information.</code></pre>
-</li>
+<li>Models such as the Multi-layer Perceptron Network, vector machines and logistic regression did not perform well on sequence modelling tasks (e.g.: text_sequence2sentiment_classification) </li>
+<li>Why? Lack of memory element ; No information retention</li>
+<li>RNNs attempted to redress this shortcoming by introducing loops within the network, thus allowing the retention of information.</li>
 </ul>
 <p><img src="/learn_by_blogging/images/copied_from_nb/transfer_learning_evolution/an_unrolled_RNN.png" alt="An un-rolled RNN Cell"></p>
+<p><strong>Advantage of a vanilla RNN</strong>: <br></p>
 <ul>
-<li>
-<p><strong>Advantage of a vanilla RNN</strong>:</p>
-
-<pre><code>- Better than traditional ML algos in retaining information</code></pre>
-</li>
-<li>
-<p><strong>Limitations of a vanilla RNN</strong>:</p>
-
-<pre><code>- RNNs fail to model long term dependencies.
-- the information was often **"forgotten"** after the unit activations were multiplied several times by small numbers
-- Vanishing gradient and exploding gradient problems</code></pre>
-</li>
-<li>
-<p><strong>Long Short Term Memory (LSTM)</strong>:</p>
-
-<pre><code>- A special type of RNN architecture
-- Designed to keep information retained for extended number of timesteps</code></pre>
-</li>
-<li>
-<p><strong>Advantage of a LSTM</strong>:</p>
-
-<pre><code>- Better equipped for long range dependencies
-- Resists better than RNNs for vanishing gradient problem</code></pre>
-</li>
-<li>
-<p><strong>Limitations of LSTM</strong>:</p>
-
-<pre><code>- Added gates lead to more computation requirement and LSTMs tend to be slower
-- Difficult to train
-- Transfer Learning never really worked
-- Very long gradient paths
-      -  LSTM on 100-word doc has gradients 100-layer network</code></pre>
-</li>
+<li>Better than traditional ML algos in retaining information</li>
+</ul>
+<p><strong>Limitations of a vanilla RNN</strong>: <br></p>
+<ul>
+<li>RNNs fail to model long term dependencies.</li>
+<li>the information was often <strong>"forgotten"</strong> after the unit activations were multiplied several times by small numbers</li>
+<li>Vanishing gradient and exploding gradient problems</li>
+</ul>
+<p><strong>Long Short Term Memory (LSTM)</strong>: <br></p>
+<ul>
+<li>A special type of RNN architecture</li>
+<li>Designed to keep information retained for extended number of timesteps</li>
+</ul>
+<p><strong>Advantage of a LSTM</strong>: <br></p>
+<ul>
+<li>Better equipped for long range dependencies</li>
+<li>Resists better than RNNs for vanishing gradient problem</li>
+</ul>
+<p><strong>Limitations of LSTM</strong>: <br></p>
+<ul>
+<li>Added gates lead to more computation requirement and LSTMs tend to be slower</li>
+<li>Difficult to train</li>
+<li>Transfer Learning never really worked</li>
+<li>Very long gradient paths. LSTM on 100-word doc has gradients 100-layer network</li>
 </ul>
 <p><br></p>
 <h4 id="Seq2Seq-Models---A-higher-form-of-LMs">
@@ -440,21 +430,15 @@ Source: A article by Sebastian Ruder: <code>State of Transfer Learning in NLP</c
 <h4 id="Transformer---A-Seq2Seq-Model-with-Attention">
 <a class="anchor" href="#Transformer---A-Seq2Seq-Model-with-Attention" aria-hidden="true"><span class="octicon octicon-link"></span></a>Transformer - A Seq2Seq Model with Attention<a class="anchor-link" href="#Transformer---A-Seq2Seq-Model-with-Attention"> </a>
 </h4>
-<ul>
-<li>
 <p><strong>Transformer</strong>:</p>
 <ul>
 <li>It is a sequence model forgoes the recurrent structure of RNN to adopt attention-based approach</li>
 <li>In other words, Transformer is an attention Model without Recurrent LSTMs</li>
 </ul>
-</li>
-<li>
 <p><strong>Transformer</strong> vs <strong>LSTM</strong></p>
 <ul>
 <li>Recurrent Structure: Processes all input elements SEQUENTIALLY</li>
 <li>Attention-based Approach: Process all input elements SIMULTANEOUSLY</li>
-</ul>
-</li>
 </ul>
 <hr>
 
@@ -481,9 +465,7 @@ Source: A article by Sebastian Ruder: <code>State of Transfer Learning in NLP</c
 <p><img src="/learn_by_blogging/images/copied_from_nb/transfer_learning_evolution/different_transformer_models_and_their_corpora.png" alt=""></p>
 <p><strong>Question to ponder</strong>:</p>
 <ul>
-<li>Are models bettering in performance because of more data or more model complexity? 
-<pre><code>- How much is the contribution from each? </code></pre>
-</li>
+<li>Are models bettering in performance because of more data or more model complexity? How much is the contribution from each? </li>
 <li>Are models built with efficiency in mind? (not a lot can replicate these models given the large number of GPUs necessary)</li>
 </ul>
 <p><br></p>
@@ -520,8 +502,8 @@ Source: A article by Sebastian Ruder: <code>State of Transfer Learning in NLP</c
 </h3>
 <ul>
 <li>Step -2: NLP started with rule-based and statistical methodologies</li>
-<li>Step -1: ML algorithms such as Naive Bayes, SVM, LR and Trees coupled which where fed with bag-of-words word representations </li>
-<li>Step 0: Initial Success of better representations using shallow Neural Network pre-trained LMs like Word2Vec</li>
+<li>Step -1: ML algorithms such as Naive Bayes, SVM, LR and Trees were fed with bag-of-words word representations </li>
+<li>Step 0: Initial Success of better representations using pre-trained LMs like Word2Vec which were built using shallow Neural Network</li>
 <li>Step 1: (Re)Emergence of RNN Architectures in NLP</li>
 <li>Step 2: Evolution of Sequence-to-Sequence Models built with RNN architectures from Language Models | <a href="https://indicodata.ai/blog/sequence-modeling-neuralnets-part1/">source</a>
 </li>
