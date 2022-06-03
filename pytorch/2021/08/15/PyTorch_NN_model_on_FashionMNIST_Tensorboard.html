@@ -100,7 +100,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      17 min read
+      18 min read
     
 </span></p>
 
@@ -164,7 +164,7 @@ window.onload = wrap_img;
 </ul>
 </li>
 <li class="toc-entry toc-h2"><a href="#4.-Predict-using-the-Trained-Model">4. Predict using the Trained Model </a></li>
-<li class="toc-entry toc-h2"><a href="#5.-Visualze-the-Trained-Model-Dataflow">5. Visualze the Trained Model Dataflow </a></li>
+<li class="toc-entry toc-h2"><a href="#5.-Leveraging-Tensorboard">5. Leveraging Tensorboard </a></li>
 <li class="toc-entry toc-h2"><a href="#6-sources-and-github-links-">6. Sources and GitHub Links </a></li>
 </ul><!--
 #################################################
@@ -1726,15 +1726,6 @@ Wall time: 11min 39s
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>The Graph of Training Loss (blue line) and Validation Loss (green line) in Tensorboard</strong></p>
-<p><img src="/learn_by_blogging/images/copied_from_nb/./pytorch_nn/training_and_validation_loss_over_epochs.png" alt=""></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p>Points to ponder:</p>
 <ul>
 <li>The accuracy for this 2-layer NN stands at 71%. </li>
@@ -1940,37 +1931,71 @@ Wall time: 11min 39s
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="5.-Visualze-the-Trained-Model-Dataflow">
-<a class="anchor" href="#5.-Visualze-the-Trained-Model-Dataflow" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. Visualze the Trained Model Dataflow<a class="anchor-link" href="#5.-Visualze-the-Trained-Model-Dataflow"> </a>
+<h2 id="5.-Leveraging-Tensorboard">
+<a class="anchor" href="#5.-Leveraging-Tensorboard" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. Leveraging Tensorboard<a class="anchor-link" href="#5.-Leveraging-Tensorboard"> </a>
 </h2>
 </div>
 </div>
 </div>
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
+<div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dataiter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">)</span>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Reiterating the steps we have already done using Tensorboard</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<ol>
+<li>Specifying the Log directory and using <code>add_images</code> method</li>
+</ol>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="c1"># `torch.utils.data.tensorboard.SummaryWriter` class</span>
+<span class="c1"># specifying the log directory</span>
+<span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="s1">'runs/fashion_mnist_2_layer_NN_experiment_1'</span><span class="p">)</span>
+
+<span class="c1"># writing the grid of 4 images to Tensorboard log dir</span>
+<span class="c1"># we can look at `IMAGES` tab of Tensorboard for this</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="s1">'Four Sample Fashion-MNIST Images'</span><span class="p">,</span> <span class="n">img_grid</span><span class="p">)</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</pre></div>
+<ul>
+<li>
+<ol>
+<li>Tracking Epoch level Average Training and Validation Losses. </li>
+</ol>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="c1"># We can track in the `SCALARS` tab of the Tensorboard</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">add_scalars</span><span class="p">(</span><span class="s1">'Training vs. Validation Loss'</span><span class="p">,</span>
+                   <span class="p">{</span><span class="s1">'Training'</span><span class="p">:</span> <span class="n">avg_training_loss</span><span class="p">,</span> 
+                    <span class="s1">'Validation'</span><span class="p">:</span> <span class="n">avg_validation_loss</span>
+                   <span class="p">},</span>
+                   <span class="n">epoch</span>
+                  <span class="p">)</span>
+</pre></div>
+<p><strong>The Graph of Training Loss (blue line) and Validation Loss (green line) in Tensorboard</strong></p>
+<p><img src="/learn_by_blogging/images/copied_from_nb/./pytorch_nn/training_and_validation_loss_over_epochs.png" alt=""></p>
+<ul>
+<li>
+<ol>
+<li>After trained model is obtained, we can look at the graph to trace the sample input through your model</li>
+</ol>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="c1"># We can track in the `GRAPH` tab of the Tensorboard</span>
+<span class="n">dataiter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">)</span>
 <span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">dataiter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
 <span class="c1"># add_graph() will trace the sample input through your model</span>
 <span class="n">writer</span><span class="o">.</span><span class="n">add_graph</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">images</span><span class="p">)</span>
 <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 </pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    
-
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>NN_graph in Tensorboard</strong>
 <img src="/learn_by_blogging/images/copied_from_nb/./pytorch_nn/NN_Tensorboard_graph.png" alt=""></p>
 
