@@ -1478,17 +1478,20 @@ Layer: linear_relu_stack.4.bias <span class="p">|</span> Size: torch.Size<span c
 <code>batch_size</code>: The number of data samples seen by the model before updating its weights. (derived parameter <code>steps = total_training_data/batch_size</code> - the number of batches needed to complete an epoch)</li>
 <li>
 <code>learning_rate</code>: How much to change the weights in the <code>w = w - learning_rate * gradient</code>. Smaller value means the model will take a longer time to find best weights. Larger value of learning_rate might make the NN miss the optimal weights because we might step over the best values</li>
+<li>Choice of <code>loss_fn</code> <br>
+Common Loss Functions for classification problems :    <ul>
 <li>
-<p>Choice of <code>loss_fn</code>
-Common Loss Functions:</p>
-<ul>
-<li>nn.MSELoss # Mean Squared Error</li>
-<li>nn.NLLLoss #Negative Log Likelihood    </li>
-<li>nn.CrossEntropyLoss # = combine(<code>nn.LogSoftmax</code> and <code>nn.NLLLoss</code>)   </li>
+<code>nn.NLLLoss</code> #Negative Log Likelihood    </li>
+<li>
+<code>nn.CrossEntropyLoss</code> # combination of <code>nn.LogSoftmax</code> and <code>nn.NLLLoss</code>   </li>
 </ul>
 </li>
+<li>Choice of <code>optimizers</code> <br><ul>
+<li><code>torch.optim.SGD</code></li>
+<li><code>torch.optim.Adam</code></li>
 <li>
-<p>Choice of <code>optimizer</code></p>
+<code>torch.optim.RMSProp</code> and many more ...</li>
+</ul>
 </li>
 </ul>
 
