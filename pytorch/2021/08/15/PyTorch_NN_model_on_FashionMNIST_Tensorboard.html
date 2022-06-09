@@ -9,8 +9,8 @@
 <meta property="og:title" content="An Introduction to PyTorch Fundamentals for Training DL Models" />
 <meta name="author" content="Senthil Kumar" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This blog post contains my detailed notes on the basics of PyTorch Tensors, the workflow to train a 2 layer Neural Network for a vision dataset and track the progress in a Tensorboard" />
-<meta property="og:description" content="This blog post contains my detailed notes on the basics of PyTorch Tensors, the workflow to train a 2 layer Neural Network for a vision dataset and track the progress in a Tensorboard" />
+<meta name="description" content="This blog post explains the basics of PyTorch Tensors, the workflow to train a 2 layer Neural Network for a vision dataset and track the progress in a Tensorboard" />
+<meta property="og:description" content="This blog post explains the basics of PyTorch Tensors, the workflow to train a 2 layer Neural Network for a vision dataset and track the progress in a Tensorboard" />
 <link rel="canonical" href="https://senthilkumarm1901.github.io/learn_by_blogging/pytorch/2021/08/15/PyTorch_NN_model_on_FashionMNIST_Tensorboard.html" />
 <meta property="og:url" content="https://senthilkumarm1901.github.io/learn_by_blogging/pytorch/2021/08/15/PyTorch_NN_model_on_FashionMNIST_Tensorboard.html" />
 <meta property="og:site_name" content="Learn By Blogging" />
@@ -21,7 +21,7 @@
 <meta property="twitter:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/pytorch_nn/pytorch_offl_image.png" />
 <meta property="twitter:title" content="An Introduction to PyTorch Fundamentals for Training DL Models" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2021-08-15T00:00:00-05:00","datePublished":"2021-08-15T00:00:00-05:00","description":"This blog post contains my detailed notes on the basics of PyTorch Tensors, the workflow to train a 2 layer Neural Network for a vision dataset and track the progress in a Tensorboard","headline":"An Introduction to PyTorch Fundamentals for Training DL Models","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/pytorch_nn/pytorch_offl_image.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/pytorch/2021/08/15/PyTorch_NN_model_on_FashionMNIST_Tensorboard.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/pytorch/2021/08/15/PyTorch_NN_model_on_FashionMNIST_Tensorboard.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2021-08-15T00:00:00-05:00","datePublished":"2021-08-15T00:00:00-05:00","description":"This blog post explains the basics of PyTorch Tensors, the workflow to train a 2 layer Neural Network for a vision dataset and track the progress in a Tensorboard","headline":"An Introduction to PyTorch Fundamentals for Training DL Models","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/pytorch_nn/pytorch_offl_image.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/pytorch/2021/08/15/PyTorch_NN_model_on_FashionMNIST_Tensorboard.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/pytorch/2021/08/15/PyTorch_NN_model_on_FashionMNIST_Tensorboard.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/learn_by_blogging/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml" title="Learn By Blogging" /><link rel="shortcut icon" type="image/x-icon" href="/learn_by_blogging/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -92,7 +92,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">An Introduction to PyTorch Fundamentals for Training DL Models</h1><p class="page-description">This blog post contains my detailed notes on the basics of PyTorch Tensors, the workflow to train a 2 layer Neural Network for a vision dataset and track the progress in a Tensorboard</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-08-15T00:00:00-05:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">An Introduction to PyTorch Fundamentals for Training DL Models</h1><p class="page-description">This blog post explains the basics of PyTorch Tensors, the workflow to train a 2 layer Neural Network for a vision dataset and track the progress in a Tensorboard</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-08-15T00:00:00-05:00" itemprop="datePublished">
         Aug 15, 2021
       </time>• 
           <span itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -192,6 +192,13 @@ window.onload = wrap_img;
 <li>Before going into the DL portions, let us look at Tensors first</li>
 </ul>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
 </div>
 </div>
 </div>
@@ -383,6 +390,13 @@ tensor.t_()</code></pre>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>Importing relevant modules</p>
 
 </div>
@@ -423,6 +437,13 @@ tensor.t_()</code></pre>
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -494,9 +515,8 @@ tensor.t_()</code></pre>
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
 <li>
-<code>torchvision.datasets</code> --&gt; to use pre-existing datasets like FashionMNIST, coco, cifar, etc.,
-<pre><code>  - torchvision.datasets have arguments/parameters to `transform` featuers (aka inputs) and `target_transform` to transform labels (like one hot encoding of labels</code></pre>
-</li>
+<code>torchvision.datasets</code> --&gt; to use pre-existing datasets like FashionMNIST, coco, cifar, etc.,</li>
+<li>torchvision.datasets have arguments/parameters to <code>transform</code> featuers (aka inputs) and <code>target_transform</code> to transform labels (like one hot encoding of labels</li>
 <li>CustomDatasetClass must overwrite the <code>magic methods</code> of python such as 
 <pre><code>  - `__init__`, `__getitem__` and `__len__` methods inherited from `Dataset`</code></pre>
 </li>
@@ -1100,69 +1120,37 @@ Shape of Labels: torch.Size([4])
 </div>
 </div>
 </div>
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
+<div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> tensorboard
-</pre></div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Load the TensorBoard notebook extension for jupyter notebook
+<pre><code>%load_ext tensorboard</code></pre>
+</li>
+</ul>
 
-    </div>
 </div>
 </div>
-
 </div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
+<div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">tensorboard</span> --logdir runs/fashion_mnist_2_layer_NN_experiment_1
-</pre></div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Run the tensorboard from jupyter notebook</li>
+</ul>
 
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-
-      <iframe id="tensorboard-frame-d4dbc74c88e8b3ea" width="100%" height="800" frameborder="0">
-      </iframe>
-      <script>
-        (function() {
-          const frame = document.getElementById("tensorboard-frame-d4dbc74c88e8b3ea");
-          const url = new URL("/", window.location);
-          const port = 6006;
-          if (port) {
-            url.port = port;
-          }
-          frame.src = url;
-        })();
-      </script>
-    
-</div>
-
-</div>
+<pre><code>%tensorboard --logdir runs/fashion_mnist_2_layer_NN_experiment_1</code></pre>
 
 </div>
 </div>
-
 </div>
-    
-
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1445,6 +1433,13 @@ Layer: linear_relu_stack.4.weight <span class="p">|</span> Size: torch.Size<span
 Layer: linear_relu_stack.4.bias <span class="p">|</span> Size: torch.Size<span class="o">([</span><span class="m">10</span><span class="o">])</span>
 </pre></div>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
 </div>
 </div>
 </div>
@@ -1833,6 +1828,13 @@ Wall time: 11min 39s
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="4.-Predict-using-the-Trained-Model">
 <a class="anchor" href="#4.-Predict-using-the-Trained-Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. Predict using the Trained Model<a class="anchor-link" href="#4.-Predict-using-the-Trained-Model"> </a>
 </h2>
@@ -1934,6 +1936,13 @@ Wall time: 11min 39s
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="5.-Leveraging-Tensorboard">
 <a class="anchor" href="#5.-Leveraging-Tensorboard" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. Leveraging Tensorboard<a class="anchor-link" href="#5.-Leveraging-Tensorboard"> </a>
 </h2>
@@ -1996,6 +2005,13 @@ Wall time: 11min 39s
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2>
 <a class="anchor" href="#6-sources-and-github-links-" aria-hidden="true"><span class="octicon octicon-link"></span></a>6. Sources and GitHub Links <br>
 </h2>
@@ -2016,6 +2032,13 @@ Wall time: 11min 39s
 </li>
 </ul>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
 </div>
 </div>
 </div>
