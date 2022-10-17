@@ -9,8 +9,8 @@
 <meta property="og:title" content="Part I - Build Serverless ML Pipeline using AWS Lambda and Step Functions" />
 <meta name="author" content="Senthil Kumar" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This blog post explains how to leverage S3, Lambda, StepFunctions, Docker, aws CLI and boto3 to build a production-grade Serverless Sentiment Analysis pipeline" />
-<meta property="og:description" content="This blog post explains how to leverage S3, Lambda, StepFunctions, Docker, aws CLI and boto3 to build a production-grade Serverless Sentiment Analysis pipeline" />
+<meta name="description" content="This blog post explains how to leverage S3, Lambda, StepFunctions, Docker, aws CLI and boto3 to build a Speech Diarization and Recognition pipeline" />
+<meta property="og:description" content="This blog post explains how to leverage S3, Lambda, StepFunctions, Docker, aws CLI and boto3 to build a Speech Diarization and Recognition pipeline" />
 <link rel="canonical" href="https://senthilkumarm1901.github.io/learn_by_blogging/aws/2022/10/14/I-AWS-Lambda-StepFunctions-ML-Pipeline.html" />
 <meta property="og:url" content="https://senthilkumarm1901.github.io/learn_by_blogging/aws/2022/10/14/I-AWS-Lambda-StepFunctions-ML-Pipeline.html" />
 <meta property="og:site_name" content="Learn By Blogging" />
@@ -21,7 +21,7 @@
 <meta property="twitter:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/aws/aws_main_logo.png" />
 <meta property="twitter:title" content="Part I - Build Serverless ML Pipeline using AWS Lambda and Step Functions" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2022-10-14T00:00:00-05:00","datePublished":"2022-10-14T00:00:00-05:00","description":"This blog post explains how to leverage S3, Lambda, StepFunctions, Docker, aws CLI and boto3 to build a production-grade Serverless Sentiment Analysis pipeline","headline":"Part I - Build Serverless ML Pipeline using AWS Lambda and Step Functions","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/aws/aws_main_logo.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/aws/2022/10/14/I-AWS-Lambda-StepFunctions-ML-Pipeline.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/aws/2022/10/14/I-AWS-Lambda-StepFunctions-ML-Pipeline.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2022-10-14T00:00:00-05:00","datePublished":"2022-10-14T00:00:00-05:00","description":"This blog post explains how to leverage S3, Lambda, StepFunctions, Docker, aws CLI and boto3 to build a Speech Diarization and Recognition pipeline","headline":"Part I - Build Serverless ML Pipeline using AWS Lambda and Step Functions","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/aws/aws_main_logo.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/aws/2022/10/14/I-AWS-Lambda-StepFunctions-ML-Pipeline.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/aws/2022/10/14/I-AWS-Lambda-StepFunctions-ML-Pipeline.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/learn_by_blogging/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml" title="Learn By Blogging" /><link rel="shortcut icon" type="image/x-icon" href="/learn_by_blogging/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -92,7 +92,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Part I - Build Serverless ML Pipeline using AWS Lambda and Step Functions</h1><p class="page-description">This blog post explains how to leverage S3, Lambda, StepFunctions, Docker, aws CLI and boto3 to build a production-grade Serverless Sentiment Analysis pipeline</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-10-14T00:00:00-05:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">Part I - Build Serverless ML Pipeline using AWS Lambda and Step Functions</h1><p class="page-description">This blog post explains how to leverage S3, Lambda, StepFunctions, Docker, aws CLI and boto3 to build a Speech Diarization and Recognition pipeline</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-10-14T00:00:00-05:00" itemprop="datePublished">
         Oct 14, 2022
       </time>• 
           <span itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -154,6 +154,17 @@ window.onload = wrap_img;
 
 <div class="container" id="notebook-container">
         
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Dataset to use:</p>
+<ul>
+<li><a href="https://huggingface.co/datasets/ami">https://huggingface.co/datasets/ami</a></li>
+</ul>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
