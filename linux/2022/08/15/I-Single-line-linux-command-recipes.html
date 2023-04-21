@@ -4,13 +4,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Part I - Highly Useful Linux Command Line Recipes | Learn By Blogging</title>
+<title>Part I - man ShellScripting | Learn By Blogging</title>
 <meta name="generator" content="Jekyll v4.1.1" />
-<meta property="og:title" content="Part I - Highly Useful Linux Command Line Recipes" />
+<meta property="og:title" content="Part I - man ShellScripting" />
 <meta name="author" content="Senthil Kumar" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This blog post provides single line linux recipes for most common tasks for any software engineer" />
-<meta property="og:description" content="This blog post provides single line linux recipes for most common tasks for any software engineer" />
+<meta name="description" content="A quick guide manual to the world of Bash Scripting" />
+<meta property="og:description" content="A quick guide manual to the world of Bash Scripting" />
 <link rel="canonical" href="https://senthilkumarm1901.github.io/learn_by_blogging/linux/2022/08/15/I-Single-line-linux-command-recipes.html" />
 <meta property="og:url" content="https://senthilkumarm1901.github.io/learn_by_blogging/linux/2022/08/15/I-Single-line-linux-command-recipes.html" />
 <meta property="og:site_name" content="Learn By Blogging" />
@@ -19,9 +19,9 @@
 <meta property="article:published_time" content="2022-08-15T00:00:00-05:00" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta property="twitter:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/linux/linux_main_logo.jpeg" />
-<meta property="twitter:title" content="Part I - Highly Useful Linux Command Line Recipes" />
+<meta property="twitter:title" content="Part I - man ShellScripting" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2022-08-15T00:00:00-05:00","datePublished":"2022-08-15T00:00:00-05:00","description":"This blog post provides single line linux recipes for most common tasks for any software engineer","headline":"Part I - Highly Useful Linux Command Line Recipes","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/linux/linux_main_logo.jpeg","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/linux/2022/08/15/I-Single-line-linux-command-recipes.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/linux/2022/08/15/I-Single-line-linux-command-recipes.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2022-08-15T00:00:00-05:00","datePublished":"2022-08-15T00:00:00-05:00","description":"A quick guide manual to the world of Bash Scripting","headline":"Part I - man ShellScripting","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/linux/linux_main_logo.jpeg","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/linux/2022/08/15/I-Single-line-linux-command-recipes.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/linux/2022/08/15/I-Single-line-linux-command-recipes.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/learn_by_blogging/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml" title="Learn By Blogging" /><link rel="shortcut icon" type="image/x-icon" href="/learn_by_blogging/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -74,18 +74,22 @@ window.onload = wrap_img;
 </head>
 <body><header class="site-header">
 
-  <div class="wrapper"><a class="site-title" rel="author" href="/learn_by_blogging/">Learn By Blogging</a><nav class="site-nav">
-        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+  <div class="wrapper">
+<a class="site-title" rel="author" href="/learn_by_blogging/">Learn By Blogging</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger">
         <label for="nav-trigger">
           <span class="menu-icon">
-            <svg viewBox="0 0 18 15" width="18px" height="15px">
-              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            <svg viewbox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
             </svg>
           </span>
         </label>
 
-        <div class="trigger"><a class="page-link" href="/learn_by_blogging/about/">About Me</a><a class="page-link" href="/learn_by_blogging/search/">Search</a><a class="page-link" href="/learn_by_blogging/categories/">Tags</a></div>
-      </nav></div>
+        <div class="trigger">
+<a class="page-link" href="/learn_by_blogging/about/">About Me</a><a class="page-link" href="/learn_by_blogging/search/">Search</a><a class="page-link" href="/learn_by_blogging/categories/">Tags</a>
+</div>
+      </nav>
+</div>
 </header>
 <main class="page-content" aria-label="Content">
       <div class="wrapper">
@@ -98,59 +102,977 @@ window.onload = wrap_img;
 
 <div class="container" id="notebook-container">
         
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Introduction-to-Linux">Introduction to Linux<a class="anchor-link" href="#Introduction-to-Linux"> </a></h2><ul>
-<li>What is a Linux Machine?</li>
-<li>What language does Linux uses internally?</li>
-<li>Linux vs Unix: </li>
-<li>Different Linux Distributions</li>
-<li>Many Names: Linux CLI (OR) Shell (OR) Terminal (OR) Command Prompt </li>
-<li>Linux and Shell Scripting (TV and Remote)</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Surpirisingly-Simple-Single-line-Commands">Surpirisingly Simple Single-line Commands<a class="anchor-link" href="#Surpirisingly-Simple-Single-line-Commands"> </a></h2><ul>
-<li>cat | head &amp; tail | head, tail, and wc -l </li>
-<li>ls | xargs | mkdir </li>
-<li>find </li>
-<li>grep </li>
-<li>sed </li>
-</ul>
-
-</div>
-</div>
-</div>
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
+<div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">-</span> 
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction"> </a>
+</h2>
+<p>Arguably, Shell Scripting is the <strong>often untaught foundation</strong> to the most important skills in software engineering</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You may have seen <code>Shell Commands</code> in</p>
+<ul>
+<li>Git</li>
+<li>Makefile, VirtualEnv or Any Software Packaging</li>
+<li>Docker, Kubernetes</li>
+<li>Server Administration</li>
+<li>Application Deployment</li>
+<li>Cloud Computing &amp;</li>
+<li>many more ...</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This blog is  <br></p>
+<ul>
+<li>
+<strong>NOT</strong> about Linux but about Shell Scripting</li>
+<li>
+<strong>NOT</strong> meant to cover esoteric commands</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Purpose</strong> of this blog is</p>
+<ul>
+<li>To cover a selected list of useful bash scripting utilities</li>
+<li>To remove the reluctance in writing/interpreting shell commands</li>
+<li>To inform where Shell Scripting is useful and where it is not </li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.-Theory-Fundamentals-behind-Bash-Scripting">1. Theory Fundamentals behind Bash Scripting<a class="anchor-link" href="#1.-Theory-Fundamentals-behind-Bash-Scripting"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="What-is-a-Linux">
+<strong>What is a Linux</strong><a class="anchor-link" href="#What-is-a-Linux"> </a>
+</h3>
+<ul>
+<li>An open source operating system </li>
+<li>Used as both Server OS (web servers, db servers, etc.,) and Desktop OS</li>
+<li>Linux Operating System is a collection of software build around the <code>Linux kernel</code> of the system - <code>the core of the computer's operating system</code>; that interacts between hardware and other software</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Which-Lang-is-Linux-written-with">
+<strong>Which Lang is Linux written with</strong><a class="anchor-link" href="#Which-Lang-is-Linux-written-with"> </a>
+</h3>
+<ul>
+<li>Most things are written in C </li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Linux-vs-Unix">
+<strong>Linux</strong> vs <strong>Unix</strong><a class="anchor-link" href="#Linux-vs-Unix"> </a>
+</h3>
+<ul>
+<li>Unix developed by AT&amp;T Labs. IBM AIX, HP UX are some unix OS</li>
+<li>Linux is a Unix clone but completely different code</li>
+<li>Linux is more popular than Unix. Linux has distributions include Redhat, Fedora, etc.,</li>
+<li>MacOS is officially certified UNIX</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Linux-CLI/Shell-Terminal">
+<strong>Linux CLI/Shell Terminal</strong><a class="anchor-link" href="#Linux-CLI/Shell-Terminal"> </a>
+</h3>
+<ul>
+<li>A non-graphical text-based interface to the Kernel </li>
+<li>A program to access the features and functionalities offered by kernel</li>
+<li>How instructions flow: Hardware &lt;-- Kernel &lt;-- Shell/Terminal &lt;-- Command Libraries and Applications (like mail) &lt;-- User</li>
+</ul>
+<p><img src="https://cdn.mindmajix.com/blog/images/linux-0203-1919.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Different-Types-of-Shell">
+<strong>Different Types of Shell</strong><a class="anchor-link" href="#Different-Types-of-Shell"> </a>
+</h3>
+<ul>
+<li>Bourne Shell developed by Steve Bourne at AT&amp;T Labs (sh)</li>
+<li>C shell (csh)</li>
+<li>Korn Shell (ksh) - better version of <code>sh</code>
+</li>
+<li>Bourne-Again Shell (bash) had features of csh and <code>ksh</code>
+</li>
+<li>Z Shell (zsh) - A more modern shell !</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="2.-Single-line-Command-Recipes">2. Single-line Command Recipes<a class="anchor-link" href="#2.-Single-line-Command-Recipes"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Text-Datasets---Unzipping-the-Data-[1/6]">Text Datasets - Unzipping the Data [1/6]<a class="anchor-link" href="#Text-Datasets---Unzipping-the-Data-%5B1/6%5D"> </a>
+</h3>
+<ul>
+<li>
+<strong>Purpose</strong>: Show the dir and files</li>
+<li>
+<strong>Utility</strong>: <code>tree</code>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/datasets % tree 
+.
+└── text_datasets
+    ├── ag_news
+    │   └── ag_news_csv.tar.gz
+    ├── dbpedia
+    │   └── dbpedia_csv.tar.gz
+    └── yelp_reviews
+        └── yelp_review_full_csv.tar.gz
+
+<span class="m">4</span> directories, <span class="m">3</span> files
 </pre></div>
 
-    </div>
 </div>
 </div>
-
 </div>
-    
-
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Some Selected Good Data Processing Recipies for Linux (Shell scripting) vs Python Comparison: <br /></p>
-<ol>
-<li>Find files with a regex pattern | Look for specific string using grep (find, grep)</li>
-<li>Make a list of dir based on a column name in a csv file (cat, awk, mkdir)</li>
-<li>Suppose there are 100 files in a dir and you need to zip 10 at a time (zip)</li>
-<li>Processing a csv file of gb size | Do a Regex String replacement (sed)</li>
-</ol>
+<ul>
+<li>
+<strong>Purpose</strong>: Find the size of the archived files</li>
+<li>
+<strong>Utilities</strong>: <code>find</code> + <code>xrgs</code>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/datasets % find . -name <span class="s2">"*.tar*"</span> <span class="p">|</span> xargs du -hs 
+187M    ./text_datasets/yelp_reviews/yelp_review_full_csv.tar.gz
+ 12M    ./text_datasets/ag_news/ag_news_csv.tar.gz
+ 65M    ./text_datasets/dbpedia/dbpedia_csv.tar.gz
+</pre></div>
+<ul>
+<li>
+<strong>Terminal Reading</strong>: <code>man xargs</code> &amp;&amp; <code>man du</code>  | <code>man find</code>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>Purpose</strong>: Unzip files across directories</li>
+<li>
+<strong>Utilities</strong>: <code>tar</code>, <code>sed</code>, <code>find</code>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/datasets % <span class="k">for</span> f in <span class="k">$(</span>find . -name <span class="s2">"*.tar*"</span> <span class="p">|</span> sed -e <span class="s1">'s|/[^/]*$||g'</span> <span class="k">)</span><span class="p">;</span> <span class="k">do</span> tar -xvf <span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span>/*.tar.* -C <span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span><span class="p">;</span> <span class="k">done</span> 
+x yelp_review_full_csv/
+x yelp_review_full_csv/readme.txt
+x yelp_review_full_csv/train.csv
+x yelp_review_full_csv/test.csv
+x ag_news_csv/
+x ag_news_csv/train.csv
+x ag_news_csv/test.csv
+x ag_news_csv/classes.txt
+x ag_news_csv/readme.txt
+x dbpedia_csv/
+x dbpedia_csv/classes.txt
+x dbpedia_csv/test.csv
+x dbpedia_csv/train.csv
+x dbpedia_csv/readme.txt
+</pre></div>
+<ul>
+<li>
+<strong>Terminal Reading</strong>: <code>man tar</code> (search <code>/-x | -v | -z | -f</code>)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Text-Datasets---Basic-Stats-[2/6]">Text Datasets - Basic Stats [2/6]<a class="anchor-link" href="#Text-Datasets---Basic-Stats-%5B2/6%5D"> </a>
+</h3>
+<ul>
+<li>
+<strong>Purpose</strong>: Number of Rows</li>
+<li>
+<strong>Utilities</strong>: <code>find</code>, <code>wc</code> , <code>grep</code>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/*/text_datasets % <span class="k">for</span> f in <span class="k">$(</span>find . -name <span class="s2">"*.csv"</span><span class="k">)</span><span class="p">;</span> <span class="k">do</span> <span class="o">(</span><span class="nb">echo</span> <span class="s2">"Number of rows in </span><span class="nv">$f</span><span class="s2">"</span> <span class="o">&amp;&amp;</span>  wc -l <span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span> <span class="p">|</span> grep -o <span class="s2">"[0-9]*"</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span><span class="o">)</span><span class="p">;</span> <span class="k">done</span>
+Number of rows in ./yelp_reviews/yelp_review_full_csv/test.csv
+<span class="m">50000</span>
+
+Number of rows in ./yelp_reviews/yelp_review_full_csv/train.csv
+<span class="m">650000</span>
+
+Number of rows in ./ag_news/ag_news_csv/test.csv
+<span class="m">7600</span>
+
+Number of rows in ./ag_news/ag_news_csv/train.csv
+<span class="m">120000</span>
+
+Number of rows in ./dbpedia/dbpedia_csv/test.csv
+<span class="m">70000</span>
+
+Number of rows in ./dbpedia/dbpedia_csv/train.csv
+<span class="m">560000</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>Purpose</strong>: Number of Columns</li>
+<li>
+<strong>Utilities</strong>: <code>find</code>, <code>head</code> , <code>sed</code>
+</li>
+</ul>
+
+<pre><code>senthilkumar.m@BashScripter ~/*/text_datasets % for f in $(find . -name "*.csv"); do (echo "*****$f***": &amp;&amp;  echo "Number of Columns:" &amp;&amp;  head -n 1 "$f"| sed 's/","/"\n"/g' |wc -l &amp;&amp; echo) ; done
+*****./yelp_reviews/yelp_review_full_csv/test.csv***:
+Number of Columns:
+       2
+
+*****./yelp_reviews/yelp_review_full_csv/train.csv***:
+Number of Columns:
+       2
+
+*****./ag_news/ag_news_csv/test.csv***:
+Number of Columns:
+       3
+
+*****./ag_news/ag_news_csv/train.csv***:
+Number of Columns:
+       3
+
+*****./dbpedia/dbpedia_csv/test.csv***:
+Number of Columns:
+       2
+
+*****./dbpedia/dbpedia_csv/train.csv***:
+Number of Columns:
+       2</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Text-Datasets---Looking-into-the-Content-[3/6]">Text Datasets - Looking into the Content [3/6]<a class="anchor-link" href="#Text-Datasets---Looking-into-the-Content-%5B3/6%5D"> </a>
+</h3>
+<ul>
+<li>
+<strong>Purpose</strong>: Human understandable display of 1 line in each file </li>
+<li>
+<strong>Utilities</strong>: <code>find</code>, <code>head</code> , <code>sed</code>, <code>nl</code>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/text_datasets % <span class="k">for</span> f in <span class="k">$(</span>find . -name <span class="s2">"*train.csv"</span><span class="k">)</span><span class="p">;</span> <span class="k">do</span> <span class="o">(</span><span class="nb">echo</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">"*********</span><span class="nv">$f</span><span class="s2">*******:"</span> <span class="o">&amp;&amp;</span> head -n <span class="m">1</span> <span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span> <span class="p">|</span> sed <span class="s1">'s/,"/\n"/g'</span> <span class="p">|</span> nl<span class="o">)</span><span class="p">;</span> <span class="k">done</span>
+
+*********./yelp_reviews/yelp_review_full_csv/train.csv*******:
+     <span class="m">1</span>  <span class="s2">"5"</span>
+     <span class="m">2</span>  <span class="s2">"dr. goldberg offers everything i look for in a general practitioner.  he's nice and easy to talk to without being patronizing; he's always on time in seeing his patients; ..."</span>
+
+*********./ag_news/ag_news_csv/train.csv*******:
+     <span class="m">1</span>  <span class="s2">"3"</span>
+     <span class="m">2</span>  <span class="s2">"Wall St. Bears Claw Back Into the Black (Reuters)"</span>
+     <span class="m">3</span>  <span class="s2">"Reuters - Short-sellers, Wall Street's dwindling\band of ultra-cynics, are seeing green again."</span>
+
+*********./dbpedia/dbpedia_csv/train.csv*******:
+     <span class="m">1</span>  <span class="m">1</span>
+     <span class="m">2</span>  <span class="s2">"E. D. Abbott Ltd"</span>
+     <span class="m">3</span>  <span class="s2">" Abbott of Farnham E D Abbott Limited was a British coachbuilding business based in Farnham Surrey trading under that name from 1929. A major part of their output was under sub-contract to motor vehicle manufacturers. Their business closed in 1972."</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Text-Datasets---Looking-into-the-Classes-[4/6]">Text Datasets - Looking into the Classes [4/6]<a class="anchor-link" href="#Text-Datasets---Looking-into-the-Classes-%5B4/6%5D"> </a>
+</h3>
+<ul>
+<li>
+<strong>Purpose</strong>: What do the class numbers represent? </li>
+<li>
+<strong>Utilities</strong>: <code>find</code>, <code>cat</code> ,<code>nl</code>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/text_datasets % <span class="k">for</span> f in <span class="k">$(</span>find . -name <span class="s2">"*classes.txt"</span><span class="k">)</span><span class="p">;</span> <span class="k">do</span> <span class="o">(</span><span class="nb">echo</span> <span class="s2">"*******</span><span class="nv">$f</span><span class="s2">*****"</span><span class="p">;</span> cat <span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span><span class="p">|</span>nl<span class="o">)</span><span class="p">;</span> <span class="k">done</span>
+*******./ag_news/ag_news_csv/classes.txt*****
+     <span class="m">1</span>  World
+     <span class="m">2</span>  Sports
+     <span class="m">3</span>  Business
+     <span class="m">4</span>  Sci/Tech
+*******./dbpedia/dbpedia_csv/classes.txt*****
+     <span class="m">1</span>  Company
+     <span class="m">2</span>  EducationalInstitution
+     <span class="m">3</span>  Artist
+     <span class="m">4</span>  Athlete
+     <span class="m">5</span>  OfficeHolder
+     <span class="m">6</span>  MeanOfTransportation
+     <span class="m">7</span>  Building
+     <span class="m">8</span>  NaturalPlace
+     <span class="m">9</span>  Village
+    <span class="m">10</span>  Animal
+    <span class="m">11</span>  Plant
+    <span class="m">12</span>  Album
+    <span class="m">13</span>  Film
+    <span class="m">14</span>  WrittenWork
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Text-Datasets---Distribution-of-Classes---Shell-Scripting-vs-Python-[5A/6]">Text Datasets - Distribution of Classes - Shell Scripting vs Python [5A/6]<a class="anchor-link" href="#Text-Datasets---Distribution-of-Classes---Shell-Scripting-vs-Python-%5B5A/6%5D"> </a>
+</h3>
+<ul>
+<li>
+<strong>Purpose</strong>: What do the class numbers represent? </li>
+<li>
+<strong>Utilities</strong>: <code>find</code>, <code>for</code> ,<code>awk</code>, <code>sort</code>, <code>uniq</code>
+</li>
+<li>
+<strong>Time Taken</strong>: <code>13 seconds</code>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/text_datasets % <span class="nb">time</span> <span class="o">(</span><span class="k">for</span> f in <span class="k">$(</span>find . -name <span class="s2">"*train.csv"</span><span class="k">)</span><span class="p">;</span> <span class="k">do</span> <span class="o">(</span><span class="nb">echo</span> <span class="s2">"*******</span><span class="nv">$f</span><span class="s2">*****"</span> <span class="o">&amp;&amp;</span>  awk -F <span class="s1">','</span> <span class="s1">'{print $1}'</span> <span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span> <span class="p">|</span> sort <span class="p">|</span> uniq -c <span class="o">)</span> <span class="p">;</span> <span class="k">done</span><span class="o">)</span>
+*******./yelp_reviews/yelp_review_full_csv/train.csv*****
+<span class="m">130000</span> <span class="s2">"1"</span>
+<span class="m">130000</span> <span class="s2">"2"</span>
+<span class="m">130000</span> <span class="s2">"3"</span>
+...
+...
+<span class="m">40000</span> <span class="m">4</span>
+<span class="m">40000</span> <span class="m">5</span>
+<span class="m">40000</span> <span class="m">6</span>
+<span class="m">40000</span> <span class="m">7</span>
+<span class="m">40000</span> <span class="m">8</span>
+<span class="m">40000</span> <span class="m">9</span>
+<span class="o">(</span> <span class="k">for</span> f in <span class="k">$(</span>find . -name <span class="s2">"*train.csv"</span><span class="k">)</span><span class="p">;</span> <span class="k">do</span><span class="p">;</span> <span class="o">(</span> <span class="nb">echo</span> <span class="s2">"*******</span><span class="nv">$f</span><span class="s2">*****"</span> <span class="o">&amp;&amp;</span> awk -<span class="o">)</span>  <span class="m">12</span>.80s user <span class="m">0</span>.23s system <span class="m">101</span>% cpu <span class="m">12</span>.813 total
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Text-Datasets---Distribution-of-Classes---Shell-Scripting-vs-Python-[5B/6]">Text Datasets - Distribution of Classes - Shell Scripting vs Python [5B/6]<a class="anchor-link" href="#Text-Datasets---Distribution-of-Classes---Shell-Scripting-vs-Python-%5B5B/6%5D"> </a>
+</h3>
+<ul>
+<li>
+<strong>Purpose</strong>: What do the class numbers represent? </li>
+<li>
+<strong>Utilities</strong>: <code>Python</code>
+</li>
+<li>
+<strong>Time Taken</strong>: <code>5.7 seconds</code>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">file_names_with_path</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">glob</span><span class="p">(</span><span class="s2">"./*/*/*train.csv"</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">each_file</span> <span class="ow">in</span> <span class="n">file_names_with_path</span><span class="p">:</span>
+    <span class="n">ip</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">each_file</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"********</span><span class="si">{</span><span class="n">each_file</span><span class="si">}</span><span class="s2">*****"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ip</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">())</span>
+
+<span class="c1"># python3 test_python_code.py  5.29s user 0.52s system 100% cpu 5.759 total</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Text-Datasets---Distribution-of-Classes-[6/6]-&lt;/h4&gt;">Text Datasets - Distribution of Classes [6/6] &lt;/h4&gt;<a class="anchor-link" href="#Text-Datasets---Distribution-of-Classes-%5B6/6%5D-&lt;/h4&gt;"> </a>
+</h3>
+<ul>
+<li>
+<strong>Purpose</strong>: What do the class numbers represent? </li>
+<li>
+<strong>Utilities</strong>: <code>find</code>, <code>for</code> , <code>cut</code>, <code>sort</code>, <code>uniq</code>
+</li>
+<li>
+<strong>Time Taken</strong>: <code>4.3 seconds</code>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/text_datasets % <span class="nb">time</span> <span class="o">(</span><span class="k">for</span> f in <span class="k">$(</span>find . -name <span class="s2">"*train.csv"</span><span class="k">)</span><span class="p">;</span> <span class="k">do</span> <span class="o">(</span><span class="nb">echo</span> <span class="s2">"*******</span><span class="nv">$f</span><span class="s2">*****"</span> <span class="o">&amp;&amp;</span>  cat <span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span> <span class="p">|</span> cut -d<span class="s1">','</span> -f1 <span class="p">|</span> sort <span class="p">|</span> uniq -c <span class="o">)</span> <span class="p">;</span> <span class="k">done</span><span class="o">)</span>
+*******./yelp_reviews/yelp_review_full_csv/train.csv*****
+<span class="m">130000</span> <span class="s2">"1"</span>
+<span class="m">130000</span> <span class="s2">"2"</span>
+...
+...
+<span class="m">40000</span> <span class="m">4</span>
+<span class="m">40000</span> <span class="m">5</span>
+<span class="m">40000</span> <span class="m">6</span>
+<span class="m">40000</span> <span class="m">7</span>
+<span class="m">40000</span> <span class="m">8</span>
+<span class="m">40000</span> <span class="m">9</span>
+<span class="o">(</span> <span class="k">for</span> f in <span class="k">$(</span>find . -name <span class="s2">"*train.csv"</span><span class="k">)</span><span class="p">;</span> <span class="k">do</span><span class="p">;</span> <span class="o">(</span> <span class="nb">echo</span> <span class="s2">"*******</span><span class="nv">$f</span><span class="s2">*****"</span> <span class="o">&amp;&amp;</span> cat  <span class="o">)</span>  <span class="m">4</span>.49s user <span class="m">0</span>.22s system <span class="m">107</span>% cpu <span class="m">4</span>.373 total
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<blockquote>
+<p>Shell Scripting (4.5 sec) wins over Python (5.7 sec). Okay, let's have a better rematch</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.-Advancing-to-Shell-Scripting-Files">3. Advancing to Shell Scripting Files<a class="anchor-link" href="#3.-Advancing-to-Shell-Scripting-Files"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Shell-Script-with-positional-arguments">Shell Script with positional arguments<a class="anchor-link" href="#Shell-Script-with-positional-arguments"> </a>
+</h3>
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/*/text_datasets % cat basic_shell_with_positional_args.sh 
+<span class="c1">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"This tutorial is not about </span><span class="nv">$1</span><span class="s2">. It is about </span><span class="nv">$2</span><span class="s2">."</span> 
+<span class="nb">echo</span> <span class="s2">"Did you like it? </span><span class="nv">$3</span><span class="s2">"</span>
+</pre></div>
+<ul>
+<li>Shebang line at 1. <code>#!/bin/sh</code> or <code>#!/bin/bash</code> or <code>#!/bin/zsh</code> </li>
+<li>Most terminal (CLI interpreters) take care of it even when not expliticity mentioned by assuming it to be <code>bash</code> or <code>sh</code>
+</li>
+</ul>
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span>sh basic_shell.sh Linux <span class="s2">"Shell Scripting"</span> No
+
+<span class="c1"># ./basic_shell.sh</span>
+
+This tutorial is not about Linux. It is about Shell Scripting.
+Did you like it? No
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Shell-Script-with-one-letter-keyword-arguments">Shell Script with one-letter keyword arguments<a class="anchor-link" href="#Shell-Script-with-one-letter-keyword-arguments"> </a>
+</h3>
+<ul>
+<li>
+<strong>Utilities</strong>: <code>getopts</code>, <code>grep</code>, <code>OPTARG</code>, <code>tr</code>,  <code>[:upper:]</code> or <code>[:lower:]</code> or <code>[:space:]</code> </li>
+</ul>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="k">while</span> <span class="nb">getopts</span> <span class="s2">":n:a:l:"</span> opt<span class="p">;</span>
+<span class="k">do</span> 
+    <span class="k">case</span> <span class="si">${</span><span class="nv">opt</span><span class="si">}</span> in
+        n<span class="o">)</span> <span class="nv">NOT</span><span class="o">=</span><span class="si">${</span><span class="nv">OPTARG</span><span class="si">}</span><span class="p">;;</span>
+            a<span class="o">)</span> <span class="nv">ABOUT</span><span class="o">=</span><span class="si">${</span><span class="nv">OPTARG</span><span class="si">}</span> <span class="p">;;</span>
+        l<span class="o">)</span> <span class="nv">LIKE</span><span class="o">=</span><span class="si">${</span><span class="nv">OPTARG</span><span class="si">}</span> <span class="p">;;</span>
+    <span class="k">esac</span>
+<span class="k">done</span>
+<span class="nb">echo</span> <span class="s2">"This tutorial is not about </span><span class="nv">$NOT</span><span class="s2">. It is about </span><span class="nv">$ABOUT</span><span class="s2">."</span>
+<span class="c1"># if [ $LIKE = "No" ]; then</span>
+<span class="k">if</span> <span class="o">[</span> <span class="k">$(</span><span class="nb">echo</span> <span class="nv">$LIKE</span> <span class="p">|</span> grep -i -o <span class="s2">"^N"</span> <span class="p">|</span> tr <span class="s1">'[:upper:]'</span> <span class="s1">'[:lower:]'</span><span class="k">)</span> <span class="o">=</span> <span class="s1">'n'</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nb">echo</span> <span class="s2">"Did you like it? </span><span class="nv">$LIKE</span><span class="s2">"</span>
+    <span class="nb">echo</span> <span class="s2">"What Shell Scripting man !?!"</span>
+    <span class="nb">echo</span> <span class="s2">"Who uses such 40+ years old lang"</span>
+<span class="k">else</span>
+    <span class="nb">echo</span> <span class="s2">"Did you like it? </span><span class="nv">$LIKE</span><span class="s2">"</span>
+<span class="k">fi</span>
+</pre></div>
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/text_datasets % sh shell_w_getopts_args.sh <span class="se">\</span>
+-n Linux <span class="se">\</span>
+-a <span class="s2">"Shell Scripting"</span> <span class="se">\</span>
+-l No
+
+This tutorial is not about Linux. It is about Shell Scripting.
+Did you like it? No
+What Shell Scripting man !?!
+Who uses such <span class="m">40</span>+ years old lang
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Shell-Script-with-word-keyword-arguments">Shell Script with word keyword arguments<a class="anchor-link" href="#Shell-Script-with-word-keyword-arguments"> </a>
+</h3>
+<ul>
+<li>
+<strong>Utilities</strong>: <code>{#VAR}</code>, <code>grep</code>, <code>tr</code>,  <code>[:upper:]</code> or <code>[:lower:]</code> or <code>[:space:]</code> </li>
+</ul>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="k">for</span> ARGUMENT in <span class="s2">"</span><span class="nv">$@</span><span class="s2">"</span>
+<span class="k">do</span>
+    <span class="nv">KEY_INITIAL</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$ARGUMENT</span> <span class="p">|</span> cut -f1 -d<span class="o">=</span><span class="k">)</span>
+    <span class="nv">KEY_LENGTH</span><span class="o">=</span><span class="si">${#</span><span class="nv">KEY_INITIAL</span><span class="si">}</span>
+    <span class="nv">KEY</span><span class="o">=</span><span class="si">${</span><span class="nv">KEY_INITIAL</span><span class="p">:</span><span class="nv">2</span><span class="si">}</span>
+    <span class="nv">VALUE</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">ARGUMENT</span><span class="p">:</span><span class="nv">$KEY_LENGTH</span><span class="p">+1</span><span class="si">}</span><span class="s2">"</span>
+    <span class="nb">export</span> <span class="s2">"</span><span class="nv">$KEY</span><span class="s2">"</span><span class="o">=</span><span class="s2">"</span><span class="nv">$VALUE</span><span class="s2">"</span>
+    <span class="c1"># echo "$KEY=$VALUE"</span>
+<span class="k">done</span>
+
+<span class="nb">echo</span> <span class="s2">"This tutorial is not about </span><span class="nv">$NOT</span><span class="s2">. It is about </span><span class="nv">$ABOUT</span><span class="s2">."</span>
+<span class="c1"># if [ $LIKE = "No" ]; then</span>
+<span class="k">if</span> <span class="o">[</span> <span class="k">$(</span><span class="nb">echo</span> <span class="nv">$LIKE</span> <span class="p">|</span> grep -i -o <span class="s2">"^N"</span> <span class="p">|</span> tr <span class="s1">'[:upper:]'</span> <span class="s1">'[:lower:]'</span><span class="k">)</span> <span class="o">=</span> <span class="s1">'n'</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nb">echo</span> <span class="s2">"Did you like it? </span><span class="nv">$LIKE</span><span class="s2">"</span>
+    <span class="nb">echo</span> <span class="s2">"What Shell Scripting man !?!"</span>
+    <span class="nb">echo</span> <span class="s2">"Who uses such 40+ years old lang"</span>
+<span class="k">else</span>
+    <span class="nb">echo</span> <span class="s2">"Did you like it? </span><span class="nv">$LIKE</span><span class="s2">"</span>
+<span class="k">fi</span>
+</pre></div>
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/text_datasets % sh shell_w_full_kw_args.sh <span class="se">\</span>
+--NOT<span class="o">=</span>Linux <span class="se">\</span>
+--ABOUT<span class="o">=</span><span class="s2">"Shell Scripting"</span> <span class="se">\</span>
+--LIKE<span class="o">=</span>No
+
+This tutorial is not about Linux. It is about Shell Scripting.
+Did you like it? No
+What Shell Scripting man !?!
+Who uses such <span class="m">40</span>+ years old lang
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Shell-Script-vs-Python-to-Replace-Text-in-csv-File">Shell Script vs Python to Replace Text in csv File<a class="anchor-link" href="#Shell-Script-vs-Python-to-Replace-Text-in-csv-File"> </a>
+</h3>
+<ul>
+<li>
+<code>vi ag_news_classes.json</code> </li>
+</ul>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">"ag_news"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"1"</span><span class="p">:</span> <span class="s2">"World"</span><span class="p">,</span>
+        <span class="nt">"2"</span><span class="p">:</span> <span class="s2">"Sports"</span><span class="p">,</span>
+        <span class="nt">"3"</span><span class="p">:</span> <span class="s2">"Business"</span><span class="p">,</span>
+        <span class="nt">"4"</span><span class="p">:</span> <span class="s2">"Sci/Tech"</span>
+    <span class="p">},</span>
+    <span class="nt">"dbpedia"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"1"</span><span class="p">:</span> <span class="s2">"Company"</span><span class="p">,</span>
+        <span class="nt">"2"</span><span class="p">:</span> <span class="s2">"EducationalInstitution"</span><span class="p">,</span>
+        <span class="nt">"3"</span><span class="p">:</span> <span class="s2">"Artist"</span><span class="p">,</span>
+        <span class="nt">"4"</span><span class="p">:</span> <span class="s2">"Athlete"</span><span class="p">,</span>
+        <span class="nt">"5"</span><span class="p">:</span> <span class="s2">"OfficeHolder"</span><span class="p">,</span>
+        <span class="nt">"6"</span><span class="p">:</span> <span class="s2">"MeanOfTransportation"</span><span class="p">,</span>
+        <span class="nt">"7"</span><span class="p">:</span> <span class="s2">"Building"</span><span class="p">,</span>
+        <span class="nt">"8"</span><span class="p">:</span> <span class="s2">"NaturalPlace"</span><span class="p">,</span>
+        <span class="nt">"9"</span><span class="p">:</span> <span class="s2">"Village"</span><span class="p">,</span>
+        <span class="nt">"10"</span><span class="p">:</span> <span class="s2">"Animal"</span><span class="p">,</span>
+        <span class="nt">"11"</span><span class="p">:</span> <span class="s2">"Plant"</span><span class="p">,</span>
+        <span class="nt">"12"</span><span class="p">:</span> <span class="s2">"Album"</span><span class="p">,</span>
+        <span class="nt">"13"</span><span class="p">:</span> <span class="s2">"Film"</span><span class="p">,</span>
+        <span class="nt">"14"</span><span class="p">:</span> <span class="s2">"WrittenWork"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<p><strong>Utilities</strong>: <code>grep</code>, <code>find</code>, <code>wc</code>, <code>sed</code>, <code>cut</code>, <code>jp</code></p>
+</li>
+<li>
+<p>vi <code>replace_class_num_with_text.sh</code></p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/text_datasets % cat replace_class_num_with_text.zsh 
+<span class="c1">#!/bin/zsh</span>
+<span class="nv">num_of_ag_news_classes</span><span class="o">=</span><span class="k">$(</span>jp -f dict_classes.json <span class="s1">'length(ag_news)'</span><span class="k">)</span>
+<span class="nv">num_of_dbpedia_classes</span><span class="o">=</span><span class="k">$(</span>jp -f dict_classes.json <span class="s1">'length(dbpedia)'</span><span class="k">)</span>
+<span class="nb">echo</span> <span class="nv">$num_of_ag_news_classes</span> <span class="nv">$num_of_dbpedia_classes</span>
+<span class="k">for</span> f in <span class="k">$(</span>find . -name <span class="s2">"*.csv"</span><span class="k">)</span>
+<span class="k">do</span>  
+    <span class="nb">echo</span> <span class="s2">"\n**************************"</span>
+    <span class="c1"># length_of_matched_text=$(echo "$f" | grep -e 'ag' -e 'db'| wc -m | sed 's/^ *//g')</span>
+    <span class="nv">dataset</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span> <span class="p">|</span> cut -d<span class="s1">'/'</span> -f2<span class="k">)</span>
+    <span class="nv">file</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span> <span class="p">|</span> cut -d<span class="s1">'/'</span> -f4<span class="k">)</span>
+    <span class="c1"># echo "$dataset" </span>
+    <span class="c1"># echo "$file"</span>
+    <span class="k">if</span> <span class="o">[[</span> <span class="nv">$dataset</span> <span class="o">==</span> <span class="s2">"ag_news"</span>  <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">"*****First IF: Processing dataset </span><span class="nv">$dataset</span><span class="s2"> and file </span><span class="nv">$file</span><span class="s2">********"</span>
+        <span class="k">for</span> i in <span class="o">{</span><span class="m">1</span>..<span class="nv">$num_of_ag_news_classes</span><span class="o">}</span><span class="p">;</span>
+        <span class="k">do</span>
+            <span class="nv">class_name</span><span class="o">=</span><span class="k">$(</span>jp -f dict_classes.json <span class="nv">$dataset</span>.<span class="se">\"</span><span class="nv">$i</span><span class="se">\"</span> -u <span class="p">|</span>sed -e <span class="s1">'s#/##'</span> -e <span class="s1">'s/"//g'</span><span class="k">)</span>
+            <span class="nb">echo</span> <span class="nv">$i</span> <span class="nv">$class_name</span>
+            sed -i -e <span class="s2">"s/</span><span class="nv">$i</span><span class="s2">/</span><span class="nv">$class_name</span><span class="s2">/"</span> <span class="nv">$f</span>
+        <span class="k">done</span>
+    <span class="k">fi</span>
+    <span class="k">if</span> <span class="o">[[</span> <span class="nv">$dataset</span> <span class="o">==</span> <span class="s2">"dbpedia"</span>  <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">"*****Second IF: Processing dataset </span><span class="nv">$dataset</span><span class="s2"> and file </span><span class="nv">$file</span><span class="s2">********"</span>
+        <span class="k">for</span> i in <span class="o">{</span><span class="nv">$num_of_dbpedia_classes</span>..1<span class="o">}</span><span class="p">;</span>
+        <span class="k">do</span>
+            <span class="nv">class_name</span><span class="o">=</span><span class="k">$(</span>jp -f dict_classes.json <span class="nv">$dataset</span>.<span class="se">\"</span><span class="nv">$i</span><span class="se">\"</span> -u<span class="p">|</span>sed -e <span class="s1">'s/"//g'</span><span class="k">)</span>
+            <span class="nb">echo</span> <span class="nv">$i</span> <span class="nv">$class_name</span>
+            sed -i -e <span class="s2">"s/</span><span class="nv">$i</span><span class="s2">/\"</span><span class="nv">$class_name</span><span class="s2">\"/"</span> <span class="nv">$f</span>
+        <span class="k">done</span>
+    <span class="k">fi</span>
+<span class="k">done</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>Time Taken</strong>: <code>17.7 seconds</code>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/text_datasets % <span class="nb">time</span> zsh replace_class_num_with_text.zsh 
+...
+...
+zsh replace_class_num_with_text.zsh  <span class="m">12</span>.17s user <span class="m">4</span>.93s system <span class="m">96</span>% cpu <span class="m">17</span>.666 total
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/text_datasets % head -n <span class="m">1</span> ./dbpedia/dbpedia_csv/test.csv
+<span class="s2">"Company"</span>,<span class="s2">"TY KU"</span>,<span class="s2">" TY KU /taɪkuː/ is an American alcoholic beverage company that specializes in sake and other spirits..."</span>
+
+senthilkumar.m@BashScripter ~/text_datasets % head -n <span class="m">1</span> ./dbpedia/dbpedia_csv/test.csv-e
+<span class="m">1</span>,<span class="s2">"TY KU"</span>,<span class="s2">" TY KU /taɪkuː/ is an American alcoholic beverage company that specializes in sake and other spirits..."</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Shell-Script-vs-Pythonto-Replace-Text-in-csv-File">Shell Script vs Pythonto Replace Text in csv File<a class="anchor-link" href="#Shell-Script-vs-Pythonto-Replace-Text-in-csv-File"> </a>
+</h3>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'dict_classes.json'</span><span class="p">,</span><span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">dict_classes</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="n">csv_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">glob</span><span class="p">(</span><span class="s1">'./*/*/*.csv'</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">csv_file</span> <span class="ow">in</span> <span class="n">csv_files</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">'ag_news|dbpedia'</span><span class="p">,</span><span class="n">csv_file</span><span class="p">):</span>
+        <span class="k">continue</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">'ag_news'</span><span class="p">,</span><span class="n">csv_file</span><span class="p">):</span>
+        <span class="n">repl_dict</span> <span class="o">=</span> <span class="n">dict_classes</span><span class="p">[</span><span class="s1">'ag_news'</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">'dbpedia'</span><span class="p">,</span> <span class="n">csv_file</span><span class="p">):</span>
+        <span class="n">repl_dict</span> <span class="o">=</span> <span class="n">dict_classes</span><span class="p">[</span><span class="s1">'dbpedia'</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">repl_dict</span><span class="p">)</span>
+    <span class="n">original_file</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">'.csv$'</span><span class="p">,</span><span class="s1">'_original.csv'</span><span class="p">,</span><span class="n">csv_file</span><span class="p">)</span> 
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Saving </span><span class="si">{</span><span class="n">original_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">,</span><span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">original_file</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Processing </span><span class="si">{</span><span class="n">csv_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">repl_dict</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>Time Taken</strong>: <code>8.3 seconds</code>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>...
+...
+python3 python_replace_script.py  <span class="m">7</span>.56s user <span class="m">0</span>.61s system <span class="m">98</span>% cpu <span class="m">8</span>.324 total
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span>senthilkumar.m@BashScripter ~/text_datasets_python % head -n <span class="m">1</span> ./dbpedia/dbpedia_csv/train_original.csv 
+<span class="m">1</span>,E. D. Abbott Ltd, Abbott of Farnham E D Abbott Limited was a British coachbuilding business ...
+senthilkumar.m@BashScripter ~/text_datasets_python % head -n <span class="m">1</span> ./dbpedia/dbpedia_csv/train.csv         
+Company,E. D. Abbott Ltd, Abbott of Farnham E D Abbott Limited was a British coachbuilding business ...
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<blockquote>
+<p>Shell Scripting (17.6 sec) miserably loses against Python (8.3 sec)</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4.-AWS-CLI-+-BASH-Scripring">4. AWS CLI + BASH Scripring<a class="anchor-link" href="#4.-AWS-CLI-+-BASH-Scripring"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="(1)-To-upload-multiple-files-to-S3">(1) To upload multiple files to S3<a class="anchor-link" href="#(1)-To-upload-multiple-files-to-S3"> </a>
+</h3>
+<ul>
+<li>Focus: <code>aws s3 cp</code> + <code>find</code> and <code>for</code> loop</li>
+</ul>
+
+<pre><code>#!/bin/zsh
+for f in $(find . -name "meta_data_files_*.csv")
+do 
+    aws s3 cp $f s3://s3_bucket_name/upload_csv/
+done</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="(2)-Parsing-JSON-output-from-AWS-CLI-(E.g.-Case---Extract-Periodical-Expense-Report)">(2) Parsing JSON output from AWS CLI (E.g. Case - Extract Periodical Expense Report)<a class="anchor-link" href="#(2)-Parsing-JSON-output-from-AWS-CLI-(E.g.-Case---Extract-Periodical-Expense-Report)"> </a>
+</h3>
+<ul>
+<li>Focus: <code>aws ce get-cost-and-usage</code> + <code>JSON Matching Expression Path (JMESPATH)</code> (<code>jp</code>)</li>
+</ul>
+
+<pre><code>#!/bin/zsh
+
+# boiler plate code accepting inputs
+...
+...
+
+
+aws ce get-cost-and-usage \
+--time-period Start=$start_date,End=$end_date \
+--granularity $type_of_report --metrics "BlendedCost" \
+--group-by Type=DIMENSION,Key=SERVICE \
+--query "ResultsByTime[0].Groups[].Keys" \ # querying a json output
+--output text &gt; aws_services.txt
+
+aws ce get-cost-and-usage \
+--time-period Start=$start_date,End=$end_date \
+--granularity $type_of_report \
+--metrics "BlendedCost" \
+--group-by Type=DIMENSION,Key=SERVICE \
+--query "ResultsByTime[0].Groups[].Metrics.BlendedCost.Amount" \
+--output text | sed -e 's/\t/\n/g'  &gt; aws_cost.txt
+
+echo "Service,Cost" &gt; $aws_cost_report_name
+
+paste -d',' aws_services.txt aws_cost.txt &gt;&gt; $aws_cost_report_name
+
+# how to run the above shell file
+# zsh create_aws_cost_report.sh --start_date=2022-10-01 --end_date=2022-10-31 --type_of_report=MONTHLY</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5.-Conclusion">5. Conclusion<a class="anchor-link" href="#5.-Conclusion"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Why-is-Shell-Scripting-so-hard?">
+<strong>Why is Shell Scripting so hard?</strong><a class="anchor-link" href="#Why-is-Shell-Scripting-so-hard?"> </a>
+</h3>
+<ul>
+<li>Complexity compounds | Commands like <code>awk</code> and <code>sed</code> are progamming lang on their own</li>
+<li>Every quote, space and stringed together commands have meaning</li>
+<li>Less errors | More unexpected behaviour</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Where-is-Shell-Scripting-most-useful?">
+<strong>Where is Shell Scripting most useful?</strong><a class="anchor-link" href="#Where-is-Shell-Scripting-most-useful?"> </a>
+</h3>
+<ul>
+<li>When the commands are only 5-20 lines long<ul>
+<li>Small repetitive tasks. E.g. For small needs involving AWS, small scripting jobs with <code>jmespath</code>
+</li>
+</ul>
+</li>
+</ul>
+
+<pre><code>for f in *.csv
+do
+     echo $f...
+     some transformation
+done</code></pre>
+<ul>
+<li>A pure shell script written 15-20 years ago could still yield the same result today</li>
+<li>Easier than packaging a Python application | Build process is smaller</li>
+<li>Shell in combination with other language is more useful</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Where-Shell-Scripting-can-be-avoided?">
+<strong>Where Shell Scripting can be avoided?</strong><a class="anchor-link" href="#Where-Shell-Scripting-can-be-avoided?"> </a>
+</h3>
+<ul>
+<li>Co-development is hard. Interpretability is tough.</li>
+<li>Errors do not always stop your flow. It will go to the next command</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<blockquote>
+<p>Unequivocally, Bash Scripting is definitely a useful skill to know in your toolbox</p>
+</blockquote>
 
 </div>
 </div>
@@ -176,11 +1098,13 @@ window.onload = wrap_img;
         </p>
       </div>
       <div class="footer-col">
-        <p>Hi I&#39;m Senthil Kumar. I am here to pen my learnings in Data Science and Coding</p>
+        <p>Hi I'm Senthil Kumar. I am here to pen my learnings in Data Science and Coding</p>
       </div>
     </div>
 
-    <div class="social-links"><ul class="social-media-list"><li>
+    <div class="social-links">
+<ul class="social-media-list">
+<li>
   <a rel="me" href="https://github.com/senthilkumarm1901/" target="_blank" title="github">
     <svg class="svg-icon grey">
       <use xlink:href="/learn_by_blogging/assets/minima-social-icons.svg#github"></use>
