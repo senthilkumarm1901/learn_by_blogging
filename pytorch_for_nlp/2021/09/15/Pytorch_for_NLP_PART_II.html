@@ -1,83 +1,95 @@
-<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>PyTorch Fundamentals for NLP - Part 2 | Learn By Blogging</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="PyTorch Fundamentals for NLP - Part 2" />
+<meta name="author" content="Senthil Kumar" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This blog post explains how to build Linear Text Classifiers using PyTorch’s modules such as nn.EmbeddingBag and nn.Embedding functions to convert tokenized text into embeddings" />
+<meta property="og:description" content="This blog post explains how to build Linear Text Classifiers using PyTorch’s modules such as nn.EmbeddingBag and nn.Embedding functions to convert tokenized text into embeddings" />
+<link rel="canonical" href="https://senthilkumarm1901.github.io/learn_by_blogging/pytorch_for_nlp/2021/09/15/Pytorch_for_NLP_PART_II.html" />
+<meta property="og:url" content="https://senthilkumarm1901.github.io/learn_by_blogging/pytorch_for_nlp/2021/09/15/Pytorch_for_NLP_PART_II.html" />
+<meta property="og:site_name" content="Learn By Blogging" />
+<meta property="og:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/pytorch_nn/linear_classifier_w_embedding.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-09-15T00:00:00-05:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/pytorch_nn/linear_classifier_w_embedding.png" />
+<meta property="twitter:title" content="PyTorch Fundamentals for NLP - Part 2" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2021-09-15T00:00:00-05:00","datePublished":"2021-09-15T00:00:00-05:00","description":"This blog post explains how to build Linear Text Classifiers using PyTorch’s modules such as nn.EmbeddingBag and nn.Embedding functions to convert tokenized text into embeddings","headline":"PyTorch Fundamentals for NLP - Part 2","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/pytorch_nn/linear_classifier_w_embedding.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/pytorch_for_nlp/2021/09/15/Pytorch_for_NLP_PART_II.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/pytorch_for_nlp/2021/09/15/Pytorch_for_NLP_PART_II.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/learn_by_blogging/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml" title="Learn By Blogging" /><link rel="shortcut icon" type="image/x-icon" href="/learn_by_blogging/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
 
-  <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">PyTorch Fundamentals for NLP - Part 2</h1><p class="page-description">This blog post explains how to build Linear Text Classifiers using PyTorch's modules such as `nn.EmbeddingBag` and `nn.Embedding` functions to convert tokenized text into embeddings</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-09-15T00:00:00-05:00" itemprop="datePublished">
-        Sep 15, 2021
-      </time>• 
-          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
-            <span class="p-author h-card" itemprop="name">Senthil Kumar</span></span>
-       • <span class="read-time" title="Estimated read time">
-    
-    
-      18 min read
-    
-</span></p>
 
-    
-      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
-      
-        <a class="category-tags-link" href="/learn_by_blogging/categories/#pytorch_for_nlp">pytorch_for_nlp</a>
-        
-      
-      </p>
-    
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
 
-    
-      
-        <div class="pb-5 d-flex flex-justify-center">
-          <div class="px-2">
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
 
-    <a href="https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_notebooks/2021-09-15-Pytorch_for_NLP_PART_II.ipynb" role="button" target="_blank">
-<img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/github.svg" alt="View On GitHub">
-    </a>
-</div>
+  <div class="wrapper"><a class="site-title" rel="author" href="/learn_by_blogging/">Learn By Blogging</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
 
-          <div class="px-2">
-    <a href="https://mybinder.org/v2/gh/senthilkumarm1901/learn_by_blogging/master?filepath=_notebooks%2F2021-09-15-Pytorch_for_NLP_PART_II.ipynb" target="_blank">
-        <img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/binder.svg" alt="Open In Binder"/>
-    </a>
-</div>
-
-          <div class="px-2">
-    <a href="https://colab.research.google.com/github/senthilkumarm1901/learn_by_blogging/blob/master/_notebooks/2021-09-15-Pytorch_for_NLP_PART_II.ipynb" target="_blank">
-        <img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/colab.svg" alt="Open In Colab"/>
-    </a>
-</div>
-          <div class="px-2">
-  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsenthilkumarm1901%2Flearn_by_blogging%2Fblob%2Fmaster%2F_notebooks%2F2021-09-15-Pytorch_for_NLP_PART_II.ipynb" target="_blank">
-      <img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
-  </a>
-</div>
-
-        </div>
-      </header>
-
-  <div class="post-content e-content" itemprop="articleBody">
-    <ul id="toc" class="section-nav">
-<li class="toc-entry toc-h2"><a href="#1.-Introduction">1. Introduction </a></li>
-<li class="toc-entry toc-h2"><a href="#2.Representing-Text-as-Tensors---A-Quick-Introduction">2.Representing Text as Tensors - A Quick Introduction </a></li>
-<li class="toc-entry toc-h2"><a href="#3.-Difference-between-nn.EmbeddingBag-vs-nn.Embedding">3. Difference between nn.EmbeddingBag vs nn.Embedding </a></li>
-<li class="toc-entry toc-h2"><a href="#4.-A-Text-Classification-Pipeline-using-nn.EmbeddingBag-+-nn.linear-Layer">4. A Text Classification Pipeline using nn.EmbeddingBag + nn.linear Layer </a>
-<ul>
-<li class="toc-entry toc-h4"><a href="#4.1.-Loading-dataset">4.1. Loading dataset </a></li>
-<li class="toc-entry toc-h4"><a href="#4.2.-Loading-Tokenizer">4.2. Loading Tokenizer </a></li>
-<li class="toc-entry toc-h4"><a href="#4.3.-Building-Vocabulary">4.3. Building Vocabulary </a></li>
-<li class="toc-entry toc-h4"><a href="#4.4.-Creating-EmbeddingsBag-related-pipelines">4.4. Creating EmbeddingsBag related pipelines </a></li>
-<li class="toc-entry toc-h4"><a href="#4.4.1-Exploring-arguments-for-nn.EmbeddingBag">4.4.1 Exploring arguments for nn.EmbeddingBag </a>
-<ul>
-<li class="toc-entry toc-h5"><a href="#4.4.2-Create-Collate-Function">4.4.2 Create Collate Function </a></li>
-</ul>
-</li>
-<li class="toc-entry toc-h4"><a href="#4.5.-Prepare-DataLoaders">4.5. Prepare DataLoaders </a></li>
-<li class="toc-entry toc-h3"><a href="#4.6.-Model-Architecture">4.6. Model Architecture </a></li>
-<li class="toc-entry toc-h3"><a href="#4.7.-Define-train_loop-and-test_loop-functions">4.7. Define train_loop and test_loop functions </a></li>
-<li class="toc-entry toc-h3"><a href="#4.8-Training-the-Model">4.8 Training the Model </a></li>
-<li class="toc-entry toc-h3"><a href="#4.9.Test-the-model-on-sample-text">4.9.Test the model on sample text </a></li>
-</ul>
-</li>
-<li class="toc-entry toc-h2"><a href="#5.-A-Text-Classification-Pipeline-using-nn.Embedding-+-nn.linear-Layer">5. A Text Classification Pipeline using nn.Embedding + nn.linear Layer </a></li>
-<li class="toc-entry toc-h2"><a href="#6.-Conclusion">6. Conclusion </a></li>
-</ul><!--
+        <div class="trigger"><a class="page-link" href="/learn_by_blogging/about/">About Me</a><a class="page-link" href="/learn_by_blogging/search/">Search</a><a class="page-link" href="/learn_by_blogging/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
 #################################################
@@ -86,184 +98,147 @@
 
 <div class="container" id="notebook-container">
         
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.-Introduction">
-<a class="anchor" href="#1.-Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Introduction<a class="anchor-link" href="#1.-Introduction"> </a>
-</h2>
+<h2 id="1.-Introduction">1. Introduction<a class="anchor-link" href="#1.-Introduction"> </a></h2>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In this blog piece, let us cover how we can build a</p>
 <ul>
-<li>
-<code>text classification</code> application using an embedding + fc layer</li>
+<li><code>text classification</code> application using an embedding + fc layer</li>
 </ul>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="2.Representing-Text-as-Tensors---A-Quick-Introduction">
-<a class="anchor" href="#2.Representing-Text-as-Tensors---A-Quick-Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.Representing Text as Tensors - A Quick Introduction<a class="anchor-link" href="#2.Representing-Text-as-Tensors---A-Quick-Introduction"> </a>
-</h2>
+<h2 id="2.Representing-Text-as-Tensors---A-Quick-Introduction">2.Representing Text as Tensors - A Quick Introduction<a class="anchor-link" href="#2.Representing-Text-as-Tensors---A-Quick-Introduction"> </a></h2>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>How do computers represent text?</strong></p>
 <ul>
 <li>Using encodings such as ASCII values to represent each character</li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/MicrosoftDocs/pytorchfundamentals/main/nlp-pytorch/images/ascii-character-map.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/MicrosoftDocs/pytorchfundamentals/main/nlp-pytorch/images/ascii-character-map.png" alt="" /></p>
 <p>Source: github.com/MicrosoftDocs/pytorchfundamentals</p>
-<blockquote>
-<p>Still computers cannot <code>interpret</code> the meaning of the words , they just <code>represent</code> text as ascii numbers in the above image</p>
+<blockquote><p>Still computers cannot <code>interpret</code> the meaning of the words , they just <code>represent</code> text as ascii numbers in the above image</p>
 </blockquote>
-<p><strong>How is text converted into embeddings?</strong> <br></p>
+<p><strong>How is text converted into embeddings?</strong> <br /></p>
 <ul>
-<li>
-<p>Two types of representations to convert text into numbers</p>
+<li><p>Two types of representations to convert text into numbers</p>
 <ul>
 <li>Character-level representation</li>
 <li>Word-level representation</li>
 <li>Token or sub-word level representation</li>
 </ul>
 </li>
-<li>
-<p>While Character-level and Word-level representations are self explanatory, Token-level representation is a combination of the above two approaches.</p>
+<li><p>While Character-level and Word-level representations are self explanatory, Token-level representation is a combination of the above two approaches.</p>
 </li>
 </ul>
-<p><u>Some important terms</u>:<br></p>
+<p><u>Some important terms</u>:<br /></p>
 <ul>
-<li>
-<strong>Tokenization</strong> (sentence/text --&gt; tokens): In the case sub-word level representations, for example, <code>unfriendly</code> will be <strong>tokenized</strong> as <code>un, #friend, #ly</code> where <code>#</code> indicates the token is a continuation of previous token. </li>
-<li>
-<p>This way of tokenization can make the model learnt/trained representations for <code>friend</code> and <code>unfriendly</code> to be closer to each other in the vector spacy</p>
+<li><strong>Tokenization</strong> (sentence/text --&gt; tokens): In the case sub-word level representations, for example, <code>unfriendly</code> will be <strong>tokenized</strong> as <code>un, #friend, #ly</code> where <code>#</code> indicates the token is a continuation of previous token. </li>
+<li><p>This way of tokenization can make the model learnt/trained representations for <code>friend</code> and <code>unfriendly</code> to be closer to each other in the vector spacy</p>
 </li>
-<li>
-<p><strong>Numericalization</strong> (tokens --&gt; numericals): This is the step where we convert tokens into integers.</p>
+<li><p><strong>Numericalization</strong> (tokens --&gt; numericals): This is the step where we convert tokens into integers.</p>
 </li>
-<li>
-<p><strong>Vectorization</strong> (numericals --&gt; vectors): This is the process of creating vectors (typically sparse and equal to the length of the vocabulary of the corpus analyzed)</p>
+<li><p><strong>Vectorization</strong> (numericals --&gt; vectors): This is the process of creating vectors (typically sparse and equal to the length of the vocabulary of the corpus analyzed)</p>
 </li>
-<li>
-<p><strong>Embedding</strong> (numericals --&gt; embeddings): For text data, embedding is a lower dimensional equivalent of a higher dimensional sparse vector. Embeddings are typically dense. Vectors are sparse.</p>
+<li><p><strong>Embedding</strong> (numericals --&gt; embeddings): For text data, embedding is a lower dimensional equivalent of a higher dimensional sparse vector. Embeddings are typically dense. Vectors are sparse.</p>
 </li>
 </ul>
-<p><br></p>
-<p><strong>Typical Process of Embedding Creation</strong> <br></p>
+<p><br /></p>
+<p><strong>Typical Process of Embedding Creation</strong> <br /></p>
 <ul>
-<li>
-<code>text_data</code> &gt;&gt; <code>tokens</code> &gt;&gt; <code>numericals</code> &gt;&gt; sparse <code>vectors</code> or dense <code>embeddings</code> </li>
+<li><code>text_data</code> &gt;&gt; <code>tokens</code> &gt;&gt; <code>numericals</code> &gt;&gt; sparse <code>vectors</code> or dense <code>embeddings</code> </li>
 </ul>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="3.-Difference-between-nn.EmbeddingBag-vs-nn.Embedding">
-<a class="anchor" href="#3.-Difference-between-nn.EmbeddingBag-vs-nn.Embedding" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Difference between <code>nn.EmbeddingBag</code> vs <code>nn.Embedding</code><a class="anchor-link" href="#3.-Difference-between-nn.EmbeddingBag-vs-nn.Embedding"> </a>
-</h2>
+<h2 id="3.-Difference-between-nn.EmbeddingBag-vs-nn.Embedding">3. Difference between <code>nn.EmbeddingBag</code> vs <code>nn.Embedding</code><a class="anchor-link" href="#3.-Difference-between-nn.EmbeddingBag-vs-nn.Embedding"> </a></h2>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>
-<p><code>nn.Embedding</code>: A simple lookup table that looks up embeddings in a fixed dictionary and size.</p>
+<li><p><code>nn.Embedding</code>: A simple lookup table that looks up embeddings in a fixed dictionary and size.</p>
 </li>
-<li>
-<p><code>nn.EmbeddingBag</code>: Computes sums, means or maxes of bags of embeddings, without instantiating the intermediate embeddings.</p>
+<li><p><code>nn.EmbeddingBag</code>: Computes sums, means or maxes of bags of embeddings, without instantiating the intermediate embeddings.</p>
 </li>
 </ul>
 <p>Source: PyTorch Official Documentation</p>
-<p><img src="https://jamesmccaffrey.files.wordpress.com/2021/03/regular_embedding_vs_embedding_bag_diagram.jpg?w=640&amp;h=394" alt=""></p>
+<p><img src="https://jamesmccaffrey.files.wordpress.com/2021/03/regular_embedding_vs_embedding_bag_diagram.jpg?w=640&amp;h=394" alt="" /></p>
 <p><strong><code>nn.Embedding</code> Explanation</strong>:</p>
 <ul>
 <li>In the above pic, we can see that the encoding of <code>men write code</code> being embedded as <code>[(0.312,0.385), (0.543, 0.481), (0.203, 0.404)]</code> where <code>embed_dim=2</code>. </li>
-<li>Looking closer, <code>men</code> is embedded as <code>(0.312,0.385)</code> and the trailing <code>&lt;pad&gt;</code> token is embedded as <code>(0.203, 0.404)</code>
-</li>
+<li>Looking closer, <code>men</code> is embedded as <code>(0.312,0.385)</code> and the trailing <code>&lt;pad&gt;</code> token is embedded as <code>(0.203, 0.404)</code></li>
 </ul>
-<p><strong><code>nn.EmbeddingBag</code> Explanation</strong>: <br></p>
+<p><strong><code>nn.EmbeddingBag</code> Explanation</strong>: <br /></p>
 <ul>
 <li>In here, there is no padding token. The sentences in a batch are connnected together and saved with their <code>offsets</code> array</li>
 <li>Instead of each word being represented by an embedding vector, each sentence is embedded into a embedding vector</li>
-<li>This above process of "computing a single vector for an entire sentence" is possible also from <code>nn.Embedding</code> followed by <code>torch.mean(dim=1)</code> or <code>torch.sum(dim=1)</code> or <code>torch.max(dim=1)</code>
-</li>
+<li>This above process of "computing a single vector for an entire sentence" is possible also from <code>nn.Embedding</code> followed by <code>torch.mean(dim=1)</code> or <code>torch.sum(dim=1)</code> or <code>torch.max(dim=1)</code></li>
 </ul>
 <p><strong>So, when to use <code>nn.EmbeddingBag</code>?</strong></p>
 <ul>
 <li>nn.EmbeddingBag works better when sequential information of words is not needed. </li>
 <li>Hence can be used with simple Feed forward NN and not with LSTMs or Transformers (all the embedded words are sent at once and they are sequentially processed either from both directions or unidirectional)</li>
 </ul>
-<p>Sources: <br></p>
+<p>Sources: <br /></p>
 <ul>
-<li>
-<code>nn.EmbeddingBag</code> vs <code>nn.Embedding</code> | <a href="https://jamesmccaffrey.wordpress.com/2021/04/14/explaining-the-pytorch-embeddingbag-layer/">link</a>
-</li>
-<li>
-<code>nn.Emedding</code> followed by <code>torch.mean(dim=1)</code> | <a href="https://pytorch.org/docs/stable/generated/torch.nn.EmbeddingBag.html#torch.nn.EmbeddingBag">link</a>
-</li>
+<li><code>nn.EmbeddingBag</code> vs <code>nn.Embedding</code> | <a href="https://jamesmccaffrey.wordpress.com/2021/04/14/explaining-the-pytorch-embeddingbag-layer/">link</a></li>
+<li><code>nn.Emedding</code> followed by <code>torch.mean(dim=1)</code> | <a href="https://pytorch.org/docs/stable/generated/torch.nn.EmbeddingBag.html#torch.nn.EmbeddingBag">link</a></li>
 </ul>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="4.-A-Text-Classification-Pipeline-using-nn.EmbeddingBag-+-nn.linear-Layer">
-<a class="anchor" href="#4.-A-Text-Classification-Pipeline-using-nn.EmbeddingBag-+-nn.linear-Layer" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. A Text Classification Pipeline using <code>nn.EmbeddingBag</code> + <code>nn.linear</code> Layer<a class="anchor-link" href="#4.-A-Text-Classification-Pipeline-using-nn.EmbeddingBag-+-nn.linear-Layer"> </a>
-</h2>
+<h2 id="4.-A-Text-Classification-Pipeline-using-nn.EmbeddingBag-+-nn.linear-Layer">4. A Text Classification Pipeline using <code>nn.EmbeddingBag</code> + <code>nn.linear</code> Layer<a class="anchor-link" href="#4.-A-Text-Classification-Pipeline-using-nn.EmbeddingBag-+-nn.linear-Layer"> </a></h2>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>Dataset considered: <strong>AG_NEWS</strong> dataset that consists of 4 classes - <code>World, Sports, Business and Sci/Tech</code>
-</li>
+<li>Dataset considered: <strong>AG_NEWS</strong> dataset that consists of 4 classes - <code>World, Sports, Business and Sci/Tech</code></li>
 </ul>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>┣━━ <strong>1.Loading dataset</strong> <br>
-┃   ┣━━ <code>torch.data.utils.datasets.AG_NEWS</code> <br>
-┣━━ <strong>2.Load Tokenization</strong> <br>
-┃   ┣━━ <code>torchtext.data.utils.get_tokenizer('basic_english')</code> <br>
-┣━━ <strong>3.Build vocabulary</strong> <br>
-┃   ┣━━ <code>torchtext.vocab.build_vocab_from_iterator(train_iterator)</code> <br>
-┣━━ <strong>4.Create <code>EmbeddingsBag</code></strong><br>
-┃   ┣━━ Create <code>collate_fn</code> to create triplets of label-feature-offsets tensors for every minibatch <br>
-┣━━ <strong>5.Create train, validation and test <code>DataLoaders</code></strong><br>
-┣━━ <strong>6.Define <code>Model_Architecture</code></strong><br>
-┣━━ <strong>7.define <code>training_loop</code> and <code>testing_loop</code> functions</strong><br>
-┣━━ <strong>8.Train the model and Evaluate on Test Data</strong><br>
-┣━━ <strong>9.Test the model on sample text</strong><br></p>
+<p>┣━━ <strong>1.Loading dataset</strong> <br />
+┃   ┣━━ <code>torch.data.utils.datasets.AG_NEWS</code> <br />
+┣━━ <strong>2.Load Tokenization</strong> <br />
+┃   ┣━━ <code>torchtext.data.utils.get_tokenizer('basic_english')</code> <br />
+┣━━ <strong>3.Build vocabulary</strong> <br />
+┃   ┣━━ <code>torchtext.vocab.build_vocab_from_iterator(train_iterator)</code> <br />
+┣━━ <strong>4.Create <code>EmbeddingsBag</code></strong><br />
+┃   ┣━━ Create <code>collate_fn</code> to create triplets of label-feature-offsets tensors for every minibatch <br />
+┣━━ <strong>5.Create train, validation and test <code>DataLoaders</code></strong><br />
+┣━━ <strong>6.Define <code>Model_Architecture</code></strong><br />
+┣━━ <strong>7.define <code>training_loop</code> and <code>testing_loop</code> functions</strong><br />
+┣━━ <strong>8.Train the model and Evaluate on Test Data</strong><br />
+┣━━ <strong>9.Test the model on sample text</strong><br /></p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Importing basic modules</p>
 
@@ -275,8 +250,7 @@
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
@@ -292,23 +266,20 @@
 
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
 
-<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">"cuda"</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span><span class="p">)</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="4.1.-Loading-dataset">
-<a class="anchor" href="#4.1.-Loading-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.1. Loading dataset<a class="anchor-link" href="#4.1.-Loading-dataset"> </a>
-</h4>
+<h4 id="4.1.-Loading-dataset">4.1. Loading dataset<a class="anchor-link" href="#4.1.-Loading-dataset"> </a></h4>
 </div>
 </div>
 </div>
@@ -317,14 +288,13 @@
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">load_dataset</span><span class="p">(</span><span class="n">ngrams</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Loading dataset ..."</span><span class="p">)</span>
-    <span class="n">train_dataset</span><span class="p">,</span> <span class="n">test_dataset</span> <span class="o">=</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">AG_NEWS</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s1">'./data'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading dataset ...&quot;</span><span class="p">)</span>
+    <span class="n">train_dataset</span><span class="p">,</span> <span class="n">test_dataset</span> <span class="o">=</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">AG_NEWS</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s1">&#39;./data&#39;</span><span class="p">)</span>
     <span class="n">train_dataset</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">)</span>
     <span class="n">test_dataset</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">test_dataset</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">train_dataset</span><span class="p">,</span> <span class="n">test_dataset</span>
@@ -333,7 +303,7 @@
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
@@ -376,7 +346,7 @@
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">classes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'World'</span><span class="p">,</span> <span class="s1">'Sports'</span><span class="p">,</span> <span class="s1">'Business'</span><span class="p">,</span> <span class="s1">'Sci/Tech'</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">classes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;World&#39;</span><span class="p">,</span> <span class="s1">&#39;Sports&#39;</span><span class="p">,</span> <span class="s1">&#39;Business&#39;</span><span class="p">,</span> <span class="s1">&#39;Sci/Tech&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -386,12 +356,9 @@
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="4.2.-Loading-Tokenizer">
-<a class="anchor" href="#4.2.-Loading-Tokenizer" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.2. Loading Tokenizer<a class="anchor-link" href="#4.2.-Loading-Tokenizer"> </a>
-</h4>
+<h4 id="4.2.-Loading-Tokenizer">4.2. Loading Tokenizer<a class="anchor-link" href="#4.2.-Loading-Tokenizer"> </a></h4>
 </div>
 </div>
 </div>
@@ -402,7 +369,7 @@
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_tokenizer</span><span class="p">(</span><span class="s1">'basic_english'</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_tokenizer</span><span class="p">(</span><span class="s1">&#39;basic_english&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -412,12 +379,9 @@
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="4.3.-Building-Vocabulary">
-<a class="anchor" href="#4.3.-Building-Vocabulary" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3. Building Vocabulary<a class="anchor-link" href="#4.3.-Building-Vocabulary"> </a>
-</h4>
+<h4 id="4.3.-Building-Vocabulary">4.3. Building Vocabulary<a class="anchor-link" href="#4.3.-Building-Vocabulary"> </a></h4>
 </div>
 </div>
 </div>
@@ -426,8 +390,7 @@
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
@@ -437,19 +400,19 @@
 
 
 <span class="k">def</span> <span class="nf">create_vocab</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Building vocabulary .."</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Building vocabulary ..&quot;</span><span class="p">)</span>
     <span class="n">vocab</span> <span class="o">=</span> <span class="n">build_vocab_from_iterator</span><span class="p">(</span><span class="n">_yield_tokens</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">),</span>
                                       <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                      <span class="n">specials</span><span class="o">=</span><span class="p">[</span><span class="s1">'&lt;unk&gt;'</span><span class="p">]</span>
+                                      <span class="n">specials</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&lt;unk&gt;&#39;</span><span class="p">]</span>
                                      <span class="p">)</span>
-    <span class="n">vocab</span><span class="o">.</span><span class="n">set_default_index</span><span class="p">(</span><span class="n">vocab</span><span class="p">[</span><span class="s1">'&lt;unk&gt;'</span><span class="p">])</span>
+    <span class="n">vocab</span><span class="o">.</span><span class="n">set_default_index</span><span class="p">(</span><span class="n">vocab</span><span class="p">[</span><span class="s1">&#39;&lt;unk&gt;&#39;</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">vocab</span>
 </pre></div>
 
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
@@ -493,7 +456,7 @@
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">vocab_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Vocab size ="</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Vocab size =&quot;</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -524,7 +487,7 @@
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vocab</span><span class="p">([</span><span class="s1">'this'</span><span class="p">,</span> <span class="s1">'is'</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">,</span> <span class="s1">'sports'</span><span class="p">,</span> <span class="s1">'article'</span><span class="p">,</span><span class="s1">'&lt;unk&gt;'</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vocab</span><span class="p">([</span><span class="s1">&#39;this&#39;</span><span class="p">,</span> <span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;sports&#39;</span><span class="p">,</span> <span class="s1">&#39;article&#39;</span><span class="p">,</span><span class="s1">&#39;&lt;unk&gt;&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -550,8 +513,7 @@
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Looking at some sample data</p>
 
@@ -568,7 +530,7 @@
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">label</span><span class="p">,</span><span class="n">classes</span><span class="p">[</span><span class="n">label</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"******"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;******&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -585,7 +547,7 @@
 EU-25 among least corrupt in global index Corruption is rampant in sixty countries of the world and the public sector continues to be plagued by bribery, says a report by a respected global corruption watchdog.
 ******
 4 Sci/Tech
-IDC Raises '04 PC Growth View, Trims '05 (Reuters) Reuters - Shipments of personal computers\this year will be higher than previously anticipated, boosted\by the strongest demand from businesses in five years, research\firm IDC said on Monday.
+IDC Raises &#39;04 PC Growth View, Trims &#39;05 (Reuters) Reuters - Shipments of personal computers\this year will be higher than previously anticipated, boosted\by the strongest demand from businesses in five years, research\firm IDC said on Monday.
 ******
 2 Sports
 The not-so-great cover-up A crisis, they say, is the best way to test the efficiency of a system. At the Wankhede Stadium, there was a crisis on the first morning when unseasonal showers showed up on the first morning of the final Test.
@@ -600,21 +562,16 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="4.4.-Creating-EmbeddingsBag-related-pipelines">
-<a class="anchor" href="#4.4.-Creating-EmbeddingsBag-related-pipelines" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4. Creating <code>EmbeddingsBag</code> related pipelines<a class="anchor-link" href="#4.4.-Creating-EmbeddingsBag-related-pipelines"> </a>
-</h4>
+<h4 id="4.4.-Creating-EmbeddingsBag-related-pipelines">4.4. Creating <code>EmbeddingsBag</code> related pipelines<a class="anchor-link" href="#4.4.-Creating-EmbeddingsBag-related-pipelines"> </a></h4>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>The text pipeline purpose is <code>to convert text into tokens</code>
-</li>
+<li>The text pipeline purpose is <code>to convert text into tokens</code></li>
 <li>the label pipeline is to have labels from 0 to 3</li>
 </ul>
 
@@ -646,7 +603,7 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_text_pipeline</span><span class="p">(</span><span class="s2">"this is a sports article"</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_text_pipeline</span><span class="p">(</span><span class="s2">&quot;this is a sports article&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -679,7 +636,7 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_label_pipeline</span><span class="p">(</span><span class="s1">'3'</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_label_pipeline</span><span class="p">(</span><span class="s1">&#39;3&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -705,13 +662,9 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="4.4.1-Exploring-arguments-for-nn.EmbeddingBag">
-<a class="anchor" href="#4.4.1-Exploring-arguments-for-nn.EmbeddingBag" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.1 Exploring arguments for nn.EmbeddingBag<a class="anchor-link" href="#4.4.1-Exploring-arguments-for-nn.EmbeddingBag"> </a>
-</h4>
-<p><code>nn.EmbeddingBag()(input_tensor, offsets)</code></p>
+<h4 id="4.4.1-Exploring-arguments-for-nn.EmbeddingBag">4.4.1 Exploring arguments for nn.EmbeddingBag<a class="anchor-link" href="#4.4.1-Exploring-arguments-for-nn.EmbeddingBag"> </a></h4><p><code>nn.EmbeddingBag()(input_tensor, offsets)</code></p>
 
 </div>
 </div>
@@ -755,19 +708,15 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="4.4.2-Create-Collate-Function">
-<a class="anchor" href="#4.4.2-Create-Collate-Function" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2 Create Collate Function<a class="anchor-link" href="#4.4.2-Create-Collate-Function"> </a>
-</h5>
+<h5 id="4.4.2-Create-Collate-Function">4.4.2 Create Collate Function<a class="anchor-link" href="#4.4.2-Create-Collate-Function"> </a></h5>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="https://docs.microsoft.com/en-us/learn/modules/intro-natural-language-processing-pytorch/images/4-embedding-4.png" alt=""></p>
+<p><img src="https://docs.microsoft.com/en-us/learn/modules/intro-natural-language-processing-pytorch/images/4-embedding-4.png" alt="" /></p>
 
 </div>
 </div>
@@ -802,12 +751,9 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="4.5.-Prepare-DataLoaders">
-<a class="anchor" href="#4.5.-Prepare-DataLoaders" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.5. Prepare DataLoaders<a class="anchor-link" href="#4.5.-Prepare-DataLoaders"> </a>
-</h4>
+<h4 id="4.5.-Prepare-DataLoaders">4.5. Prepare DataLoaders<a class="anchor-link" href="#4.5.-Prepare-DataLoaders"> </a></h4>
 </div>
 </div>
 </div>
@@ -982,12 +928,9 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.6.-Model-Architecture">
-<a class="anchor" href="#4.6.-Model-Architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.6. Model Architecture<a class="anchor-link" href="#4.6.-Model-Architecture"> </a>
-</h3>
+<h3 id="4.6.-Model-Architecture">4.6. Model Architecture<a class="anchor-link" href="#4.6.-Model-Architecture"> </a></h3>
 </div>
 </div>
 </div>
@@ -1033,8 +976,7 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Initializing model and embedding dimension</p>
 
@@ -1149,12 +1091,9 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.7.-Define-train_loop-and-test_loop-functions">
-<a class="anchor" href="#4.7.-Define-train_loop-and-test_loop-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.7. Define <code>train_loop</code> and <code>test_loop</code> functions<a class="anchor-link" href="#4.7.-Define-train_loop-and-test_loop-functions"> </a>
-</h3>
+<h3 id="4.7.-Define-train_loop-and-test_loop-functions">4.7. Define <code>train_loop</code> and <code>test_loop</code> functions<a class="anchor-link" href="#4.7.-Define-train_loop-and-test_loop-functions"> </a></h3>
 </div>
 </div>
 </div>
@@ -1163,8 +1102,7 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
@@ -1180,7 +1118,7 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
@@ -1206,7 +1144,7 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
     <span class="n">validation_loss_per_epoch</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">batch_number</span><span class="p">,</span> <span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">offsets</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">batch_number</span> <span class="o">%</span><span class="k">100</span> == 0:
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"In epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">, training of </span><span class="si">{</span><span class="n">batch_number</span><span class="si">}</span><span class="s2"> batches are over"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;In epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">, training of </span><span class="si">{</span><span class="n">batch_number</span><span class="si">}</span><span class="s2"> batches are over&quot;</span><span class="p">)</span>
         <span class="c1"># following two lines are used while for testing if the fns are accurate</span>
         <span class="c1"># if batch_number %10 == 0:</span>
         <span class="c1">#    break</span>
@@ -1244,8 +1182,8 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
     
     <span class="n">avg_training_loss</span> <span class="o">=</span> <span class="n">training_loss_per_epoch</span> <span class="o">/</span> <span class="n">train_size</span>
     <span class="n">avg_validation_loss</span> <span class="o">=</span> <span class="n">validation_loss_per_epoch</span> <span class="o">/</span> <span class="n">validation_size</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average Training Loss of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">avg_training_loss</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average Validation Loss of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">avg_validation_loss</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average Training Loss of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">avg_training_loss</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average Validation Loss of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">avg_validation_loss</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1279,10 +1217,10 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
             <span class="n">test_loss_per_epoch</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
             <span class="n">accuracy_per_epoch</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pred</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">==</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
     <span class="c1"># following two lines are used only while testing if the fns are accurate</span>
-    <span class="c1"># print(f"Last Prediction \n 1. {pred}, \n 2.{pred.argmax()}, \n 3.{pred.argmax(1)}, \n 4.{pred.argmax(1)==labels}")</span>
-    <span class="c1"># print(f"Last predicted label: \n {labels}")</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average Test Loss of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">test_loss_per_epoch</span><span class="o">/</span><span class="n">test_size</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average Accuracy of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">accuracy_per_epoch</span><span class="o">/</span><span class="n">test_size</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># print(f&quot;Last Prediction \n 1. {pred}, \n 2.{pred.argmax()}, \n 3.{pred.argmax(1)}, \n 4.{pred.argmax(1)==labels}&quot;)</span>
+    <span class="c1"># print(f&quot;Last predicted label: \n {labels}&quot;)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average Test Loss of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">test_loss_per_epoch</span><span class="o">/</span><span class="n">test_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average Accuracy of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">accuracy_per_epoch</span><span class="o">/</span><span class="n">test_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1292,12 +1230,9 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.8-Training-the-Model">
-<a class="anchor" href="#4.8-Training-the-Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.8 Training the Model<a class="anchor-link" href="#4.8-Training-the-Model"> </a>
-</h3>
+<h3 id="4.8-Training-the-Model">4.8 Training the Model<a class="anchor-link" href="#4.8-Training-the-Model"> </a></h3>
 </div>
 </div>
 </div>
@@ -1370,7 +1305,7 @@ The not-so-great cover-up A crisis, they say, is the best way to test the effici
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
 <span class="c1"># it takes time to run this model</span>
 <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epoch_size</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Epoch Number: </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">---------------------"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch Number: </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">---------------------&quot;</span><span class="p">)</span>
     <span class="n">train_loop</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> 
                <span class="n">train_dataloader</span><span class="p">,</span> 
                <span class="n">valid_dataloader</span><span class="p">,</span>
@@ -1437,12 +1372,9 @@ Wall time: 6min 13s
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.9.Test-the-model-on-sample-text">
-<a class="anchor" href="#4.9.Test-the-model-on-sample-text" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.9.Test the model on sample text<a class="anchor-link" href="#4.9.Test-the-model-on-sample-text"> </a>
-</h3>
+<h3 id="4.9.Test-the-model-on-sample-text">4.9.Test the model on sample text<a class="anchor-link" href="#4.9.Test-the-model-on-sample-text"> </a></h3>
 </div>
 </div>
 </div>
@@ -1453,10 +1385,10 @@ Wall time: 6min 13s
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ag_news_label</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s2">"World"</span><span class="p">,</span>
-                 <span class="mi">2</span><span class="p">:</span> <span class="s2">"Sports"</span><span class="p">,</span>
-                 <span class="mi">3</span><span class="p">:</span> <span class="s2">"Business"</span><span class="p">,</span>
-                 <span class="mi">4</span><span class="p">:</span> <span class="s2">"Sci/Tec"</span><span class="p">}</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ag_news_label</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;World&quot;</span><span class="p">,</span>
+                 <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;Sports&quot;</span><span class="p">,</span>
+                 <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;Business&quot;</span><span class="p">,</span>
+                 <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;Sci/Tec&quot;</span><span class="p">}</span>
 
 <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
@@ -1467,7 +1399,7 @@ Wall time: 6min 13s
         <span class="n">output_label</span> <span class="o">=</span> <span class="n">ag_news_label</span><span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">output_label</span>
     
-<span class="n">sample_string</span> <span class="o">=</span> <span class="s2">"MEMPHIS, Tenn. – Four days ago, Jon Rahm was </span><span class="se">\</span>
+<span class="n">sample_string</span> <span class="o">=</span> <span class="s2">&quot;MEMPHIS, Tenn. – Four days ago, Jon Rahm was </span><span class="se">\</span>
 <span class="s2">    enduring the season’s worst weather conditions on Sunday at The </span><span class="se">\</span>
 <span class="s2">    Open on his way to a closing 75 at Royal Portrush, which </span><span class="se">\</span>
 <span class="s2">    considering the wind and the rain was a respectable showing. </span><span class="se">\</span>
@@ -1477,11 +1409,11 @@ Wall time: 6min 13s
 <span class="s2">    Thanks to his best putting performance on the PGA Tour, Rahm </span><span class="se">\</span>
 <span class="s2">    finished with an 8-under 62 for a three-stroke lead, which </span><span class="se">\</span>
 <span class="s2">    was even more impressive considering he’d never played the </span><span class="se">\</span>
-<span class="s2">    front nine at TPC Southwind."</span>
+<span class="s2">    front nine at TPC Southwind.&quot;</span>
 
-<span class="n">cpu_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"cpu"</span><span class="p">)</span>
+<span class="n">cpu_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"This is a </span><span class="si">{</span><span class="n">predict</span><span class="p">(</span><span class="n">sample_string</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">cpu_model</span><span class="p">)</span><span class="si">}</span><span class="s2"> news"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This is a </span><span class="si">{</span><span class="n">predict</span><span class="p">(</span><span class="n">sample_string</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">cpu_model</span><span class="p">)</span><span class="si">}</span><span class="s2"> news&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1505,49 +1437,42 @@ Wall time: 6min 13s
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="5.-A-Text-Classification-Pipeline-using-nn.Embedding-+-nn.linear-Layer">
-<a class="anchor" href="#5.-A-Text-Classification-Pipeline-using-nn.Embedding-+-nn.linear-Layer" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. A Text Classification Pipeline using <code>nn.Embedding</code> + <code>nn.linear</code> Layer<a class="anchor-link" href="#5.-A-Text-Classification-Pipeline-using-nn.Embedding-+-nn.linear-Layer"> </a>
-</h2>
+<h2 id="5.-A-Text-Classification-Pipeline-using-nn.Embedding-+-nn.linear-Layer">5. A Text Classification Pipeline using <code>nn.Embedding</code> + <code>nn.linear</code> Layer<a class="anchor-link" href="#5.-A-Text-Classification-Pipeline-using-nn.Embedding-+-nn.linear-Layer"> </a></h2>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>Dataset considered: <strong>AG_NEWS</strong> dataset that consists of 4 classes - <code>World, Sports, Business and Sci/Tech</code>
-</li>
+<li>Dataset considered: <strong>AG_NEWS</strong> dataset that consists of 4 classes - <code>World, Sports, Business and Sci/Tech</code></li>
 </ul>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>(same architecture as previous one, except the change in step 4)</p>
-<p>┣━━ <strong>1.Loading dataset</strong> <br>
-┃   ┣━━ <code>torch.data.utils.datasets.AG_NEWS</code> <br>
-┣━━ <strong>2.Load Tokenization</strong> <br>
-┃   ┣━━ <code>torchtext.data.utils.get_tokenizer('basic_english')</code> <br>
-┣━━ <strong>3.Build vocabulary</strong> <br>
-┃   ┣━━ <code>torchtext.vocab.build_vocab_from_iterator(train_iterator)</code> <br>
-┣━━ <strong>4.Create <code>Embedding</code></strong> layer<br>
-┃   ┣━━ Create <code>collate_fn</code> (<code>padify</code>) to create pairs of label-feature tensors for every minibatch <br>
-┣━━ <strong>5.Create train, validation and test <code>DataLoaders</code></strong><br>
-┣━━ <strong>6.Define <code>Model_Architecture</code></strong><br>
-┣━━ <strong>7.define <code>training_loop</code> and <code>testing_loop</code> functions</strong><br>
-┣━━ <strong>8.Train the model and Evaluate on Test Data</strong><br>
-┣━━ <strong>9.Test the model on sample text</strong><br></p>
+<p>┣━━ <strong>1.Loading dataset</strong> <br />
+┃   ┣━━ <code>torch.data.utils.datasets.AG_NEWS</code> <br />
+┣━━ <strong>2.Load Tokenization</strong> <br />
+┃   ┣━━ <code>torchtext.data.utils.get_tokenizer('basic_english')</code> <br />
+┣━━ <strong>3.Build vocabulary</strong> <br />
+┃   ┣━━ <code>torchtext.vocab.build_vocab_from_iterator(train_iterator)</code> <br />
+┣━━ <strong>4.Create <code>Embedding</code></strong> layer<br />
+┃   ┣━━ Create <code>collate_fn</code> (<code>padify</code>) to create pairs of label-feature tensors for every minibatch <br />
+┣━━ <strong>5.Create train, validation and test <code>DataLoaders</code></strong><br />
+┣━━ <strong>6.Define <code>Model_Architecture</code></strong><br />
+┣━━ <strong>7.define <code>training_loop</code> and <code>testing_loop</code> functions</strong><br />
+┣━━ <strong>8.Train the model and Evaluate on Test Data</strong><br />
+┣━━ <strong>9.Test the model on sample text</strong><br /></p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Importing basic modules</p>
 
@@ -1559,8 +1484,7 @@ Wall time: 6min 13s
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
@@ -1576,19 +1500,18 @@ Wall time: 6min 13s
 
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
 
-<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">"cuda"</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span><span class="p">)</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>5.1. Loading dataset</strong></p>
 
@@ -1600,14 +1523,13 @@ Wall time: 6min 13s
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">load_dataset</span><span class="p">(</span><span class="n">ngrams</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Loading dataset ..."</span><span class="p">)</span>
-    <span class="n">train_dataset</span><span class="p">,</span> <span class="n">test_dataset</span> <span class="o">=</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">AG_NEWS</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s1">'./data'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading dataset ...&quot;</span><span class="p">)</span>
+    <span class="n">train_dataset</span><span class="p">,</span> <span class="n">test_dataset</span> <span class="o">=</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">AG_NEWS</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s1">&#39;./data&#39;</span><span class="p">)</span>
     <span class="n">train_dataset</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">)</span>
     <span class="n">test_dataset</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">test_dataset</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">train_dataset</span><span class="p">,</span> <span class="n">test_dataset</span>
@@ -1616,7 +1538,7 @@ Wall time: 6min 13s
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
@@ -1659,7 +1581,7 @@ Wall time: 6min 13s
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">classes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'World'</span><span class="p">,</span> <span class="s1">'Sports'</span><span class="p">,</span> <span class="s1">'Business'</span><span class="p">,</span> <span class="s1">'Sci/Tech'</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">classes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;World&#39;</span><span class="p">,</span> <span class="s1">&#39;Sports&#39;</span><span class="p">,</span> <span class="s1">&#39;Business&#39;</span><span class="p">,</span> <span class="s1">&#39;Sci/Tech&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -1669,8 +1591,7 @@ Wall time: 6min 13s
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>5.2. Loading Tokenizer</strong></p>
 
@@ -1684,7 +1605,7 @@ Wall time: 6min 13s
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_tokenizer</span><span class="p">(</span><span class="s1">'basic_english'</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_tokenizer</span><span class="p">(</span><span class="s1">&#39;basic_english&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1694,8 +1615,7 @@ Wall time: 6min 13s
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>5.3. Building Vocabulary</strong></p>
 
@@ -1707,8 +1627,7 @@ Wall time: 6min 13s
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
@@ -1718,19 +1637,19 @@ Wall time: 6min 13s
 
 
 <span class="k">def</span> <span class="nf">create_vocab</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Building vocabulary .."</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Building vocabulary ..&quot;</span><span class="p">)</span>
     <span class="n">vocab</span> <span class="o">=</span> <span class="n">build_vocab_from_iterator</span><span class="p">(</span><span class="n">_yield_tokens</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">),</span>
                                       <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                      <span class="n">specials</span><span class="o">=</span><span class="p">[</span><span class="s1">'&lt;unk&gt;'</span><span class="p">]</span>
+                                      <span class="n">specials</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&lt;unk&gt;&#39;</span><span class="p">]</span>
                                      <span class="p">)</span>
-    <span class="n">vocab</span><span class="o">.</span><span class="n">set_default_index</span><span class="p">(</span><span class="n">vocab</span><span class="p">[</span><span class="s1">'&lt;unk&gt;'</span><span class="p">])</span>
+    <span class="n">vocab</span><span class="o">.</span><span class="n">set_default_index</span><span class="p">(</span><span class="n">vocab</span><span class="p">[</span><span class="s1">&#39;&lt;unk&gt;&#39;</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">vocab</span>
 </pre></div>
 
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
@@ -1774,7 +1693,7 @@ Wall time: 6min 13s
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">vocab_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Vocab size ="</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Vocab size =&quot;</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1805,7 +1724,7 @@ Wall time: 6min 13s
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vocab</span><span class="p">([</span><span class="s1">'this'</span><span class="p">,</span> <span class="s1">'is'</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">,</span> <span class="s1">'sports'</span><span class="p">,</span> <span class="s1">'article'</span><span class="p">,</span><span class="s1">'&lt;unk&gt;'</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vocab</span><span class="p">([</span><span class="s1">&#39;this&#39;</span><span class="p">,</span> <span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;sports&#39;</span><span class="p">,</span> <span class="s1">&#39;article&#39;</span><span class="p">,</span><span class="s1">&#39;&lt;unk&gt;&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -1831,20 +1750,17 @@ Wall time: 6min 13s
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>5.4. Creating <code>nn.Embedding</code> related pipelines</strong></p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>The text pipeline purpose is <code>to convert text into tokens</code>
-</li>
+<li>The text pipeline purpose is <code>to convert text into tokens</code></li>
 <li>the label pipeline is to have labels from 0 to 3</li>
 </ul>
 
@@ -1876,7 +1792,7 @@ Wall time: 6min 13s
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_text_pipeline</span><span class="p">(</span><span class="s2">"this is a sports article"</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_text_pipeline</span><span class="p">(</span><span class="s2">&quot;this is a sports article&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1909,7 +1825,7 @@ Wall time: 6min 13s
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_label_pipeline</span><span class="p">(</span><span class="s1">'3'</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_label_pipeline</span><span class="p">(</span><span class="s1">&#39;3&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1935,20 +1851,17 @@ Wall time: 6min 13s
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>5.4.1 Exploring arguments for <code>nn.Embedding</code></strong></p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>
-<code>nn.Embedding</code>: A simple lookup table that stores embeddings of a fixed dictionary and size.</li>
+<li><code>nn.Embedding</code>: A simple lookup table that stores embeddings of a fixed dictionary and size.</li>
 <li>Let us create an Embedding module containing 10 tensors of size 3</li>
 </ul>
 
@@ -2030,32 +1943,28 @@ tensor([[0.7723, 2.0980, 0.3080]], grad_fn=&lt;EmbeddingBackward&gt;)
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>5.4.2. Create Collate Function</strong></p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Dealing with Variable Sequence Size</strong></p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
 <li>Every data point in a text corpus could have different number of tokens</li>
 <li>For maintaining uniform number of input tokens in texts, we <code>padify</code> the text</li>
-<li>
-<code>torch.nn.functional.pad</code> on a tokenized dataset can <code>padify</code> the dataset</li>
+<li><code>torch.nn.functional.pad</code> on a tokenized dataset can <code>padify</code> the dataset</li>
 </ul>
-<p><img src="https://docs.microsoft.com/en-us/learn/modules/intro-natural-language-processing-pytorch/images/4-embedding-2.png" alt="">
+<p><img src="https://docs.microsoft.com/en-us/learn/modules/intro-natural-language-processing-pytorch/images/4-embedding-2.png" alt="" />
 Source: Microsoft PyTorch Docs</p>
 
 </div>
@@ -2084,7 +1993,7 @@ Source: Microsoft PyTorch Docs</p>
                                      <span class="p">)</span>
     <span class="n">text_list_overall</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">t</span><span class="p">),</span>
                                                              <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">max_length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)),</span>
-                                                             <span class="n">mode</span><span class="o">=</span><span class="s1">'constant'</span><span class="p">,</span>
+                                                             <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span>
                                                              <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">text_list</span>
                                     <span class="p">])</span>
     <span class="k">return</span> <span class="n">label_list_overall</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">text_list_overall</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
@@ -2097,8 +2006,7 @@ Source: Microsoft PyTorch Docs</p>
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>5.5. Prepare DataLoaders</strong></p>
 
@@ -2202,12 +2110,12 @@ Source: Microsoft PyTorch Docs</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">test_dataloader</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Tracking batch </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tracking batch </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="k">break</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"****"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;****&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2253,8 +2161,7 @@ torch.Size([4, 47])
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>5.6 Model Architecture</strong></p>
 
@@ -2303,8 +2210,7 @@ torch.Size([4, 47])
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Initializing the model hyperaparameters</p>
 
@@ -2391,8 +2297,7 @@ torch.Size([4, 47])
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
@@ -2408,13 +2313,12 @@ torch.Size([4, 47])
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>5.7. Define train_loop and test_loop functions</strong></p>
 
@@ -2442,7 +2346,7 @@ torch.Size([4, 47])
     <span class="n">validation_loss_per_epoch</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">batch_number</span><span class="p">,</span> <span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">batch_number</span> <span class="o">%</span><span class="k">1000</span> == 0:
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"In epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">, training of </span><span class="si">{</span><span class="n">batch_number</span><span class="si">}</span><span class="s2"> batches are over"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;In epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">, training of </span><span class="si">{</span><span class="n">batch_number</span><span class="si">}</span><span class="s2"> batches are over&quot;</span><span class="p">)</span>
         <span class="c1"># following two lines are used while for testing if the fns are accurate</span>
         <span class="c1"># if batch_number %10 == 0:</span>
         <span class="c1">#    break</span>
@@ -2480,8 +2384,8 @@ torch.Size([4, 47])
     
     <span class="n">avg_training_loss</span> <span class="o">=</span> <span class="n">training_loss_per_epoch</span> <span class="o">/</span> <span class="n">train_size</span>
     <span class="n">avg_validation_loss</span> <span class="o">=</span> <span class="n">validation_loss_per_epoch</span> <span class="o">/</span> <span class="n">validation_size</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average Training Loss of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">avg_training_loss</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average Validation Loss of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">avg_validation_loss</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average Training Loss of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">avg_training_loss</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average Validation Loss of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">avg_validation_loss</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2515,10 +2419,10 @@ torch.Size([4, 47])
             <span class="n">test_loss_per_epoch</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
             <span class="n">accuracy_per_epoch</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pred</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">==</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
     <span class="c1"># following two lines are used only while testing if the fns are accurate</span>
-    <span class="c1"># print(f"Last Prediction \n 1. {pred}, \n 2.{pred.argmax()}, \n 3.{pred.argmax(1)}, \n 4.{pred.argmax(1)==labels}")</span>
-    <span class="c1"># print(f"Last predicted label: \n {labels}")</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average Test Loss of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">test_loss_per_epoch</span><span class="o">/</span><span class="n">test_size</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average Accuracy of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">accuracy_per_epoch</span><span class="o">/</span><span class="n">test_size</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># print(f&quot;Last Prediction \n 1. {pred}, \n 2.{pred.argmax()}, \n 3.{pred.argmax(1)}, \n 4.{pred.argmax(1)==labels}&quot;)</span>
+    <span class="c1"># print(f&quot;Last predicted label: \n {labels}&quot;)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average Test Loss of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">test_loss_per_epoch</span><span class="o">/</span><span class="n">test_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average Accuracy of </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">accuracy_per_epoch</span><span class="o">/</span><span class="n">test_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2528,8 +2432,7 @@ torch.Size([4, 47])
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>5.8 Training the model</strong></p>
 
@@ -2600,14 +2503,13 @@ Average Accuracy of 1: 0.9201315789473684
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># it takes time to run this model</span>
 <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epoch_size</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Epoch Number: </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">---------------------"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch Number: </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">---------------------&quot;</span><span class="p">)</span>
     <span class="n">train_loop_2</span><span class="p">(</span><span class="n">model_2</span><span class="p">,</span> 
                <span class="n">train_dataloader</span><span class="p">,</span> 
                <span class="n">valid_dataloader</span><span class="p">,</span>
@@ -2621,13 +2523,12 @@ Average Accuracy of 1: 0.9201315789473684
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>5.9. Test the model on sample text</strong></p>
 
@@ -2641,10 +2542,10 @@ Average Accuracy of 1: 0.9201315789473684
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ag_news_label</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s2">"World"</span><span class="p">,</span>
-                 <span class="mi">2</span><span class="p">:</span> <span class="s2">"Sports"</span><span class="p">,</span>
-                 <span class="mi">3</span><span class="p">:</span> <span class="s2">"Business"</span><span class="p">,</span>
-                 <span class="mi">4</span><span class="p">:</span> <span class="s2">"Sci/Tec"</span><span class="p">}</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ag_news_label</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;World&quot;</span><span class="p">,</span>
+                 <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;Sports&quot;</span><span class="p">,</span>
+                 <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;Business&quot;</span><span class="p">,</span>
+                 <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;Sci/Tec&quot;</span><span class="p">}</span>
 
 
 <span class="k">def</span> <span class="nf">predict_2</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
@@ -2654,13 +2555,13 @@ Average Accuracy of 1: 0.9201315789473684
             <span class="p">]</span>
     <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">padded_sequence</span> <span class="o">=</span> <span class="n">padify</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
-        <span class="n">padded_sequence</span> <span class="o">=</span> <span class="n">padded_sequence</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"cpu"</span><span class="p">)</span>
+        <span class="n">padded_sequence</span> <span class="o">=</span> <span class="n">padded_sequence</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
         <span class="c1"># tokenized_numericalized_vector = torch.tensor(_text_pipeline(text))</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">model_2</span><span class="p">(</span><span class="n">padded_sequence</span><span class="p">)</span>
         <span class="n">output_label</span> <span class="o">=</span> <span class="n">ag_news_label</span><span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">output_label</span>
     
-<span class="n">sample_string</span> <span class="o">=</span> <span class="s2">"MEMPHIS, Tenn. – Four days ago, Jon Rahm was </span><span class="se">\</span>
+<span class="n">sample_string</span> <span class="o">=</span> <span class="s2">&quot;MEMPHIS, Tenn. – Four days ago, Jon Rahm was </span><span class="se">\</span>
 <span class="s2">    enduring the season’s worst weather conditions on Sunday at The </span><span class="se">\</span>
 <span class="s2">    Open on his way to a closing 75 at Royal Portrush, which </span><span class="se">\</span>
 <span class="s2">    considering the wind and the rain was a respectable showing. </span><span class="se">\</span>
@@ -2670,11 +2571,11 @@ Average Accuracy of 1: 0.9201315789473684
 <span class="s2">    Thanks to his best putting performance on the PGA Tour, Rahm </span><span class="se">\</span>
 <span class="s2">    finished with an 8-under 62 for a three-stroke lead, which </span><span class="se">\</span>
 <span class="s2">    was even more impressive considering he’d never played the </span><span class="se">\</span>
-<span class="s2">    front nine at TPC Southwind."</span>
+<span class="s2">    front nine at TPC Southwind.&quot;</span>
 
-<span class="n">cpu_model_2</span> <span class="o">=</span> <span class="n">model_2</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"cpu"</span><span class="p">)</span>
+<span class="n">cpu_model_2</span> <span class="o">=</span> <span class="n">model_2</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"This is a </span><span class="si">{</span><span class="n">predict_2</span><span class="p">(</span><span class="n">sample_string</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">cpu_model_2</span><span class="p">)</span><span class="si">}</span><span class="s2"> news"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This is a </span><span class="si">{</span><span class="n">predict_2</span><span class="p">(</span><span class="n">sample_string</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">cpu_model_2</span><span class="p">)</span><span class="si">}</span><span class="s2"> news&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2706,13 +2607,9 @@ Average Accuracy of 1: 0.9201315789473684
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="6.-Conclusion">
-<a class="anchor" href="#6.-Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>6. Conclusion<a class="anchor-link" href="#6.-Conclusion"> </a>
-</h2>
-<ul>
+<h2 id="6.-Conclusion">6. Conclusion<a class="anchor-link" href="#6.-Conclusion"> </a></h2><ul>
 <li>In this blog piece, we looked at how we can build linear classifiers (without non-linear activation functions) over <code>nn.EmbeddingBag</code> and <code>nn.Embedding</code> modules</li>
 <li>In the <code>nn.EmbeddingBag</code> method of embedding creation, we did not create <code>padding tokens</code> but have to track <code>offsets</code> for every minibatch.</li>
 <li>In the <code>nn.Embedding</code> method of creating embeddings, we used <code>torch.nn.functional.pad</code> function to ensure all text sequences have fixed length</li>
@@ -2721,26 +2618,21 @@ Average Accuracy of 1: 0.9201315789473684
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Sources <br></p>
+<p>Sources <br /></p>
 <ul>
-<li>MSFT PyTorch NLP Course | <a href="https://docs.microsoft.com/en-us/learn/modules/intro-natural-language-processing-pytorch/">link</a>
-</li>
-<li>Official PyTorch Tutorial on Text Classification using <code>nn.EmbeddingBag</code> | <a href="https://pytorch.org/tutorials/beginner/text_sentiment_ngrams_tutorial.html">link</a>
-</li>
-<li>MSFT PyTorch Text Classification using <code>nn.Embedding</code> | <a href="https://docs.microsoft.com/en-us/learn/modules/intro-natural-language-processing-pytorch/4-embeddings">link</a>
-</li>
+<li>MSFT PyTorch NLP Course | <a href="https://docs.microsoft.com/en-us/learn/modules/intro-natural-language-processing-pytorch/">link</a></li>
+<li>Official PyTorch Tutorial on Text Classification using <code>nn.EmbeddingBag</code> | <a href="https://pytorch.org/tutorials/beginner/text_sentiment_ngrams_tutorial.html">link</a></li>
+<li>MSFT PyTorch Text Classification using <code>nn.Embedding</code> | <a href="https://docs.microsoft.com/en-us/learn/modules/intro-natural-language-processing-pytorch/4-embeddings">link</a></li>
 </ul>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<hr>
+<hr />
 </div>
 </div>
 </div>
@@ -2748,13 +2640,40 @@ Average Accuracy of 1: 0.9201315789473684
 
 
 
-  </div><!-- from https://github.com/utterance/utterances -->
-<script src="https://utteranc.es/client.js"
-        repo="senthilkumarm1901/learn_by_blogging"
-        issue-term="title"
-        label="blogpost-comment"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script><a class="u-url" href="/learn_by_blogging/pytorch_for_nlp/2021/09/15/Pytorch_for_NLP_PART_II.html" hidden></a>
-</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/learn_by_blogging/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/learn_by_blogging/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Hi I&#39;m Senthil Kumar. I am here to pen my learnings in Data Science and Coding</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li>
+  <a rel="me" href="https://github.com/senthilkumarm1901/" target="_blank" title="github">
+    <svg class="svg-icon grey">
+      <use xlink:href="/learn_by_blogging/assets/minima-social-icons.svg#github"></use>
+    </svg>
+  </a>
+</li>
+</ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

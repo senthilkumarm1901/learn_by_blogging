@@ -1,78 +1,95 @@
-<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Introduction to Statistical Language Modeling | Learn By Blogging</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Introduction to Statistical Language Modeling" />
+<meta name="author" content="Senthil Kumar" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A gentle introduction to understand the ABCs of NLP in the era of Transformer LMs generating poems." />
+<meta property="og:description" content="A gentle introduction to understand the ABCs of NLP in the era of Transformer LMs generating poems." />
+<link rel="canonical" href="https://senthilkumarm1901.github.io/learn_by_blogging/markov_langugage_model/log_probability/perplexity/2020/03/17/Introduction_to_Statistical_Language_Modeling.html" />
+<meta property="og:url" content="https://senthilkumarm1901.github.io/learn_by_blogging/markov_langugage_model/log_probability/perplexity/2020/03/17/Introduction_to_Statistical_Language_Modeling.html" />
+<meta property="og:site_name" content="Learn By Blogging" />
+<meta property="og:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/language_model_intro/introduction_to_statistical_language_model.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-03-17T00:00:00-05:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/language_model_intro/introduction_to_statistical_language_model.png" />
+<meta property="twitter:title" content="Introduction to Statistical Language Modeling" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2020-03-17T00:00:00-05:00","datePublished":"2020-03-17T00:00:00-05:00","description":"A gentle introduction to understand the ABCs of NLP in the era of Transformer LMs generating poems.","headline":"Introduction to Statistical Language Modeling","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/language_model_intro/introduction_to_statistical_language_model.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/markov_langugage_model/log_probability/perplexity/2020/03/17/Introduction_to_Statistical_Language_Modeling.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/markov_langugage_model/log_probability/perplexity/2020/03/17/Introduction_to_Statistical_Language_Modeling.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/learn_by_blogging/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml" title="Learn By Blogging" /><link rel="shortcut icon" type="image/x-icon" href="/learn_by_blogging/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
 
-  <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Introduction to Statistical Language Modeling</h1><p class="page-description">A gentle introduction to understand the ABCs of NLP in the era of Transformer LMs generating poems.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-03-17T00:00:00-05:00" itemprop="datePublished">
-        Mar 17, 2020
-      </time>• 
-          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
-            <span class="p-author h-card" itemprop="name">Senthil Kumar</span></span>
-       • <span class="read-time" title="Estimated read time">
-    
-    
-      8 min read
-    
-</span></p>
 
-    
-      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
-      
-        <a class="category-tags-link" href="/learn_by_blogging/categories/#Markov_Langugage_Model/Log_Probability/Perplexity">Markov_Langugage_Model/Log_Probability/Perplexity</a>
-        
-      
-      </p>
-    
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
 
-    
-      
-        <div class="pb-5 d-flex flex-justify-center">
-          <div class="px-2">
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
 
-    <a href="https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_notebooks/2020-03-17-Introduction_to_Statistical_Language_Modeling.ipynb" role="button" target="_blank">
-<img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/github.svg" alt="View On GitHub">
-    </a>
-</div>
+  <div class="wrapper"><a class="site-title" rel="author" href="/learn_by_blogging/">Learn By Blogging</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
 
-          <div class="px-2">
-    <a href="https://mybinder.org/v2/gh/senthilkumarm1901/learn_by_blogging/master?filepath=_notebooks%2F2020-03-17-Introduction_to_Statistical_Language_Modeling.ipynb" target="_blank">
-        <img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/binder.svg" alt="Open In Binder"/>
-    </a>
-</div>
-
-          <div class="px-2">
-    <a href="https://colab.research.google.com/github/senthilkumarm1901/learn_by_blogging/blob/master/_notebooks/2020-03-17-Introduction_to_Statistical_Language_Modeling.ipynb" target="_blank">
-        <img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/colab.svg" alt="Open In Colab"/>
-    </a>
-</div>
-          <div class="px-2">
-  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsenthilkumarm1901%2Flearn_by_blogging%2Fblob%2Fmaster%2F_notebooks%2F2020-03-17-Introduction_to_Statistical_Language_Modeling.ipynb" target="_blank">
-      <img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
-  </a>
-</div>
-
-        </div>
-      </header>
-
-  <div class="post-content e-content" itemprop="articleBody">
-    <ul id="toc" class="section-nav">
-<li class="toc-entry toc-h2"><a href="#1.-What-is-a-Language-Model?">1. What is a Language Model? </a></li>
-<li class="toc-entry toc-h2"><a href="#2.-Applications-of-LMs">2. Applications of LMs </a></li>
-<li class="toc-entry toc-h2"><a href="#3.-N-gram-Language-Modelling">3. N-gram Language Modelling </a></li>
-<li class="toc-entry toc-h2"><a href="#4.-Out-of-Vocabulary">4. Out of Vocabulary </a></li>
-<li class="toc-entry toc-h2"><a href="#One-way-to-avoid,-Smoothing!">One way to avoid, Smoothing! </a></li>
-<li class="toc-entry toc-h2"><a href="#5.-What-is-Markov-Assumption?">5. What is Markov Assumption? </a></li>
-<li class="toc-entry toc-h2"><a href="#6.-Evaluation">6. Evaluation </a>
-<ul>
-<li class="toc-entry toc-h3"><a href="#Perplexity">Perplexity </a></li>
-<li class="toc-entry toc-h3"><a href="#Log-Probability">Log Probability </a></li>
-</ul>
-</li>
-<li class="toc-entry toc-h2"><a href="#7.-Application">7. Application </a>
-<ul>
-<li class="toc-entry toc-h3"><a href="#Text-Classification">Text Classification </a></li>
-<li class="toc-entry toc-h3"><a href="#Text-Generation">Text Generation </a></li>
-</ul>
-</li>
-</ul><!--
+        <div class="trigger"><a class="page-link" href="/learn_by_blogging/about/">About Me</a><a class="page-link" href="/learn_by_blogging/search/">Search</a><a class="page-link" href="/learn_by_blogging/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
 #################################################
@@ -81,13 +98,9 @@
 
 <div class="container" id="notebook-container">
         
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.-What-is-a-Language-Model?">
-<a class="anchor" href="#1.-What-is-a-Language-Model?" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. What is a Language Model?<a class="anchor-link" href="#1.-What-is-a-Language-Model?"> </a>
-</h2>
-<ul>
+<h2 id="1.-What-is-a-Language-Model?">1. What is a Language Model?<a class="anchor-link" href="#1.-What-is-a-Language-Model?"> </a></h2><ul>
 <li>A model that generates a probability distribution over sequences of words</li>
 <li>In simpler words, LM is a model to predict the next word in a sequence of words</li>
 </ul>
@@ -95,17 +108,13 @@
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="2.-Applications-of-LMs">
-<a class="anchor" href="#2.-Applications-of-LMs" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Applications of LMs<a class="anchor-link" href="#2.-Applications-of-LMs"> </a>
-</h2>
+<h2 id="2.-Applications-of-LMs">2. Applications of LMs<a class="anchor-link" href="#2.-Applications-of-LMs"> </a></h2>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Predicting upcoming words or estimating probability of a phrase or sentence is useful in noisy, ambiguous text data sources</p>
 <ul>
@@ -117,28 +126,23 @@
 <li>Text Classification (discussed with python implementation of a simple N-gram model)</li>
 <li>Text Generation (discussed this with Char-level and Word-level language models)</li>
 </ul>
-<hr>
+<hr />
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="3.-N-gram-Language-Modelling">
-<a class="anchor" href="#3.-N-gram-Language-Modelling" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. N-gram Language Modelling<a class="anchor-link" href="#3.-N-gram-Language-Modelling"> </a>
-</h2>
-<p><strong>Sample Corpus</strong>: <br></p>
-<blockquote>
-<p>This is <strong>the house</strong> that Jack built.<br>
-This is <strong>the</strong> malt<br>
-That lay in <strong>the house</strong> that Jack built.<br>
-This is <strong>the</strong> rat,<br>
-That ate <strong>the</strong> malt<br>
-That lay in <strong>the house</strong> that Jack built.<br>
-This is <strong>the</strong> cat,<br>
-That killed <strong>the</strong> rat,<br>
-That ate <strong>the</strong> malt<br>
-That lay in <strong>the house</strong> that Jack built.<br></p>
+<h2 id="3.-N-gram-Language-Modelling">3. N-gram Language Modelling<a class="anchor-link" href="#3.-N-gram-Language-Modelling"> </a></h2><p><strong>Sample Corpus</strong>: <br /></p>
+<blockquote><p>This is <strong>the house</strong> that Jack built.<br />
+This is <strong>the</strong> malt<br />
+That lay in <strong>the house</strong> that Jack built.<br />
+This is <strong>the</strong> rat,<br />
+That ate <strong>the</strong> malt<br />
+That lay in <strong>the house</strong> that Jack built.<br />
+This is <strong>the</strong> cat,<br />
+That killed <strong>the</strong> rat,<br />
+That ate <strong>the</strong> malt<br />
+That lay in <strong>the house</strong> that Jack built.<br /></p>
 </blockquote>
 <p>Source:"<em>The house that jack built</em>" Nursery Rhyme
 What is the probability of <strong>house</strong> occurring given <strong>the</strong> before it?</p>
@@ -150,16 +154,14 @@ $$ Prob \ ({ house \over the }) = { Count \ ( the \ house ) \over Count \ (the) 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Mathematically, the above formula can be writen as $$ P({ B \over A }) = { P( A, \ B ) \over \ P(B) } $$</p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>What we have computed above is a <strong>Bigram Language Model</strong>:</p>
 <p>
@@ -169,25 +171,22 @@ $$ Bigram\:Model : { p\,( W_t|W_{t-1} ) } $$
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>How do ngrams help us calculate the prob of a sentence?</strong>:</p>
-<blockquote>
-<p>Sentence, S = 'A B'<br>
-We know that, probability of this sentence 'A B' as,<br>
-P (S) = Prob (A before B) = P(A , B) = Joint Probability of A and B = <strong>P(B|A)* P(A)</strong><br></p>
-<p>Let us assume a three word sentence, S = 'A B C'<br>
-P(S) = Prob (A before B before C ) = P (A , B , C)<br>
-     = P(C | A , B) <em> P (A n B)<br>
-     = P (C| A , B) </em> P(B | A) * P (A)<br></p>
+<blockquote><p>Sentence, S = 'A B'<br />
+We know that, probability of this sentence 'A B' as,<br />
+P (S) = Prob (A before B) = P(A , B) = Joint Probability of A and B = <strong>P(B|A)* P(A)</strong><br /></p>
+<p>Let us assume a three word sentence, S = 'A B C'<br />
+P(S) = Prob (A before B before C ) = P (A , B , C)<br />
+     = P(C | A , B) <em> P (A n B)<br />
+     = P (C| A , B) </em> P(B | A) * P (A)<br /></p>
 </blockquote>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Even if there are more words, we could keep applying Conditional Probability and compute the prob of a sentence.
 The above rule is called <strong><code>Chain Rule of Probability</code></strong>
@@ -198,46 +197,36 @@ $$ Prob \ ({ A_n,\ A_{n-1},\ ....,A_1}) = Prob\ ( {A_n \ |\ {A_{n-1},\ ....,A_1}
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>With four vairables the chain rule of probability is: 
 
 $$ Prob \ ({ A_4,\ A_3,\ A_2,\ A_1}) = Prob\ ( {A_4 \ |\ {A_{3},\ A_2,\ A_1}} ) \  \times \  Prob\ ( {A_3 \ |\ {A_{2},\ A_1}})\ \times \ Prob\ ({A_2 \ |\ A_1})\ \times \ Prob\ (A_1) $$
 </p>
-<hr>
+<hr />
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="4.-Out-of-Vocabulary">
-<a class="anchor" href="#4.-Out-of-Vocabulary" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. Out of Vocabulary<a class="anchor-link" href="#4.-Out-of-Vocabulary"> </a>
-</h2>
-<p>Suppose we have a new sentence like the below one:<br>
-<br></p>
-<blockquote>
-<p>This is <strong>the dog</strong>,<br>
-That scared the cat,<br>
-That killed the rat,<br>
-That ate the malt,<br>
-That lay in the house that Jack built.<br></p>
+<h2 id="4.-Out-of-Vocabulary">4. Out of Vocabulary<a class="anchor-link" href="#4.-Out-of-Vocabulary"> </a></h2><p>Suppose we have a new sentence like the below one:<br />
+<br /></p>
+<blockquote><p>This is <strong>the dog</strong>,<br />
+That scared the cat,<br />
+That killed the rat,<br />
+That ate the malt,<br />
+That lay in the house that Jack built.<br /></p>
 </blockquote>
 <p>If we calculate the Probability of the above sentence, based on the language model trained on the previous <strong>sample corpus (<em>The house that Jack built</em> Nursery Rhyme)</strong>, it would be zero (because "the dog" has not occurred in the LM training corpus.</p>
 <p>By our <strong>chain rule of probabilities</strong> where we keep multiplying probabilities,
 we would encounter $ P({dog \over the}) = 0 $ , hence the overall probability of the above example sentence would be zero</p>
-<hr>
+<hr />
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="One-way-to-avoid,-Smoothing!">
-<a class="anchor" href="#One-way-to-avoid,-Smoothing!" aria-hidden="true"><span class="octicon octicon-link"></span></a>One way to avoid, Smoothing!<a class="anchor-link" href="#One-way-to-avoid,-Smoothing!"> </a>
-</h2>
-<p>
+<h2 id="One-way-to-avoid,-Smoothing!">One way to avoid, Smoothing!<a class="anchor-link" href="#One-way-to-avoid,-Smoothing!"> </a></h2><p>
 $$ MLE: P({B\  | \ A}) = {Count\ (\ A,\ B\ ) \over Count\ (\ B\ )} $$
 </p>
 <p><strong>Why is it called MLE?</strong></p>
@@ -262,22 +251,17 @@ $$ P_{smooth}({B\  | \ A}) = {Count\ (\ A,\ B\ )\ +\ \delta \over Count\ (\ B\ )
 <li>$\delta$ is any fraction such as 0.1, 0.05, etc.,</li>
 <li>Unlike Add one smoothing, this solves the zero prob issue and avoids reducing the prob of high frequency words</li>
 </ul>
-<hr>
+<hr />
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="5.-What-is-Markov-Assumption?">
-<a class="anchor" href="#5.-What-is-Markov-Assumption?" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. What is Markov Assumption?<a class="anchor-link" href="#5.-What-is-Markov-Assumption?"> </a>
-</h2>
-<p>So the probability of occurrence of a 4-word sentence, by markov assumption is: 
+<h2 id="5.-What-is-Markov-Assumption?">5. What is Markov Assumption?<a class="anchor-link" href="#5.-What-is-Markov-Assumption?"> </a></h2><p>So the probability of occurrence of a 4-word sentence, by markov assumption is: 
 
 $$ Prob \ ({ A,\ B,\ C,\ D}) = Prob\ ({ A_{before}\ B_{before}\ C_{before}\ D}) = Prob\ ( {A \ |\ {B,\ C,\ D}} ) \  \times \  Prob\ ( {B \ |\ {C,\ D}})\ \times \ Prob\ ({C \ |\ D})\ \times \ Prob\ (D) $$
 </p>
-<blockquote>
-<p>“What I see NOW depends only on what I saw in the PREVIOUS step”</p>
+<blockquote><p>“What I see NOW depends only on what I saw in the PREVIOUS step”</p>
 </blockquote>
 <p>
 $$ P(w_i,\ |\ {w_{i-1},\ ....,\ w_1}) = P(w_i,\ |\ {w_{i-1}}) $$
@@ -285,8 +269,8 @@ $$ P(w_i,\ |\ {w_{i-1},\ ....,\ w_1}) = P(w_i,\ |\ {w_{i-1}}) $$
 <p>Hence the probability of occurrence of a 4-word sentence with Markov Assumption is:$$ Prob \ ({ A,\ B,\ C,\ D}) = Prob\ ({ A_{before}\ B_{before}\ C_{before}\ D}) = Prob\ ( {A \ |\ {B}} ) \  \times \  Prob\ ( {B \ |\ {C}})\ \times \ Prob\ ({C \ |\ D})\ \times \ Prob\ (D) $$</p>
 <ul>
 <li>What are its advantages?<ul>
-<li>Probability of an entire sentence could be very low but individual phrases could be more probable. <br>
-For e.g.: <br><ul>
+<li>Probability of an entire sentence could be very low but individual phrases could be more probable. <br />
+For e.g.: <br /><ul>
 <li>Actual Data: “The quick fox jumps over the lazy dog”  </li>
 <li>Probability of a new sentence: Prob(“The quick fox jumps over the lazy cat”) = 0 (though probable to occur,'cat' is not there in vocab, hence zero)</li>
 <li>In Markov assumption (with additive smoothing), the above sentence will have a realistic probability</li>
@@ -295,24 +279,17 @@ For e.g.: <br><ul>
 </ul>
 </li>
 </ul>
-<hr>
+<hr />
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="6.-Evaluation">
-<a class="anchor" href="#6.-Evaluation" aria-hidden="true"><span class="octicon octicon-link"></span></a>6. Evaluation<a class="anchor-link" href="#6.-Evaluation"> </a>
-</h2>
-<h3 id="Perplexity">
-<a class="anchor" href="#Perplexity" aria-hidden="true"><span class="octicon octicon-link"></span></a>Perplexity<a class="anchor-link" href="#Perplexity"> </a>
-</h3>
+<h2 id="6.-Evaluation">6. Evaluation<a class="anchor-link" href="#6.-Evaluation"> </a></h2><h3 id="Perplexity">Perplexity<a class="anchor-link" href="#Perplexity"> </a></h3>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
 <li>Perplexity is a measurement of how well a probability model predicts a sample. </li>
@@ -323,12 +300,11 @@ For e.g.: <br><ul>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Definition:</p>
 <ul>
-<li>Perplexity is the inverse probability of  the test set, normalized by the number  of words. <br>
+<li>Perplexity is the inverse probability of  the test set, normalized by the number  of words. <br />
 Perplexity of test data = PP(test data) =
 
 $$ P(w_1,\ w_2,\ ....,\ w_N)^{1 \over N}  $$
@@ -346,30 +322,23 @@ $$ {\sqrt[N]{\prod\limits_{i=1}^{N} {1 \over P(w_i,\ |\ {w_{i-1},\ ....,\ w_1})}
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>the lower the perplexity of a LM for predicting a sample, higher is the confidence for that sample to occur in the distribution</strong></p>
-<hr>
+<hr />
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Log-Probability">
-<a class="anchor" href="#Log-Probability" aria-hidden="true"><span class="octicon octicon-link"></span></a>Log Probability<a class="anchor-link" href="#Log-Probability"> </a>
-</h3>
-<ul>
-<li>
-<p>But multiplying probabilities like these could end up giving you the result closer to zero.</p>
+<h3 id="Log-Probability">Log Probability<a class="anchor-link" href="#Log-Probability"> </a></h3><ul>
+<li><p>But multiplying probabilities like these could end up giving you the result closer to zero.</p>
 <ul>
 <li>For e.g.: P(D|C) = 0.1, P(C|B) = 0.07, P(B|A) = 0.05, P(A) = 0.2</li>
 <li>P(A before B before C before D before E) = 0.00007 $--&gt;$ too low or almost zero !</li>
 </ul>
 </li>
-<li>
-<p>Logarithm to the rescue !</p>
+<li><p>Logarithm to the rescue !</p>
 <ul>
 <li>Logarithm is a monotonically increasing function ! </li>
 <li>Meaning: If P(E|D) &gt; P(D|C), then log(P(E|D)) &gt; log (P(D|C))</li>
@@ -381,16 +350,14 @@ $$ {\sqrt[N]{\prod\limits_{i=1}^{N} {1 \over P(w_i,\ |\ {w_{i-1},\ ....,\ w_1})}
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Binary_logarithm_plot_with_ticks.svg" alt="LogarithmChart"></p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Binary_logarithm_plot_with_ticks.svg" alt="LogarithmChart" /></p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 $$ \log P(w_1,\ w_2,\ ....,\ w_N) = \sum\limits_{\ i\ =\ 2}^{N} {\log P(w_i\ |\ w_{i-1})}\ +\ \log P(w_1) $$<p></p>
 <ul>
@@ -400,32 +367,24 @@ $$ \log P(w_1,\ w_2,\ ....,\ w_N) = \sum\limits_{\ i\ =\ 2}^{N} {\log P(w_i\ |\ 
 <p><strong>To normalize for length of sentences</strong>, 
 $$ {1 \over N} \log P(w_1,\ w_2,\ ....,\ w_N) = {1 \over N} \left [\ \sum\limits_{\ i\ =\ 2}^{N} {\log P(w_i\ |\ w_{i-1})}\ +\ \log P(w_1) \right] $$</p>
 <p><strong>Higher the log probability value of a LM in predicting a sample, higher is the confidence for that sample to occur in the distribution</strong></p>
-<hr>
+<hr />
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Perplexity and Log-Probability metrics for a Bigram Markov Language Model</strong></p>
 $$ Perplexity\ for\ a\ bigram\ model = {\sqrt[N]{\prod\limits_{i=1}^{N} {1 \over P(w_i,\ |\ {w_{i-1}})}}}$$<p></p>
-<p>Comparing with normalized log probability for a bigram model:<br>
+<p>Comparing with normalized log probability for a bigram model:<br />
 $$ LogProbability\ for\ a\ bigram\ model = {1 \over N} \left [\ \sum\limits_{\ i\ =\ 2}^{N} {\log P(w_i\ |\ w_{i-1})}\ +\ \log P(w_1) \right] $$</p>
-<hr>
+<hr />
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="7.-Application">
-<a class="anchor" href="#7.-Application" aria-hidden="true"><span class="octicon octicon-link"></span></a>7. Application<a class="anchor-link" href="#7.-Application"> </a>
-</h2>
-<h3 id="Text-Classification">
-<a class="anchor" href="#Text-Classification" aria-hidden="true"><span class="octicon octicon-link"></span></a>Text Classification<a class="anchor-link" href="#Text-Classification"> </a>
-</h3>
-<p>In this <a href="https://github.com/senthilkumarm1901/LanguageModels_pre_W2V/blob/master/Codes/Bigram_Models--Text_Classification.ipynb">notebook</a>, Markov Bigram model is implemented on a text classification problem. We can build a deterministic classifier where class is attributed to the class with highest log probability score.</p>
-<div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">bigram_markov</span><span class="p">(</span><span class="s2">"economic growth slows down"</span><span class="p">))</span>
+<h2 id="7.-Application">7. Application<a class="anchor-link" href="#7.-Application"> </a></h2><h3 id="Text-Classification">Text Classification<a class="anchor-link" href="#Text-Classification"> </a></h3><p>In this <a href="https://github.com/senthilkumarm1901/LanguageModels_pre_W2V/blob/master/Codes/Bigram_Models--Text_Classification.ipynb">notebook</a>, Markov Bigram model is implemented on a text classification problem. We can build a deterministic classifier where class is attributed to the class with highest log probability score.</p>
+<div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">bigram_markov</span><span class="p">(</span><span class="s2">&quot;economic growth slows down&quot;</span><span class="p">))</span>
 </pre></div>
 
 <pre><code># log probability score of different classes
@@ -436,7 +395,7 @@ $$ LogProbability\ for\ a\ bigram\ model = {1 \over N} \left [\ \sum\limits_{\ i
  ('entertainment', -9.09610496174359)]
 
 Class attributed: 'business'</code></pre>
-<div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">bigram_markov</span><span class="p">(</span><span class="s2">"prime minister has gone to the US on an official trip"</span><span class="p">))</span>
+<div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">bigram_markov</span><span class="p">(</span><span class="s2">&quot;prime minister has gone to the US on an official trip&quot;</span><span class="p">))</span>
 </pre></div>
 
 <pre><code># log probability score of different classes
@@ -451,13 +410,9 @@ Class attributed: 'business'</code></pre>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Text-Generation">
-<a class="anchor" href="#Text-Generation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Text Generation<a class="anchor-link" href="#Text-Generation"> </a>
-</h3>
-<p>In this <a href="https://github.com/senthilkumarm1901/LanguageModels_pre_W2V/blob/master/Codes/Char-level%20N-gram%20Language%20Generation%20Model.ipynb">notebook</a>, a char-level LM, using trigrams and bigrams of characters, was used to generate dianosour names.</p>
+<h3 id="Text-Generation">Text Generation<a class="anchor-link" href="#Text-Generation"> </a></h3><p>In this <a href="https://github.com/senthilkumarm1901/LanguageModels_pre_W2V/blob/master/Codes/Char-level%20N-gram%20Language%20Generation%20Model.ipynb">notebook</a>, a char-level LM, using trigrams and bigrams of characters, was used to generate dianosour names.</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="o">&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">names</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 <span class="c1"># Names of Dianosours used as input</span>
 <span class="mi">0</span>     <span class="n">Aachenosaurus</span>
@@ -484,15 +439,12 @@ Class attributed: 'business'</code></pre>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>References:</p>
 <ul>
 <li>Wikipedia</li>
-<li>
-<a href="https://www.udemy.com/course/natural-language-processing-with-deep-learning-in-python/">Udemy Course on Deep NLP by Lazy Programmer</a> <br>
-</li>
+<li><a href="https://www.udemy.com/course/natural-language-processing-with-deep-learning-in-python/">Udemy Course on Deep NLP by Lazy Programmer</a> <br /></li>
 <li><a href="https://www.coursera.org/learn/language-processing">NLP Course on Coursera by National Research University Higher School of Economics</a></li>
 </ul>
 
@@ -503,13 +455,40 @@ Class attributed: 'business'</code></pre>
 
 
 
-  </div><!-- from https://github.com/utterance/utterances -->
-<script src="https://utteranc.es/client.js"
-        repo="senthilkumarm1901/learn_by_blogging"
-        issue-term="title"
-        label="blogpost-comment"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script><a class="u-url" href="/learn_by_blogging/markov_langugage_model/log_probability/perplexity/2020/03/17/Introduction_to_Statistical_Language_Modeling.html" hidden></a>
-</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/learn_by_blogging/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/learn_by_blogging/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Hi I&#39;m Senthil Kumar. I am here to pen my learnings in Data Science and Coding</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li>
+  <a rel="me" href="https://github.com/senthilkumarm1901/" target="_blank" title="github">
+    <svg class="svg-icon grey">
+      <use xlink:href="/learn_by_blogging/assets/minima-social-icons.svg#github"></use>
+    </svg>
+  </a>
+</li>
+</ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

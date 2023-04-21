@@ -1,90 +1,95 @@
-<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to Leverage Spacy Rules NER | Learn By Blogging</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="How to Leverage Spacy Rules NER" />
+<meta name="author" content="Senthil Kumar" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This blog post outlines the important features in Spacy Rules NER" />
+<meta property="og:description" content="This blog post outlines the important features in Spacy Rules NER" />
+<link rel="canonical" href="https://senthilkumarm1901.github.io/learn_by_blogging/spacy/ner/2021/05/09/Spacy_Rules_NER.html" />
+<meta property="og:url" content="https://senthilkumarm1901.github.io/learn_by_blogging/spacy/ner/2021/05/09/Spacy_Rules_NER.html" />
+<meta property="og:site_name" content="Learn By Blogging" />
+<meta property="og:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/spacy/spacy_nlp_pipeline.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-05-09T00:00:00-05:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="https://senthilkumarm1901.github.io/learn_by_blogging/images/spacy/spacy_nlp_pipeline.png" />
+<meta property="twitter:title" content="How to Leverage Spacy Rules NER" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Senthil Kumar"},"dateModified":"2021-05-09T00:00:00-05:00","datePublished":"2021-05-09T00:00:00-05:00","description":"This blog post outlines the important features in Spacy Rules NER","headline":"How to Leverage Spacy Rules NER","image":"https://senthilkumarm1901.github.io/learn_by_blogging/images/spacy/spacy_nlp_pipeline.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://senthilkumarm1901.github.io/learn_by_blogging/spacy/ner/2021/05/09/Spacy_Rules_NER.html"},"url":"https://senthilkumarm1901.github.io/learn_by_blogging/spacy/ner/2021/05/09/Spacy_Rules_NER.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/learn_by_blogging/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml" title="Learn By Blogging" /><link rel="shortcut icon" type="image/x-icon" href="/learn_by_blogging/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
 
-  <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">How to Leverage Spacy Rules NER</h1><p class="page-description">This blog post outlines the important features in Spacy Rules NER</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-05-09T00:00:00-05:00" itemprop="datePublished">
-        May 9, 2021
-      </time>• 
-          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
-            <span class="p-author h-card" itemprop="name">Senthil Kumar</span></span>
-       • <span class="read-time" title="Estimated read time">
-    
-    
-      21 min read
-    
-</span></p>
 
-    
-      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
-      
-        <a class="category-tags-link" href="/learn_by_blogging/categories/#spacy/NER">spacy/NER</a>
-        
-      
-      </p>
-    
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
 
-    
-      
-        <div class="pb-5 d-flex flex-justify-center">
-          <div class="px-2">
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
 
-    <a href="https://github.com/senthilkumarm1901/learn_by_blogging/tree/master/_notebooks/2021-05-09-Spacy_Rules_NER.ipynb" role="button" target="_blank">
-<img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/github.svg" alt="View On GitHub">
-    </a>
-</div>
+  <div class="wrapper"><a class="site-title" rel="author" href="/learn_by_blogging/">Learn By Blogging</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
 
-          <div class="px-2">
-    <a href="https://mybinder.org/v2/gh/senthilkumarm1901/learn_by_blogging/master?filepath=_notebooks%2F2021-05-09-Spacy_Rules_NER.ipynb" target="_blank">
-        <img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/binder.svg" alt="Open In Binder"/>
-    </a>
-</div>
-
-          <div class="px-2">
-    <a href="https://colab.research.google.com/github/senthilkumarm1901/learn_by_blogging/blob/master/_notebooks/2021-05-09-Spacy_Rules_NER.ipynb" target="_blank">
-        <img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/colab.svg" alt="Open In Colab"/>
-    </a>
-</div>
-          <div class="px-2">
-  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsenthilkumarm1901%2Flearn_by_blogging%2Fblob%2Fmaster%2F_notebooks%2F2021-05-09-Spacy_Rules_NER.ipynb" target="_blank">
-      <img class="notebook-badge-image" src="/learn_by_blogging/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
-  </a>
-</div>
-
-        </div>
-      </header>
-
-  <div class="post-content e-content" itemprop="articleBody">
-    <ul id="toc" class="section-nav">
-<li class="toc-entry toc-h2"><a href="#Introduction-to-SpaCy-and-NER">Introduction to SpaCy and NER </a>
-<ul>
-<li class="toc-entry toc-h3"><a href="#About-SpaCy">About SpaCy </a></li>
-<li class="toc-entry toc-h3"><a href="#What-is-NER">What is NER </a></li>
-<li class="toc-entry toc-h3"><a href="#The-Spacy-Version-used-here">The Spacy Version used here </a></li>
-</ul>
-</li>
-<li class="toc-entry toc-h2"><a href="#1.-Basic-Featues-of-SpaCy-Rules-NER">1. Basic Featues of SpaCy Rules NER </a>
-<ul>
-<li class="toc-entry toc-h3"><a href="#1A.-About-Token-Matcher">1A. About Token Matcher </a></li>
-<li class="toc-entry toc-h3"><a href="#1B.-About-Phrase-Matcher">1B. About Phrase Matcher </a></li>
-<li class="toc-entry toc-h3"><a href="#1C.-Explaining-Token-and-Phrase-Matchers-with-a-MODEL_NAMES-NER-Capture">1C. Explaining Token and Phrase Matchers with a MODEL_NAMES NER Capture </a></li>
-</ul>
-</li>
-<li class="toc-entry toc-h2"><a href="#2.-Externalizing-Rules-from-Codes">2. Externalizing Rules from Codes </a>
-<ul>
-<li class="toc-entry toc-h3"><a href="#2A.-Saving-spacy-rules-in-a-json-format">2A. Saving spacy rules in a json format </a></li>
-<li class="toc-entry toc-h3"><a href="#2B.-Prepare-an-Entity-Ruler-loading-rules-from-a-json">2B. Prepare an Entity Ruler loading rules from a json </a></li>
-<li class="toc-entry toc-h3"><a href="#2C.-Testing-on-Sample-Phone-Sentences">2C. Testing on Sample Phone Sentences </a></li>
-</ul>
-</li>
-<li class="toc-entry toc-h2"><a href="#3.-Advanced-Features-in-Spacy-Rules-NER">3. Advanced Features in Spacy Rules NER </a>
-<ul>
-<li class="toc-entry toc-h3"><a href="#3A.-Adding-RegEx-patterns-as-a-custom-component">3A. Adding RegEx patterns as a custom component </a></li>
-<li class="toc-entry toc-h3"><a href="#3B.-Chaining-Spacy-NER-components">3B. Chaining Spacy NER components </a></li>
-</ul>
-</li>
-<li class="toc-entry toc-h2"><a href="#4.-How-to-save-Rules-NER-as-a-package">4. How to save Rules NER as a package </a></li>
-<li class="toc-entry toc-h2"><a href="#5.-Conclusion">5. Conclusion </a></li>
-<li class="toc-entry toc-h2"><a href="#References">References </a></li>
-</ul><!--
+        <div class="trigger"><a class="page-link" href="/learn_by_blogging/about/">About Me</a><a class="page-link" href="/learn_by_blogging/search/">Search</a><a class="page-link" href="/learn_by_blogging/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
 #################################################
@@ -93,22 +98,15 @@
 
 <div class="container" id="notebook-container">
         
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Introduction-to-SpaCy-and-NER">
-<a class="anchor" href="#Introduction-to-SpaCy-and-NER" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction to SpaCy and NER<a class="anchor-link" href="#Introduction-to-SpaCy-and-NER"> </a>
-</h2>
+<h2 id="Introduction-to-SpaCy-and-NER">Introduction to SpaCy and NER<a class="anchor-link" href="#Introduction-to-SpaCy-and-NER"> </a></h2>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="About-SpaCy">
-<a class="anchor" href="#About-SpaCy" aria-hidden="true"><span class="octicon octicon-link"></span></a>About SpaCy<a class="anchor-link" href="#About-SpaCy"> </a>
-</h3>
-<ul>
+<h3 id="About-SpaCy">About SpaCy<a class="anchor-link" href="#About-SpaCy"> </a></h3><ul>
 <li>SpaCy is a NLP library offering easy-to-use Python API for many information extraction and machine learning tasks in text data</li>
 <li>They are internally written in Cython and hence occupies low memory foot print with its <code>small</code> models and are quite fast with decent accuracy</li>
 </ul>
@@ -120,18 +118,12 @@
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="What-is-NER">
-<a class="anchor" href="#What-is-NER" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is NER<a class="anchor-link" href="#What-is-NER"> </a>
-</h3>
-<blockquote>
-<p>Named-entity recognition (NER) (also known as (named) entity identification, entity chunking, and entity extraction) is <code>a subtask of information extraction</code> that seeks to locate and classify named entities mentioned in unstructured text into pre-defined categories</p>
+<h3 id="What-is-NER">What is NER<a class="anchor-link" href="#What-is-NER"> </a></h3><blockquote><p>Named-entity recognition (NER) (also known as (named) entity identification, entity chunking, and entity extraction) is <code>a subtask of information extraction</code> that seeks to locate and classify named entities mentioned in unstructured text into pre-defined categories</p>
 </blockquote>
-<p>Source:<a href="https://en.wikipedia.org/wiki/Named-entity_recognition">Wikipedia Article on NER</a>&gt; In information extraction, a named entity is a real-world object, such as a person, location, organization, product, etc., that can be denoted with a proper noun. <br></p>
-<blockquote>
-<p>For example, in the sentence - "Biden is the president of the United States", <br>
+<p>Source:<a href="https://en.wikipedia.org/wiki/Named-entity_recognition">Wikipedia Article on NER</a>&gt; In information extraction, a named entity is a real-world object, such as a person, location, organization, product, etc., that can be denoted with a proper noun. <br /></p>
+<blockquote><p>For example, in the sentence - "Biden is the president of the United States", <br />
 "Biden" and "the United States" are <code>named entities</code> (proper nouns). "president" is not a named entity</p>
 </blockquote>
 <p>Source:<a href="https://en.wikipedia.org/wiki/Named_entity">Wikipedia Article on Named Entities</a></p>
@@ -139,12 +131,9 @@
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="The-Spacy-Version-used-here">
-<a class="anchor" href="#The-Spacy-Version-used-here" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Spacy Version used here<a class="anchor-link" href="#The-Spacy-Version-used-here"> </a>
-</h3>
+<h3 id="The-Spacy-Version-used-here">The Spacy Version used here<a class="anchor-link" href="#The-Spacy-Version-used-here"> </a></h3>
 </div>
 </div>
 </div>
@@ -153,8 +142,7 @@
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
@@ -164,7 +152,7 @@
     </div>
 </div>
 </div>
-
+</p>
     </details>
 <div class="output_wrapper">
 <div class="output">
@@ -190,55 +178,45 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.-Basic-Featues-of-SpaCy-Rules-NER">
-<a class="anchor" href="#1.-Basic-Featues-of-SpaCy-Rules-NER" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Basic Featues of SpaCy Rules NER<a class="anchor-link" href="#1.-Basic-Featues-of-SpaCy-Rules-NER"> </a>
-</h2>
+<h2 id="1.-Basic-Featues-of-SpaCy-Rules-NER">1. Basic Featues of SpaCy Rules NER<a class="anchor-link" href="#1.-Basic-Featues-of-SpaCy-Rules-NER"> </a></h2>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="1A.-About-Token-Matcher">
-<a class="anchor" href="#1A.-About-Token-Matcher" aria-hidden="true"><span class="octicon octicon-link"></span></a>1A. About Token Matcher<a class="anchor-link" href="#1A.-About-Token-Matcher"> </a>
-</h3>
-<ul>
+<h3 id="1A.-About-Token-Matcher">1A. About Token Matcher<a class="anchor-link" href="#1A.-About-Token-Matcher"> </a></h3><ul>
 <li>Spacy's Token <code>Matcher</code> lets you prepare Spacy Rules at token level invoking all complex</li>
 <li>Example 1 from Spacy Documentation</li>
 </ul>
 <div class="highlight"><pre><span></span><span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">[{</span><span class="s2">"LOWER"</span><span class="p">:</span> <span class="s2">"hello"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"IS_PUNCT"</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="p">{</span><span class="s2">"LOWER"</span><span class="p">:</span> <span class="s2">"world"</span><span class="p">}],</span> <span class="c1"># captures any case variant of "hello-world", "hello!world"</span>
-    <span class="p">[{</span><span class="s2">"LOWER"</span><span class="p">:</span> <span class="s2">"hello"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"LOWER"</span><span class="p">:</span> <span class="s2">"world"</span><span class="p">}]</span> <span class="c1"># captures any case variant of "hello world"</span>
+    <span class="p">[{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:</span> <span class="s2">&quot;hello&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;IS_PUNCT&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:</span> <span class="s2">&quot;world&quot;</span><span class="p">}],</span> <span class="c1"># captures any case variant of &quot;hello-world&quot;, &quot;hello!world&quot;</span>
+    <span class="p">[{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:</span> <span class="s2">&quot;hello&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:</span> <span class="s2">&quot;world&quot;</span><span class="p">}]</span> <span class="c1"># captures any case variant of &quot;hello world&quot;</span>
 <span class="p">]</span>
 </pre></div>
 <ul>
 <li>Example 2 using Token-level Regex</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"TEXT"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"REGEX"</span><span class="p">:</span> <span class="s2">"^[Uu](\.?|nited)$"</span><span class="p">}},</span> <span class="c1">#</span>
-           <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"REGEX"</span><span class="p">:</span> <span class="s2">"^[Ss](\.?|tates)$"</span><span class="p">}},</span>
-           <span class="p">{</span><span class="s2">"LOWER"</span><span class="p">:</span> <span class="s2">"president"</span><span class="p">}]</span> <span class="c1"># captures (U.S or US or United States or united states) President</span>
+<div class="highlight"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span> <span class="s2">&quot;^[Uu](\.?|nited)$&quot;</span><span class="p">}},</span> <span class="c1">#</span>
+           <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span> <span class="s2">&quot;^[Ss](\.?|tates)$&quot;</span><span class="p">}},</span>
+           <span class="p">{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:</span> <span class="s2">&quot;president&quot;</span><span class="p">}]</span> <span class="c1"># captures (U.S or US or United States or united states) President</span>
 </pre></div>
-<h3 id="1B.-About-Phrase-Matcher">
-<a class="anchor" href="#1B.-About-Phrase-Matcher" aria-hidden="true"><span class="octicon octicon-link"></span></a>1B. About Phrase Matcher<a class="anchor-link" href="#1B.-About-Phrase-Matcher"> </a>
-</h3>
-<ul>
+<h3 id="1B.-About-Phrase-Matcher">1B. About Phrase Matcher<a class="anchor-link" href="#1B.-About-Phrase-Matcher"> </a></h3><ul>
 <li>If we have a huge list of phrases in a list or in a csv file, phrase matcher can be applied directly </li>
 </ul>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">spacy</span>
 <span class="kn">from</span> <span class="nn">spacy.matcher</span> <span class="kn">import</span> <span class="n">PhraseMatcher</span>
 
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"en_core_web_sm"</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;en_core_web_sm&quot;</span><span class="p">)</span>
 <span class="n">matcher</span> <span class="o">=</span> <span class="n">PhraseMatcher</span><span class="p">(</span><span class="n">nlp</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span>
-<span class="n">terms</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Barack Obama"</span><span class="p">,</span> <span class="s2">"Angela Merkel"</span><span class="p">,</span> <span class="s2">"Washington, D.C."</span><span class="p">]</span>
+<span class="n">terms</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Barack Obama&quot;</span><span class="p">,</span> <span class="s2">&quot;Angela Merkel&quot;</span><span class="p">,</span> <span class="s2">&quot;Washington, D.C.&quot;</span><span class="p">]</span>
 <span class="c1"># Only run nlp.make_doc to speed things up</span>
 <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">nlp</span><span class="o">.</span><span class="n">make_doc</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">terms</span><span class="p">]</span>
-<span class="n">matcher</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"TerminologyList"</span><span class="p">,</span> <span class="n">patterns</span><span class="p">)</span>
+<span class="n">matcher</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;TerminologyList&quot;</span><span class="p">,</span> <span class="n">patterns</span><span class="p">)</span>
 
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"German Chancellor Angela Merkel and US President Barack Obama "</span>
-          <span class="s2">"converse in the Oval Office inside the White House in Washington, D.C."</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">&quot;German Chancellor Angela Merkel and US President Barack Obama &quot;</span>
+          <span class="s2">&quot;converse in the Oval Office inside the White House in Washington, D.C.&quot;</span><span class="p">)</span>
 <span class="n">matches</span> <span class="o">=</span> <span class="n">matcher</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">match_id</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
     <span class="n">span</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
@@ -249,12 +227,9 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="1C.-Explaining-Token-and-Phrase-Matchers-with-a-MODEL_NAMES-NER-Capture">
-<a class="anchor" href="#1C.-Explaining-Token-and-Phrase-Matchers-with-a-MODEL_NAMES-NER-Capture" aria-hidden="true"><span class="octicon octicon-link"></span></a>1C. Explaining Token and Phrase Matchers with a <code>MODEL_NAMES NER</code> Capture<a class="anchor-link" href="#1C.-Explaining-Token-and-Phrase-Matchers-with-a-MODEL_NAMES-NER-Capture"> </a>
-</h3>
+<h3 id="1C.-Explaining-Token-and-Phrase-Matchers-with-a-MODEL_NAMES-NER-Capture">1C. Explaining Token and Phrase Matchers with a <code>MODEL_NAMES NER</code> Capture<a class="anchor-link" href="#1C.-Explaining-Token-and-Phrase-Matchers-with-a-MODEL_NAMES-NER-Capture"> </a></h3>
 </div>
 </div>
 </div>
@@ -263,15 +238,14 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># goal: to capture Car Models to their corresponding Makes</span>
-<span class="n">sample_sentence_1</span> <span class="o">=</span> <span class="s2">"Go for ford mustang mache variants. Mustang has a deceivingly huge trunk and good horse power. If you want reliability, Toyota Lexus should be your choice. Lexus has good body style too"</span>
-<span class="n">sample_sentence_2</span> <span class="o">=</span> <span class="s2">"Considering the harsh winters here, I am considering 2014 Nissan Murano or the '14 Subaru Forester"</span>
-<span class="n">sample_sentence_3</span> <span class="o">=</span> <span class="s2">"Among used cars, I am still not sure what to choose - Civic or Corolla?"</span>
+<span class="n">sample_sentence_1</span> <span class="o">=</span> <span class="s2">&quot;Go for ford mustang mache variants. Mustang has a deceivingly huge trunk and good horse power. If you want reliability, Toyota Lexus should be your choice. Lexus has good body style too&quot;</span>
+<span class="n">sample_sentence_2</span> <span class="o">=</span> <span class="s2">&quot;Considering the harsh winters here, I am considering 2014 Nissan Murano or the &#39;14 Subaru Forester&quot;</span>
+<span class="n">sample_sentence_3</span> <span class="o">=</span> <span class="s2">&quot;Among used cars, I am still not sure what to choose - Civic or Corolla?&quot;</span>
 
 <span class="n">sample_models_sentences</span> <span class="o">=</span> <span class="p">[</span><span class="n">sample_sentence_1</span><span class="p">,</span> 
                     <span class="n">sample_sentence_2</span><span class="p">,</span>
@@ -282,7 +256,7 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
@@ -292,8 +266,7 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
@@ -303,33 +276,33 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 <span class="kn">from</span> <span class="nn">spacy.util</span> <span class="kn">import</span> <span class="n">filter_spans</span>
 <span class="kn">from</span> <span class="nn">spacy</span> <span class="kn">import</span> <span class="n">displacy</span>
 
-<span class="n">model_names_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'en_core_web_sm'</span><span class="p">,</span><span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">'ner'</span><span class="p">])</span>
+<span class="n">model_names_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;en_core_web_sm&#39;</span><span class="p">,</span><span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ner&#39;</span><span class="p">])</span>
 <span class="n">matcher</span> <span class="o">=</span> <span class="n">Matcher</span><span class="p">(</span><span class="n">model_names_nlp</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span>
 
 <span class="c1"># pattern rules matching every token</span>
-<span class="n">ford_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"LOWER"</span><span class="p">:</span> <span class="s2">"ford"</span><span class="p">,</span> <span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                   <span class="p">{</span><span class="s2">"LOWER"</span><span class="p">:</span> <span class="s2">"mustang"</span><span class="p">},</span>
-                   <span class="p">{</span><span class="s2">"LOWER"</span><span class="p">:{</span><span class="s2">"IN"</span><span class="p">:[</span><span class="s2">"mache"</span><span class="p">,</span><span class="s2">"gt"</span><span class="p">,</span><span class="s2">"bulitt"</span><span class="p">]},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"*"</span><span class="p">}</span>
+<span class="n">ford_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:</span> <span class="s2">&quot;ford&quot;</span><span class="p">,</span> <span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                   <span class="p">{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:</span> <span class="s2">&quot;mustang&quot;</span><span class="p">},</span>
+                   <span class="p">{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:{</span><span class="s2">&quot;IN&quot;</span><span class="p">:[</span><span class="s2">&quot;mache&quot;</span><span class="p">,</span><span class="s2">&quot;gt&quot;</span><span class="p">,</span><span class="s2">&quot;bulitt&quot;</span><span class="p">]},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;*&quot;</span><span class="p">}</span>
                   <span class="p">]</span>
-<span class="n">toyota_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"LOWER"</span><span class="p">:</span> <span class="s2">"toyota"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                 <span class="p">{</span><span class="s2">"LOWER"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"IN"</span><span class="p">:[</span><span class="s2">"lexus"</span><span class="p">,</span><span class="s2">"corolla"</span><span class="p">,</span><span class="s2">"camry"</span><span class="p">]}}</span>
+<span class="n">toyota_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:</span> <span class="s2">&quot;toyota&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                 <span class="p">{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;IN&quot;</span><span class="p">:[</span><span class="s2">&quot;lexus&quot;</span><span class="p">,</span><span class="s2">&quot;corolla&quot;</span><span class="p">,</span><span class="s2">&quot;camry&quot;</span><span class="p">]}}</span>
                 <span class="p">]</span>
 
-<span class="n">honda_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"LOWER"</span><span class="p">:</span> <span class="s2">"honda"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                 <span class="p">{</span><span class="s2">"LOWER"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"IN"</span><span class="p">:[</span><span class="s2">"civic"</span><span class="p">,</span><span class="s2">"accord"</span><span class="p">]}}</span>
+<span class="n">honda_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:</span> <span class="s2">&quot;honda&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                 <span class="p">{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;IN&quot;</span><span class="p">:[</span><span class="s2">&quot;civic&quot;</span><span class="p">,</span><span class="s2">&quot;accord&quot;</span><span class="p">]}}</span>
                 <span class="p">]</span>
 
-<span class="n">token_matcher_patterns</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"FORD"</span><span class="p">:</span> <span class="n">ford_pattern</span><span class="p">,</span>
-                          <span class="s2">"TOYOTA"</span><span class="p">:</span> <span class="n">toyota_pattern</span><span class="p">,</span>
-                          <span class="s2">"HONDA"</span><span class="p">:</span> <span class="n">honda_pattern</span><span class="p">,</span>
+<span class="n">token_matcher_patterns</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;FORD&quot;</span><span class="p">:</span> <span class="n">ford_pattern</span><span class="p">,</span>
+                          <span class="s2">&quot;TOYOTA&quot;</span><span class="p">:</span> <span class="n">toyota_pattern</span><span class="p">,</span>
+                          <span class="s2">&quot;HONDA&quot;</span><span class="p">:</span> <span class="n">honda_pattern</span><span class="p">,</span>
                          <span class="p">}</span>
 
 <span class="c1"># phrase pattern looks for exact match</span>
-<span class="n">nissan_phrase_pattern</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Nissan Murano"</span><span class="p">,</span> <span class="s2">"Murano"</span><span class="p">,</span> <span class="s2">"murano"</span><span class="p">,</span> <span class="s2">"nissan murano"</span><span class="p">]</span>
-<span class="n">subaru_phrase_pattern</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Subaru Forester"</span><span class="p">,</span> <span class="s2">"Forester"</span><span class="p">,</span> <span class="s2">"forester"</span><span class="p">,</span> <span class="s2">"subaru forester"</span><span class="p">]</span>
+<span class="n">nissan_phrase_pattern</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Nissan Murano&quot;</span><span class="p">,</span> <span class="s2">&quot;Murano&quot;</span><span class="p">,</span> <span class="s2">&quot;murano&quot;</span><span class="p">,</span> <span class="s2">&quot;nissan murano&quot;</span><span class="p">]</span>
+<span class="n">subaru_phrase_pattern</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Subaru Forester&quot;</span><span class="p">,</span> <span class="s2">&quot;Forester&quot;</span><span class="p">,</span> <span class="s2">&quot;forester&quot;</span><span class="p">,</span> <span class="s2">&quot;subaru forester&quot;</span><span class="p">]</span>
 
-<span class="n">phrase_matcher_patterns</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"NISSAN"</span><span class="p">:</span> <span class="n">nissan_phrase_pattern</span><span class="p">,</span>
-                           <span class="s2">"SUBARU"</span><span class="p">:</span> <span class="n">subaru_phrase_pattern</span>
+<span class="n">phrase_matcher_patterns</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;NISSAN&quot;</span><span class="p">:</span> <span class="n">nissan_phrase_pattern</span><span class="p">,</span>
+                           <span class="s2">&quot;SUBARU&quot;</span><span class="p">:</span> <span class="n">subaru_phrase_pattern</span>
                           <span class="p">}</span>
 
 <span class="k">def</span> <span class="nf">add_token_matcher_and_phrase_matcher_patterns</span><span class="p">(</span><span class="n">nlp_model</span><span class="p">,</span>
@@ -364,7 +337,7 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
@@ -374,8 +347,7 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
@@ -384,17 +356,17 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
                                                                               <span class="n">phrase_matcher_patterns</span>
                                                                              <span class="p">)</span>
 <span class="n">modelnames_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"HONDA"</span><span class="p">:</span> <span class="s2">"#ffcccb"</span><span class="p">,</span>  <span class="c1"># light red (pink)</span>
-    <span class="s2">"TOYOTA"</span><span class="p">:</span> <span class="s2">"#A865C9"</span><span class="p">,</span>  <span class="c1"># light purple</span>
-    <span class="s2">"NISSAN"</span><span class="p">:</span> <span class="s2">"#FFD580"</span><span class="p">,</span>  <span class="c1"># light orange</span>
-    <span class="s2">"SUBARU"</span><span class="p">:</span> <span class="s2">" #FFCCCB"</span><span class="p">,</span>  <span class="c1"># green</span>
-    <span class="s2">"FORD"</span><span class="p">:</span> <span class="s2">"#ADD8E6"</span>  <span class="c1"># light blue</span>
+    <span class="s2">&quot;HONDA&quot;</span><span class="p">:</span> <span class="s2">&quot;#ffcccb&quot;</span><span class="p">,</span>  <span class="c1"># light red (pink)</span>
+    <span class="s2">&quot;TOYOTA&quot;</span><span class="p">:</span> <span class="s2">&quot;#A865C9&quot;</span><span class="p">,</span>  <span class="c1"># light purple</span>
+    <span class="s2">&quot;NISSAN&quot;</span><span class="p">:</span> <span class="s2">&quot;#FFD580&quot;</span><span class="p">,</span>  <span class="c1"># light orange</span>
+    <span class="s2">&quot;SUBARU&quot;</span><span class="p">:</span> <span class="s2">&quot; #FFCCCB&quot;</span><span class="p">,</span>  <span class="c1"># green</span>
+    <span class="s2">&quot;FORD&quot;</span><span class="p">:</span> <span class="s2">&quot;#ADD8E6&quot;</span>  <span class="c1"># light blue</span>
 <span class="p">}</span>
 
 <span class="n">models</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">modelnames_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
-<span class="n">options_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"ents"</span><span class="p">:</span> <span class="n">models</span><span class="p">,</span>
-           <span class="s2">"colors"</span><span class="p">:</span> <span class="n">modelnames_dict</span>
+<span class="n">options_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ents&quot;</span><span class="p">:</span> <span class="n">models</span><span class="p">,</span>
+           <span class="s2">&quot;colors&quot;</span><span class="p">:</span> <span class="n">modelnames_dict</span>
           <span class="p">}</span>
 
 
@@ -406,19 +378,19 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
                          <span class="n">phrase_matcher</span><span class="p">,</span>
                          <span class="n">doc</span>
                         <span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m&quot;</span><span class="p">)</span>
     <span class="n">displacy</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">new_doc</span><span class="p">,</span>
-                    <span class="n">style</span><span class="o">=</span><span class="s1">'ent'</span><span class="p">,</span>
+                    <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ent&#39;</span><span class="p">,</span>
                     <span class="n">options</span><span class="o">=</span><span class="n">options_dict</span><span class="p">,</span>
                     <span class="n">minify</span><span class="o">=</span><span class="kc">True</span>
                    <span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"***************"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;***************&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
-
+</p>
     </details>
 <div class="output_wrapper">
 <div class="output">
@@ -453,8 +425,7 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 
 
 <div class="output_html rendered_html output_subarea ">
-<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">Considering the harsh winters here, I am considering 2014 <mark class="entity" style="background: #FFD580; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Nissan Murano<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">NISSAN</span></mark> or the '14 <mark class="entity" style="background:  #FFCCCB; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Subaru Forester<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">SUBARU</span></mark>
-</div></span>
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">Considering the harsh winters here, I am considering 2014 <mark class="entity" style="background: #FFD580; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Nissan Murano<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">NISSAN</span></mark> or the '14 <mark class="entity" style="background:  #FFCCCB; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Subaru Forester<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">SUBARU</span></mark></div></span>
 </div>
 
 </div>
@@ -491,29 +462,21 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="2.-Externalizing-Rules-from-Codes">
-<a class="anchor" href="#2.-Externalizing-Rules-from-Codes" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Externalizing Rules from Codes<a class="anchor-link" href="#2.-Externalizing-Rules-from-Codes"> </a>
-</h2>
+<h2 id="2.-Externalizing-Rules-from-Codes">2. Externalizing Rules from Codes<a class="anchor-link" href="#2.-Externalizing-Rules-from-Codes"> </a></h2>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="2A.-Saving-spacy-rules-in-a-json-format">
-<a class="anchor" href="#2A.-Saving-spacy-rules-in-a-json-format" aria-hidden="true"><span class="octicon octicon-link"></span></a>2A. Saving spacy rules in a json format<a class="anchor-link" href="#2A.-Saving-spacy-rules-in-a-json-format"> </a>
-</h3>
+<h3 id="2A.-Saving-spacy-rules-in-a-json-format">2A. Saving spacy rules in a json format<a class="anchor-link" href="#2A.-Saving-spacy-rules-in-a-json-format"> </a></h3>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<blockquote>
-<p>Note that the official spacy document advocates josnl format but json is much more readable for multitoken spacy patterns</p>
+<blockquote><p>Note that the official spacy document advocates josnl format but json is much more readable for multitoken spacy patterns</p>
 </blockquote>
 
 </div>
@@ -524,57 +487,53 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">json</span> 
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
 
-<span class="c1"># "+1 (901)-985-4567" or "(901)-985-4567" or 901-985-4567 or 901 985 4567</span>
-<span class="n">phone_pattern_1</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"ORTH"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"IN"</span><span class="p">:[</span><span class="s2">"+1"</span><span class="p">,</span><span class="s2">"1"</span><span class="p">]},</span><span class="s1">'OP'</span><span class="p">:</span><span class="s1">'?'</span><span class="p">},</span>
-                   <span class="p">{</span><span class="s2">"ORTH"</span><span class="p">:</span> <span class="s1">'('</span><span class="p">,</span> <span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span> 
-                   <span class="p">{</span><span class="s1">'SHAPE'</span><span class="p">:</span> <span class="s1">'ddd'</span><span class="p">},</span> 
-                   <span class="p">{</span><span class="s2">"ORTH"</span><span class="p">:</span> <span class="s1">')'</span><span class="p">,</span> <span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span> 
-                   <span class="p">{</span><span class="s1">'ORTH'</span><span class="p">:</span> <span class="s1">'-'</span><span class="p">,</span> <span class="s1">'OP'</span><span class="p">:</span><span class="s1">'?'</span><span class="p">},</span>
-                   <span class="p">{</span><span class="s1">'SHAPE'</span><span class="p">:</span> <span class="s1">'ddd'</span><span class="p">},</span> 
-                   <span class="p">{</span><span class="s1">'ORTH'</span><span class="p">:</span> <span class="s1">'-'</span><span class="p">,</span> <span class="s1">'OP'</span><span class="p">:</span><span class="s1">'?'</span><span class="p">},</span> 
-                   <span class="p">{</span><span class="s1">'SHAPE'</span><span class="p">:</span> <span class="s1">'dddd'</span><span class="p">}]</span>
+<span class="c1"># &quot;+1 (901)-985-4567&quot; or &quot;(901)-985-4567&quot; or 901-985-4567 or 901 985 4567</span>
+<span class="n">phone_pattern_1</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;ORTH&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;IN&quot;</span><span class="p">:[</span><span class="s2">&quot;+1&quot;</span><span class="p">,</span><span class="s2">&quot;1&quot;</span><span class="p">]},</span><span class="s1">&#39;OP&#39;</span><span class="p">:</span><span class="s1">&#39;?&#39;</span><span class="p">},</span>
+                   <span class="p">{</span><span class="s2">&quot;ORTH&quot;</span><span class="p">:</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span> 
+                   <span class="p">{</span><span class="s1">&#39;SHAPE&#39;</span><span class="p">:</span> <span class="s1">&#39;ddd&#39;</span><span class="p">},</span> 
+                   <span class="p">{</span><span class="s2">&quot;ORTH&quot;</span><span class="p">:</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span> 
+                   <span class="p">{</span><span class="s1">&#39;ORTH&#39;</span><span class="p">:</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;OP&#39;</span><span class="p">:</span><span class="s1">&#39;?&#39;</span><span class="p">},</span>
+                   <span class="p">{</span><span class="s1">&#39;SHAPE&#39;</span><span class="p">:</span> <span class="s1">&#39;ddd&#39;</span><span class="p">},</span> 
+                   <span class="p">{</span><span class="s1">&#39;ORTH&#39;</span><span class="p">:</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;OP&#39;</span><span class="p">:</span><span class="s1">&#39;?&#39;</span><span class="p">},</span> 
+                   <span class="p">{</span><span class="s1">&#39;SHAPE&#39;</span><span class="p">:</span> <span class="s1">&#39;dddd&#39;</span><span class="p">}]</span>
 
 <span class="c1"># 901 985 4567</span>
-<span class="n">phone_pattern_2</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"TEXT"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"REGEX"</span><span class="p">:</span> <span class="s2">"\d</span><span class="si">{10}</span><span class="s2">"</span><span class="p">}}]</span>
+<span class="n">phone_pattern_2</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span> <span class="s2">&quot;\d</span><span class="si">{10}</span><span class="s2">&quot;</span><span class="p">}}]</span>
 
 <span class="c1"># +19019854567</span>
-<span class="n">phone_pattern_3</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"TEXT"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"REGEX"</span><span class="p">:</span> <span class="s2">"\+1\d</span><span class="si">{10}</span><span class="s2">"</span><span class="p">}}]</span>
+<span class="n">phone_pattern_3</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span> <span class="s2">&quot;\+1\d</span><span class="si">{10}</span><span class="s2">&quot;</span><span class="p">}}]</span>
 
 <span class="n">phone_patterns_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">phone_pattern_1</span><span class="p">,</span> <span class="n">phone_pattern_2</span><span class="p">,</span> <span class="n">phone_pattern_3</span><span class="p">]</span>
 
 <span class="n">spacy_patterns_dict_list</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="k">for</span> <span class="n">each_phone_pattern</span> <span class="ow">in</span> <span class="n">phone_patterns_list</span><span class="p">:</span>
-    <span class="n">spacy_patterns_dict_list</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"label"</span><span class="p">:</span><span class="s2">"PHONE"</span><span class="p">,</span>
-                                     <span class="s2">"pattern"</span><span class="p">:</span> <span class="n">each_phone_pattern</span>
+    <span class="n">spacy_patterns_dict_list</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;label&quot;</span><span class="p">:</span><span class="s2">&quot;PHONE&quot;</span><span class="p">,</span>
+                                     <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="n">each_phone_pattern</span>
                                     <span class="p">})</span>
 
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'spacy_rules_ner/phone_patterns.json'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;spacy_rules_ner/phone_patterns.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">spacy_patterns_dict_list</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="2B.-Prepare-an-Entity-Ruler-loading-rules-from-a-json">
-<a class="anchor" href="#2B.-Prepare-an-Entity-Ruler-loading-rules-from-a-json" aria-hidden="true"><span class="octicon octicon-link"></span></a>2B. Prepare an Entity Ruler loading rules from a json<a class="anchor-link" href="#2B.-Prepare-an-Entity-Ruler-loading-rules-from-a-json"> </a>
-</h3>
+<h3 id="2B.-Prepare-an-Entity-Ruler-loading-rules-from-a-json">2B. Prepare an Entity Ruler loading rules from a json<a class="anchor-link" href="#2B.-Prepare-an-Entity-Ruler-loading-rules-from-a-json"> </a></h3>
 </div>
 </div>
 </div>
@@ -585,11 +544,11 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loaded_spacy_patterns</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">'spacy_rules_ner/phone_patterns.json'</span><span class="p">,</span><span class="s1">'r'</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loaded_spacy_patterns</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;spacy_rules_ner/phone_patterns.json&#39;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Asserting if the loaded spacy patterns are same as the prepared"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asserting if the loaded spacy patterns are same as the prepared&quot;</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">loaded_spacy_patterns</span> <span class="o">==</span> <span class="n">spacy_patterns_dict_list</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"--&gt; Assertion successful"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--&gt; Assertion successful&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -621,7 +580,7 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Token-level Spacy Phone Regex"</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Token-level Spacy Phone Regex&quot;</span><span class="p">)</span>
 <span class="n">pprint</span><span class="p">(</span><span class="n">loaded_spacy_patterns</span><span class="p">)</span>
 </pre></div>
 
@@ -636,17 +595,17 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Token-level Spacy Phone Regex
-[{'label': 'PHONE',
-  'pattern': [{'OP': '?', 'ORTH': {'IN': ['+1', '1']}},
-              {'OP': '?', 'ORTH': '('},
-              {'SHAPE': 'ddd'},
-              {'OP': '?', 'ORTH': ')'},
-              {'OP': '?', 'ORTH': '-'},
-              {'SHAPE': 'ddd'},
-              {'OP': '?', 'ORTH': '-'},
-              {'SHAPE': 'dddd'}]},
- {'label': 'PHONE', 'pattern': [{'TEXT': {'REGEX': '\\d{10}'}}]},
- {'label': 'PHONE', 'pattern': [{'TEXT': {'REGEX': '\\+1\\d{10}'}}]}]
+[{&#39;label&#39;: &#39;PHONE&#39;,
+  &#39;pattern&#39;: [{&#39;OP&#39;: &#39;?&#39;, &#39;ORTH&#39;: {&#39;IN&#39;: [&#39;+1&#39;, &#39;1&#39;]}},
+              {&#39;OP&#39;: &#39;?&#39;, &#39;ORTH&#39;: &#39;(&#39;},
+              {&#39;SHAPE&#39;: &#39;ddd&#39;},
+              {&#39;OP&#39;: &#39;?&#39;, &#39;ORTH&#39;: &#39;)&#39;},
+              {&#39;OP&#39;: &#39;?&#39;, &#39;ORTH&#39;: &#39;-&#39;},
+              {&#39;SHAPE&#39;: &#39;ddd&#39;},
+              {&#39;OP&#39;: &#39;?&#39;, &#39;ORTH&#39;: &#39;-&#39;},
+              {&#39;SHAPE&#39;: &#39;dddd&#39;}]},
+ {&#39;label&#39;: &#39;PHONE&#39;, &#39;pattern&#39;: [{&#39;TEXT&#39;: {&#39;REGEX&#39;: &#39;\\d{10}&#39;}}]},
+ {&#39;label&#39;: &#39;PHONE&#39;, &#39;pattern&#39;: [{&#39;TEXT&#39;: {&#39;REGEX&#39;: &#39;\\+1\\d{10}&#39;}}]}]
 </pre>
 </div>
 </div>
@@ -664,14 +623,14 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">phone_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'en_core_web_sm'</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">'ner'</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">phone_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;en_core_web_sm&#39;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ner&#39;</span><span class="p">])</span>
 <span class="n">rules_config</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"validate"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="s2">"overwrite_ents"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;validate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;overwrite_ents&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">}</span>
 
-<span class="n">phone_nlp_rules</span> <span class="o">=</span> <span class="n">phone_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"entity_ruler"</span><span class="p">,</span> <span class="c1"># invoke entity_ruler pipe </span>
-                                     <span class="s2">"phone_nlp_rules"</span><span class="p">,</span> <span class="c1"># give a name to the pipe</span>
+<span class="n">phone_nlp_rules</span> <span class="o">=</span> <span class="n">phone_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">&quot;entity_ruler&quot;</span><span class="p">,</span> <span class="c1"># invoke entity_ruler pipe </span>
+                                     <span class="s2">&quot;phone_nlp_rules&quot;</span><span class="p">,</span> <span class="c1"># give a name to the pipe</span>
                                      <span class="n">config</span><span class="o">=</span><span class="n">rules_config</span><span class="p">)</span>
 <span class="n">phone_nlp_rules</span><span class="o">.</span><span class="n">add_patterns</span><span class="p">(</span><span class="n">loaded_spacy_patterns</span><span class="p">)</span> <span class="c1"># load patterns to the `phone_nlp_rules` pipe of `phone_nlp` model</span>
 </pre></div>
@@ -683,12 +642,9 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="2C.-Testing-on-Sample-Phone-Sentences">
-<a class="anchor" href="#2C.-Testing-on-Sample-Phone-Sentences" aria-hidden="true"><span class="octicon octicon-link"></span></a>2C. Testing on Sample Phone Sentences<a class="anchor-link" href="#2C.-Testing-on-Sample-Phone-Sentences"> </a>
-</h3>
+<h3 id="2C.-Testing-on-Sample-Phone-Sentences">2C. Testing on Sample Phone Sentences<a class="anchor-link" href="#2C.-Testing-on-Sample-Phone-Sentences"> </a></h3>
 </div>
 </div>
 </div>
@@ -697,27 +653,26 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">phones_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"+1 (901)-985-4567"</span><span class="p">,</span> 
-               <span class="s2">"+1(901)-985-4567"</span><span class="p">,</span>
-               <span class="s2">"(901) 985 4567"</span><span class="p">,</span>
-               <span class="s2">"9019854567"</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">phones_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;+1 (901)-985-4567&quot;</span><span class="p">,</span> 
+               <span class="s2">&quot;+1(901)-985-4567&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;(901) 985 4567&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;9019854567&quot;</span>
               <span class="p">]</span>
 
 
 
-<span class="n">sample_phone_sentences</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"If you want to talk more. Reach me at </span><span class="si">{</span><span class="n">each</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">phones_list</span><span class="p">]</span>
+<span class="n">sample_phone_sentences</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;If you want to talk more. Reach me at </span><span class="si">{</span><span class="n">each</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">phones_list</span><span class="p">]</span>
 <span class="n">sample_phone_sentences</span>
 </pre></div>
 
     </div>
 </div>
 </div>
-
+</p>
     </details>
 <div class="output_wrapper">
 <div class="output">
@@ -727,10 +682,10 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>['If you want to talk more. Reach me at +1 (901)-985-4567',
- 'If you want to talk more. Reach me at +1(901)-985-4567',
- 'If you want to talk more. Reach me at (901) 985 4567',
- 'If you want to talk more. Reach me at 9019854567']</pre>
+<pre>[&#39;If you want to talk more. Reach me at +1 (901)-985-4567&#39;,
+ &#39;If you want to talk more. Reach me at +1(901)-985-4567&#39;,
+ &#39;If you want to talk more. Reach me at (901) 985 4567&#39;,
+ &#39;If you want to talk more. Reach me at 9019854567&#39;]</pre>
 </div>
 
 </div>
@@ -746,27 +701,26 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
-<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">sample_phone_sentences</span><span class="p">,</span>
              <span class="n">as_tuples</span><span class="o">=</span><span class="kc">False</span>
             <span class="p">)):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m&quot;</span><span class="p">)</span>
     <span class="n">displacy</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span>
-                    <span class="n">style</span><span class="o">=</span><span class="s1">'ent'</span><span class="p">,</span>
+                    <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ent&#39;</span><span class="p">,</span>
                    <span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
-
+</p>
     </details>
 <div class="output_wrapper">
 <div class="output">
@@ -855,11 +809,9 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<blockquote>
-<p>Some of the phone patterns are not captured using the above patterns, let us add a Phone <code>regex</code> that cuts across multiple tokens</p>
+<blockquote><p>Some of the phone patterns are not captured using the above patterns, let us add a Phone <code>regex</code> that cuts across multiple tokens</p>
 </blockquote>
 
 </div>
@@ -872,7 +824,7 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s2">"If you want to talk more. Reach me at +1 (901)-985-4567"</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;If you want to talk more. Reach me at +1 (901)-985-4567&quot;</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">phone_nlp</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 <span class="p">[(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">ent_type_</span><span class="p">)</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">]</span>
 </pre></div>
@@ -889,21 +841,21 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[('If', ''),
- ('you', ''),
- ('want', ''),
- ('to', ''),
- ('talk', ''),
- ('more', ''),
- ('.', ''),
- ('Reach', ''),
- ('me', ''),
- ('at', ''),
- ('+1', ''),
- ('(', ''),
- ('901)-985', ''),
- ('-', ''),
- ('4567', '')]</pre>
+<pre>[(&#39;If&#39;, &#39;&#39;),
+ (&#39;you&#39;, &#39;&#39;),
+ (&#39;want&#39;, &#39;&#39;),
+ (&#39;to&#39;, &#39;&#39;),
+ (&#39;talk&#39;, &#39;&#39;),
+ (&#39;more&#39;, &#39;&#39;),
+ (&#39;.&#39;, &#39;&#39;),
+ (&#39;Reach&#39;, &#39;&#39;),
+ (&#39;me&#39;, &#39;&#39;),
+ (&#39;at&#39;, &#39;&#39;),
+ (&#39;+1&#39;, &#39;&#39;),
+ (&#39;(&#39;, &#39;&#39;),
+ (&#39;901)-985&#39;, &#39;&#39;),
+ (&#39;-&#39;, &#39;&#39;),
+ (&#39;4567&#39;, &#39;&#39;)]</pre>
 </div>
 
 </div>
@@ -914,15 +866,9 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="3.-Advanced-Features-in-Spacy-Rules-NER">
-<a class="anchor" href="#3.-Advanced-Features-in-Spacy-Rules-NER" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Advanced Features in Spacy Rules NER<a class="anchor-link" href="#3.-Advanced-Features-in-Spacy-Rules-NER"> </a>
-</h2>
-<h3 id="3A.-Adding-RegEx-patterns-as-a-custom-component">
-<a class="anchor" href="#3A.-Adding-RegEx-patterns-as-a-custom-component" aria-hidden="true"><span class="octicon octicon-link"></span></a>3A. Adding RegEx patterns as a custom component<a class="anchor-link" href="#3A.-Adding-RegEx-patterns-as-a-custom-component"> </a>
-</h3>
+<h2 id="3.-Advanced-Features-in-Spacy-Rules-NER">3. Advanced Features in Spacy Rules NER<a class="anchor-link" href="#3.-Advanced-Features-in-Spacy-Rules-NER"> </a></h2><h3 id="3A.-Adding-RegEx-patterns-as-a-custom-component">3A. Adding RegEx patterns as a custom component<a class="anchor-link" href="#3A.-Adding-RegEx-patterns-as-a-custom-component"> </a></h3>
 </div>
 </div>
 </div>
@@ -931,8 +877,7 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
@@ -941,30 +886,30 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 <span class="kn">from</span> <span class="nn">spacy.tokens</span> <span class="kn">import</span> <span class="n">Span</span>
 
 <span class="k">def</span> <span class="nf">load_entity_ruler_based_phone_pattern</span><span class="p">(</span><span class="n">location_spacy_json</span><span class="p">):</span>
-    <span class="n">loaded_spacy_patterns</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">location_spacy_json</span><span class="p">,</span><span class="s1">'r'</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">))</span>
-    <span class="n">phone_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'en_core_web_sm'</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">'ner'</span><span class="p">])</span>
+    <span class="n">loaded_spacy_patterns</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">location_spacy_json</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+    <span class="n">phone_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;en_core_web_sm&#39;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ner&#39;</span><span class="p">])</span>
     <span class="n">rules_config</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">"validate"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">"overwrite_ents"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;validate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;overwrite_ents&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="n">phone_nlp_rules</span> <span class="o">=</span> <span class="n">phone_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"entity_ruler"</span><span class="p">,</span> <span class="c1"># invoke entity_ruler pipe </span>
-                                         <span class="s2">"phone_nlp_rules"</span><span class="p">,</span> <span class="c1"># give a name to the pipe</span>
+    <span class="n">phone_nlp_rules</span> <span class="o">=</span> <span class="n">phone_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">&quot;entity_ruler&quot;</span><span class="p">,</span> <span class="c1"># invoke entity_ruler pipe </span>
+                                         <span class="s2">&quot;phone_nlp_rules&quot;</span><span class="p">,</span> <span class="c1"># give a name to the pipe</span>
                                          <span class="n">config</span><span class="o">=</span><span class="n">rules_config</span><span class="p">)</span>
     <span class="n">phone_nlp_rules</span><span class="o">.</span><span class="n">add_patterns</span><span class="p">(</span><span class="n">loaded_spacy_patterns</span><span class="p">)</span> <span class="c1"># load patterns to the `phone_nlp_rules` pipe of `phone_nlp` model</span>
     <span class="k">return</span> <span class="n">phone_nlp</span>
        
-<span class="n">location_spacy_json</span> <span class="o">=</span> <span class="s1">'spacy_rules_ner/phone_patterns.json'</span>
+<span class="n">location_spacy_json</span> <span class="o">=</span> <span class="s1">&#39;spacy_rules_ner/phone_patterns.json&#39;</span>
 
 <span class="n">phone_nlp</span> <span class="o">=</span> <span class="n">load_entity_ruler_based_phone_pattern</span><span class="p">(</span><span class="n">location_spacy_json</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Pipeline Components before adding regex custom component:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pipeline Components before adding regex custom component:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe_names</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Entities tracked in phone_nlp_rules"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe_labels</span><span class="p">[</span><span class="s1">'phone_nlp_rules'</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Entities tracked in phone_nlp_rules&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe_labels</span><span class="p">[</span><span class="s1">&#39;phone_nlp_rules&#39;</span><span class="p">])</span>
 
-<span class="n">phone_regex_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"([+]?[\d]?[\d]?.?[(]?\d</span><span class="si">{3}</span><span class="s2">[)]?.?\d</span><span class="si">{3}</span><span class="s2">.?\d</span><span class="si">{4}</span><span class="s2">)"</span>
+<span class="n">phone_regex_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;([+]?[\d]?[\d]?.?[(]?\d</span><span class="si">{3}</span><span class="s2">[)]?.?\d</span><span class="si">{3}</span><span class="s2">.?\d</span><span class="si">{4}</span><span class="s2">)&quot;</span>
 
 <span class="c1">#noting the token position for every character in a doc</span>
 
@@ -976,7 +921,7 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
     <span class="k">return</span> <span class="n">chars_to_tokens</span>
 
 
-<span class="nd">@Language</span><span class="o">.</span><span class="n">component</span><span class="p">(</span><span class="s2">"phone_multitoken_regex_capture"</span><span class="p">)</span>
+<span class="nd">@Language</span><span class="o">.</span><span class="n">component</span><span class="p">(</span><span class="s2">&quot;phone_multitoken_regex_capture&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">phone_multitoken_regex_capture</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
     <span class="n">original_ents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">ents</span><span class="p">)</span>
     <span class="n">chars_to_tokens</span> <span class="o">=</span> <span class="n">generate_chars2tokens_dict</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
@@ -994,16 +939,16 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
                 <span class="n">phone_regex_ents</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">span</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">span</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">span</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">regex_ent</span> <span class="ow">in</span> <span class="n">phone_regex_ents</span><span class="p">:</span>
         <span class="n">start_char</span><span class="p">,</span> <span class="n">end_char</span><span class="p">,</span> <span class="n">span_text</span> <span class="o">=</span> <span class="n">regex_ent</span>
-        <span class="n">proper_spacy_ent</span> <span class="o">=</span> <span class="n">Span</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">start_char</span><span class="p">,</span> <span class="n">end_char</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"PHONE"</span><span class="p">)</span>
+        <span class="n">proper_spacy_ent</span> <span class="o">=</span> <span class="n">Span</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">start_char</span><span class="p">,</span> <span class="n">end_char</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;PHONE&quot;</span><span class="p">)</span>
         <span class="n">original_ents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proper_spacy_ent</span><span class="p">)</span>     
     <span class="n">filtered</span> <span class="o">=</span> <span class="n">filter_spans</span><span class="p">(</span><span class="n">original_ents</span><span class="p">)</span> <span class="c1">#removes overlapping ents</span>
     <span class="n">doc</span><span class="o">.</span><span class="n">ents</span> <span class="o">=</span> <span class="n">filtered</span>
     <span class="k">return</span> <span class="n">doc</span>
 
 
-<span class="n">phone_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"phone_multitoken_regex_capture"</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="s2">"phone_nlp_rules"</span><span class="p">)</span>
+<span class="n">phone_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">&quot;phone_multitoken_regex_capture&quot;</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="s2">&quot;phone_nlp_rules&quot;</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Pipeline Components after adding regex custom component:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pipeline Components after adding regex custom component:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe_names</span><span class="p">)</span>
 
 <span class="c1"># inspiration for the above code piece: </span>
@@ -1013,7 +958,7 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
     </div>
 </div>
 </div>
-
+</p>
     </details>
 <div class="output_wrapper">
 <div class="output">
@@ -1022,12 +967,12 @@ en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   <span class="ansi-green-fg">3.1.0</span>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Pipeline Components before adding regex custom component:
-['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules']
+[&#39;tok2vec&#39;, &#39;tagger&#39;, &#39;parser&#39;, &#39;attribute_ruler&#39;, &#39;lemmatizer&#39;, &#39;phone_nlp_rules&#39;]
 
 Entities tracked in phone_nlp_rules
-['PHONE']
+[&#39;PHONE&#39;]
 Pipeline Components after adding regex custom component:
-['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules', 'phone_multitoken_regex_capture']
+[&#39;tok2vec&#39;, &#39;tagger&#39;, &#39;parser&#39;, &#39;attribute_ruler&#39;, &#39;lemmatizer&#39;, &#39;phone_nlp_rules&#39;, &#39;phone_multitoken_regex_capture&#39;]
 </pre>
 </div>
 </div>
@@ -1048,9 +993,9 @@ Pipeline Components after adding regex custom component:
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">sample_phone_sentences</span><span class="p">,</span>
              <span class="n">as_tuples</span><span class="o">=</span><span class="kc">False</span>
             <span class="p">)):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m&quot;</span><span class="p">)</span>
     <span class="n">displacy</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span>
-                    <span class="n">style</span><span class="o">=</span><span class="s1">'ent'</span><span class="p">,</span>
+                    <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ent&#39;</span><span class="p">,</span>
                    <span class="p">)</span>
 </pre></div>
 
@@ -1155,42 +1100,33 @@ Pipeline Components after adding regex custom component:
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<blockquote>
-<p>By adding the custom component, we are able to capture the missed out sentences also</p>
+<blockquote><p>By adding the custom component, we are able to capture the missed out sentences also</p>
 </blockquote>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3B.-Chaining-Spacy-NER-components">
-<a class="anchor" href="#3B.-Chaining-Spacy-NER-components" aria-hidden="true"><span class="octicon octicon-link"></span></a>3B. Chaining Spacy NER components<a class="anchor-link" href="#3B.-Chaining-Spacy-NER-components"> </a>
-</h3>
-<blockquote>
-<p>Chaining spacy NER components makes the patterns more manageable <br>
+<h3 id="3B.-Chaining-Spacy-NER-components">3B. Chaining Spacy NER components<a class="anchor-link" href="#3B.-Chaining-Spacy-NER-components"> </a></h3><blockquote><p>Chaining spacy NER components makes the patterns more manageable <br />
 It is similar to modular programming but for building a complex spacy NER rules</p>
 </blockquote>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><em>Let us discuss creation of a first degree NER + second degree NER (chaining NER) written on top of first degree NER entities</em></p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It is better to train a model for <code>ADDRESS</code> entity.<br>
+<p>It is better to train a model for <code>ADDRESS</code> entity.<br />
 But for the sake of explanation of the <code>Chiaining NER</code> technique, let us build an ADDRESS NER using spacy rules</p>
 
 </div>
@@ -1201,32 +1137,31 @@ But for the sake of explanation of the <code>Chiaining NER</code> technique, let
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Goal: To capture the different types of ADDRESSES in the following ADDRESS SENTENCES</span>
-<span class="n">sample_address_sentences</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'My office is located at 1 American rd, Dearborn, MI 48126, United States'</span><span class="p">,</span>
- <span class="s1">'My office is located at one American Road Dearborb Michigan 48126 United States'</span><span class="p">,</span>
- <span class="s1">'My office is located at 1 American High way, South Dakota 48126, United States'</span><span class="p">,</span>
- <span class="s1">'My office is located at 1 American rd, Dearborn, MI, United States'</span><span class="p">,</span>
- <span class="s1">'My office is located at 717 N 2ND ST, MANKATO, MN 56001 US'</span><span class="p">,</span>
- <span class="s1">'My office is located at 717 N 2ND ST, MANKATO, MN, 56001'</span><span class="p">,</span>
- <span class="s1">'My office is located at 717 N 2ND ST MANKATO MN 56001'</span><span class="p">,</span>
- <span class="s1">'My office is located at Dearborn Michigan'</span><span class="p">,</span>
- <span class="s1">'My office is located at Chennai, TamilNadu'</span><span class="p">,</span>
- <span class="s1">'My office is located at Dearborn, Michigan'</span><span class="p">,</span>
- <span class="s1">'My office is located at PO Box 107050, Albany, NY 12201-7050'</span><span class="p">,</span>
- <span class="s1">'My office is located at PO Box 107050, Albany, NY 12201'</span><span class="p">,</span>
- <span class="s1">'My office is located at P.O. Box 107050, Albany, NY 12201-7050'</span><span class="p">,</span>
- <span class="s1">'My office is located at P.O. Box 107050, Albany, NY 12201'</span><span class="p">]</span>
+<span class="n">sample_address_sentences</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;My office is located at 1 American rd, Dearborn, MI 48126, United States&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;My office is located at one American Road Dearborb Michigan 48126 United States&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;My office is located at 1 American High way, South Dakota 48126, United States&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;My office is located at 1 American rd, Dearborn, MI, United States&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;My office is located at 717 N 2ND ST, MANKATO, MN 56001 US&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;My office is located at 717 N 2ND ST, MANKATO, MN, 56001&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;My office is located at 717 N 2ND ST MANKATO MN 56001&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;My office is located at Dearborn Michigan&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;My office is located at Chennai, TamilNadu&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;My office is located at Dearborn, Michigan&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;My office is located at PO Box 107050, Albany, NY 12201-7050&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;My office is located at PO Box 107050, Albany, NY 12201&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;My office is located at P.O. Box 107050, Albany, NY 12201-7050&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;My office is located at P.O. Box 107050, Albany, NY 12201&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
@@ -1236,8 +1171,7 @@ But for the sake of explanation of the <code>Chiaining NER</code> technique, let
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
@@ -1255,44 +1189,44 @@ But for the sake of explanation of the <code>Chiaining NER</code> technique, let
 
 <span class="c1"># one or more of the above 1st degree NER entities form the final ADDRESS entity</span>
 
-<span class="n">door_num_spacy_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"label"</span><span class="p">:</span><span class="s2">"POTENTIAL_DOOR_NUM"</span><span class="p">,</span>
-                           <span class="s2">"pattern"</span><span class="p">:[{</span><span class="s2">"LOWER"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">b([0-9]{1,4}|one|two|three|four|five|six|seven|eight|nine|ten)</span><span class="se">\\</span><span class="s2">b"</span><span class="p">}}]</span>
+<span class="n">door_num_spacy_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_DOOR_NUM&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;pattern&quot;</span><span class="p">:[{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">b([0-9]{1,4}|one|two|three|four|five|six|seven|eight|nine|ten)</span><span class="se">\\</span><span class="s2">b&quot;</span><span class="p">}}]</span>
                          <span class="p">}]</span>
 
-<span class="n">street_spacy_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"label"</span><span class="p">:</span><span class="s2">"POTENTIAL_STREET_NAME"</span><span class="p">,</span>
-                         <span class="s2">"pattern"</span><span class="p">:[{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span> <span class="s2">"^(N|S|E|W)$"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                    <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"^[A-Z][a-zA-Z]+$|\d(st|nd|rd|th|ST|ND|RD|TH)|[Ff]irst|[Ss]econd|[Tt]hird|[Ff]ourth|[Ff]ifth|[Ss]ixth|[Ss]eventh|[Ee]ighth|[Nn]inth|[Tt]enth"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">},</span>
-                                    <span class="p">{</span><span class="s2">"LOWER"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">b(street|st|avenue|ave|road|rd|highway|hwy|square|sq|trail|trl|drive|dr|court|ct|park|parkway|pkwy|circle|cir|boulevard|blvd|high|park|way|cross)</span><span class="se">\\</span><span class="s2">b"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">}]</span>
+<span class="n">street_spacy_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_STREET_NAME&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;pattern&quot;</span><span class="p">:[{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span> <span class="s2">&quot;^(N|S|E|W)$&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                    <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;^[A-Z][a-zA-Z]+$|\d(st|nd|rd|th|ST|ND|RD|TH)|[Ff]irst|[Ss]econd|[Tt]hird|[Ff]ourth|[Ff]ifth|[Ss]ixth|[Ss]eventh|[Ee]ighth|[Nn]inth|[Tt]enth&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">},</span>
+                                    <span class="p">{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">b(street|st|avenue|ave|road|rd|highway|hwy|square|sq|trail|trl|drive|dr|court|ct|park|parkway|pkwy|circle|cir|boulevard|blvd|high|park|way|cross)</span><span class="se">\\</span><span class="s2">b&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">}]</span>
                        <span class="p">}]</span>
 
-<span class="n">city_or_country_spacy_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"label"</span><span class="p">:</span><span class="s2">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span><span class="p">,</span>
-                                 <span class="s2">"pattern"</span><span class="p">:[{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"^[A-Z][a-zA-Z]+$"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">,</span> <span class="s2">"TAG"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"^NN|HYPH"</span><span class="p">},}],</span>
+<span class="n">city_or_country_spacy_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME&quot;</span><span class="p">,</span>
+                                 <span class="s2">&quot;pattern&quot;</span><span class="p">:[{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;^[A-Z][a-zA-Z]+$&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;TAG&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;^NN|HYPH&quot;</span><span class="p">},}],</span>
                                <span class="p">}]</span>
 
-<span class="n">zip_code_spacy_pattern</span> <span class="o">=</span>  <span class="p">[{</span><span class="s2">"label"</span><span class="p">:</span><span class="s2">"ZIP_CODE"</span><span class="p">,</span>
-                            <span class="s2">"pattern"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">b</span><span class="se">\\</span><span class="s2">d</span><span class="si">{5}</span><span class="se">\\</span><span class="s2">b"</span><span class="p">}},</span>
-                                        <span class="p">{</span><span class="s2">"ORTH"</span><span class="p">:</span><span class="s2">"-"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                        <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">b</span><span class="se">\\</span><span class="s2">d+</span><span class="se">\\</span><span class="s2">b"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">}</span> 
+<span class="n">zip_code_spacy_pattern</span> <span class="o">=</span>  <span class="p">[{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span><span class="s2">&quot;ZIP_CODE&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">b</span><span class="se">\\</span><span class="s2">d</span><span class="si">{5}</span><span class="se">\\</span><span class="s2">b&quot;</span><span class="p">}},</span>
+                                        <span class="p">{</span><span class="s2">&quot;ORTH&quot;</span><span class="p">:</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                        <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">b</span><span class="se">\\</span><span class="s2">d+</span><span class="se">\\</span><span class="s2">b&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">}</span> 
                                        <span class="p">]</span>  
                                 <span class="p">}]</span> 
 
-<span class="n">p_o_box_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"label"</span><span class="p">:</span><span class="s2">"P_O_BOX"</span><span class="p">,</span>
-                     <span class="s2">"pattern"</span><span class="p">:[{</span><span class="s2">"LOWER"</span><span class="p">:{</span><span class="s2">"IN"</span><span class="p">:[</span><span class="s2">"po"</span><span class="p">,</span><span class="s2">"p.o"</span><span class="p">,</span><span class="s2">"p.o."</span><span class="p">,</span><span class="s2">"post"</span><span class="p">]}},</span>
-                                <span class="p">{</span><span class="s2">"LOWER"</span><span class="p">:{</span><span class="s2">"IN"</span><span class="p">:[</span><span class="s2">"office"</span><span class="p">,</span><span class="s2">"."</span><span class="p">]},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"LOWER"</span><span class="p">:{</span><span class="s2">"IN"</span><span class="p">:[</span><span class="s2">"box"</span><span class="p">]}},</span>
-                                <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">b</span><span class="se">\\</span><span class="s2">d+</span><span class="se">\\</span><span class="s2">b"</span><span class="p">}}</span>
+<span class="n">p_o_box_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span><span class="s2">&quot;P_O_BOX&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;pattern&quot;</span><span class="p">:[{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:{</span><span class="s2">&quot;IN&quot;</span><span class="p">:[</span><span class="s2">&quot;po&quot;</span><span class="p">,</span><span class="s2">&quot;p.o&quot;</span><span class="p">,</span><span class="s2">&quot;p.o.&quot;</span><span class="p">,</span><span class="s2">&quot;post&quot;</span><span class="p">]}},</span>
+                                <span class="p">{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:{</span><span class="s2">&quot;IN&quot;</span><span class="p">:[</span><span class="s2">&quot;office&quot;</span><span class="p">,</span><span class="s2">&quot;.&quot;</span><span class="p">]},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:{</span><span class="s2">&quot;IN&quot;</span><span class="p">:[</span><span class="s2">&quot;box&quot;</span><span class="p">]}},</span>
+                                <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">b</span><span class="se">\\</span><span class="s2">d+</span><span class="se">\\</span><span class="s2">b&quot;</span><span class="p">}}</span>
                                <span class="p">]</span>  
                    <span class="p">}]</span>
 
 <span class="n">first_degree_address_patterns</span> <span class="o">=</span> <span class="n">door_num_spacy_pattern</span> <span class="o">+</span> <span class="n">street_spacy_pattern</span> <span class="o">+</span> <span class="n">city_or_country_spacy_pattern</span> <span class="o">+</span> <span class="n">p_o_box_pattern</span> <span class="o">+</span> <span class="n">zip_code_spacy_pattern</span>
 
 <span class="k">def</span> <span class="nf">create_first_degree_address_nlp</span><span class="p">(</span><span class="n">first_degree_address_patterns</span><span class="p">):</span>
-    <span class="n">first_degree_address_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'en_core_web_sm'</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">'ner'</span><span class="p">])</span>
-    <span class="n">rules_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"validate"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                    <span class="s2">"overwrite_ents"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">first_degree_address_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;en_core_web_sm&#39;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ner&#39;</span><span class="p">])</span>
+    <span class="n">rules_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;validate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="s2">&quot;overwrite_ents&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                    <span class="p">}</span>
-    <span class="n">first_degree_rules</span> <span class="o">=</span> <span class="n">first_degree_address_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"entity_ruler"</span><span class="p">,</span>
-                                                           <span class="s2">"first_degree_rules"</span><span class="p">,</span>
+    <span class="n">first_degree_rules</span> <span class="o">=</span> <span class="n">first_degree_address_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">&quot;entity_ruler&quot;</span><span class="p">,</span>
+                                                           <span class="s2">&quot;first_degree_rules&quot;</span><span class="p">,</span>
                                                            <span class="n">config</span><span class="o">=</span><span class="n">rules_config</span><span class="p">)</span>
     <span class="n">first_degree_rules</span><span class="o">.</span><span class="n">add_patterns</span><span class="p">(</span><span class="n">first_degree_address_patterns</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">first_degree_address_nlp</span>                                
@@ -1301,7 +1235,7 @@ But for the sake of explanation of the <code>Chiaining NER</code> technique, let
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
@@ -1318,9 +1252,9 @@ But for the sake of explanation of the <code>Chiaining NER</code> technique, let
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">first_degree_address_nlp</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">sample_address_sentences</span><span class="p">,</span>
              <span class="n">as_tuples</span><span class="o">=</span><span class="kc">False</span>
             <span class="p">)):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m&quot;</span><span class="p">)</span>
     <span class="n">displacy</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span>
-                    <span class="n">style</span><span class="o">=</span><span class="s1">'ent'</span><span class="p">,</span>
+                    <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ent&#39;</span><span class="p">,</span>
                    <span class="p">)</span>
 </pre></div>
 
@@ -1865,54 +1799,54 @@ But for the sake of explanation of the <code>Chiaining NER</code> technique, let
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># pattenr for: 1 American High way, South Dakota 48126, United States</span>
 <span class="c1"># pattern for: 1 American rd, Dearborn, MI, United States</span>
 <span class="c1"># pattern for: 717 N 2ND ST, MANKATO, MN 56001 US</span>
-<span class="n">ADDRESS_PATTERN_1</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"label"</span><span class="p">:</span><span class="s2">"ADDRESS"</span><span class="p">,</span>
-                     <span class="s2">"pattern"</span><span class="p">:[{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_DOOR_NUM"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_STREET_NAME"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"*"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"*"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"ZIP_CODE"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"*"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span> 
-                                <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">},</span>
+<span class="n">ADDRESS_PATTERN_1</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span><span class="s2">&quot;ADDRESS&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;pattern&quot;</span><span class="p">:[{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_DOOR_NUM&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_STREET_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;*&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;*&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;ZIP_CODE&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;*&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span> 
+                                <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">},</span>
                                <span class="p">]</span>  
                    <span class="p">},</span>
                    <span class="p">]</span>
 
 <span class="c1"># pattern for: one American Road Dearborb Michigan 48126 United States</span>
-<span class="n">ADDRESS_PATTERN_2</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"label"</span><span class="p">:</span><span class="s2">"ADDRESS"</span><span class="p">,</span>
-                     <span class="s2">"pattern"</span><span class="p">:[{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_DOOR_NUM"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"ZIP_CODE"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"*"</span><span class="p">},</span>
-                                <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span> 
-                                <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">},</span>
+<span class="n">ADDRESS_PATTERN_2</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span><span class="s2">&quot;ADDRESS&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;pattern&quot;</span><span class="p">:[{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_DOOR_NUM&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;ZIP_CODE&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;*&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span> 
+                                <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">},</span>
                                <span class="p">]</span>  
                    <span class="p">},</span>
                    <span class="p">]</span>
 
 <span class="c1"># 717 N 2ND ST, MANKATO, MN, 56001</span>
 <span class="c1"># 717 N 2ND ST MANKATO MN 56001</span>
-<span class="n">ADDRESS_PATTERN_3</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"label"</span><span class="p">:</span> <span class="s2">"ADDRESS"</span><span class="p">,</span>
-                      <span class="s2">"pattern"</span><span class="p">:[{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_DOOR_NUM"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_STREET_NAME"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"ZIP_CODE"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">},</span>
+<span class="n">ADDRESS_PATTERN_3</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;ADDRESS&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;pattern&quot;</span><span class="p">:[{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_DOOR_NUM&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_STREET_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;ZIP_CODE&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">},</span>
                       <span class="p">]</span>
                      <span class="p">}</span>
                     <span class="p">]</span>
 
 <span class="c1"># Chennai, TamilNadu</span>
 <span class="c1"># Dearborn Michigan</span>
-<span class="n">ADDRESS_PATTERN_4</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"label"</span><span class="p">:</span> <span class="s2">"ADDRESS"</span><span class="p">,</span>
-                      <span class="s2">"pattern"</span><span class="p">:[{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
+<span class="n">ADDRESS_PATTERN_4</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;ADDRESS&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;pattern&quot;</span><span class="p">:[{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
                       <span class="p">]</span>
                      <span class="p">}</span>
                     <span class="p">]</span>
@@ -1920,16 +1854,16 @@ But for the sake of explanation of the <code>Chiaining NER</code> technique, let
 <span class="c1"># PO Box 107050, Albany, NY 12201-7050</span>
 <span class="c1"># PO Box 107050, Albany, NY 12201</span>
 <span class="c1"># PO Box 107050, Albany, NY, US 12201</span>
-<span class="n">ADDRESS_PATTERN_5</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"label"</span><span class="p">:</span> <span class="s2">"ADDRESS"</span><span class="p">,</span>
-                      <span class="s2">"pattern"</span><span class="p">:[{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"P_O_BOX"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"TEXT"</span><span class="p">:{</span><span class="s2">"REGEX"</span><span class="p">:</span><span class="s2">"</span><span class="se">\\</span><span class="s2">W{1,2}"</span><span class="p">},</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"?"</span><span class="p">},</span>
-                                 <span class="p">{</span><span class="s2">"ENT_TYPE"</span><span class="p">:</span><span class="s2">"ZIP_CODE"</span><span class="p">,</span><span class="s2">"OP"</span><span class="p">:</span><span class="s2">"+"</span><span class="p">},</span>
+<span class="n">ADDRESS_PATTERN_5</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;ADDRESS&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;pattern&quot;</span><span class="p">:[{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;P_O_BOX&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;TEXT&quot;</span><span class="p">:{</span><span class="s2">&quot;REGEX&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">W{1,2}&quot;</span><span class="p">},</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;?&quot;</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span><span class="s2">&quot;ZIP_CODE&quot;</span><span class="p">,</span><span class="s2">&quot;OP&quot;</span><span class="p">:</span><span class="s2">&quot;+&quot;</span><span class="p">},</span>
                                  
                       <span class="p">]</span>
                      <span class="p">}</span>
@@ -1940,19 +1874,19 @@ But for the sake of explanation of the <code>Chiaining NER</code> technique, let
 <span class="k">def</span> <span class="nf">create_second_degree_address_nlp</span><span class="p">(</span><span class="n">first_degree_address_patterns</span><span class="p">,</span>
                                           <span class="n">second_degree_address_patterns</span>
                                          <span class="p">):</span>
-    <span class="n">second_degree_address_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'en_core_web_sm'</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">'ner'</span><span class="p">])</span>
-    <span class="n">rules_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"validate"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                    <span class="s2">"overwrite_ents"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">second_degree_address_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;en_core_web_sm&#39;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ner&#39;</span><span class="p">])</span>
+    <span class="n">rules_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;validate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="s2">&quot;overwrite_ents&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                    <span class="p">}</span>
-    <span class="n">first_degree_rules</span> <span class="o">=</span> <span class="n">second_degree_address_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"entity_ruler"</span><span class="p">,</span>
-                                                           <span class="s2">"first_degree_rules"</span><span class="p">,</span>
+    <span class="n">first_degree_rules</span> <span class="o">=</span> <span class="n">second_degree_address_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">&quot;entity_ruler&quot;</span><span class="p">,</span>
+                                                           <span class="s2">&quot;first_degree_rules&quot;</span><span class="p">,</span>
                                                            <span class="n">config</span><span class="o">=</span><span class="n">rules_config</span><span class="p">)</span>
     <span class="n">first_degree_rules</span><span class="o">.</span><span class="n">add_patterns</span><span class="p">(</span><span class="n">first_degree_address_patterns</span><span class="p">)</span>
     
-    <span class="n">second_degree_rules</span> <span class="o">=</span> <span class="n">second_degree_address_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"entity_ruler"</span><span class="p">,</span>
-                                                           <span class="s2">"second_degree_rules"</span><span class="p">,</span>
+    <span class="n">second_degree_rules</span> <span class="o">=</span> <span class="n">second_degree_address_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">&quot;entity_ruler&quot;</span><span class="p">,</span>
+                                                           <span class="s2">&quot;second_degree_rules&quot;</span><span class="p">,</span>
                                                            <span class="n">config</span><span class="o">=</span><span class="n">rules_config</span><span class="p">,</span>
-                                                           <span class="n">after</span><span class="o">=</span><span class="s1">'first_degree_rules'</span><span class="p">)</span>
+                                                           <span class="n">after</span><span class="o">=</span><span class="s1">&#39;first_degree_rules&#39;</span><span class="p">)</span>
     <span class="n">second_degree_rules</span><span class="o">.</span><span class="n">add_patterns</span><span class="p">(</span><span class="n">second_degree_address_patterns</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">second_degree_address_nlp</span>
 </pre></div>
@@ -1976,9 +1910,9 @@ But for the sake of explanation of the <code>Chiaining NER</code> technique, let
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">second_degree_address_nlp</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">sample_address_sentences</span><span class="p">,</span>
              <span class="n">as_tuples</span><span class="o">=</span><span class="kc">False</span>
             <span class="p">)):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m&quot;</span><span class="p">)</span>
     <span class="n">displacy</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span>
-                    <span class="n">style</span><span class="o">=</span><span class="s1">'ent'</span><span class="p">,</span>
+                    <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ent&#39;</span><span class="p">,</span>
                    <span class="p">)</span>
 </pre></div>
 
@@ -2318,28 +2252,20 @@ But for the sake of explanation of the <code>Chiaining NER</code> technique, let
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="4.-How-to-save-Rules-NER-as-a-package">
-<a class="anchor" href="#4.-How-to-save-Rules-NER-as-a-package" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. How to save Rules NER as a package<a class="anchor-link" href="#4.-How-to-save-Rules-NER-as-a-package"> </a>
-</h2>
+<h2 id="4.-How-to-save-Rules-NER-as-a-package">4. How to save Rules NER as a package<a class="anchor-link" href="#4.-How-to-save-Rules-NER-as-a-package"> </a></h2>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>Save the rules ner model <code>phone_nlp</code> to a physical location using <code>nlp.to_disk</code>
-</li>
-<li>Save the custom components in a py file  <code>spacy_rules_ner/phone_functions.py</code>
-</li>
+<li>Save the rules ner model <code>phone_nlp</code> to a physical location using <code>nlp.to_disk</code></li>
+<li>Save the custom components in a py file  <code>spacy_rules_ner/phone_functions.py</code></li>
 <li>use <code>python -m spacy package input_dir output_dir --code location/to/custom_components.py --name new_model_name</code> to generate <code>.tar.gz</code> format package</li>
-<li>Pip install the tar.gz file using <code>pip install location/to/tar.gz</code>
-</li>
-<li>
-<code>spacy.load('new_model_name')</code> will load your package with custom components</li>
+<li>Pip install the tar.gz file using <code>pip install location/to/tar.gz</code></li>
+<li><code>spacy.load('new_model_name')</code> will load your package with custom components</li>
 </ul>
 
 </div>
@@ -2367,20 +2293,19 @@ But for the sake of explanation of the <code>Chiaining NER</code> technique, let
 <div class="cell border-box-sizing code_cell rendered">
 <details class="description" open="">
       <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
-        <p></p>
-<div class="input">
+        <p><div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Let us save the `phone_nlp` and the custom component pipeline </span>
 
-<span class="n">phone_nlp</span><span class="o">.</span><span class="n">to_disk</span><span class="p">(</span><span class="s1">'spacy_rules_ner/phone_nlp'</span><span class="p">)</span>
+<span class="n">phone_nlp</span><span class="o">.</span><span class="n">to_disk</span><span class="p">(</span><span class="s1">&#39;spacy_rules_ner/phone_nlp&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
-
+</p>
     </details>
 </div>
     
@@ -2434,30 +2359,30 @@ config.cfg	 meta.json   parser  senter	      tok2vec  vocab
 <span class="kn">from</span> <span class="nn">spacy.util</span> <span class="kn">import</span> <span class="n">filter_spans</span>
 
 <span class="k">def</span> <span class="nf">load_entity_ruler_based_phone_pattern</span><span class="p">(</span><span class="n">location_spacy_json</span><span class="p">):</span>
-    <span class="n">loaded_spacy_patterns</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">location_spacy_json</span><span class="p">,</span><span class="s1">'r'</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">))</span>
-    <span class="n">phone_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'en_core_web_sm'</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">'ner'</span><span class="p">])</span>
+    <span class="n">loaded_spacy_patterns</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">location_spacy_json</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+    <span class="n">phone_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;en_core_web_sm&#39;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ner&#39;</span><span class="p">])</span>
     <span class="n">rules_config</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">"validate"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">"overwrite_ents"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;validate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;overwrite_ents&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="n">phone_nlp_rules</span> <span class="o">=</span> <span class="n">phone_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"entity_ruler"</span><span class="p">,</span> <span class="c1"># invoke entity_ruler pipe </span>
-                                         <span class="s2">"phone_nlp_rules"</span><span class="p">,</span> <span class="c1"># give a name to the pipe</span>
+    <span class="n">phone_nlp_rules</span> <span class="o">=</span> <span class="n">phone_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">&quot;entity_ruler&quot;</span><span class="p">,</span> <span class="c1"># invoke entity_ruler pipe </span>
+                                         <span class="s2">&quot;phone_nlp_rules&quot;</span><span class="p">,</span> <span class="c1"># give a name to the pipe</span>
                                          <span class="n">config</span><span class="o">=</span><span class="n">rules_config</span><span class="p">)</span>
     <span class="n">phone_nlp_rules</span><span class="o">.</span><span class="n">add_patterns</span><span class="p">(</span><span class="n">loaded_spacy_patterns</span><span class="p">)</span> <span class="c1"># load patterns to the `phone_nlp_rules` pipe of `phone_nlp` model</span>
     <span class="k">return</span> <span class="n">phone_nlp</span>
        
-<span class="n">location_spacy_json</span> <span class="o">=</span> <span class="s1">'spacy_rules_ner/phone_patterns.json'</span>
+<span class="n">location_spacy_json</span> <span class="o">=</span> <span class="s1">&#39;spacy_rules_ner/phone_patterns.json&#39;</span>
 
 <span class="n">phone_nlp</span> <span class="o">=</span> <span class="n">load_entity_ruler_based_phone_pattern</span><span class="p">(</span><span class="n">location_spacy_json</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Pipeline Components before adding regex custom component:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pipeline Components before adding regex custom component:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe_names</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Entities tracked in phone_nlp_rules"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe_labels</span><span class="p">[</span><span class="s1">'phone_nlp_rules'</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Entities tracked in phone_nlp_rules&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe_labels</span><span class="p">[</span><span class="s1">&#39;phone_nlp_rules&#39;</span><span class="p">])</span>
 
-<span class="n">phone_regex_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"([+]?[\d]?[\d]?.?[(]?\d</span><span class="si">{3}</span><span class="s2">[)]?.?\d</span><span class="si">{3}</span><span class="s2">.?\d</span><span class="si">{4}</span><span class="s2">)"</span>
+<span class="n">phone_regex_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;([+]?[\d]?[\d]?.?[(]?\d</span><span class="si">{3}</span><span class="s2">[)]?.?\d</span><span class="si">{3}</span><span class="s2">.?\d</span><span class="si">{4}</span><span class="s2">)&quot;</span>
 
 <span class="c1">#noting the token position for every character in a doc</span>
 
@@ -2469,7 +2394,7 @@ config.cfg	 meta.json   parser  senter	      tok2vec  vocab
     <span class="k">return</span> <span class="n">chars_to_tokens</span>
 
 
-<span class="nd">@Language</span><span class="o">.</span><span class="n">component</span><span class="p">(</span><span class="s2">"phone_multitoken_regex_capture"</span><span class="p">)</span>
+<span class="nd">@Language</span><span class="o">.</span><span class="n">component</span><span class="p">(</span><span class="s2">&quot;phone_multitoken_regex_capture&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">phone_multitoken_regex_capture</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
     <span class="n">original_ents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">ents</span><span class="p">)</span>
     <span class="n">chars_to_tokens</span> <span class="o">=</span> <span class="n">generate_chars2tokens_dict</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
@@ -2487,16 +2412,16 @@ config.cfg	 meta.json   parser  senter	      tok2vec  vocab
                 <span class="n">phone_regex_ents</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">span</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">span</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">span</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">regex_ent</span> <span class="ow">in</span> <span class="n">phone_regex_ents</span><span class="p">:</span>
         <span class="n">start_char</span><span class="p">,</span> <span class="n">end_char</span><span class="p">,</span> <span class="n">span_text</span> <span class="o">=</span> <span class="n">regex_ent</span>
-        <span class="n">proper_spacy_ent</span> <span class="o">=</span> <span class="n">Span</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">start_char</span><span class="p">,</span> <span class="n">end_char</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"PHONE"</span><span class="p">)</span>
+        <span class="n">proper_spacy_ent</span> <span class="o">=</span> <span class="n">Span</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">start_char</span><span class="p">,</span> <span class="n">end_char</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;PHONE&quot;</span><span class="p">)</span>
         <span class="n">original_ents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proper_spacy_ent</span><span class="p">)</span>     
     <span class="n">filtered</span> <span class="o">=</span> <span class="n">filter_spans</span><span class="p">(</span><span class="n">original_ents</span><span class="p">)</span> <span class="c1">#removes overlapping ents</span>
     <span class="n">doc</span><span class="o">.</span><span class="n">ents</span> <span class="o">=</span> <span class="n">filtered</span>
     <span class="k">return</span> <span class="n">doc</span>
 
 
-<span class="n">phone_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"phone_multitoken_regex_capture"</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="s2">"phone_nlp_rules"</span><span class="p">)</span>
+<span class="n">phone_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">&quot;phone_multitoken_regex_capture&quot;</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="s2">&quot;phone_nlp_rules&quot;</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Pipeline Components after adding regex custom component:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pipeline Components after adding regex custom component:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">phone_nlp</span><span class="o">.</span><span class="n">pipe_names</span><span class="p">)</span>
 
 <span class="c1"># inspiration for the above code piece: </span>
@@ -2563,17 +2488,17 @@ config.cfg	 meta.json   parser  senter	      tok2vec  vocab
 <div class="output_subarea output_stream output_stdout output_text">
 <pre><span class="ansi-blue-fg">ℹ Building package artifacts: sdist</span>
 Pipeline Components before adding regex custom component:
-['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules']
+[&#39;tok2vec&#39;, &#39;tagger&#39;, &#39;parser&#39;, &#39;attribute_ruler&#39;, &#39;lemmatizer&#39;, &#39;phone_nlp_rules&#39;]
 
 Entities tracked in phone_nlp_rules
-['PHONE']
+[&#39;PHONE&#39;]
 Pipeline Components after adding regex custom component:
-['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules', 'phone_multitoken_regex_capture']
+[&#39;tok2vec&#39;, &#39;tagger&#39;, &#39;parser&#39;, &#39;attribute_ruler&#39;, &#39;lemmatizer&#39;, &#39;phone_nlp_rules&#39;, &#39;phone_multitoken_regex_capture&#39;]
 <span class="ansi-green-fg">✔ Including 1 Python module(s) with custom code</span>
 <span class="ansi-green-fg">✔ Loaded meta.json from file</span>
 spacy_rules_ner/phone_nlp/meta.json
 <span class="ansi-green-fg">✔ Generated README.md from meta.json</span>
-<span class="ansi-green-fg">✔ Successfully created package 'en_phone_nlp_2-3.1.0'</span>
+<span class="ansi-green-fg">✔ Successfully created package &#39;en_phone_nlp_2-3.1.0&#39;</span>
 spacy_rules_ner/packaged_phone_nlp/en_phone_nlp_2-3.1.0
 running sdist
 running egg_info
@@ -2583,12 +2508,12 @@ writing dependency_links to en_phone_nlp_2.egg-info/dependency_links.txt
 writing entry points to en_phone_nlp_2.egg-info/entry_points.txt
 writing requirements to en_phone_nlp_2.egg-info/requires.txt
 writing top-level names to en_phone_nlp_2.egg-info/top_level.txt
-writing manifest file 'en_phone_nlp_2.egg-info/SOURCES.txt'
-reading manifest file 'en_phone_nlp_2.egg-info/SOURCES.txt'
-reading manifest template 'MANIFEST.in'
-warning: no files found matching 'LICENSE'
-warning: no files found matching 'LICENSES_SOURCES'
-writing manifest file 'en_phone_nlp_2.egg-info/SOURCES.txt'
+writing manifest file &#39;en_phone_nlp_2.egg-info/SOURCES.txt&#39;
+reading manifest file &#39;en_phone_nlp_2.egg-info/SOURCES.txt&#39;
+reading manifest template &#39;MANIFEST.in&#39;
+warning: no files found matching &#39;LICENSE&#39;
+warning: no files found matching &#39;LICENSES_SOURCES&#39;
+writing manifest file &#39;en_phone_nlp_2.egg-info/SOURCES.txt&#39;
 running check
 creating en_phone_nlp_2-3.1.0
 creating en_phone_nlp_2-3.1.0/en_phone_nlp_2
@@ -2646,7 +2571,7 @@ copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/vocab/vectors -&gt; en_phone_nlp_2-3
 Writing en_phone_nlp_2-3.1.0/setup.cfg
 creating dist
 Creating tar archive
-removing 'en_phone_nlp_2-3.1.0' (and everything under it)
+removing &#39;en_phone_nlp_2-3.1.0&#39; (and everything under it)
 <span class="ansi-green-fg">✔ Successfully created zipped Python package</span>
 spacy_rules_ner/packaged_phone_nlp/en_phone_nlp_2-3.1.0/dist/en_phone_nlp_2-3.1.0.tar.gz
 </pre>
@@ -2659,11 +2584,9 @@ spacy_rules_ner/packaged_phone_nlp/en_phone_nlp_2-3.1.0/dist/en_phone_nlp_2-3.1.
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<blockquote>
-<p>The generated <code>tar.gz</code> files can be shared and pip installed</p>
+<blockquote><p>The generated <code>tar.gz</code> files can be shared and pip installed</p>
 </blockquote>
 
 </div>
@@ -2729,7 +2652,7 @@ Successfully built en-phone-nlp-2
 Installing collected packages: en-phone-nlp-2
 Successfully installed en-phone-nlp-2-3.1.0
 <span class="ansi-yellow-fg">WARNING: You are using pip version 21.3.1; however, version 22.1 is available.
-You should consider upgrading via the '/usr/bin/python3 -m pip install --upgrade pip' command.</span>
+You should consider upgrading via the &#39;/usr/bin/python3 -m pip install --upgrade pip&#39; command.</span>
 </pre>
 </div>
 </div>
@@ -2747,7 +2670,7 @@ You should consider upgrading via the '/usr/bin/python3 -m pip install --upgrade
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">phone_nlp_new</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'en_phone_nlp_2'</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">phone_nlp_new</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;en_phone_nlp_2&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2761,12 +2684,12 @@ You should consider upgrading via the '/usr/bin/python3 -m pip install --upgrade
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Pipeline Components before adding regex custom component:
-['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules']
+[&#39;tok2vec&#39;, &#39;tagger&#39;, &#39;parser&#39;, &#39;attribute_ruler&#39;, &#39;lemmatizer&#39;, &#39;phone_nlp_rules&#39;]
 
 Entities tracked in phone_nlp_rules
-['PHONE']
+[&#39;PHONE&#39;]
 Pipeline Components after adding regex custom component:
-['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules', 'phone_multitoken_regex_capture']
+[&#39;tok2vec&#39;, &#39;tagger&#39;, &#39;parser&#39;, &#39;attribute_ruler&#39;, &#39;lemmatizer&#39;, &#39;phone_nlp_rules&#39;, &#39;phone_multitoken_regex_capture&#39;]
 </pre>
 </div>
 </div>
@@ -2787,9 +2710,9 @@ Pipeline Components after adding regex custom component:
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">phone_nlp_new</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">sample_phone_sentences</span><span class="p">,</span>
              <span class="n">as_tuples</span><span class="o">=</span><span class="kc">False</span>
             <span class="p">)):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1mProcessing Sentence </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[1m&quot;</span><span class="p">)</span>
     <span class="n">displacy</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span>
-                    <span class="n">style</span><span class="o">=</span><span class="s1">'ent'</span><span class="p">,</span>
+                    <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ent&#39;</span><span class="p">,</span>
                    <span class="p">)</span>
 </pre></div>
 
@@ -2894,17 +2817,13 @@ Pipeline Components after adding regex custom component:
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="5.-Conclusion">
-<a class="anchor" href="#5.-Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. Conclusion<a class="anchor-link" href="#5.-Conclusion"> </a>
-</h2>
+<h2 id="5.-Conclusion">5. Conclusion<a class="anchor-link" href="#5.-Conclusion"> </a></h2>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
 <li>By building ner rules models for <code>MODEL_NAMES</code>, <code>PHONE</code> and <code>ADDRESS</code> entities we discussed the following concepts:<ul>
@@ -2919,15 +2838,10 @@ Pipeline Components after adding regex custom component:
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="References">
-<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
-</h2>
-<ul>
-<li>Spacy Rules based Matching | <a href="https://spacy.io/usage/rule-based-matching">link</a>
-</li>
+<h2 id="References">References<a class="anchor-link" href="#References"> </a></h2><ul>
+<li>Spacy Rules based Matching | <a href="https://spacy.io/usage/rule-based-matching">link</a></li>
 </ul>
 
 </div>
@@ -2937,13 +2851,40 @@ Pipeline Components after adding regex custom component:
 
 
 
-  </div><!-- from https://github.com/utterance/utterances -->
-<script src="https://utteranc.es/client.js"
-        repo="senthilkumarm1901/learn_by_blogging"
-        issue-term="title"
-        label="blogpost-comment"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script><a class="u-url" href="/learn_by_blogging/spacy/ner/2021/05/09/Spacy_Rules_NER.html" hidden></a>
-</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/learn_by_blogging/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="https://senthilkumarm1901.github.io/learn_by_blogging/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/learn_by_blogging/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Hi I&#39;m Senthil Kumar. I am here to pen my learnings in Data Science and Coding</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li>
+  <a rel="me" href="https://github.com/senthilkumarm1901/" target="_blank" title="github">
+    <svg class="svg-icon grey">
+      <use xlink:href="/learn_by_blogging/assets/minima-social-icons.svg#github"></use>
+    </svg>
+  </a>
+</li>
+</ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
