@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.336">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2020-09-17">
+<meta name="description" content="A Short Study comparing PTW_LDA and Transfer Learning powered KMeans on Text Data">
+
+<title>Learn by Blogging - Comparing Two Unsupervised Clustering Algorithms for Text Data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html" rel="" target="">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Comparing Two Unsupervised Clustering Algorithms for Text Data</h1>
+                  <div>
+        <div class="description">
+          A Short Study comparing PTW_LDA and Transfer Learning powered KMeans on Text Data
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">ML</div>
+                <div class="quarto-category">NLP</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">September 17, 2020</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#i.-introduction" id="toc-i.-introduction" class="nav-link active" data-scroll-target="#i.-introduction">I. Introduction</a>
+  <ul class="collapse">
+  <li><a href="#what-algorithms-are-covered-here" id="toc-what-algorithms-are-covered-here" class="nav-link" data-scroll-target="#what-algorithms-are-covered-here">What algorithms are covered here?</a></li>
+  <li><a href="#what-questions-am-i-answering-here" id="toc-what-questions-am-i-answering-here" class="nav-link" data-scroll-target="#what-questions-am-i-answering-here">What questions am I answering here?</a></li>
+  </ul></li>
+  <li><a href="#ii.-about-use" id="toc-ii.-about-use" class="nav-link" data-scroll-target="#ii.-about-use">II. About USE</a>
+  <ul class="collapse">
+  <li><a href="#iia.-how-use-works" id="toc-iia.-how-use-works" class="nav-link" data-scroll-target="#iia.-how-use-works">IIA. How USE works?</a></li>
+  <li><a href="#iib.-use-architecture" id="toc-iib.-use-architecture" class="nav-link" data-scroll-target="#iib.-use-architecture">IIB. USE Architecture</a></li>
+  <li><a href="#iic.-pre-trained-tasks-in-use" id="toc-iic.-pre-trained-tasks-in-use" class="nav-link" data-scroll-target="#iic.-pre-trained-tasks-in-use">IIC. Pre-trained Tasks in USE</a></li>
+  </ul></li>
+  <li><a href="#iii.-about-lda" id="toc-iii.-about-lda" class="nav-link" data-scroll-target="#iii.-about-lda">III. About LDA</a>
+  <ul class="collapse">
+  <li><a href="#iiia.-intuitive-understanding-of-dirichlet-distribution" id="toc-iiia.-intuitive-understanding-of-dirichlet-distribution" class="nav-link" data-scroll-target="#iiia.-intuitive-understanding-of-dirichlet-distribution">IIIA. Intuitive understanding of Dirichlet Distribution</a></li>
+  <li><a href="#iiib.-how-lda-works" id="toc-iiib.-how-lda-works" class="nav-link" data-scroll-target="#iiib.-how-lda-works">IIIB. How LDA Works?</a></li>
+  <li><a href="#iiic.-hyperparameters-of-lda" id="toc-iiic.-hyperparameters-of-lda" class="nav-link" data-scroll-target="#iiic.-hyperparameters-of-lda">IIIC. Hyperparameters of LDA</a></li>
+  <li><a href="#iiid.-now-how-does-ptw-lda-work" id="toc-iiid.-now-how-does-ptw-lda-work" class="nav-link" data-scroll-target="#iiid.-now-how-does-ptw-lda-work">IIID. Now, How does PTW-LDA work?</a></li>
+  <li><a href="#iiid.-pre-processing-and-hyper-parameters" id="toc-iiid.-pre-processing-and-hyper-parameters" class="nav-link" data-scroll-target="#iiid.-pre-processing-and-hyper-parameters">IIID. Pre-processing and Hyper-parameters</a></li>
+  </ul></li>
+  <li><a href="#iv.-comparison-study" id="toc-iv.-comparison-study" class="nav-link" data-scroll-target="#iv.-comparison-study">IV. Comparison Study</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="i.-introduction" class="level2">
+<h2 class="anchored" data-anchor-id="i.-introduction">I. Introduction</h2>
+<section id="what-algorithms-are-covered-here" class="level3">
+<h3 class="anchored" data-anchor-id="what-algorithms-are-covered-here">What algorithms are covered here?</h3>
+<ul>
+<li><strong>Prior-topic words</strong> guided <em>Latent Dirichlet Allocation</em> and</li>
+<li><strong>Universal Sentence Encoder</strong> (USE) powered <em>K-Means</em></li>
+</ul>
+</section>
+<section id="what-questions-am-i-answering-here" class="level3">
+<h3 class="anchored" data-anchor-id="what-questions-am-i-answering-here">What questions am I answering here?</h3>
+<ul>
+<li><p>Given that USE can encode complex semantic information, <strong>is LDA worthwhile?</strong></p></li>
+<li><p><strong>Can LDA be used for at least some type of data</strong>, where it can produce better/on-par results compared to USE-K-Means?</p></li>
+</ul>
+<p>Before diving into the study, let us understand how <strong>USE-KMeans</strong> and <strong>PTW-guided LDA</strong> works</p>
+<hr>
+</section>
+</section>
+<section id="ii.-about-use" class="level2">
+<h2 class="anchored" data-anchor-id="ii.-about-use">II. About USE</h2>
+<section id="iia.-how-use-works" class="level3">
+<h3 class="anchored" data-anchor-id="iia.-how-use-works">IIA. How USE works?</h3>
+<p><strong>USE</strong> converts sentences into 512 embeddings <img src="https://www.learnopencv.com/wp-content/uploads/2018/11/Universal-Sentence-Encoder.png" class="img-fluid"></p>
+<hr>
+<p><strong>Semantic Similarity</strong> Correlation Matrix <img src="https://2.bp.blogspot.com/-9Qk1fubLpzg/Wv2QGgKVVmI/AAAAAAAACvs/Gm-XF3prXVIIvaIkrTmkcIcYz-4qSxLKwCLcBGAs/s400/image2.png" class="img-fluid"></p>
+<hr>
+<p>Despite many common words, semantically different sentences will have <strong>dissimilar embeddings</strong> <img src="https://1.bp.blogspot.com/-w2kAi39zPrE/Wv2OPHTwDgI/AAAAAAAACvY/aQzvBcaIqYkw8McCBcXlTx0pj9FbILH0ACLcBGAs/s400/image4.png" class="img-fluid"></p>
+</section>
+<section id="iib.-use-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="iib.-use-architecture">IIB. USE Architecture</h3>
+<p>There are two variants</p>
+<p><strong>Variant 1: Transformer Encoder</strong>: <br> <img src="https://amitness.com/images/use-transformer-variant.png" class="img-fluid"></p>
+<p><small>source: https://amitness.com/2020/06/universal-sentence-encoder/ </small></p>
+<p>What does a <strong>Transformer Encoder</strong> Layer comprise? - Self Attention Layer - Feed Forward Network Layer <img src="https://amitness.com/images/use-transformer-one-layer.png" class="img-fluid"></p>
+<p><strong>Variant 2: Deep Averaging Network</strong>:<br> <img src="https://amitness.com/images/use-deep-averaging-network-variant.png" class="img-fluid"></p>
+</section>
+<section id="iic.-pre-trained-tasks-in-use" class="level3">
+<h3 class="anchored" data-anchor-id="iic.-pre-trained-tasks-in-use">IIC. Pre-trained Tasks in USE</h3>
+<p>Overall Pipeline of how <strong>USE</strong> is trained: <br> <img src="https://amitness.com/images/use-overall-pipeline.png" class="img-fluid"></p>
+<hr>
+<p>A. Skip-thought prediction: <br> - Use <code>Central Sentence</code> to predict both the <code>Previous Sentence</code> and <code>Next Sentence</code></p>
+<p><img src="https://amitness.com/images/nlp-ssl-neighbor-sentence.gif" class="img-fluid"></p>
+<p>B. Response Prediction: <br> - Train the USE architecture to do <code>smart reply</code> prediction</p>
+<p><img src="https://3.bp.blogspot.com/-qcqYQcxfLS0/Wv2Pxmm945I/AAAAAAAACvk/decC5VtlRGUdD4NqCui3HgNd3LXdjEvlgCLcBGAs/s640/image3.gif" class="img-fluid"></p>
+<p>C. Natural Language Inference: <br> - Do <code>NLI</code> task prediction, where given a premise and a hypothesis, the model is trained to predict whether the hypothesis is an <code>entailment</code>, <code>contradition</code> or <code>neutral</code> to the premise</p>
+<p><img src="images/LDA_vs_KMeans/markdown_table1.PNG" class="img-fluid"></p>
+</section>
+</section>
+<section id="iii.-about-lda" class="level2">
+<h2 class="anchored" data-anchor-id="iii.-about-lda">III. About LDA</h2>
+<ul>
+<li><strong>Latent</strong>: <br>
+<ul>
+<li>Topic structures in a document are <strong>latent/hidden</strong> in the text</li>
+</ul></li>
+<li><strong>Dirichlet</strong>: <br>
+<ul>
+<li>The <strong>Dirichlet</strong> distribution determines the mixture proportions of <br> - the topics in the documents and - the words in each topic.</li>
+</ul></li>
+<li><strong>Allocation</strong>: <br>
+<ul>
+<li><strong>Allocation</strong> of words to a given topic and allocation of topics to a document</li>
+</ul></li>
+</ul>
+<section id="iiia.-intuitive-understanding-of-dirichlet-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="iiia.-intuitive-understanding-of-dirichlet-distribution">IIIA. Intuitive understanding of Dirichlet Distribution</h3>
+<ul>
+<li>A <strong>Normal/Gaussian</strong> distribution is a continuous probability distribution over all the real numbers
+<ul>
+<li>It is described by a mean and a variance.</li>
+</ul></li>
+</ul>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Normal_Distribution_PDF.svg" class="img-fluid"></p>
+<ul>
+<li>A <strong>Poisson</strong> distribution is a discrete probability distribution that expresses the probability of a given number of events occurring in a fixed interval</li>
+</ul>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/1/16/Poisson_pmf.svg" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>The Poisson distribution is specified by one parameter: lambda (λ). As lambda increases to sufficiently large values, the normal distribution (λ, λ) may be used to approximate the Poisson distribution Source:https://en.wikipedia.org/wiki/Poisson_distribution</p>
+</blockquote>
+<hr>
+<ul>
+<li>Now, what is <strong>Dirichlet Distribution</strong>? <br>
+<ul>
+<li>The dirichlet distribution is a probability distribution as well</li>
+<li>but it is not sampling from the space of real numbers. Instead it is sampling over a probability simplex <br></li>
+</ul></li>
+</ul>
+<pre><code> (0.6, 0.4)
+ (0.1, 0.1, 0.8)
+ (0.05, 0.2, 0.15, 0.1, 0.3, 0.2)</code></pre>
+<p><img src="images/LDA_vs_KMeans/dirichlet_distribution_of_words_topics.PNG" class="img-fluid"></p>
+<ul>
+<li>How Dirichlet Distribution varies w.r.t dirichlet prior: <br>
+<ul>
+<li>The below image shows Dir(α) <br></li>
+<li>As α increases from 0.05 (1/20) to 0.1, 0.2, 0.4 respectively in plots from left to right &amp; top to down, you can see the distribution becoming more uniform. <br> <img src="images/LDA_vs_KMeans/dirichlet_distribution_with_prior.png" class="img-fluid"></li>
+</ul></li>
+</ul>
+</section>
+<section id="iiib.-how-lda-works" class="level3">
+<h3 class="anchored" data-anchor-id="iiib.-how-lda-works">IIIB. How LDA Works?</h3>
+<ul>
+<li>LDA is a generative model <br></li>
+<li>LDA processes documents as ‘bag of words’ – ordering of words is not important</li>
+</ul>
+<p><img src="images/LDA_vs_KMeans/generative_process_1.png" class="img-fluid"></p>
+<p>In principle, LDA generates a document based on <strong>dirichlet distribution (dd) of topics over documents</strong> and <strong>dd of words over topics</strong></p>
+<p><img src="images/LDA_vs_KMeans/generative_process_2.png" class="img-fluid"></p>
+<p><br> <br></p>
+<p>But we inverse the generative process for statistical inference</p>
+<p><img src="images/LDA_vs_KMeans/generative_process_3.png" class="img-fluid"></p>
+</section>
+<section id="iiic.-hyperparameters-of-lda" class="level3">
+<h3 class="anchored" data-anchor-id="iiic.-hyperparameters-of-lda">IIIC. Hyperparameters of LDA</h3>
+<p><img src="LDA_vs_KMeans/plate_notation_LDA.png" class="img-fluid"></p>
+<p>D = Total No.&nbsp;of Documents <br> N = No.&nbsp;of Words = Vocab Size <br> T = No.&nbsp;of Topics <br> <br> θd = Topic Distribution for a particular document d</p>
+<p><img src="images/LDA_vs_KMeans/plate_notation_2.png" class="img-fluid"></p>
+<p><br> Φt= Word Distribution for a topic t. Here for topic 1 and 2.</p>
+<p><img src="images/LDA_vs_KMeans/plate_notation_3.png" class="img-fluid"></p>
+<p>(colored books represent words/tokens)</p>
+<pre><code>Zd,n = Topic Distribution for n th word in document d
+Wd,n = nth word in dth document</code></pre>
+<pre><code>α= parameter that sets the dircihlet prior on the per-document topic distribution (θ)
+= parameter that represents the doc-topic density
+= determines the no. of topics in each doc
+= (Default) = 1/num_of_topics (in sklearn and gensim)
+decreasing alpha results in less number of topics per document
+ 
+β= parameter that sets the dirichlet prior on the per-topic word distribution(ϕ)
+= parameter that represents the topic-word density
+= determines the no. of words per each topic
+= (Default) = 1/num_of_topics (in sklearn and gensim)
+decreasing beta results in just a few major words in topics
+
+m = base measure for per-document topic distribution; a simplex vector/array (m1, m2, …, mT) ; sums to one
+α = Concentration parameter α (positive scalar) 
+ 
+ α * m = (α1, α2, …., αT)
+ 
+ 
+n = base measure for per-topic word distribution; a simplex vector/array (n1, n2, …, nN); sums to one
+β = Concentration parameter β (positive scalar) 
+ 
+ β * n = (β1, β2, …., βT)
+ 
+ 
+There is also another hyper parameter η - topic coherence or perplexity - which can be used to determine the number of topics </code></pre>
+</section>
+<section id="iiid.-now-how-does-ptw-lda-work" class="level3">
+<h3 class="anchored" data-anchor-id="iiid.-now-how-does-ptw-lda-work">IIID. Now, How does PTW-LDA work?</h3>
+<ul>
+<li>Nudge the regular LDA to converge faster and better with human-reviewed words list for each topic</li>
+</ul>
+<p><img src="images/LDA_vs_KMeans/seededlda_1.png" class="img-fluid"></p>
+<ul>
+<li><p>How the topics are seeded with some seed words <img src="images/LDA_vs_KMeans/seededlda_3.png" class="img-fluid"> Source:Freecodecamp.org <br></p></li>
+<li><p>Chaotic LDA and Clear PTW_LDA outputs… <br></p></li>
+<li><p>LDA might need several hyperparameter tuning attempts to get to the desired splits</p></li>
+<li><p>Default initialization with uniform word topic distribution <br></p></li>
+</ul>
+<p><img src="https://cdn-media-1.freecodecamp.org/images/1*RojQi7m5yBGHSD0Q0HGGYg.png" class="img-fluid"></p>
+<ul>
+<li><p>Seeded Initialization <img src="https://cdn-media-1.freecodecamp.org/images/1*kMxQ47DFkpxIDBCyXeff6w.png" class="img-fluid"></p></li>
+<li><p>The seeded words are guided towards seeded topics for converging faster <img src="images/LDA_vs_KMeans/simplistic_guided_LDA_notation.PNG" class="img-fluid"></p></li>
+</ul>
+</section>
+<section id="iiid.-pre-processing-and-hyper-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="iiid.-pre-processing-and-hyper-parameters">IIID. Pre-processing and Hyper-parameters</h3>
+<p><strong>Preprocessing</strong>: <br></p>
+<table class="table">
+<colgroup>
+<col style="width: 81%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>PTW-LDA</th>
+<th>USE + Clustering</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1. Stop words removed</td>
+<td>No pre-processing; Comments were used as is</td>
+</tr>
+<tr class="even">
+<td>2. Lemmatized</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>3. Top 20 words per (ground truth) label was extracted</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>4. Human-reviewed list of 20 word lists (each corresponding to 1 topic) were chosen as prior topic words input (SAT is useful when there are prior topic words fed; otherwise it works as normal LDA)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Hyperparameter Tuning</strong></p>
+<table class="table">
+<colgroup>
+<col style="width: 77%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>PTW-LDA <br>(best possible based on heuristics and <br>limited # of experimentations)</th>
+<th>USE + Clustering</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>No.&nbsp;Of Topics</td>
+<td>No.&nbsp;Of clusters</td>
+</tr>
+<tr class="even">
+<td>Max Iterations</td>
+<td>Max Iterations (for K-Means)</td>
+</tr>
+<tr class="odd">
+<td>(default) Doc_topic_prior = alpha = 1/ no_of_topics</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>(default) topic_word_prior = beta = 1/ no_of_topics</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Learning_method: “batch” (whole dataset is used)</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>(alternative is ‘online’ which uses only batch size no. Of comments; similar to mini_batch_kmeans)</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Seeded_words_list</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Seed_coefficent/seed confidence (how much to nudge the seeded words)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="iv.-comparison-study" class="level2">
+<h2 class="anchored" data-anchor-id="iv.-comparison-study">IV. Comparison Study</h2>
+<ul>
+<li>Data I - <code>20 Newsgroups</code> - Supervised Evaluation <br></li>
+</ul>
+<p><img src="images/LDA_vs_KMeans/data1_evaluation_complete.PNG" class="img-fluid"></p>
+<p><a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.adjusted_mutual_info_score.html#sklearn.metrics.adjusted_mutual_info_score">Source for Adjusted Mutual Information Score</a></p>
+<ul>
+<li>Data II -<code>ABC (Australian Broadcast Corporation) Corpus</code> - Unsupervised Evaluation</li>
+</ul>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th>PTW-LDA</th>
+<th>USE-Clustering</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Word Embedding based Coherence Score <br> (more the coherence score, better is the clustering output)</td>
+<td>Coherence Score for 20 topics: 0.091 <br> <br></td>
+<td>Coherence Score for 20 clusters : 0.159</td>
+</tr>
+<tr class="even">
+<td>Methodology of computing the above metric</td>
+<td>Take the top 10 words that constitute each of the 20 topics (each topic comprises of a probability simplex of the words; select the top 10 highly probable words in that topic) <br> <br> For our case, the top 10 words used for coherence computation in the 10 topics are: <br> <br> [[‘police’, ‘baghdad’, ‘war’, ‘probe’, ‘protest’, ‘anti’, ‘missing’, ‘man’, ‘fight’, ‘coalition’], <br> [‘report’, ‘pm’, ‘death’, ‘korea’, ‘claim’, ‘war’, ‘north’, ‘nt’, ‘toll’, ‘protesters’], <br> [‘win’, ‘govt’, ‘set’, ‘community’, ‘end’, ‘wins’, ‘vic’, ‘indigenous’, ‘road’, ‘help’], <br> [‘world’, ‘cup’, ‘australia’, ‘found’, ‘ban’, ‘plans’, ‘lead’, ‘gets’, ‘expected’, ‘match’], <br> [‘un’, ‘coast’, ‘title’, ‘takes’, ‘peace’, ‘iraq’, ‘gold’, ‘defence’, ‘residents’, ‘play’], <br> [‘iraq’, ‘iraqi’, ‘war’, ‘says’, ‘troops’, ‘killed’, ‘dead’, ‘hospital’, ‘clash’, ‘forces’], <br> [‘council’, ‘boost’, ‘mp’, ‘fire’, ‘group’, ‘qld’, ‘minister’, ‘defends’, ‘land’, ‘welcomes’], <br> [‘man’, ‘court’, ‘charged’, ‘face’, ‘plan’, ‘open’, ‘murder’, ‘urged’, ‘case’, ‘charges’], <br> [‘new’, ‘oil’, ‘dies’, ‘security’, ‘crash’, ‘sars’, ‘high’, ‘year’, ‘house’, ‘car’], <br> [‘water’, ‘rain’, ‘claims’, ‘wa’, ‘nsw’, ‘farmers’, ‘drought’, ‘howard’, ‘centre’, ‘union’]] <br> <br> For each topic, taking 2 out of the top 10 words at a time, compute cosine similarity using pre-trained W2V embedding <br> Overall Coherence is sum of similarity scores of all possible pairs of words for each topic, normalized by the no. of topics</td>
+<td>Take the top 10 words that constitute each of the 20 clusters (top 10 words (from stop-words removed set) are computed based on their TF-IDF weighted scores in that cluster) <br> <br> For each cluster, taking 2 out of the top 10 words at a time, compute similarity using pre-trained W2V embedding <br> <br> For our case, the top 10 words used for coherence computation in the 10 clusters are: <br> <br> [[‘win’, ‘cup’, ‘final’, ‘wins’, ‘world’, ‘afl’, ‘coach’, ‘england’, ‘season’, ‘day’], <br> [‘council’, ‘plan’, ‘market’, ‘funding’, ‘boost’, ‘housing’, ‘water’, ‘funds’, ‘budget’, ‘rise’], <br> [‘crash’, ‘man’, ‘killed’, ‘death’, ‘dies’, ‘dead’, ‘injured’, ‘woman’, ‘car’, ‘sydney’], <br> [‘interview’, ‘michael’, ‘business’, ‘abc’, ‘news’, ‘market’, ‘analysis’, ‘david’, ‘extended’, ‘andrew’], <br> [‘australia’, ‘australian’, ‘aussie’, ‘sydney’, ‘australians’, ‘day’, ‘aussies’, ‘australias’, ‘melbourne’, ‘south’], <br> [‘abc’, ‘country’, ‘hour’, ‘news’, ‘weather’, ‘grandstand’, ‘friday’, ‘nsw’, ‘drum’, ‘monday’], <br> [‘govt’, ‘election’, ‘council’, ‘government’, ‘minister’, ‘pm’, ‘parliament’, ‘nsw’, ‘anti’, ‘trump’], <br> [‘police’, ‘man’, ‘court’, ‘murder’, ‘charged’, ‘accused’, ‘death’, ‘guilty’, ‘charges’, ‘assault’], <br> [‘farmers’, ‘water’, ‘drought’, ‘industry’, ‘farm’, ‘coal’, ‘green’, ‘cattle’, ‘mining’, ‘nsw’], <br> [‘health’, ‘hospital’, ‘flu’, ‘mental’, ‘doctors’, ‘treatment’, ‘cancer’, ‘drug’, ‘service’, ‘care’]] <br> <br> <br> Overall Coherence is sum of similarity scores of all possible pairs of words for each cluster, normalized by the no. of clusters <br></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<ul>
+<li><p>We have used two News corpus of varying text length. One dataset has ground truth labels and the other doesn’t have labels</p></li>
+<li><p>In our comparison of <strong>PTW-LDA vs USE-Clustering</strong></p>
+<ul>
+<li>using both ‘Supervised’ (Adjusted Mutual Information Score) and ‘Unsupervised’ evaluation metrics, USE-clustering performs far superior to PTW-LDA despite repeated attempts at different set of hyper-parameters for PTW-LDA</li>
+</ul></li>
+</ul>
+<p><strong>Important References</strong>:<br> <strong>USE</strong>: <br> - https://amitness.com/2020/06/universal-sentence-encoder/ <br> - USE Paper: https://arxiv.org/abs/1803.11175</p>
+<p><strong>LDA</strong>: <br> - The original paper of LDA by David Blei - https://www.slideshare.net/hustwj/nicolas-loeff-lda - http://videolectures.net/mlss09uk_blei_tm/ - http://www.cs.columbia.edu/~blei/talks/Blei_ICML_2012.pdf - https://www.quora.com/What-is-an-intuitive-explanation-of-the-Dirichlet-distribution (it compares normal distribution with Dirichlet Distribution) - https://ldabook.com/lda-as-a-generative-model.html - https://ldabook.com/index.html</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

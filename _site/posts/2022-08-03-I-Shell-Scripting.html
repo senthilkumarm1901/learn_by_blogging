@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.336">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2022-08-03">
+<meta name="description" content="A quick guide manual to level up your understanding and use of Bash Scripting">
+
+<title>Learn by Blogging - A Practical Guide to Bash Scripting</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html" rel="" target="">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">A Practical Guide to Bash Scripting</h1>
+                  <div>
+        <div class="description">
+          A quick guide manual to level up your understanding and use of Bash Scripting
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Coding</div>
+                <div class="quarto-category">Bash Scripting</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 3, 2022</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#what-you-will-see-in-this-post" id="toc-what-you-will-see-in-this-post" class="nav-link active" data-scroll-target="#what-you-will-see-in-this-post">What you will see in this post?</a></li>
+  <li><a href="#i.-why-bash-scripting" id="toc-i.-why-bash-scripting" class="nav-link" data-scroll-target="#i.-why-bash-scripting">I. Why Bash Scripting?</a>
+  <ul class="collapse">
+  <li><a href="#ii.-a-brief-intro-to-bash-scripting" id="toc-ii.-a-brief-intro-to-bash-scripting" class="nav-link" data-scroll-target="#ii.-a-brief-intro-to-bash-scripting">II. A Brief Intro to Bash Scripting</a>
+  <ul class="collapse">
+  <li><a href="#what-is-a-linux-clishell-terminal" id="toc-what-is-a-linux-clishell-terminal" class="nav-link" data-scroll-target="#what-is-a-linux-clishell-terminal">What is a <strong>Linux CLI/Shell Terminal</strong></a></li>
+  <li><a href="#what-is-a-shell-or-bash" id="toc-what-is-a-shell-or-bash" class="nav-link" data-scroll-target="#what-is-a-shell-or-bash">What is a Shell or Bash?</a></li>
+  <li><a href="#different-types-of-shell" id="toc-different-types-of-shell" class="nav-link" data-scroll-target="#different-types-of-shell"><strong>Different Types of Shell</strong></a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#iii.-common-single-line-cli-recipes-from-personal-experience" id="toc-iii.-common-single-line-cli-recipes-from-personal-experience" class="nav-link" data-scroll-target="#iii.-common-single-line-cli-recipes-from-personal-experience">III. Common Single-line CLI Recipes from Personal Experience</a>
+  <ul class="collapse">
+  <li><a href="#tree" id="toc-tree" class="nav-link" data-scroll-target="#tree">1. <code>tree</code></a></li>
+  <li><a href="#find-xrgs" id="toc-find-xrgs" class="nav-link" data-scroll-target="#find-xrgs">2. <code>find</code> + <code>xrgs</code></a></li>
+  <li><a href="#tar-sed-find-with-a-for-loop" id="toc-tar-sed-find-with-a-for-loop" class="nav-link" data-scroll-target="#tar-sed-find-with-a-for-loop">3. <code>tar</code> + <code>sed</code> + <code>find</code> with a <code>for</code> loop</a></li>
+  <li><a href="#find-wc-grep" id="toc-find-wc-grep" class="nav-link" data-scroll-target="#find-wc-grep">4. <code>find</code> + <code>wc</code> + <code>grep</code></a></li>
+  <li><a href="#find-head-sed" id="toc-find-head-sed" class="nav-link" data-scroll-target="#find-head-sed">5. <code>find</code> + <code>head</code> + <code>sed</code></a></li>
+  <li><a href="#find-head-sed-nl" id="toc-find-head-sed-nl" class="nav-link" data-scroll-target="#find-head-sed-nl">6. <code>find</code> + <code>head</code> + <code>sed</code> + <code>nl</code></a></li>
+  </ul></li>
+  <li><a href="#iv.-how-to-write-shell-files" id="toc-iv.-how-to-write-shell-files" class="nav-link" data-scroll-target="#iv.-how-to-write-shell-files">IV. How to write Shell Files</a>
+  <ul class="collapse">
+  <li><a href="#shell-script-with-positional-arguments" id="toc-shell-script-with-positional-arguments" class="nav-link" data-scroll-target="#shell-script-with-positional-arguments">Shell Script with Positional arguments</a></li>
+  <li><a href="#shell-script-with-one-letter-keyword-arguments-and-functions" id="toc-shell-script-with-one-letter-keyword-arguments-and-functions" class="nav-link" data-scroll-target="#shell-script-with-one-letter-keyword-arguments-and-functions">Shell Script with one-letter keyword arguments and functions</a></li>
+  <li><a href="#shell-script-with-word-keyword-arguments" id="toc-shell-script-with-word-keyword-arguments" class="nav-link" data-scroll-target="#shell-script-with-word-keyword-arguments">Shell Script with word keyword arguments</a></li>
+  </ul></li>
+  <li><a href="#v.-create-your-own-shell-commands" id="toc-v.-create-your-own-shell-commands" class="nav-link" data-scroll-target="#v.-create-your-own-shell-commands">V. Create your own shell commands!</a>
+  <ul class="collapse">
+  <li><a href="#example-1-convert-a-counting_files_recursively.sh-shell-file-into-a-command-counting_files_recursively" id="toc-example-1-convert-a-counting_files_recursively.sh-shell-file-into-a-command-counting_files_recursively" class="nav-link" data-scroll-target="#example-1-convert-a-counting_files_recursively.sh-shell-file-into-a-command-counting_files_recursively">Example 1: Convert a <code>counting_files_recursively.sh</code> shell file into a command <code>counting_files_recursively</code></a></li>
+  <li><a href="#example-2-simpler-one-line-alias-command.-converting-ls--al-into-ls_all" id="toc-example-2-simpler-one-line-alias-command.-converting-ls--al-into-ls_all" class="nav-link" data-scroll-target="#example-2-simpler-one-line-alias-command.-converting-ls--al-into-ls_all">Example 2: Simpler one-line alias command. Converting <code>ls -al</code> into <code>ls_all</code></a></li>
+  </ul></li>
+  <li><a href="#vi.-understanding-redirects-in-shell-scripting" id="toc-vi.-understanding-redirects-in-shell-scripting" class="nav-link" data-scroll-target="#vi.-understanding-redirects-in-shell-scripting">VI. Understanding Redirects in Shell Scripting</a>
+  <ul class="collapse">
+  <li><a href="#the-typical-ways" id="toc-the-typical-ways" class="nav-link" data-scroll-target="#the-typical-ways">The Typical Ways</a></li>
+  <li><a href="#additional-aids-the-file-descriptors-0-1-and-2" id="toc-additional-aids-the-file-descriptors-0-1-and-2" class="nav-link" data-scroll-target="#additional-aids-the-file-descriptors-0-1-and-2">Additional Aids: The File Descriptors (0, 1, and 2)</a></li>
+  <li><a href="#devnull" id="toc-devnull" class="nav-link" data-scroll-target="#devnull"><code>/dev/null</code></a></li>
+  </ul></li>
+  <li><a href="#vii.-summary" id="toc-vii.-summary" class="nav-link" data-scroll-target="#vii.-summary">VII. Summary</a>
+  <ul class="collapse">
+  <li><a href="#concluding-remarks" id="toc-concluding-remarks" class="nav-link" data-scroll-target="#concluding-remarks">Concluding Remarks …</a>
+  <ul class="collapse">
+  <li><a href="#why-is-shell-scripting-so-hard" id="toc-why-is-shell-scripting-so-hard" class="nav-link" data-scroll-target="#why-is-shell-scripting-so-hard"><strong>Why is Shell Scripting so hard?</strong></a></li>
+  <li><a href="#where-is-shell-scripting-most-useful" id="toc-where-is-shell-scripting-most-useful" class="nav-link" data-scroll-target="#where-is-shell-scripting-most-useful"><strong>Where is Shell Scripting most useful?</strong></a></li>
+  <li><a href="#where-shell-scripting-can-be-avoided" id="toc-where-shell-scripting-can-be-avoided" class="nav-link" data-scroll-target="#where-shell-scripting-can-be-avoided"><strong>Where Shell Scripting can be avoided?</strong></a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<ul>
+<li>This is a quick guide manual to advance your understanding of Bash Scripting for real-world application, beyond just one-liner commands.&nbsp;</li>
+<li>To solve specific real-world use cases, like the below need, we will be writing a combination of the commands in a single line (in Section III)</li>
+<li>You will see how to write interactive shell file scripts (in Section IV)</li>
+</ul>
+<p><img src="images/bash_scripting/article_image_cropped.png" class="img-fluid"></p>
+<hr>
+<section id="what-you-will-see-in-this-post" class="level1">
+<h1>What you will see in this post?</h1>
+<ul>
+<li>I. Why Bash Scripting?</li>
+<li><ol start="2" type="I">
+<li>A Brief Intro Bash Scripting</li>
+</ol></li>
+<li><ol start="3" type="I">
+<li>A Selected List of Single-line Recipes from personal experience</li>
+</ol></li>
+<li><ol start="4" type="I">
+<li>Shell Scripting Files at a glance</li>
+</ol></li>
+<li>V. Create your own shell commands!</li>
+<li><ol start="6" type="I">
+<li>Understanding Redirecting of Output and Errors</li>
+</ol></li>
+<li><ol start="7" type="I">
+<li>Summary</li>
+</ol></li>
+</ul>
+<p>For covering III, IV, and V in a more practical way, I have chosen a directory in my local system titled <code>text_datasets</code>.</p>
+</section>
+<section id="i.-why-bash-scripting" class="level1">
+<h1>I. Why Bash Scripting?</h1>
+<blockquote class="blockquote">
+<p>Arguably, Shell Scripting is the <strong>often untaught foundation</strong> to the most important skills in software engineering</p>
+</blockquote>
+<ul>
+<li>Why you may ask? You may have seen <code>Shell Commands</code> in
+<ul>
+<li>Git</li>
+<li>Makefile, VirtualEnv or Any Software Packaging</li>
+<li>Docker, Kubernetes</li>
+<li>Server Administration</li>
+<li>Application Deployment</li>
+<li>Cloud Computing &amp;</li>
+<li>many more places …</li>
+</ul></li>
+<li>It is often the easiest application to ship, because it directly works with the Kernerl that works with hardware</li>
+</ul>
+<p><img src="https://homepages.uc.edu/~thomam/Intro_Unix_Text/Images/OS_donut.png" class="img-fluid"></p>
+<p>Image Source: https://homepages.uc.edu/~thomam/Intro_Unix_Text/OS_Organization.html</p>
+<section id="ii.-a-brief-intro-to-bash-scripting" class="level2">
+<h2 class="anchored" data-anchor-id="ii.-a-brief-intro-to-bash-scripting">II. A Brief Intro to Bash Scripting</h2>
+<section id="what-is-a-linux-clishell-terminal" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-a-linux-clishell-terminal">What is a <strong>Linux CLI/Shell Terminal</strong></h3>
+<ul>
+<li>A non-graphical text-based interface to the Kernel</li>
+<li>A program to access the features and functionalities offered by kernel</li>
+<li>How instructions flow: Hardware &lt;– Kernel &lt;– Shell/Terminal &lt;– Command Libraries and Applications (like mail) &lt;– User</li>
+</ul>
+</section>
+<section id="what-is-a-shell-or-bash" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-a-shell-or-bash">What is a Shell or Bash?</h3>
+<blockquote class="blockquote">
+<p>The shell is the operating system’s command-line interface (CLI) and interpreter for the set of commands that are used to communicate with the system.</p>
+</blockquote>
+<p><a href="https://www.techtarget.com/searchdatacenter/definition/shell-script">source</a></p>
+</section>
+<section id="different-types-of-shell" class="level3">
+<h3 class="anchored" data-anchor-id="different-types-of-shell"><strong>Different Types of Shell</strong></h3>
+<ul>
+<li>Bourne Shell developed by Steve Bourne at AT&amp;T Labs (sh)</li>
+<li>C shell (csh)</li>
+<li>Korn Shell (ksh) - better version of <code>sh</code></li>
+<li>Bourne-Again Shell (bash) had features of csh and <code>ksh</code></li>
+<li>Z Shell (zsh) - A more modern shell adopted by MacOS!</li>
+</ul>
+<p>Sources for this section: Refer <a href="https://mindmajix.com/shell-scripting-tutorial">here</a> and <a href="https://homepages.uc.edu/~thomam/Intro_Unix_Text/OS_Organization.html">here</a></p>
+<hr>
+</section>
+</section>
+</section>
+<section id="iii.-common-single-line-cli-recipes-from-personal-experience" class="level1">
+<h1>III. Common Single-line CLI Recipes from Personal Experience</h1>
+<blockquote class="blockquote">
+<p>There are so many bash commands. Here, I attempt to cover those that I use often. Also, it is no use to learn the bash commands in silos. We often use a combination of them in practical use.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>I am taking a simple example of a directory of <code>text_datasets</code> to explain the use of several bash commands.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>If you wish to replicate the section III in the same manner as mine, please download from this Google Drive folder of <a href="https://drive.google.com/drive/u/0/folders/0Bz8a_Dbh9Qhbfll6bVpmNUtUcFdjYmF2SEpmZUZUcVNiMUw1TWN6RDV3a0JHT3kxLVhVR2M?resourcekey=0-TLwzfR2O-D2aPitmn5o9VQ">Xiang Zhang</a> (digression alert: I landed on this dataset when reading <a href="https://github.com/rasbt/deeplearning-models/blob/master/pytorch_ipynb/rnn/rnn_bi_multilayer_lstm_own_csv_agnews.ipynb">a post by Sebastian Raksha</a>)</p>
+</blockquote>
+<section id="tree" class="level3">
+<h3 class="anchored" data-anchor-id="tree">1. <code>tree</code></h3>
+<ul>
+<li><strong>Purpose</strong>: Show the dir and files</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/datasets % tree </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> text_datasets</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="ex">├──</span> ag_news</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="ex">│&nbsp;&nbsp;</span> └── ag_news_csv.tar.gz</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="ex">├──</span> dbpedia</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="ex">│&nbsp;&nbsp;</span> └── dbpedia_csv.tar.gz</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">└──</span> yelp_reviews</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="ex">└──</span> yelp_review_full_csv.tar.gz</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ex">4</span> directories, 3 files</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="find-xrgs" class="level3">
+<h3 class="anchored" data-anchor-id="find-xrgs">2. <code>find</code> + <code>xrgs</code></h3>
+<ul>
+<li><strong>Purpose</strong>: Find the size of the archived files</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/datasets % find . <span class="at">-name</span> <span class="st">"*.tar*"</span> <span class="kw">|</span> <span class="fu">xargs</span> du <span class="at">-hs</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">187M</span>    ./text_datasets/yelp_reviews/yelp_review_full_csv.tar.gz</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a> <span class="ex">12M</span>    ./text_datasets/ag_news/ag_news_csv.tar.gz</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">65M</span>    ./text_datasets/dbpedia/dbpedia_csv.tar.gz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong>Want to know more?</strong>: <code>man xargs</code>, <code>man du</code> or <code>man find</code></li>
+</ul>
+</section>
+<section id="tar-sed-find-with-a-for-loop" class="level3">
+<h3 class="anchored" data-anchor-id="tar-sed-find-with-a-for-loop">3. <code>tar</code> + <code>sed</code> + <code>find</code> with a <code>for</code> loop</h3>
+<ul>
+<li><strong>Purpose</strong>: Unzip files across directories</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/datasets % for f in <span class="va">$(</span><span class="fu">find</span> . <span class="at">-name</span> <span class="st">"*.tar*"</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="at">-e</span> <span class="st">'s|/[^/]*$||g'</span> <span class="va">)</span><span class="kw">;</span> <span class="cf">do</span> <span class="fu">tar</span> <span class="at">-xvf</span> <span class="st">"</span><span class="va">$f</span><span class="st">"</span>/<span class="pp">*</span>.tar.<span class="pp">*</span> <span class="at">-C</span> <span class="st">"</span><span class="va">$f</span><span class="st">"</span><span class="kw">;</span> <span class="cf">done</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> yelp_review_full_csv/</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> yelp_review_full_csv/readme.txt</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> yelp_review_full_csv/train.csv</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> yelp_review_full_csv/test.csv</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> ag_news_csv/</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> ag_news_csv/train.csv</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> ag_news_csv/test.csv</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> ag_news_csv/classes.txt</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> ag_news_csv/readme.txt</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> dbpedia_csv/</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> dbpedia_csv/classes.txt</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> dbpedia_csv/test.csv</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> dbpedia_csv/train.csv</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="ex">x</span> dbpedia_csv/readme.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong>Want to know more?</strong>:
+<ul>
+<li><code>man tar</code> and</li>
+<li>search for the individual arguments on what they do using backward slash <code>/</code> <code>/-x | -v | -z | -f</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="find-wc-grep" class="level3">
+<h3 class="anchored" data-anchor-id="find-wc-grep">4. <code>find</code> + <code>wc</code> + <code>grep</code></h3>
+<ul>
+<li><strong>Purpose</strong>: Find number of rows in each file in each sub directory</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/<span class="pp">*</span>/text_datasets % for f in <span class="va">$(</span><span class="fu">find</span> . <span class="at">-name</span> <span class="st">"*.csv"</span><span class="va">)</span><span class="kw">;</span> <span class="cf">do</span> <span class="kw">(</span><span class="bu">echo</span> <span class="st">"Number of rows in </span><span class="va">$f</span><span class="st">"</span> <span class="kw">&amp;&amp;</span>  <span class="fu">wc</span> <span class="at">-l</span> <span class="st">"</span><span class="va">$f</span><span class="st">"</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-o</span> <span class="st">"[0-9]*"</span> <span class="kw">&amp;&amp;</span> <span class="bu">echo</span><span class="kw">);</span> <span class="cf">done</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Number</span> of rows in ./yelp_reviews/yelp_review_full_csv/test.csv</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">50000</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Number</span> of rows in ./yelp_reviews/yelp_review_full_csv/train.csv</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="ex">650000</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Number</span> of rows in ./ag_news/ag_news_csv/test.csv</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="ex">7600</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="ex">Number</span> of rows in ./ag_news/ag_news_csv/train.csv</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="ex">120000</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="ex">Number</span> of rows in ./dbpedia/dbpedia_csv/test.csv</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="ex">70000</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="ex">Number</span> of rows in ./dbpedia/dbpedia_csv/train.csv</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="ex">560000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>If you are more comfortable writing in multiple lines, you can choose the format below as well. Most terminals support this</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/<span class="pp">*</span>/text_datasets % <span class="dt">\</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>for f in <span class="va">$(</span><span class="fu">find</span> . <span class="at">-name</span> <span class="st">"*.csv"</span><span class="va">)</span><span class="kw">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">do</span> <span class="kw">(</span><span class="bu">echo</span> <span class="st">"Number of rows in </span><span class="va">$f</span><span class="st">"</span> <span class="kw">&amp;&amp;</span>  <span class="fu">wc</span> <span class="at">-l</span> <span class="st">"</span><span class="va">$f</span><span class="st">"</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-o</span> <span class="st">"[0-9]*"</span> <span class="kw">&amp;&amp;</span> <span class="bu">echo</span><span class="kw">);</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="find-head-sed" class="level3">
+<h3 class="anchored" data-anchor-id="find-head-sed">5. <code>find</code> + <code>head</code> + <code>sed</code></h3>
+<ul>
+<li><strong>Purpose</strong>: Find number of columns in each file in each sub directory</li>
+</ul>
+<pre><code>senthilkumar.m@BashScripter ~/*/text_datasets % for f in $(find . -name "*.csv"); do (echo "*****$f***": &amp;&amp;  echo "Number of Columns:" &amp;&amp;  head -n 1 "$f"| sed 's/","/"\n"/g' |wc -l &amp;&amp; echo) ; done
+*****./yelp_reviews/yelp_review_full_csv/test.csv***:
+Number of Columns:
+       2
+
+*****./yelp_reviews/yelp_review_full_csv/train.csv***:
+Number of Columns:
+       2
+
+*****./ag_news/ag_news_csv/test.csv***:
+Number of Columns:
+       3
+
+*****./ag_news/ag_news_csv/train.csv***:
+Number of Columns:
+       3
+
+*****./dbpedia/dbpedia_csv/test.csv***:
+Number of Columns:
+       2
+
+*****./dbpedia/dbpedia_csv/train.csv***:
+Number of Columns:
+       2</code></pre>
+</section>
+<section id="find-head-sed-nl" class="level3">
+<h3 class="anchored" data-anchor-id="find-head-sed-nl">6. <code>find</code> + <code>head</code> + <code>sed</code> + <code>nl</code></h3>
+<ul>
+<li><strong>Purpose</strong>: Human understandable display of 1 line in each file</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/text_datasets % for f in <span class="va">$(</span><span class="fu">find</span> . <span class="at">-name</span> <span class="st">"*train.csv"</span><span class="va">)</span><span class="kw">;</span> <span class="cf">do</span> <span class="kw">(</span><span class="bu">echo</span> <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">"*********</span><span class="va">$f</span><span class="st">*******:"</span> <span class="kw">&amp;&amp;</span> <span class="fu">head</span> <span class="at">-n</span> 1 <span class="st">"</span><span class="va">$f</span><span class="st">"</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s/,"/\n"/g'</span> <span class="kw">|</span> <span class="fu">nl</span><span class="kw">);</span> <span class="cf">done</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">*********./yelp_reviews/yelp_review_full_csv/train.csv*******:</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>     <span class="ex">1</span>  <span class="st">"5"</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>     <span class="ex">2</span>  <span class="st">"dr. goldberg offers everything i look for in a general practitioner.  he's nice and easy to talk to without being patronizing; he's always on time in seeing his patients; ..."</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="ex">*********./ag_news/ag_news_csv/train.csv*******:</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>     <span class="ex">1</span>  <span class="st">"3"</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>     <span class="ex">2</span>  <span class="st">"Wall St. Bears Claw Back Into the Black (Reuters)"</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>     <span class="ex">3</span>  <span class="st">"Reuters - Short-sellers, Wall Street's dwindling\band of ultra-cynics, are seeing green again."</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="ex">*********./dbpedia/dbpedia_csv/train.csv*******:</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>     <span class="ex">1</span>  1</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>     <span class="ex">2</span>  <span class="st">"E. D. Abbott Ltd"</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>     <span class="ex">3</span>  <span class="st">" Abbott of Farnham E D Abbott Limited was a British coachbuilding business based in Farnham Surrey trading under that name from 1929. A major part of their output was under sub-contract to motor vehicle manufacturers. Their business closed in 1972."</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong>Want to know more?</strong>:
+<ul>
+<li><code>man nl</code></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="iv.-how-to-write-shell-files" class="level1">
+<h1>IV. How to write Shell Files</h1>
+<blockquote class="blockquote">
+<p>A shell script is a text file that contains a sequence of commands for a UNIX-based operating system.</p>
+</blockquote>
+<p><a href="https://www.techtarget.com/searchdatacenter/definition/shell-script">source</a></p>
+<blockquote class="blockquote">
+<p>Tip: If you are planning to use a shell file as executrable, then do <code>chmod u+x your_shell_script.sh</code> before executing the files. <a href="https://askubuntu.com/a/933155">more details</a></p>
+</blockquote>
+<section id="shell-script-with-positional-arguments" class="level3">
+<h3 class="anchored" data-anchor-id="shell-script-with-positional-arguments">Shell Script with Positional arguments</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/<span class="pp">*</span>/text_datasets % cat basic_shell_with_positional_args.sh </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/sh</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"This tutorial is not about </span><span class="va">$1</span><span class="st">. It is about </span><span class="va">$2</span><span class="st">."</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Did you like it? </span><span class="va">$3</span><span class="st">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Shebang line at 1. <code>#!/bin/sh</code> or <code>#!/bin/bash</code> or <code>#!/bin/zsh</code></li>
+<li>Most terminal (CLI interpreters) take care of it even when not expliticity mentioned by assuming it to be <code>bash</code> or <code>sh</code></li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sh</span> basic_shell.sh Linux <span class="st">"Shell Scripting"</span> No</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ./basic_shell.sh</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="ex">This</span> tutorial is not about Linux. It is about Shell Scripting.</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Did</span> you like it<span class="pp">?</span> No</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+<section id="shell-script-with-one-letter-keyword-arguments-and-functions" class="level3">
+<h3 class="anchored" data-anchor-id="shell-script-with-one-letter-keyword-arguments-and-functions">Shell Script with one-letter keyword arguments and functions</h3>
+<ul>
+<li>Things to note below:
+<ul>
+<li><code>getopts</code>, <code>grep</code>, <code>OPTARG</code>, <code>tr</code>, <code>[:upper:]</code> or <code>[:lower:]</code> or <code>[:space:]</code></li>
+<li><code>while</code> loop</li>
+<li><code>if ... else ... fi</code></li>
+<li>how we pass the named arguments from outside the shell file to the bash function <code>receive_arguments()</code></li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/<span class="pp">*</span>/text_datasets % cat shell_w_getopts_args.sh</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">receive_one_letter_arguments()</span><span class="kw">{</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="bu">getopts</span> <span class="st">":n:a:l:"</span> <span class="va">opt</span><span class="kw">;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">do</span> </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> <span class="va">${opt}</span> <span class="kw">in</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>            <span class="ss">n</span><span class="kw">)</span> <span class="va">NOT</span><span class="op">=</span><span class="va">${OPTARG}</span><span class="cf">;;</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                <span class="ss">a</span><span class="kw">)</span> <span class="va">ABOUT</span><span class="op">=</span><span class="va">${OPTARG}</span> <span class="cf">;;</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>            <span class="ss">l</span><span class="kw">)</span> <span class="va">LIKE</span><span class="op">=</span><span class="va">${OPTARG}</span> <span class="cf">;;</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">esac</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">done</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="fu">what_is_the_tutorial_about()</span><span class="kw">{</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">"This tutorial is not about </span><span class="va">$NOT</span><span class="st">. It is about </span><span class="va">$ABOUT</span><span class="st">."</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="fu">like_or_not()</span><span class="kw">{</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">[</span> <span class="va">$(</span><span class="bu">echo</span> <span class="va">$LIKE</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-i</span> <span class="at">-o</span> <span class="st">"^N"</span> <span class="kw">|</span> <span class="fu">tr</span> <span class="st">'[:upper:]'</span> <span class="st">'[:lower:]'</span><span class="va">)</span> <span class="ot">=</span> <span class="st">'n'</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">"Did you like it? </span><span class="va">$LIKE</span><span class="st">"</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">"What Shell Scripting man !?!"</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">"Who uses such 40+ years old lang"</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">"Did you like it? </span><span class="va">$LIKE</span><span class="st">"</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">fi</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"**********************"</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Function 1: receiving the arguments from user using 'getopts', 'opt' and 'OPTARG' in a 'while' loop"</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="ex">receive_one_letter_arguments</span> <span class="st">"</span><span class="va">$@</span><span class="st">"</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"The arguments are </span><span class="dt">\$</span><span class="st">ABOUT=</span><span class="va">$ABOUT</span><span class="st"> </span><span class="dt">\$</span><span class="st">NOT=</span><span class="va">$NOT</span><span class="st"> </span><span class="dt">\$</span><span class="st">LIKE=</span><span class="va">$LIKE</span><span class="st">"</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"#################"</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Function 2: what is this tutorial about ?"</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="ex">what_is_the_tutorial_about</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"#################"</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Function 3: Now, tell me the truth ..."</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="ex">like_or_not</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"**********************"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/text_datasets % sh shell_w_getopts_args.sh <span class="dt">\</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>-n Linux <span class="dt">\</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>-a <span class="st">"Shell Scripting"</span> <span class="dt">\</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>-l No</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="ex">**********************</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Function</span> 1: receiving the arguments from user using <span class="st">'getopts'</span>, <span class="st">'opt'</span> and <span class="st">'OPTARG'</span> in a <span class="st">'while'</span> loop</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="ex">The</span> arguments are <span class="va">$ABOUT</span>=Shell Scripting <span class="va">$NOT</span>=Linux <span class="va">$LIKE</span>=No</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Function</span> 2: what is this tutorial about <span class="pp">?</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="ex">This</span> tutorial is not about Linux. It is about Shell Scripting.</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="ex">Function</span> 3: Now, tell me the truth ...</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="ex">Did</span> you like it<span class="pp">?</span> No</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="ex">What</span> Shell Scripting man !<span class="pp">?</span>!</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="ex">Who</span> uses such 40+ years old lang</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="ex">**********************</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="shell-script-with-word-keyword-arguments" class="level3">
+<h3 class="anchored" data-anchor-id="shell-script-with-word-keyword-arguments">Shell Script with word keyword arguments</h3>
+<ul>
+<li>We are about to achieve the same output as above <code>one-letter argument</code> approach</li>
+<li>But the script will be a lot simpler with keyword arguments</li>
+<li><strong>Utilities</strong> used: <code>{#A_VARIABLE_NAME}</code> to determine length of the variable, <code>grep</code>, <code>tr</code>, <code>[:upper:]</code> or <code>[:lower:]</code> or <code>[:space:]</code></li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">receive_word_arguments()</span><span class="kw">{</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ARGUMENT <span class="kw">in</span> <span class="st">"</span><span class="va">$@</span><span class="st">"</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">do</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">KEY_INITIAL</span><span class="op">=</span><span class="va">$(</span><span class="bu">echo</span> <span class="va">$ARGUMENT</span> <span class="kw">|</span> <span class="fu">cut</span> <span class="at">-f1</span> <span class="at">-d</span><span class="op">=</span><span class="va">)</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">KEY_LENGTH</span><span class="op">=</span><span class="va">${</span><span class="op">#</span><span class="va">KEY_INITIAL}</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">KEY</span><span class="op">=</span><span class="va">${KEY_INITIAL</span><span class="op">:</span><span class="dv">2</span><span class="va">}</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">VALUE</span><span class="op">=</span><span class="st">"</span><span class="va">${ARGUMENT</span><span class="op">:</span><span class="va">$KEY_LENGTH</span>+<span class="dv">1</span><span class="va">}</span><span class="st">"</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">export</span> <span class="st">"</span><span class="va">$KEY</span><span class="st">"</span>=<span class="st">"</span><span class="va">$VALUE</span><span class="st">"</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># echo "$KEY=$VALUE"</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">done</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="fu">what_is_the_tutorial_about()</span><span class="kw">{</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">"This tutorial is not about </span><span class="va">$NOT</span><span class="st">. It is about </span><span class="va">$ABOUT</span><span class="st">."</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="fu">like_or_not()</span><span class="kw">{</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">[</span> <span class="va">$(</span><span class="bu">echo</span> <span class="va">$LIKE</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-i</span> <span class="at">-o</span> <span class="st">"^N"</span> <span class="kw">|</span> <span class="fu">tr</span> <span class="st">'[:upper:]'</span> <span class="st">'[:lower:]'</span><span class="va">)</span> <span class="ot">=</span> <span class="st">'n'</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">"Did you like it? </span><span class="va">$LIKE</span><span class="st">"</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">"What Shell Scripting man !?!"</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">"Who uses such 40+ years old lang"</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">"Did you like it? </span><span class="va">$LIKE</span><span class="st">"</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">fi</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"**********************"</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Function 1: receiving the word arguments using the indices of the input {#A_VARIABLE_NAME}"</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="ex">receive_word_arguments</span> <span class="st">"</span><span class="va">$@</span><span class="st">"</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"The arguments are </span><span class="dt">\$</span><span class="st">ABOUT=</span><span class="va">$ABOUT</span><span class="st"> </span><span class="dt">\$</span><span class="st">NOT=</span><span class="va">$NOT</span><span class="st"> </span><span class="dt">\$</span><span class="st">LIKE=</span><span class="va">$LIKE</span><span class="st">"</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"#################"</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Function 2: what is this tutorial about ?"</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="ex">what_is_the_tutorial_about</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"#################"</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Function 3: Now, tell me the truth ..."</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="ex">like_or_not</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"**********************"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/text_datasets % sh shell_w_full_kw_args.sh <span class="dt">\</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>--NOT=Linux <span class="dt">\</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>--ABOUT=<span class="st">"Shell Scripting"</span> <span class="dt">\</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>--LIKE=No</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="ex">**********************</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Function</span> 1: receiving the word arguments using the indices of the input {#A_VARIABLE_NAME}</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="ex">The</span> arguments are <span class="va">$ABOUT</span>=Shell Scripting <span class="va">$NOT</span>=Linux <span class="va">$LIKE</span>=No</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Function</span> 2: what is this tutorial about <span class="pp">?</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="ex">This</span> tutorial is not about Linux. It is about Shell Scripting.</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="ex">Function</span> 3: Now, tell me the truth ...</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="ex">Did</span> you like it<span class="pp">?</span> No</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="ex">What</span> Shell Scripting man !<span class="pp">?</span>!</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="ex">Who</span> uses such 40+ years old lang</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="ex">**********************</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+</section>
+<section id="v.-create-your-own-shell-commands" class="level1">
+<h1>V. Create your own shell commands!</h1>
+<ul>
+<li><ol type="1">
+<li>Create your <code>shell_file.sh</code> which is going to act as shell_command. Make it executable:<code>chmod u+x shell_file.sh</code></li>
+</ol></li>
+<li><ol start="2" type="1">
+<li>Add the shell_file location to $PATH in <code>~/.bashrc</code> (or if you are using MacOS like me <code>~/.zshrc</code> | <a href="https://superuser.com/a/1589778">source</a>)</li>
+</ol></li>
+<li><ol start="3" type="1">
+<li>source the <code>~/.bashrc</code> or <code>~/.zshrc</code>. Restart your terminal.</li>
+</ol></li>
+<li><ol start="4" type="1">
+<li>Run the <code>shell_file.sh</code> as you would a command | <code>shell_file arg1 arg2</code></li>
+</ol></li>
+</ul>
+<section id="example-1-convert-a-counting_files_recursively.sh-shell-file-into-a-command-counting_files_recursively" class="level2">
+<h2 class="anchored" data-anchor-id="example-1-convert-a-counting_files_recursively.sh-shell-file-into-a-command-counting_files_recursively">Example 1: Convert a <code>counting_files_recursively.sh</code> shell file into a command <code>counting_files_recursively</code></h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">count_files()</span> <span class="kw">{</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">file_count</span><span class="op">=</span><span class="va">$(</span><span class="fu">find</span> <span class="st">"</span><span class="va">$1</span><span class="st">"</span> <span class="at">-type</span> f <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-l</span><span class="va">)</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">"Local Directory: </span><span class="va">$1</span><span class="st">"</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">"Number of files: </span><span class="va">$file_count</span><span class="st">"</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the root directory to start counting files recursively</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="va">root_directory</span><span class="op">=</span><span class="va">$1</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Call the function for each directory within the root directory</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> local_directory <span class="kw">in</span> <span class="st">"</span><span class="va">$root_directory</span><span class="st">"</span>/<span class="pp">*</span><span class="kw">;</span> </span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">[</span> <span class="ot">-d</span> <span class="st">"</span><span class="va">$local_directory</span><span class="st">"</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>        <span class="ex">count_files</span> <span class="st">"</span><span class="va">$local_directory</span><span class="st">"</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">fi</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/text_datasets % echo <span class="st">"alias counting_files_recursively=/path/to/counting_files_recursively.sh"</span> <span class="op">&gt;&gt;</span> ~/.zshrc <span class="kw">&amp;&amp;</span> <span class="bu">source</span> ~/.zshrc</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/text_datasets % counting_files_recursively ~/text_datasets</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Local</span> Directory: ~/text_datasets/dbpedia</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Number</span> of files:        7</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Local</span> Directory: ~/text_datasets/shell_file_in_path</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Number</span> of files:        1</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Local</span> Directory: ~/text_datasets/yelp_reviews</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="ex">Number</span> of files:        6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="example-2-simpler-one-line-alias-command.-converting-ls--al-into-ls_all" class="level2">
+<h2 class="anchored" data-anchor-id="example-2-simpler-one-line-alias-command.-converting-ls--al-into-ls_all">Example 2: Simpler one-line alias command. Converting <code>ls -al</code> into <code>ls_all</code></h2>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/text_datasets % echo <span class="st">"alias ls_all=ls -al"</span> <span class="op">&gt;&gt;</span> ~/.zshrc <span class="kw">&amp;&amp;</span> <span class="bu">source</span> ~/.zshrc</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">senthilkumar.m@BashScripter</span> ~/text_datasets % ls_all ~/text_datasets</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+</section>
+<section id="vi.-understanding-redirects-in-shell-scripting" class="level1">
+<h1>VI. Understanding Redirects in Shell Scripting</h1>
+<section id="the-typical-ways" class="level2">
+<h2 class="anchored" data-anchor-id="the-typical-ways">The Typical Ways</h2>
+<blockquote class="blockquote">
+<p><code>&gt;</code> (redirect afresh) , <code>&gt;&gt;</code> (redirect and append) and <code>|</code> (pipe</p>
+</blockquote>
+<ul>
+<li>By now you may have got familiarized with the standard ways of redirecting outputs - <code>&gt;</code> and <code>&gt;&gt;</code> and <code>|</code></li>
+</ul>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># step 1</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % echo <span class="st">"Hello, world!"</span> <span class="op">&gt;</span> output.txt</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % cat output.txt</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello,</span> world!</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># step 2</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % echo <span class="st">"Additional text"</span> <span class="op">&gt;&gt;</span> output.txt</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % cat output.txt</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello,</span> world!</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="ex">Additional</span> text</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co"># step 3</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % echo <span class="st">"Again, Hello, world!"</span> <span class="op">&gt;</span> output.txt</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % cat output.txt</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="ex">Again,</span> Hello, world!</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="co"># step 4</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % echo <span class="st">"Hello, world!"</span>  <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-c</span> </span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    <span class="ex">13</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Note: In the above bash example, by step 3, the <code>output.txt</code> gets rewritten.</li>
+</ul>
+<hr>
+</section>
+<section id="additional-aids-the-file-descriptors-0-1-and-2" class="level2">
+<h2 class="anchored" data-anchor-id="additional-aids-the-file-descriptors-0-1-and-2">Additional Aids: The File Descriptors (0, 1, and 2)</h2>
+<blockquote class="blockquote">
+<p>A file descriptor is a descriptor OR unique identifier OR a index of the <code>files</code> that are opened when a shell file is run.</p>
+</blockquote>
+<ul>
+<li>A shell file opens 3 files with the file descriptors 0, 1, and 2</li>
+</ul>
+<pre><code>0 (stdin): Standard Input
+1 (stdout): Standard Output
+2 (stderr): Standard Error</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % cat simple_bash_script_for_reading_stdin.bash</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Variable to store all lines</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="va">all_lines</span><span class="op">=</span><span class="st">""</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Read each line from stdin and append to the variable</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">IFS</span><span class="op">=</span> <span class="bu">read</span> <span class="at">-r</span> <span class="va">line</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Process each line (you can replace this with your own logic)</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">"Read line: </span><span class="va">$line</span><span class="st">"</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Append the line to the variable</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="va">all_lines</span><span class="op">=</span><span class="st">"</span><span class="va">$all_lines$line</span><span class="st">"</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % cat file_input.txt</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello,</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="ex">This</span> is an example text file.</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="ex">It</span> contains multiple lines.</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="ex">Each</span> line is processed by the program script.</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="ex">You</span> can replace this content with your own data.</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % bash simple_bash_script_for_reading_stdin.bash <span class="op">&lt;</span> file_input.txt <span class="op">&gt;</span> file_output.txt</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % cat file_output.txt</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a><span class="ex">Read</span> line: Hello,</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a><span class="ex">Read</span> line: This is an example text file.</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a><span class="ex">Read</span> line: It contains multiple lines.</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a><span class="ex">Read</span> line: Each line is processed by the program script.</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a><span class="ex">Read</span> line: You can replace this content with your own data.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>In the above example, <code>program &lt; file_input &gt; file_output</code> structure is followed.</li>
+<li><code>file_input.txt</code> was the stdin (0)</li>
+<li><code>file_output.txt</code> was the standard output (1)</li>
+<li>If I introduce some error in the <code>a_simple_python_file_with_error.py</code>, we can capture error alone separately</li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % cat a_simple_python_file_with_error.py</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="ex">print</span><span class="er">(</span><span class="st">"output line 1"</span><span class="kw">)</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="ex">print</span><span class="er">(</span><span class="st">"output line 2"</span><span class="kw">)</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="va">a</span><span class="op">=</span>b+1 <span class="co">#this will throw an error as `b` is not defined</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % python a_simple_python_file_with_error.py <span class="dv">2</span><span class="op">&gt;</span>error.txt <span class="dv">1</span><span class="op">&gt;</span>output.txt</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % cat error.txt </span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="ex">Traceback</span> <span class="er">(</span><span class="ex">most</span> recent call last<span class="kw">)</span><span class="bu">:</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  <span class="ex">File</span> <span class="st">"/a_simple_python_file_with_error.py"</span>, line 4, in <span class="op">&lt;</span>module<span class="op">&gt;</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="va">a</span><span class="op">=</span>b+1 <span class="co">#this will throw an error as `b` is not defined</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="ex">NameError:</span> name <span class="st">'b'</span> is not defined</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % cat output.txt</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="ex">output</span> line 1</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="ex">output</span> line 2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>if you want the error and the output to be redirected to the same file, you can use <code>&gt;&amp;</code> or <code>2&gt;&amp;1</code></li>
+</ul>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % python a_simple_python_file_with_error.py <span class="op">&gt;</span> output_with_error.txt <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Or the following also works</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># /some/local/path %  python a_simple_python_file_with_error.py &gt;&amp; output_with_error.txt</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % cat output_with_error.txt</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="ex">output</span> line 1</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="ex">output</span> line 2</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Traceback</span> <span class="er">(</span><span class="ex">most</span> recent call last<span class="kw">)</span><span class="bu">:</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="ex">File</span> <span class="st">"/a_simple_python_file_with_error.py"</span>, line 4, in <span class="op">&lt;</span>module<span class="op">&gt;</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="va">a</span><span class="op">=</span>b+1 <span class="co">#this will throw an error as `b` is not defined</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="ex">NameError:</span> name <span class="st">'b'</span> is not defined</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+<section id="devnull" class="level2">
+<h2 class="anchored" data-anchor-id="devnull"><code>/dev/null</code></h2>
+<p>If you are wondering, how to ignore some outputs or errors from being printed or displayed, redirecting them to <code>/dev/null</code> is the answer</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ignore both stderr (2) and stdout (1)</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % python a_simple_python_file_with_error.py <span class="op">&gt;</span> /dev/null <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ignore the stderr (2)</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % python a_simple_python_file_with_error.py <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="ex">output</span> line 1</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="ex">output</span> line 2</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ignore only the stdout (1)</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/local/path</span> % python a_simple_python_file_with_error.py <span class="dv">1</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="ex">Traceback</span> <span class="er">(</span><span class="ex">most</span> recent call last<span class="kw">)</span><span class="bu">:</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="ex">File</span> <span class="st">"/a_simple_python_file_with_error.py"</span>, line 4, in <span class="op">&lt;</span>module<span class="op">&gt;</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    <span class="va">a</span><span class="op">=</span>b+1 <span class="co">#this will throw an error as `b` is not defined</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="ex">NameError:</span> name <span class="st">'b'</span> is not defined</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="vii.-summary" class="level1">
+<h1>VII. Summary</h1>
+<ul>
+<li>In this post, we have seen
+<ul>
+<li>how to use a combination of shell commands in a single line,&nbsp;</li>
+<li>how to write shell script files with arguments passed to it and</li>
+<li>how to create your own shell commands&nbsp;&nbsp;</li>
+</ul></li>
+</ul>
+<section id="concluding-remarks" class="level2">
+<h2 class="anchored" data-anchor-id="concluding-remarks">Concluding Remarks …</h2>
+<section id="why-is-shell-scripting-so-hard" class="level3">
+<h3 class="anchored" data-anchor-id="why-is-shell-scripting-so-hard"><strong>Why is Shell Scripting so hard?</strong></h3>
+<ul>
+<li>Complexity compounds | Commands like <code>awk</code> and <code>sed</code> are progamming lang on their own</li>
+<li>Every quote, space and stringed together commands have meaning</li>
+<li>Less errors | More unexpected behaviour</li>
+</ul>
+</section>
+<section id="where-is-shell-scripting-most-useful" class="level3">
+<h3 class="anchored" data-anchor-id="where-is-shell-scripting-most-useful"><strong>Where is Shell Scripting most useful?</strong></h3>
+<ul>
+<li>When the commands are only 5-20 lines long
+<ul>
+<li>Small repetitive tasks. E.g. For small needs involving AWS, small scripting jobs with <code>jmespath</code></li>
+</ul></li>
+</ul>
+<pre><code>for f in *.csv
+do
+     echo $f...
+     some transformation
+done</code></pre>
+<ul>
+<li>A pure shell script written 15-20 years ago could still yield the same result today</li>
+<li>Easier than packaging a Python application | Build process is smaller</li>
+<li>Shell in combination with other language is more useful</li>
+</ul>
+</section>
+<section id="where-shell-scripting-can-be-avoided" class="level3">
+<h3 class="anchored" data-anchor-id="where-shell-scripting-can-be-avoided"><strong>Where Shell Scripting can be avoided?</strong></h3>
+<ul>
+<li>Co-development is hard. Interpretability is tough.</li>
+<li>Errors do not always stop your flow. It will go to the next command</li>
+<li>When the shell script becomes very complicated, better to go with your programming lang of choice</li>
+</ul>
+<blockquote class="blockquote">
+<p>Unequivocally, Bash Scripting is definitely a useful skill to know in your toolbox</p>
+</blockquote>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

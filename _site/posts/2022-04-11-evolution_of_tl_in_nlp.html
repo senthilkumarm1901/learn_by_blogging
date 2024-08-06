@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.336">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2022-04-11">
+<meta name="description" content="An overview covering important NLP milestones from pre-transfer learning era until the era of BERT (before GPT)">
+
+<title>Learn by Blogging - The Evolution of Transfer Learning until the Advent of the First Tranformers in NLP</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html" rel="" target="">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">The Evolution of Transfer Learning until the Advent of the First Tranformers in NLP</h1>
+                  <div>
+        <div class="description">
+          An overview covering important NLP milestones from pre-transfer learning era until the era of BERT (before GPT)
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">NLP</div>
+                <div class="quarto-category">Transformers</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 11, 2022</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#quick-introduction" id="toc-quick-introduction" class="nav-link active" data-scroll-target="#quick-introduction">1. Quick Introduction</a>
+  <ul class="collapse">
+  <li><a href="#what-is-powering-the-emergence-of-better-models-in-nlp" id="toc-what-is-powering-the-emergence-of-better-models-in-nlp" class="nav-link" data-scroll-target="#what-is-powering-the-emergence-of-better-models-in-nlp">What is powering the emergence of better models in NLP?</a></li>
+  <li><a href="#how-are-better-text-representations-produced" id="toc-how-are-better-text-representations-produced" class="nav-link" data-scroll-target="#how-are-better-text-representations-produced">How are better text representations produced?</a></li>
+  <li><a href="#what-is-transfer-learning" id="toc-what-is-transfer-learning" class="nav-link" data-scroll-target="#what-is-transfer-learning">What is Transfer Learning?</a></li>
+  <li><a href="#what-forms-the-crux-of-transfer-learning-models-in-nlp" id="toc-what-forms-the-crux-of-transfer-learning-models-in-nlp" class="nav-link" data-scroll-target="#what-forms-the-crux-of-transfer-learning-models-in-nlp">What forms the crux of Transfer Learning models in NLP?</a></li>
+  <li><a href="#why-language-model" id="toc-why-language-model" class="nav-link" data-scroll-target="#why-language-model">Why Language Model?</a></li>
+  <li><a href="#ok-what-is-a-language-model" id="toc-ok-what-is-a-language-model" class="nav-link" data-scroll-target="#ok-what-is-a-language-model">Ok, What is a Language Model?</a></li>
+  <li><a href="#what-are-those-language-models" id="toc-what-are-those-language-models" class="nav-link" data-scroll-target="#what-are-those-language-models">What are those Language Models?</a></li>
+  <li><a href="#what-are-the-two-types-of-transfer-learning-built-using-the-lms" id="toc-what-are-the-two-types-of-transfer-learning-built-using-the-lms" class="nav-link" data-scroll-target="#what-are-the-two-types-of-transfer-learning-built-using-the-lms">What are the two types of Transfer Learning built using the LMs?</a></li>
+  </ul></li>
+  <li><a href="#types-of-language-models" id="toc-types-of-language-models" class="nav-link" data-scroll-target="#types-of-language-models">2. Types of Language Models</a>
+  <ul class="collapse">
+  <li><a href="#a.-count-based-language-models" id="toc-a.-count-based-language-models" class="nav-link" data-scroll-target="#a.-count-based-language-models">2A. Count-based Language Models</a></li>
+  <li><a href="#b.-context-prediction-based-pre-trained-language-models" id="toc-b.-context-prediction-based-pre-trained-language-models" class="nav-link" data-scroll-target="#b.-context-prediction-based-pre-trained-language-models">2B. Context-prediction based <code>Pre-trained</code> Language Models</a></li>
+  <li><a href="#c.-lstm-based-pre-trained-language-models" id="toc-c.-lstm-based-pre-trained-language-models" class="nav-link" data-scroll-target="#c.-lstm-based-pre-trained-language-models">2C. LSTM-based <code>Pre-trained</code> Language Models</a></li>
+  <li><a href="#d.-transformer-based-pre-trained-language-models" id="toc-d.-transformer-based-pre-trained-language-models" class="nav-link" data-scroll-target="#d.-transformer-based-pre-trained-language-models">2D. Transformer-based <code>Pre-trained</code> Language Models</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">3. Conclusion</a>
+  <ul class="collapse">
+  <li><a href="#in-summary-how-has-transfer-learning-evolved-in-nlp" id="toc-in-summary-how-has-transfer-learning-evolved-in-nlp" class="nav-link" data-scroll-target="#in-summary-how-has-transfer-learning-evolved-in-nlp">In summary, how has transfer learning evolved in NLP?</a></li>
+  </ul></li>
+  <li><a href="#want-to-try-transfer-learning-hands-on" id="toc-want-to-try-transfer-learning-hands-on" class="nav-link" data-scroll-target="#want-to-try-transfer-learning-hands-on">4. Want to try Transfer Learning hands-on?</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<br>
+<hr>
+<p><br></p>
+<p>Want to read this blog in a easier to digest slides format? Refer <a href="https://senthilkumarm1901.github.io/UnderstandingTransferLearning4NLP/docs/Evolution_of_TL_in_NLP.html#/">Link</a></p>
+<section id="quick-introduction" class="level2">
+<h2 class="anchored" data-anchor-id="quick-introduction">1. Quick Introduction</h2>
+<section id="what-is-powering-the-emergence-of-better-models-in-nlp" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-powering-the-emergence-of-better-models-in-nlp">What is powering the emergence of better models in NLP?</h3>
+<ul>
+<li>Better representation of the text data (with no supervision) by grasping the <code>context</code> better
+<ul>
+<li>From <code>Word2Vec</code> to <code>BERT</code> and beyond, this is the underlying logic!</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="how-are-better-text-representations-produced" class="level3">
+<h3 class="anchored" data-anchor-id="how-are-better-text-representations-produced">How are better text representations produced?</h3>
+<ul>
+<li>Better contextual representation of words using Transfer Learning</li>
+</ul>
+<hr>
+</section>
+<section id="what-is-transfer-learning" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-transfer-learning">What is Transfer Learning?</h3>
+<p><img src="https://humboldt-wi.github.io/blog/img/seminar/group4_ULMFiT/Figure_1.png" class="img-fluid"> Source: ULMFiT Paper | <a href="https://humboldt-wi.github.io/blog/research/information_systems_1819/group4_ulmfit/">link</a></p>
+<hr>
+</section>
+<section id="what-forms-the-crux-of-transfer-learning-models-in-nlp" class="level3">
+<h3 class="anchored" data-anchor-id="what-forms-the-crux-of-transfer-learning-models-in-nlp">What forms the crux of Transfer Learning models in NLP?</h3>
+<ul>
+<li>Language Models! <br>
+<ul>
+<li><ol type="1">
+<li>Build a <strong>Language Model</strong> that understands the underlying features of the text</li>
+</ol></li>
+<li><ol start="2" type="1">
+<li>Fine-tune the Language Model with additional layers for downstream tasks</li>
+</ol></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="why-language-model" class="level3">
+<h3 class="anchored" data-anchor-id="why-language-model">Why Language Model?</h3>
+<blockquote class="blockquote">
+<p><em>Language modeling can be seen as the ideal source task as it captures many facets of language relevant for downstream tasks, such as long-term dependencies, hierarchical relations and sentiment</em> <br></p>
+<p>Ruder et al in the ULMFiT paper</p>
+</blockquote>
+<hr>
+</section>
+<section id="ok-what-is-a-language-model" class="level3">
+<h3 class="anchored" data-anchor-id="ok-what-is-a-language-model">Ok, What is a Language Model?</h3>
+<ul>
+<li>A language model (LM) is a model that generates a probability distribution over sequences of words</li>
+<li>In simpler words, LM is a model to predict the next word in a sequence of words</li>
+<li>It is <code>unsupervised</code> or <code>self-supervised</code> (since we already know what is the next word in the corpus)</li>
+</ul>
+<hr>
+</section>
+<section id="what-are-those-language-models" class="level3">
+<h3 class="anchored" data-anchor-id="what-are-those-language-models">What are those Language Models?</h3>
+<ul>
+<li>Examples of Language Models: Word2Vec, Glove, ELMo, ULMFiT, BERT, and many more</li>
+</ul>
+<p><img src="https://ruder.io/content/images/2021/02/pretraining_finetuning.png" class="img-fluid"> Source: A article by Sebastian Ruder: <code>State of Transfer Learning in NLP</code> | <a href="https://ruder.io/state-of-transfer-learning-in-nlp/">Link</a></p>
+<hr>
+</section>
+<section id="what-are-the-two-types-of-transfer-learning-built-using-the-lms" class="level3">
+<h3 class="anchored" data-anchor-id="what-are-the-two-types-of-transfer-learning-built-using-the-lms">What are the two types of Transfer Learning built using the LMs?</h3>
+<ul>
+<li>Type 1: <code>Feature Extraction</code>
+<ul>
+<li>Example: <code>Universal Sentence Encoder</code> produces just an embedding/numerical representation and that gets used by a downstream application <img src="https://www.gstatic.com/aihub/tfhub/universal-sentence-encoder/example-classification.png" class="img-fluid"></li>
+</ul></li>
+</ul>
+<p>Source of image: TF Hub Article on Universal Sentence Encoder | <a href="https://www.tensorflow.org/hub/tutorials/text_cookbook">Link</a></p>
+<p><br></p>
+<ul>
+<li>Type 2: <code>Fine Tuning</code>
+<ul>
+<li>E.g.: <code>BERT</code> Fine-tuned for Text Classification <img src="https://www.researchgate.net/publication/351386823/figure/fig4/AS:1024183752478725@1621195843655/BERT-Fine-tuning-pipeline-for-a-sample-sentiment-identification-task.jpg" class="img-fluid"></li>
+</ul></li>
+</ul>
+<p>Source of image: An article in Research Gate | <a href="https://www.researchgate.net/figure/BERT-Fine-tuning-pipeline-for-a-sample-sentiment-identification-task_fig4_351386823">Link</a></p>
+<br>
+<hr>
+<p><br></p>
+</section>
+</section>
+<section id="types-of-language-models" class="level2">
+<h2 class="anchored" data-anchor-id="types-of-language-models">2. Types of Language Models</h2>
+<section id="a.-count-based-language-models" class="level3">
+<h3 class="anchored" data-anchor-id="a.-count-based-language-models">2A. Count-based Language Models</h3>
+<p><img src="images/transfer_learning_evolution/Count_based_LMs.png" class="img-fluid"></p>
+<hr>
+</section>
+<section id="b.-context-prediction-based-pre-trained-language-models" class="level3">
+<h3 class="anchored" data-anchor-id="b.-context-prediction-based-pre-trained-language-models">2B. Context-prediction based <code>Pre-trained</code> Language Models</h3>
+<p><img src="images/transfer_learning_evolution/context_prediction_based_language_models.png" class="img-fluid"></p>
+<p>Sources: <br> - Advanced NLP and Deep Learning course on Udemy (by LazyProgrammer) - Idea: http://www.marekrei.com/blog/dont-count-predict/</p>
+<hr>
+</section>
+<section id="c.-lstm-based-pre-trained-language-models" class="level3">
+<h3 class="anchored" data-anchor-id="c.-lstm-based-pre-trained-language-models">2C. LSTM-based <code>Pre-trained</code> Language Models</h3>
+<section id="evolution-of-rnn-architecture-till-lstm" class="level4">
+<h4 class="anchored" data-anchor-id="evolution-of-rnn-architecture-till-lstm">Evolution of RNN Architecture till LSTM</h4>
+<p><strong>Why RNNs came into existence?</strong> <br> - Models such as the Multi-layer Perceptron Network, vector machines and logistic regression did not perform well on sequence modelling tasks (e.g.: text_sequence2sentiment_classification) - Why? Lack of memory element ; No information retention - RNNs attempted to redress this shortcoming by introducing loops within the network, thus allowing the retention of information.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/transfer_learning_evolution/an_unrolled_RNN.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">An un-rolled RNN Cell</figcaption>
+</figure>
+</div>
+<p><strong>Advantage of a vanilla RNN</strong>: <br> - Better than traditional ML algos in retaining information</p>
+<p><strong>Limitations of a vanilla RNN</strong>: <br> - RNNs fail to model long term dependencies. - the information was often <strong>“forgotten”</strong> after the unit activations were multiplied several times by small numbers - Vanishing gradient and exploding gradient problems</p>
+<p><strong>Long Short Term Memory (LSTM)</strong>: <br> - A special type of RNN architecture - Designed to keep information retained for extended number of timesteps</p>
+<p><strong>Advantage of a LSTM</strong>: <br> - Better equipped for long range dependencies - Resists better than RNNs for vanishing gradient problem</p>
+<p><strong>Limitations of LSTM</strong>: <br> - Added gates lead to more computation requirement and LSTMs tend to be slower - Difficult to train - Transfer Learning never really worked - Very long gradient paths. LSTM on 100-word doc has gradients 100-layer network</p>
+<p><br></p>
+</section>
+<section id="seq2seq-models---a-higher-form-of-lms" class="level4">
+<h4 class="anchored" data-anchor-id="seq2seq-models---a-higher-form-of-lms">Seq2Seq Models - A higher form of LMs</h4>
+<p><img src="images/transfer_learning_evolution/Seq2Seq_Model_A_Higher_form_of_LM.png" class="img-fluid"></p>
+<p><br></p>
+</section>
+<section id="the-imagenet-moment-in-nlp-advent-of-lstm-models-ulmfit-and-elmo" class="level4">
+<h4 class="anchored" data-anchor-id="the-imagenet-moment-in-nlp-advent-of-lstm-models-ulmfit-and-elmo">The <code>ImageNet</code> moment in NLP; advent of LSTM models <code>ULMFiT</code> and <code>ELMo</code></h4>
+<ul>
+<li>ELMo comes up with better <code>word representations/embeddings</code> using Language Models that learn the <code>context</code> of the word in focus <img src="https://ahmedhanibrahim.files.wordpress.com/2019/07/52861-1pb5hxsxogjrnda_si4nj9q.png?w=775" class="img-fluid"></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="d.-transformer-based-pre-trained-language-models" class="level3">
+<h3 class="anchored" data-anchor-id="d.-transformer-based-pre-trained-language-models">2D. Transformer-based <code>Pre-trained</code> Language Models</h3>
+<section id="lstm-seq2seq-model-with-attention" class="level4">
+<h4 class="anchored" data-anchor-id="lstm-seq2seq-model-with-attention">LSTM Seq2Seq Model with Attention</h4>
+<p><img src="images/transfer_learning_evolution/seq2seq_model_with_attention.png" class="img-fluid"></p>
+<p><br></p>
+</section>
+<section id="transformer---a-seq2seq-model-with-attention" class="level4">
+<h4 class="anchored" data-anchor-id="transformer---a-seq2seq-model-with-attention">Transformer - A Seq2Seq Model with Attention</h4>
+<p><strong>Transformer</strong>: - It is a sequence model forgoes the recurrent structure of RNN to adopt attention-based approach - In other words, Transformer is an attention Model without Recurrent LSTMs</p>
+<p><strong>Transformer</strong> vs <strong>LSTM</strong> - Recurrent Structure: Processes all input elements SEQUENTIALLY - Attention-based Approach: Process all input elements SIMULTANEOUSLY</p>
+<hr>
+<p><strong>The BERT Mountain by Chris McCormick</strong>: <br></p>
+<p><img src="http://www.mccormickml.com/assets/BERT/BERT_Mountain.png" class="img-fluid"></p>
+<hr>
+<p><strong>Transformer for a Seq2Seq Task like Machine Translation</strong>: <br></p>
+<p><img src="https://jalammar.github.io/images/t/The_transformer_encoder_decoder_stack.png" class="img-fluid"></p>
+<p><br></p>
+</section>
+<section id="the-advent-of-bert-and-similar-transformers" class="level4">
+<h4 class="anchored" data-anchor-id="the-advent-of-bert-and-similar-transformers">The Advent of BERT and similar Transformers</h4>
+<section id="what-has-been-the-trend-of-recent-pre-trained-tranformer-based-lms" class="level5">
+<h5 class="anchored" data-anchor-id="what-has-been-the-trend-of-recent-pre-trained-tranformer-based-lms">What has been the trend of recent Pre-trained Tranformer-based LMs?</h5>
+<ul>
+<li>Exponentially increasing model complexity (number of parameters)</li>
+</ul>
+<p><img src="https://4.bp.blogspot.com/-v0xrp7eJRfM/Xr77DD85ObI/AAAAAAAADDY/KjIlWlFZExQA84VRDrMEMrB534euKAzlgCLcBGAsYHQ/s1600/NLP%2Bmodels.png" class="img-fluid"></p>
+<ul>
+<li>Exponentially increasing data</li>
+</ul>
+<p><img src="images/transfer_learning_evolution/different_transformer_models_and_their_corpora.png" class="img-fluid"></p>
+<p><strong>Question to ponder</strong>: - Are models bettering in performance because of more data or more model complexity? How much is the contribution from each? - Are models built with efficiency in mind? (not a lot can replicate these models given the large number of GPUs necessary)</p>
+<p><br></p>
+</section>
+<section id="what-direction-should-future-pre-trained-transformer-based-lms-go" class="level5">
+<h5 class="anchored" data-anchor-id="what-direction-should-future-pre-trained-transformer-based-lms-go">What direction should future Pre-trained Transformer-based LMs go?</h5>
+<ul>
+<li>Computational Compexity is quadratic compared to input length. We curb input length to 512 tokens for most transformer models. &gt; Better model architectures are needed to capture long-range information</li>
+<li>As models become bigger and complex, their explainability becomes difficult</li>
+<li>There are models/methods/explaining the workings of attention mechanism but much more is needed in this space &gt; Need more efficient models with explainability in mind as well</li>
+</ul>
+<br>
+<hr>
+<p><br></p>
+</section>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">3. Conclusion</h2>
+<section id="in-summary-how-has-transfer-learning-evolved-in-nlp" class="level3">
+<h3 class="anchored" data-anchor-id="in-summary-how-has-transfer-learning-evolved-in-nlp">In summary, how has transfer learning evolved in NLP?</h3>
+<ul>
+<li>Step -2: NLP started with rule-based and statistical methodologies</li>
+<li>Step -1: ML algorithms such as Naive Bayes, SVM, LR and Trees were fed with bag-of-words word representations</li>
+<li>Step 0: Initial Success of better representations using pre-trained LMs like Word2Vec which were built using shallow Neural Network</li>
+<li>Step 1: (Re)Emergence of RNN Architectures in NLP</li>
+<li>Step 2: Evolution of Sequence-to-Sequence Models built with RNN architectures from Language Models | <a href="https://indicodata.ai/blog/sequence-modeling-neuralnets-part1/">source</a></li>
+<li>Step 3: <code>ImageNet</code> moment in NLP called upon by the first pre-Transformer era Transfer Learning models - ULMFiT and ELMo</li>
+<li>Step 4: Cometh the hour, cometh the Transformers !</li>
+</ul>
+<br>
+<hr>
+<p><br></p>
+</section>
+</section>
+<section id="want-to-try-transfer-learning-hands-on" class="level2">
+<h2 class="anchored" data-anchor-id="want-to-try-transfer-learning-hands-on">4. Want to try Transfer Learning hands-on?</h2>
+<p><strong>Example notebooks for <code>Text Classification</code> Application</strong></p>
+<p>Jay Alamar’s Post: DistilBERT for <code>Feature Extraction</code> + Logitic Regression for classification | <a href="https://jalammar.github.io/a-visual-guide-to-using-bert-for-the-first-time/">Link</a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://jalammar.github.io/images/distilBERT/distilbert-bert-sentiment-classifier.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">DistilBERT Sentiment Classifier</figcaption>
+</figure>
+</div>
+<p>Jay Alamar’s Post: BERT Fine-tuned for Classification | <a href="https://raw.githubusercontent.com/jalammar/jalammar.github.io/master/images/bert-classifier.png">Picture_Link</a> | <a href="https://github.com/huggingface/notebooks/blob/main/examples/text_classification.ipynb!%5Bimage.png%5D(attachment:image.png)">HuggingFace Example Fine-tuning Notebook</a></p>
+<p>References: - A suevey paper on <code>Evolution of Transfer Learning in Natural Language Processing</code> | <a href="https://arxiv.org/pdf/1910.07370.pdf">Link</a> <br> - A survey paper on <code>Pre-trained Models for NLP</code> | <a href="https://arxiv.org/pdf/2003.08271.pdf">Link</a> <br> - <code>The State of Transfer Learning in NLP</code> | Article by Sebastian Ruder | <a href="https://ruder.io/state-of-transfer-learning-in-nlp/">Link</a> <br> - <code>NLP's ImageNet Moment has arrived</code> | Article by Sebastian Ruder | <a href="https://ruder.io/nlp-imagenet/">Link</a> <br> - <code>Recent Advances in LMs</code> | Article by Sebastian | <a href="https://ruder.io/recent-advances-lm-fine-tuning/">Link</a> <br> - <code>Sequence Modeling with Neural Networks</code> <br> - <a href="https://indicodata.ai/blog/sequence-modeling-neuralnets-part1/">Part 1</a>: <code>Evolution of Seq2Seq Models from Language Models</code> <br> - <a href="https://indicodata.ai/blog/sequence-modeling-neural-networks-part2-attention-models/">Part 2</a>: <code>Seq2Seq with Attention</code> - <code>LSTM is dead. Long Live Transformers</code> | <a href="https://www.youtube.com/watch?v=S27pHKBEp30&amp;t=1073s">YouTube Video by Leo Dirac</a> | <a href="https://rbouadjenek.github.io/papers/transformers_Reda@Deakin.pdf">Presentation on the same title</a> <br> - <code>The Future of NLP</code> video and slides by Thomas Wolf, HugginngFace Co-Founder | <a href="https://www.youtube.com/watch?v=G5lmya6eKtc">YouTube Video</a> <br></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

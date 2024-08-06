@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.336">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2022-03-04">
+<meta name="description" content="This blog is inspired from my notes on Kaggle Learn Course on ML. It has code snippets in Scikit-learn and Pandas to put concepts into practices">
+
+<title>Learn by Blogging - Understanding Machine Learning Fundamentals - from a coder’s viewpoint</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html" rel="" target="">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Understanding Machine Learning Fundamentals - from a coder’s viewpoint</h1>
+                  <div>
+        <div class="description">
+          This blog is inspired from my notes on Kaggle Learn Course on ML. It has code snippets in Scikit-learn and Pandas to put concepts into practices
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Coding</div>
+                <div class="quarto-category">ML</div>
+                <div class="quarto-category">Python</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 4, 2022</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#key-learnings-from-intro-to-ml-course-in-kaggle-learn" id="toc-key-learnings-from-intro-to-ml-course-in-kaggle-learn" class="nav-link active" data-scroll-target="#key-learnings-from-intro-to-ml-course-in-kaggle-learn">Key Learnings from <code>Intro to ML Course</code> in Kaggle Learn</a></li>
+  <li><a href="#key-learnings-from-intermediary-ml-course-in-kaggle-learn" id="toc-key-learnings-from-intermediary-ml-course-in-kaggle-learn" class="nav-link" data-scroll-target="#key-learnings-from-intermediary-ml-course-in-kaggle-learn">Key Learnings from <code>Intermediary ML Course</code> in Kaggle Learn</a>
+  <ul class="collapse">
+  <li><a href="#missing-value-treatment" id="toc-missing-value-treatment" class="nav-link" data-scroll-target="#missing-value-treatment">Missing Value Treatment:</a></li>
+  <li><a href="#categorical-column-treatment" id="toc-categorical-column-treatment" class="nav-link" data-scroll-target="#categorical-column-treatment">Categorical Column Treatment:</a></li>
+  <li><a href="#data-leakage" id="toc-data-leakage" class="nav-link" data-scroll-target="#data-leakage">Data Leakage</a></li>
+  </ul></li>
+  <li><a href="#key-learnings-from-feature-engineering-course-in-kaggle-learn" id="toc-key-learnings-from-feature-engineering-course-in-kaggle-learn" class="nav-link" data-scroll-target="#key-learnings-from-feature-engineering-course-in-kaggle-learn">Key Learnings from <code>Feature Engineering</code> Course in Kaggle Learn</a>
+  <ul class="collapse">
+  <li><a href="#mutual-information" id="toc-mutual-information" class="nav-link" data-scroll-target="#mutual-information">Mutual Information</a></li>
+  <li><a href="#types-of-new-features" id="toc-types-of-new-features" class="nav-link" data-scroll-target="#types-of-new-features">Types of New Features:</a></li>
+  <li><a href="#useful-tips-on-feature-engineering" id="toc-useful-tips-on-feature-engineering" class="nav-link" data-scroll-target="#useful-tips-on-feature-engineering">Useful Tips on Feature Engineering:</a></li>
+  <li><a href="#principal-component-analysis" id="toc-principal-component-analysis" class="nav-link" data-scroll-target="#principal-component-analysis">Principal Component Analysis</a></li>
+  <li><a href="#target-encoding" id="toc-target-encoding" class="nav-link" data-scroll-target="#target-encoding">Target Encoding</a></li>
+  </ul></li>
+  <li><a href="#ml-coding-tips" id="toc-ml-coding-tips" class="nav-link" data-scroll-target="#ml-coding-tips">ML Coding Tips</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<hr>
+<section id="key-learnings-from-intro-to-ml-course-in-kaggle-learn" class="level2">
+<h2 class="anchored" data-anchor-id="key-learnings-from-intro-to-ml-course-in-kaggle-learn">Key Learnings from <code>Intro to ML Course</code> in Kaggle Learn</h2>
+<ul>
+<li>How to <code>train_test_split</code> the data</li>
+<li>Briefly discussed the concept of underfitting and overfitting (Loss vs model complexity curve)</li>
+<li>How to train a typical scikit-learn model like <code>DecisionTreeRegressor</code> or <code>RandomForestRegressor</code>
+<ul>
+<li>both need no scaling of continuous or discrete data;</li>
+<li>for sklearn might have to convert categorical data into encoded values</li>
+</ul></li>
+<li>After finding out the best parameters, one should train with the identified hyperparameters on the whole data
+<ul>
+<li>(so that model will learn a bit more from held out data too)</li>
+</ul></li>
+</ul>
+</section>
+<section id="key-learnings-from-intermediary-ml-course-in-kaggle-learn" class="level2">
+<h2 class="anchored" data-anchor-id="key-learnings-from-intermediary-ml-course-in-kaggle-learn">Key Learnings from <code>Intermediary ML Course</code> in Kaggle Learn</h2>
+<section id="missing-value-treatment" class="level3">
+<h3 class="anchored" data-anchor-id="missing-value-treatment">Missing Value Treatment:</h3>
+<ul>
+<li>Remove the Null Rows OR Columns (by column meaning the whole feature containing the missing value)</li>
+<li>Impute (by some strategy like Mean, Median, some regression like KNN)</li>
+<li>Impute + Add a boolean variable for every column imputed (so as to make the model hopefully treat the imputed row differently)</li>
+<li>Do removing missing values help or imputing missing values help more for the model accuracy?</li>
+<li>Opinion shared by the Author: SimpleImputer works as effectively as a complex imputing algorithm when used inside sophisticated ML models</li>
+</ul>
+<hr>
+</section>
+<section id="categorical-column-treatment" class="level3">
+<h3 class="anchored" data-anchor-id="categorical-column-treatment">Categorical Column Treatment:</h3>
+<pre><code>- `Drop Categorical columns` (worst approach)
+- `OrdinalEncoder` 
+- `OneHotEncoder` (most cases, the best approach)</code></pre>
+<ul>
+<li>Learnt the concept of “good_category_cols” and “bad_category_columns” <br> (if a particular class occurs new in the unseen dataset; <code>handle_unknown</code> argument in “OneHotEncoder” is possible)</li>
+<li>Think twice before applying onehot encoding because of “high cardinality columns”</li>
+</ul>
+<hr>
+</section>
+<section id="data-leakage" class="level3">
+<h3 class="anchored" data-anchor-id="data-leakage">Data Leakage</h3>
+<ul>
+<li>An example of Data Leakage:
+<ul>
+<li>Doing Inputer before train_test_split. Validation data then would have “seen” training data</li>
+</ul></li>
+</ul>
+<p><strong>Example 1 - <code>Nike</code></strong>: <br></p>
+<ul>
+<li>Objective: How much shoelace material will be used?</li>
+<li>Situation: With the feature <code>Leather used this month</code> , the prediction accuracy is 98%+. Without this featur, the accuracy is just ~80%</li>
+<li>IsDataLeakage?: <code>Depends</code> !
+<ul>
+<li>❌ <code>Leather used this month</code> is a bad feature if the number is populated during the month (which makes it not available to predict the amount of shoe lace material needed)</li>
+<li>✔️ <code>Leather used this month</code> is a okay feature to use if the number determined during the beginning of the month (making it available during predition time on unseen data)</li>
+</ul></li>
+</ul>
+<hr>
+<p><strong>Example 2 - <code>Nike</code></strong>: <br></p>
+<ul>
+<li>Objective: How much shoelace material will be used?</li>
+<li>Situation: Can we use the feature <code>Leather order this month</code>?</li>
+<li>IsDataLeakage? <code>Most likely no, however ...</code>
+<ul>
+<li>❌ If <code>Shoelaces ordered</code> (our Target Variable) is determined first and then only <code>Leather Ordered</code> is planned, <br> then we won’t have <code>Leather Ordered</code> during the time of prediction of unseen data</li>
+<li>✔️ If <code>Leather Ordered</code> is determined before <code>Shoelaces Ordered</code>, then it is a useful feature</li>
+</ul></li>
+</ul>
+<hr>
+<p><strong>Example 3 - <code>Cryptocurrency</code></strong>: <br></p>
+<ul>
+<li>Objective: Predicting tomo’s crypto price with a error of &lt;$1</li>
+<li>Situation: Are the following features susceptible to leakage?
+<ul>
+<li><code>Current price of Crypto</code></li>
+<li><code>Change in the price of crypto from 1 hour ago</code></li>
+<li><code>Avg Price of crypto in the largest 24 h0urs</code></li>
+<li><code>Macro-economic Features</code></li>
+<li><code>Tweets in the last 24 hours</code></li>
+</ul></li>
+<li>IsDataLeakage? <code>No</code>, none of the features seem to cause leakage.</li>
+<li>However, more useful Target Variable <code>Change in Price (pos/neg) the next day</code>. If this can be consistently predicted higher, then it is a useful model</li>
+</ul>
+<hr>
+<p><strong>Example 4 - <code>Surgeon's Infection Rate Performance</code></strong>: <br></p>
+<ul>
+<li>Objective: How to predict if a patient who has undergone a surgery will get infected post surgery?</li>
+<li>Situation: How can information about each surgeon’s infection rate performance be carefully utilized while training?
+<ul>
+<li>The independent features are strictly data points collected until the surgery had taken place</li>
+<li>The dependent variable - whether infected or not - should be post surgery measurement</li>
+</ul></li>
+<li>IsDataLeakage? <code>Depends</code> on the what are the features used.
+<ul>
+<li>If a surgeon’s infection rate is used as a feature while training the model (that predicts whether a patient will be infected post surgery), that will lead to data leakage</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="key-learnings-from-feature-engineering-course-in-kaggle-learn" class="level2">
+<h2 class="anchored" data-anchor-id="key-learnings-from-feature-engineering-course-in-kaggle-learn">Key Learnings from <code>Feature Engineering</code> Course in Kaggle Learn</h2>
+<ul>
+<li>Key Topics of this course:
+<ul>
+<li>Mutual Information</li>
+<li>Inventing New Features (like <code>apparent temparature</code> = {Air Temparature + Humidity + Wind Speed})</li>
+<li>Segmentation Features (using K-Means Clustering)</li>
+<li>Variance in the Dataset based features (using Principal Component Analysis)</li>
+<li>Encode (high cardinality) category variables using <code>Target Encoding</code></li>
+</ul></li>
+<li>Why Feature Engineering?
+<ul>
+<li>To improve model performance</li>
+<li>To reduce computational complexity by combining many features into a few</li>
+<li>To improve interpretability of results</li>
+</ul></li>
+<li>Wherever the model cannot identify a proper relationship between a dependent and a particular independent variable, <br>
+<ul>
+<li>we can engineer/transform 1 or more of the independent variables</li>
+<li>so as to let model learn a better relationship between the engineered features and dependent variable</li>
+</ul></li>
+<li>E.g.: In <code>compressive_strength</code> prediction in <code>cement</code> data, synthetic feature - ratio of Water to Cement helps</li>
+</ul>
+<section id="mutual-information" class="level3">
+<h3 class="anchored" data-anchor-id="mutual-information">Mutual Information</h3>
+<ul>
+<li>Mutual information is similar to correlation but correlation only looks for linear relationship whereas Mutual information can talk about any relationship</li>
+<li><code>Mutual Information</code> decribes relationship between two variables in terms of uncertainty (or certainty)
+<ul>
+<li>For e.g.: Knowing <code>ExteriorQuality</code> of a house (one of 4 values - Fair, Typical, Good and Excellent) can help one reduce uncertainty over <code>SalePrice</code>. Better the ExteriorQuality, more the SalesPrice</li>
+<li>Typical values: If two variables have a MI score of 0.0 - they are totally indepndent.</li>
+<li>Mutual Information is a logarithmic quantity. So it increases slowly</li>
+<li>Mutual Information is a univariate metric. MI can’t detect interactions between features Meaning, if multiple features together make sense to a dependent variable but not independently, then MI cannot determine that. Before deciding a feature is unimportant from its MI score, it’s good to investigate any possible interaction effects</li>
+</ul></li>
+<li>Parallel Read for MI like metrics:
+<ul>
+<li><a href="https://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html">Feature Importances from fitted attribute</a><br>
+</li>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFE.html">Recursive Feature Elimination</a></li>
+</ul></li>
+</ul>
+</section>
+<section id="types-of-new-features" class="level3">
+<h3 class="anchored" data-anchor-id="types-of-new-features">Types of New Features:</h3>
+<ul>
+<li>Mathematical Transformations (Ratio, Log)</li>
+<li>Grouping Columns Features - <code>df['New_Group_Feature'] = df[list_of_boolean_features].sum(axis=1)</code> - <code>df['New_Group_Feature'] = df[list_of_numerical_features].gt(0).sum(axis=1)</code> gt – greater than</li>
+<li>Grouping <code>numerical</code> Rows Features - <code>customer['Avg_Income_by_State'] = customer.groupby('State')['Income'].transform('mean')</code></li>
+<li>Grouping <code>categorical</code> columns features - <code>customer['StateFreq'] = customer.groupby('State')['State'].transform('count')/customer.State.count()</code></li>
+<li>Split Features - df[[‘Type’, ‘Count’]] = df[‘some_var’].str.split(” “,expand=True)</li>
+<li>Combine Features - <code>df['new_feture'] = df['var1'] + "_" + df['var2']</code></li>
+</ul>
+</section>
+<section id="useful-tips-on-feature-engineering" class="level3">
+<h3 class="anchored" data-anchor-id="useful-tips-on-feature-engineering">Useful Tips on Feature Engineering:</h3>
+<ul>
+<li>Linear models learn sum and differences naturally</li>
+<li>Neural Networks work better with scaled features</li>
+<li>Ratios are difficult for many models, so can yeild better results when incorporated as additional feature</li>
+<li>Tree models do not have the ability to factor in cound feature</li>
+<li>Clustering as <code>feature discovery</code> tool (add a categorical feature based on clustering of a subset of features)</li>
+</ul>
+</section>
+<section id="principal-component-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="principal-component-analysis">Principal Component Analysis</h3>
+<ul>
+<li>PCA is like partitioning of the variation in data</li>
+<li>Instead of describing the data with the original features,</li>
+<li>you do an orthogonl transformation of the features and compute “principal components”</li>
+<li>which are used to explain the variation in the data.</li>
+<li>Convert the correlated variables into mutually orthogonal (uncorrelated) <code>principal components</code></li>
+<li>Principal components can be more informative than the original features</li>
+<li>Advantages of PCA: - Dimensionality Reducton - Anamoly Detection - Boosting signal to noise ratio - Decorrelation</li>
+<li>PCA works only for numeric variables; works best for scaled data<br>
+</li>
+<li><strong>Pipeline for PCA</strong>: original_features –&gt; Scaled_features –&gt; PCA Features –&gt; MI_computed_on_PCA_features</li>
+</ul>
+</section>
+<section id="target-encoding" class="level3">
+<h3 class="anchored" data-anchor-id="target-encoding">Target Encoding</h3>
+<ul>
+<li><code>Target Encoding</code>: A Supervised Feature Engineering technique for encoding categorical variables by including the target labels</li>
+<li>Target Encoding is basically assigning a number to a categorical variable where in the number is derived from target variable - <code>autos['target_encoded_make'] =  autos.groupby('make')['Price'].transform('mean')</code></li>
+<li>Disadvantages of Target Encoding: - Overfits for low volume (rare) classes - What if there are missing values<br>
+</li>
+<li>Where is Target Encoding most suitable? - For High cardinality features - Domain-motivated features (features that could have been scored poorly using feature importance metric function, we can unearth its real usefulness using target encoding)</li>
+</ul>
+</section>
+</section>
+<section id="ml-coding-tips" class="level2">
+<h2 class="anchored" data-anchor-id="ml-coding-tips">ML Coding Tips</h2>
+<ul>
+<li><strong>sklearn</strong>:
+<ul>
+<li><code>Pipleine</code>: Bundles together <code>preprocessing</code> and <code>modeling</code> steps | makes codebase easier for productionalizing</li>
+<li><code>ColumnTransformer</code>: Bundles together different preprocessing steps</li>
+<li>Sklearn classes used often:</li>
+<li><strong>Model</strong>
+<ul>
+<li><code>from sklearn.tree import DecisionTreeRegressor</code> AND <code>from sklearn.ensemble import RandomForestRegressor</code></li>
+<li><code>from sklearn.model_selection import train_test_split</code></li>
+<li><code>from sklearn.metrics import mean_absolute_error</code></li>
+<li><code>from sklearn.model_selection import cross_val_score</code>
+<ul>
+<li>cross_val_score(my_pipeline, X, y, scorung=‘neg_mean_absolute_error’)</li>
+</ul></li>
+<li><code>from xgboost import XGBRegressor</code>
+<ul>
+<li><code>n_estimators</code>: Number of estimators is same as the number of cycles the data is processed by the model (<code>100-1000</code>)</li>
+<li><code>early_stopping_rounds</code>: Early stopping stops the iteration when the validation score stops improving</li>
+<li><code>learning_rate</code> - xgboost_model = XGBRegressor(n_estimators=500) - xgboost_model.fit(X_train,y_train,early_stopping_rounds=5,eval_set=[(X_valid, y_valid)], verbose=False)</li>
+</ul></li>
+</ul></li>
+<li><strong>Preprocessing &amp; Feature Engineering</strong>
+<ul>
+<li><code>from sklearn.feature_selection import mutual_info_regression, mutual_info_classif</code></li>
+<li><code>from sklearn.decomposition import PCA</code></li>
+<li><code>from sklearn.impute import SimpleImputer, KNNImputer</code></li>
+<li>`from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder</li>
+</ul></li>
+</ul></li>
+<li><strong>Pandas</strong>:
+<ul>
+<li>X = df.copy() y = X.pop(‘TheDependentVariable’) # remove the dependent variable from the X (features) and save in y)</li>
+<li><code>df[encoded_colname], unique_values = df[colname].factorize()</code> # for converting a categorical list of values into encoded numbers using pandas</li>
+<li><code>df[list_of_oh_encoded_col_name_values] = pd.get_dummies(df[colname])</code> # for converting a categorical variable into a list of oh-encoded-values using pandas</li>
+<li>Exclude all categorical columns at once:
+<ul>
+<li><code>df = df.select_dtypes(exclude=['object'])</code></li>
+</ul></li>
+<li>Creating a new column just to show the model if which row of a particular column have null values
+<ul>
+<li>df[col + ’__ismissing’] = df[col].isnull()</li>
+</ul></li>
+<li>Isolate all categorical columns:
+<ul>
+<li><code>object_cols = [col for col in df.columns if df[col].dtype == "object"]</code></li>
+</ul></li>
+<li>Segregate good and bad object columns (defined by the presence of “unknown” or new categories in validation or test dataset)
+<ul>
+<li><code>good_object_cols = [col for col in object_cols if set(X_valid[col]).issubset(set(X_train[col])]</code></li>
+<li><code>bad_object_cols = list(set(good_object_cols) - set(bad_object_cols))</code></li>
+</ul></li>
+<li>Getting number of unique entries (<code>cardinality</code>) across <code>object</code> or categorical columns
+<ul>
+<li><code>num_of_uniques_in_object_cols = list(map(lambda col: df[col].nunique(), object_cols))</code><br>
+</li>
+<li><code>sorted(list(zip(object_cols, num_of_uniques_in_object_cols)), key=lambda x: x[1], reverse=True)</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><strong>Source</strong>: <br> - Kaggle.com/learn</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

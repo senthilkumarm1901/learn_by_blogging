@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.336">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2023-04-30">
+<meta name="description" content="This blog has my notes on the AWS Service - API Gateway">
+
+<title>Learn by Blogging - AWS Serverless Series - All about API Gateways</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html" rel="" target="">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">AWS Serverless Series - All about API Gateways</h1>
+                  <div>
+        <div class="description">
+          This blog has my notes on the AWS Service - API Gateway
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">AWS</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 30, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#agenda" id="toc-agenda" class="nav-link active" data-scroll-target="#agenda">Agenda</a></li>
+  <li><a href="#agenda-new" id="toc-agenda-new" class="nav-link" data-scroll-target="#agenda-new">Agenda (new)</a></li>
+  <li><a href="#the-essential-theory-behind-api-gateways" id="toc-the-essential-theory-behind-api-gateways" class="nav-link" data-scroll-target="#the-essential-theory-behind-api-gateways">The Essential Theory behind API Gateways</a>
+  <ul class="collapse">
+  <li><a href="#understanding-apis---the-precursor-knowledge-to-api-gateways" id="toc-understanding-apis---the-precursor-knowledge-to-api-gateways" class="nav-link" data-scroll-target="#understanding-apis---the-precursor-knowledge-to-api-gateways">Understanding APIs - The Precursor Knowledge to API Gateways</a>
+  <ul class="collapse">
+  <li><a href="#what-is-a-front-end-client-side-and-a-back-end-server-side-of-a-web-application" id="toc-what-is-a-front-end-client-side-and-a-back-end-server-side-of-a-web-application" class="nav-link" data-scroll-target="#what-is-a-front-end-client-side-and-a-back-end-server-side-of-a-web-application">1. What is a Front-End (client-side) and a Back-End (server-side) of a Web Application?</a></li>
+  <li><a href="#what-is-an-api" id="toc-what-is-an-api" class="nav-link" data-scroll-target="#what-is-an-api">2. What is an API?</a></li>
+  <li><a href="#what-are-http-requests" id="toc-what-are-http-requests" class="nav-link" data-scroll-target="#what-are-http-requests">2. What are <code>HTTP Requests</code>?</a></li>
+  <li><a href="#what-is-querystring-parameters-in-the-context-of-a-http-request-where-is-it-used-is-it-part-of-header" id="toc-what-is-querystring-parameters-in-the-context-of-a-http-request-where-is-it-used-is-it-part-of-header" class="nav-link" data-scroll-target="#what-is-querystring-parameters-in-the-context-of-a-http-request-where-is-it-used-is-it-part-of-header">3. What is QueryString Parameters in the context of a HTTP request? Where is it used? Is it part of header?</a></li>
+  <li><a href="#what-is-the-difference-between-a-http-api-request-and-a-rest-api-request" id="toc-what-is-the-difference-between-a-http-api-request-and-a-rest-api-request" class="nav-link" data-scroll-target="#what-is-the-difference-between-a-http-api-request-and-a-rest-api-request">4. What is the difference between a HTTP API Request and a REST API request?</a></li>
+  <li><a href="#what-are-the-different-types-of-applications-possible-to-be-sent-in-the-body-of-a-http-request" id="toc-what-are-the-different-types-of-applications-possible-to-be-sent-in-the-body-of-a-http-request" class="nav-link" data-scroll-target="#what-are-the-different-types-of-applications-possible-to-be-sent-in-the-body-of-a-http-request">5. What are the different types of applications possible to be sent in the Body of a HTTP request?</a></li>
+  <li><a href="#is-there-a-https-request" id="toc-is-there-a-https-request" class="nav-link" data-scroll-target="#is-there-a-https-request">6. Is there a HTTPS request?</a></li>
+  </ul></li>
+  <li><a href="#what-is-ag" id="toc-what-is-ag" class="nav-link" data-scroll-target="#what-is-ag">What is AG?</a>
+  <ul class="collapse">
+  <li><a href="#where-is-the-ag-used-todo" id="toc-where-is-the-ag-used-todo" class="nav-link" data-scroll-target="#where-is-the-ag-used-todo">Where is the AG used? <br> [#TODO]</a></li>
+  <li><a href="#different-parts-of-ag" id="toc-different-parts-of-ag" class="nav-link" data-scroll-target="#different-parts-of-ag">Different Parts of AG</a></li>
+  <li><a href="#types-of-apis-in-api-gateway" id="toc-types-of-apis-in-api-gateway" class="nav-link" data-scroll-target="#types-of-apis-in-api-gateway">Types of APIs in API Gateway</a></li>
+  </ul></li>
+  <li><a href="#http-api" id="toc-http-api" class="nav-link" data-scroll-target="#http-api">HTTP API</a></li>
+  <li><a href="#rest-api" id="toc-rest-api" class="nav-link" data-scroll-target="#rest-api">REST API</a></li>
+  <li><a href="#websocket-api" id="toc-websocket-api" class="nav-link" data-scroll-target="#websocket-api">Websocket API</a>
+  <ul class="collapse">
+  <li><a href="#a-brief-take-on-openapi-in-api-gateways" id="toc-a-brief-take-on-openapi-in-api-gateways" class="nav-link" data-scroll-target="#a-brief-take-on-openapi-in-api-gateways">A brief take on OpenAPI in API Gateways:</a></li>
+  <li><a href="#recipes" id="toc-recipes" class="nav-link" data-scroll-target="#recipes">Recipes</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="agenda" class="level1">
+<h1>Agenda</h1>
+<ul>
+<li>The Essential Theory behind API Gateways</li>
+<li>A Brief Take on OpenAPI Specifications</li>
+<li>How is AWS API Gateway service helpful in building an API First Approach to Mircroservices?</li>
+<li>Recipe 1: Attaching API Gateway to S3</li>
+<li>Recipe 2: Attaching API Gateway to Lambda which uploads a file to S3 (using <code>generated presigned url</code>)</li>
+<li>Recipe 3: Attaching API Gateway to Lambda to query data from a table</li>
+<li>Ease in securing your API Gateway</li>
+</ul>
+</section>
+<section id="agenda-new" class="level1">
+<h1>Agenda (new)</h1>
+<ul>
+<li>Understanding APIs and HTTP Requests</li>
+<li>What is AWS API Gateway? Why is it important?</li>
+<li>A Practical Approach to Learn and Implement API Gateway - Attach an API Gateway to an S3 Bucket (Recipe 1) (refer to the README.md here - /Users/senthilkumar.m/Library/CloudStorage/OneDrive-TOYOTAConnectedIndia/Learnings/aws_serverless_recipes/api_gateway/s3_integration_for_file_uploads/README.md)</li>
+<li>The OpenAPI Route to Creating and Implementing AWS API Gateways
+<ul>
+<li>The basics of OpenAPI</li>
+<li>Recipe 2: <code>Attaching API Gateway to Lambda to query data from a table</code></li>
+</ul></li>
+<li>The API-first approach to Software Development</li>
+</ul>
+</section>
+<section id="the-essential-theory-behind-api-gateways" class="level1">
+<h1>The Essential Theory behind API Gateways</h1>
+<section id="understanding-apis---the-precursor-knowledge-to-api-gateways" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-apis---the-precursor-knowledge-to-api-gateways">Understanding APIs - The Precursor Knowledge to API Gateways</h2>
+<section id="what-is-a-front-end-client-side-and-a-back-end-server-side-of-a-web-application" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-a-front-end-client-side-and-a-back-end-server-side-of-a-web-application">1. What is a Front-End (client-side) and a Back-End (server-side) of a Web Application?</h3>
+<p>(pic to be re-drawn ) <img src="https://assets.isu.pub/document-structure/230420045915-3626970f5fe74851ad203b0d481b651b/v1/a5322253bcb34d6e0e64c3160e21f0a0.jpeg" class="img-fluid"> Source: <a href="https://issuu.com/mobileliveca/docs/backend_for_frontend_application_architecture_the_">Backend for Frontend Architecture - The key to building scalable and maintenable Frontend Applications</a></p>
+<p>#ToDo #ToReWrite</p>
+<pre><code>1.Client-Side:&nbsp;==The client-side refers to the part of a web application that runs in the user’s browser.==
+
+
+2.Server-Side:&nbsp;==While the client side focuses on the user experience and presentation, the server side handles behind-the-scenes processing and data management==.
+
+3.Databases: Web applications often require persistent data storage, and databases serve as a reliable solution. Server-side scripts communicate with databases to store and retrieve information, ensuring the persistence and accessibility of data across multiple sessions. Popular database management systems include MySQL, PostgreSQL, MongoDB, and SQLite.
+
+
+Client-side and server-side components interact through a client-server communication model (`HTTP Requests`. When a user interacts with a web page, the client-side technologies handle the user input and perform initial validations. Then, the client-side sends requests to the server-side for more complex operations, such as database access or external API calls. The server-side processes these requests, performs the necessary computations, retrieves data, and generates a response. This response is then sent back to the client-side, where it is rendered and presented to the user.</code></pre>
+<p>Source: Direct Copy-paste from https://medium.com/<span class="citation" data-cites="destinyonuiri/understanding-the-differences-between-client-side-and-server-side-in-web-development-99f8e41bcfb3">@destinyonuiri/understanding-the-differences-between-client-side-and-server-side-in-web-development-99f8e41bcfb3</span></p>
+</section>
+<section id="what-is-an-api" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-an-api">2. What is an API?</h3>
+<p><img src="https://planningpokerweb.com/wp-content/uploads/2023/08/What-is-an-API-non-tech-people.png" class="img-fluid"> Source: <a href="https://planningpokerweb.com/product-management/apis-the-unseen-bridge-in-digital-products-for-non-tech-people/">APIs: The unseen bridge in digital products for non-tech people</a></p>
+</section>
+<section id="what-are-http-requests" class="level3">
+<h3 class="anchored" data-anchor-id="what-are-http-requests">2. What are <code>HTTP Requests</code>?</h3>
+<p>#ToDo #ToReWrite</p>
+<p>Answer from ChatGPT:</p>
+<blockquote class="blockquote">
+<p>HTTP (Hypertext Transfer Protocol) requests are <strong>messages</strong> sent by a client (such as a web browser, mobile app, or another server) to a server, typically to request or send data. These requests are fundamental to how the World Wide Web operates and are <strong>the basis for communication between clients and servers</strong>.</p>
+</blockquote>
+<pre><code>What are the Components of a HTTP request? 
+1. Request Method
+    1. GET (Retrieve a resource from the server)
+    2. POST: Send data to the server (CREATE or UPDATE a resource) - for non-dempotent tasks (repeated identical tasks have different effects)
+    3. PUT: Update a resource on the server (for idempotent tasks - repeated identical tasks should have the same effect); PUT request multiple times will have the same outcome as making it once, with no side effects
+    4. DELETE: Delete a resource
+
+&gt; For example, if you are updating or replacing the details of a user account, changing the content of a blog post, or modifying the properties of a product in an e-commerce store, PUT would be the appropriate method. However, if you are creating a new resource on the server, such as a new user account, blog post, or product, POST would be the appropriate method.
+
+
+2. Uniform Resource Identifier
+    1. Could be a URL - Uniform Resource Allocator (that has `http` or `https` protocol, domain name and path)
+3. HTTP Version
+4. Headers (provided additional info about the request or the client making the request)
+    1. Content Type 
+    2. Accept Type
+    3. Authentication Tokens (Authorization)
+    4. Cookies
+    5. Origin
+    6. Cache-control
+5. Body</code></pre>
+<p>Is there any other URI other than URLs? Can you give examples? - Apart from URL, there are URNs, Data URIs (used to represent images directly within the HTML or CSS files)</p>
+<hr>
+</section>
+<section id="what-is-querystring-parameters-in-the-context-of-a-http-request-where-is-it-used-is-it-part-of-header" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-querystring-parameters-in-the-context-of-a-http-request-where-is-it-used-is-it-part-of-header">3. What is QueryString Parameters in the context of a HTTP request? Where is it used? Is it part of header?</h3>
+<p>In https://example.com/search?q=term&amp;page=1, <code>q</code> and <code>page</code> are query string parameters or query parameters</p>
+<p>Query Parameters are used by API requests to have control over the data requested from the server</p>
+<p><code>Query parameters are not part of the HTTP request header</code></p>
+<hr>
+</section>
+<section id="what-is-the-difference-between-a-http-api-request-and-a-rest-api-request" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-the-difference-between-a-http-api-request-and-a-rest-api-request">4. What is the difference between a HTTP API Request and a REST API request?</h3>
+<pre><code>1. HTTP APIs are a type of API that use the HTTP protocol for communication between clients and servers.
+2. HTTP APIs can encompass a wide range of API designs and architectures, including both **RESTful and non-RESTful approaches**.</code></pre>
+<pre><code>1. RESTful APIs use standardized resource URIs and follow principles such as **statelessness**, meaning that each request from a client must contain all the information necessary to process the request, and servers don't maintain any client state between requests.
+2. RESTful APIs adhere to a set of architectural constraints defined by Roy Fielding in his doctoral dissertation, including client-server architecture, statelessness, cacheability, uniform interface, layered system, and code on demand (optional).</code></pre>
+<p>Real-time Communication: In some cases, non-RESTful APIs are used for real-time communication scenarios where RESTful APIs may not be well-suited. For example, WebSocket APIs enable bidirectional communication between clients and servers in real-time applications like chat applications or online gaming.</p>
+<hr>
+</section>
+<section id="what-are-the-different-types-of-applications-possible-to-be-sent-in-the-body-of-a-http-request" class="level3">
+<h3 class="anchored" data-anchor-id="what-are-the-different-types-of-applications-possible-to-be-sent-in-the-body-of-a-http-request">5. What are the different types of applications possible to be sent in the Body of a HTTP request?</h3>
+<ul>
+<li>TextData,</li>
+<li>Binary Data</li>
+<li>XML</li>
+<li>JSON</li>
+<li>HTML</li>
+</ul>
+<hr>
+</section>
+<section id="is-there-a-https-request" class="level3">
+<h3 class="anchored" data-anchor-id="is-there-a-https-request">6. Is there a HTTPS request?</h3>
+<p>Yes, HTTPS requests are HTTP request encrypted with SSL/TLS (Secure Sockets Layer/ Transport Layer Security) protocols</p>
+<hr>
+<p>We use HTTPS APIs when creating using API Gateways</p>
+<p>In AWS API Gateway, the default behavior is to create HTTPS APIs. However, you can specify the protocol when creating an API using the AWS CLI by providing the <code>--protocol-type</code></p>
+<p>``</p>
+<pre><code>aws apigateway create-rest-api --name MyApi --protocol-type HTTP</code></pre>
+</section>
+</section>
+<section id="what-is-ag" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-ag">What is AG?</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2024-04-30-API-Gateway_files/figure-html/35aa0555-1-image-2.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">image-2.png</figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>API Gateway is a AWS acts a middle man (or like a door) between Client (mobile apps or Web browsers) that is making a request and the Server (the backend service like Lambda, EC2 instance, etc.,) that gives a response back.</p>
+</blockquote>
+<section id="where-is-the-ag-used-todo" class="level3">
+<h3 class="anchored" data-anchor-id="where-is-the-ag-used-todo">Where is the AG used? <br> [#TODO]</h3>
+<ul>
+<li>AG is used
+<ul>
+<li>in Serverless Applications (I have attached API Gateways to AWS Lambdas and those REST APIs get used in a Frontend)</li>
+<li>in Legacy Applications</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="different-parts-of-ag" class="level3">
+<h3 class="anchored" data-anchor-id="different-parts-of-ag">Different Parts of AG</h3>
+<ul>
+<li><ol start="0" type="1">
+<li>(Optional) Authorizer Piece</li>
+</ol></li>
+<li><ol type="1">
+<li>Request Flow (<strong>everything that happens before the request from client hits the backend service</strong>)</li>
+</ol>
+<ul>
+<li><ol type="a">
+<li>Method Request<br>
+</li>
+</ol></li>
+<li><ol start="2" type="a">
+<li>Integration Request</li>
+</ol></li>
+</ul></li>
+<li><ol start="2" type="1">
+<li>Integration</li>
+</ol></li>
+<li><ol start="3" type="1">
+<li>Response Flow (everything that happens from the resonse of backend service to when it is received by the client)</li>
+</ol></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2024-04-30-API-Gateway_files/figure-html/35aa0555-2-image.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">image.png</figcaption>
+</figure>
+</div>
+<p><a href="https://prafulla-alok.medium.com/quick-notes-amazon-api-gateway-b5dafc960841">source</a> <a href="alexdebrie.com/posts/api-gateway-elements/">source2</a></p>
+<section id="request-flow---a.-method-request" class="level4">
+<h4 class="anchored" data-anchor-id="request-flow---a.-method-request">Request Flow - a. Method Request</h4>
+<p><code>method request</code> or the public interface of an API method in API gateway defines the <code>parameters</code> and <code>body</code> that an app developer must send in the requests to access the backend through the API</p>
+<p>In <code>Method Request</code>, we validate the following parameters of the HTTP API request</p>
+<ul>
+<li>QueryStrings</li>
+<li>Headers
+<ul>
+<li>Authorization</li>
+</ul></li>
+<li>Payloads</li>
+</ul>
+</section>
+<section id="request-flow---c.-method-response" class="level4">
+<h4 class="anchored" data-anchor-id="request-flow---c.-method-response">Request Flow - c.&nbsp;Method Response</h4>
+<p>In <code>Method Response</code> we define the status codes, headers and body models that an app developer should expect from API Gateway.</p>
+</section>
+</section>
+<section id="types-of-apis-in-api-gateway" class="level3">
+<h3 class="anchored" data-anchor-id="types-of-apis-in-api-gateway">Types of APIs in API Gateway</h3>
+<p>apigateway vs apigatewayv2 (source: https://www.pulumi.com/ai/answers/wc35D5ECVuvUu7xE6h5SxM/comparing-aws-api-gateway-and-api-gateway-v2)</p>
+</section>
+</section>
+<section id="http-api" class="level2">
+<h2 class="anchored" data-anchor-id="http-api">HTTP API</h2>
+<p>HTTP APIs are the best choice for building APIs that only require API proxy functionality.</p>
+</section>
+<section id="rest-api" class="level2">
+<h2 class="anchored" data-anchor-id="rest-api">REST API</h2>
+<p>Restful APIs for require API proxy functionality and API management features.</p>
+</section>
+<section id="websocket-api" class="level2">
+<h2 class="anchored" data-anchor-id="websocket-api">Websocket API</h2>
+<p>Websocket API for building real-time two-way communication applications, such as chat apps and streaming dashboards.</p>
+<section id="a-brief-take-on-openapi-in-api-gateways" class="level3">
+<h3 class="anchored" data-anchor-id="a-brief-take-on-openapi-in-api-gateways">A brief take on OpenAPI in API Gateways:</h3>
+<pre><code>So the API Gateway has a tight integration
+
+with the OpenAPI specification.
+
+So what is the OpenAPI specification?
+
+Well, it's a very common way to define REST APIs
+
+and the API definition itself is code.
+
+So what you can do is that you create
+
+this specification using the OpenAPI model 3.0
+
+and then you import that into the API gateway.</code></pre>
+<ul>
+<li>Source: Udemy AWS Developer Associate course</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2024-04-30-API-Gateway_files/figure-html/92f33679-1-image.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">image.png</figcaption>
+</figure>
+</div>
+</section>
+<section id="recipes" class="level3">
+<h3 class="anchored" data-anchor-id="recipes">Recipes</h3>
+<ol type="1">
+<li>A Rest API endpoint to upload an object to S3 (directly). Max limit is 10 MB <a href="https://sayed-imran.medium.com/aws-api-gateway-and-s3-integration-encouraging-the-correct-way-61b180c938a7">medium blog on apigateay s3</a></li>
+<li>A Rest API endpoint attached to a lambda that generates a pre-signed url. Max limit is 5 TB per file object (S3’s file size limit)</li>
+<li>A Res</li>
+</ol>
+<p>Sources of this blog:</p>
+<ul>
+<li><ol type="1">
+<li>Quick Notes | <a href="https://prafulla-alok.medium.com/quick-notes-amazon-api-gateway-b5dafc960841">link</a></li>
+</ol></li>
+<li><ol start="2" type="1">
+<li>Main Features and Core Concepts | <a href="https://medium.com/aws-lambda-serverless-developer-guide-with-hands/amazon-api-gateway-main-features-and-core-concepts-980e8cadef09">link</a></li>
+</ol></li>
+<li><ol start="3" type="1">
+<li>Definition of API Gateway AND Creating REST API with API Gateway | <a href="https://cmakkaya.medium.com/what-is-an-api-and-the-amazon-api-gateway-creating-and-using-a-rest-api-with-amazon-api-gateway-d1b42cbb1037">link</a></li>
+</ol></li>
+<li><ol start="4" type="1">
+<li>Effortless API Management | <a href="https://medium.com/cloud-native-daily/amazon-api-gateway-effortless-api-management-2bfa6e50f5ac">link</a></li>
+</ol></li>
+<li><ol start="5" type="1">
+<li>Why API Gateway is one of the best AWS Services | <a href="https://pmc-a.medium.com/why-api-gateway-is-one-of-the-best-aws-services-eda44e736f2c">link</a></li>
+</ol></li>
+<li><ol start="6" type="1">
+<li>AWS API Gateway Interview Questions and Answers in 2024 https://mindmajix.com/aws-api-gateway-interview-questions</li>
+</ol></li>
+<li><ol start="7" type="1">
+<li>Using AWS WAF to protect your APIs - Amazon API Gateway https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-control-access-aws-waf.html</li>
+</ol></li>
+<li><ol start="8" type="1">
+<li>Amazon API Gateway | AWS Cheat Sheet - Digital Cloud Training https://digitalcloud.training/amazon-api-gateway/</li>
+</ol></li>
+<li><ol start="9" type="1">
+<li>aws api gateway &amp; lambda: multiple endpoint/functions vs single endpoint https://stackoverflow.com/questions/41425511/aws-api-gateway-lambda-multiple-endpoint-functions-vs-single-endpoint</li>
+</ol></li>
+<li><ol start="10" type="1">
+<li>AWS Storage Gateway FAQs | Amazon Web Services https://aws.amazon.com/storagegateway/faqs/</li>
+</ol></li>
+</ul>
+<p>what are the benefits of attaching api gateway to aws services</p>
+<p>Here are some key benefits of attaching Amazon API Gateway to AWS services:</p>
+<ul>
+<li><p><strong>Enables creating and deploying REST and WebSocket APIs</strong> that expose AWS Lambda functions, Amazon EC2 services, or other AWS services as HTTP endpoints[1][3].</p></li>
+<li><p><strong>Provides a single entry point for clients</strong> to access multiple microservices or AWS resources[1]. This facilitates traffic management, monitoring, authentication and security for the APIs.</p></li>
+<li><p><strong>Supports multiple AWS services as backend integrations</strong> including Lambda, Amazon EC2, Amazon S3, Amazon DynamoDB, Amazon Kinesis, Amazon SNS, Amazon SQS, and more[1][2]. This allows building APIs on top of various AWS services.</p></li>
+<li><p><strong>Offers features like caching, throttling, monitoring, versioning, and canary deployments</strong> to manage and optimize API usage[3]. This helps ensure API performance and availability.</p></li>
+<li><p><strong>Provides security features</strong> like IAM policies, Lambda authorizers, Amazon Cognito user pools, and AWS WAF integration to control and secure access to your APIs[2][3].</p></li>
+<li><p><strong>Enables defining usage plans and API keys</strong> to meter and restrict access to your APIs[3]. This allows monetizing APIs.</p></li>
+<li><p><strong>Simplifies API development</strong> by handling tasks like traffic management, authorization, access control, monitoring, and API version management[3].</p></li>
+</ul>
+<p>So in summary, API Gateway makes it easy to create, deploy, secure, monitor and scale APIs that access various AWS services, without managing any servers. It provides a comprehensive API management platform on top of AWS.</p>
+<p>Source: Question to Perplexity AI</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.336">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2024-05-16">
+<meta name="description" content="This blog covers 4 Serverless LLM Recipes useful from the point of view of learning and building PoCs">
+
+<title>Learn by Blogging - Building Frugal Open Source LLM Applications using Serverless Cloud</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html" rel="" target="">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Building Frugal Open Source LLM Applications using Serverless Cloud</h1>
+                  <div>
+        <div class="description">
+          This blog covers 4 Serverless LLM Recipes useful from the point of view of learning and building PoCs
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">LLM</div>
+                <div class="quarto-category">Serverless</div>
+                <div class="quarto-category">AWS</div>
+                <div class="quarto-category">NLP</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 16, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation">Motivation</a></li>
+  <li><a href="#purpose-of-this-presentation" id="toc-purpose-of-this-presentation" class="nav-link" data-scroll-target="#purpose-of-this-presentation">Purpose of this Presentation</a></li>
+  <li><a href="#llm-recipes-we-are-discussing-today" id="toc-llm-recipes-we-are-discussing-today" class="nav-link" data-scroll-target="#llm-recipes-we-are-discussing-today">LLM Recipes we are discussing today</a>
+  <ul class="collapse">
+  <li><a href="#lambda-to-anonymize-text" id="toc-lambda-to-anonymize-text" class="nav-link" data-scroll-target="#lambda-to-anonymize-text">1. Lambda to Anonymize Text</a>
+  <ul class="collapse">
+  <li><a href="#a.-architecture" id="toc-a.-architecture" class="nav-link" data-scroll-target="#a.-architecture">1.A. Architecture</a></li>
+  <li><a href="#b.-how-to-invoke-the-api-gateway-endpoint" id="toc-b.-how-to-invoke-the-api-gateway-endpoint" class="nav-link" data-scroll-target="#b.-how-to-invoke-the-api-gateway-endpoint">1.B. How to invoke the API Gateway Endpoint</a></li>
+  <li><a href="#c.-how-the-output-looks-in-a-streamlit-app" id="toc-c.-how-the-output-looks-in-a-streamlit-app" class="nav-link" data-scroll-target="#c.-how-the-output-looks-in-a-streamlit-app">1.C. How the output looks in a Streamlit App</a></li>
+  <li><a href="#d.-aws-cli-commands-to-create-the-architecture" id="toc-d.-aws-cli-commands-to-create-the-architecture" class="nav-link" data-scroll-target="#d.-aws-cli-commands-to-create-the-architecture">1.D. AWS CLI commands to create the Architecture</a></li>
+  </ul></li>
+  <li><a href="#small-language-model" id="toc-small-language-model" class="nav-link" data-scroll-target="#small-language-model">2. Small Language Model</a>
+  <ul class="collapse">
+  <li><a href="#a.-architecture-1" id="toc-a.-architecture-1" class="nav-link" data-scroll-target="#a.-architecture-1">2.A. Architecture</a></li>
+  <li><a href="#b.-how-to-invoke-the-api-gateway-endpoint-1" id="toc-b.-how-to-invoke-the-api-gateway-endpoint-1" class="nav-link" data-scroll-target="#b.-how-to-invoke-the-api-gateway-endpoint-1">2.B. How to invoke the API Gateway Endpoint</a></li>
+  <li><a href="#c.-how-the-output-looks-in-a-streamlit-app-1" id="toc-c.-how-the-output-looks-in-a-streamlit-app-1" class="nav-link" data-scroll-target="#c.-how-the-output-looks-in-a-streamlit-app-1">2.C. How the output looks in a Streamlit App</a></li>
+  <li><a href="#d.-aws-cli-commands-to-create-the-architecture-1" id="toc-d.-aws-cli-commands-to-create-the-architecture-1" class="nav-link" data-scroll-target="#d.-aws-cli-commands-to-create-the-architecture-1">2.D. AWS CLI commands to create the Architecture</a></li>
+  </ul></li>
+  <li><a href="#small-language-model-with-rag" id="toc-small-language-model-with-rag" class="nav-link" data-scroll-target="#small-language-model-with-rag">3. Small Language Model with RAG</a>
+  <ul class="collapse">
+  <li><a href="#a.-a-brief-overview-on-rag" id="toc-a.-a-brief-overview-on-rag" class="nav-link" data-scroll-target="#a.-a-brief-overview-on-rag">3.A. A Brief Overview on RAG</a></li>
+  <li><a href="#b.-architecture" id="toc-b.-architecture" class="nav-link" data-scroll-target="#b.-architecture">3.B. Architecture</a></li>
+  <li><a href="#c.-how-to-invoke-the-api-gateway-endpoint" id="toc-c.-how-to-invoke-the-api-gateway-endpoint" class="nav-link" data-scroll-target="#c.-how-to-invoke-the-api-gateway-endpoint">3.C. How to invoke the API Gateway Endpoint</a></li>
+  <li><a href="#d.-how-the-output-looks-in-a-streamlit-app" id="toc-d.-how-the-output-looks-in-a-streamlit-app" class="nav-link" data-scroll-target="#d.-how-the-output-looks-in-a-streamlit-app">3.D. How the output looks in a Streamlit App</a></li>
+  <li><a href="#e.-aws-cli-commands-to-create-the-architecture" id="toc-e.-aws-cli-commands-to-create-the-architecture" class="nav-link" data-scroll-target="#e.-aws-cli-commands-to-create-the-architecture">3.E. AWS CLI commands to create the Architecture</a></li>
+  </ul></li>
+  <li><a href="#large-language-model-a-partial-serverless" id="toc-large-language-model-a-partial-serverless" class="nav-link" data-scroll-target="#large-language-model-a-partial-serverless">4. Large Language Model (A Partial Serverless)</a>
+  <ul class="collapse">
+  <li><a href="#a.-architecture-2" id="toc-a.-architecture-2" class="nav-link" data-scroll-target="#a.-architecture-2">4.A. Architecture</a></li>
+  <li><a href="#b.-how-to-invoke-the-api-gateway-endpoint-2" id="toc-b.-how-to-invoke-the-api-gateway-endpoint-2" class="nav-link" data-scroll-target="#b.-how-to-invoke-the-api-gateway-endpoint-2">4.B. How to invoke the API Gateway Endpoint</a></li>
+  <li><a href="#c.-aws-cli-commands-to-create-the-architecture" id="toc-c.-aws-cli-commands-to-create-the-architecture" class="nav-link" data-scroll-target="#c.-aws-cli-commands-to-create-the-architecture">4.C. AWS CLI commands to create the Architecture</a></li>
+  </ul></li>
+  <li><a href="#key-challenges-faced" id="toc-key-challenges-faced" class="nav-link" data-scroll-target="#key-challenges-faced">Key Challenges Faced</a></li>
+  <li><a href="#key-learnings" id="toc-key-learnings" class="nav-link" data-scroll-target="#key-learnings">Key Learnings</a></li>
+  <li><a href="#next-steps-for-the-author" id="toc-next-steps-for-the-author" class="nav-link" data-scroll-target="#next-steps-for-the-author">Next Steps for the Author</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="motivation" class="level1">
+<h1>Motivation</h1>
+<ul>
+<li>Want to build LLM applications?</li>
+<li>Wondering what is the most cost effective way to learn and build them in cloud?</li>
+</ul>
+<blockquote class="blockquote">
+<p>Think OpenSource LLM. <br> Think Serverless</p>
+</blockquote>
+<hr>
+</section>
+<section id="purpose-of-this-presentation" class="level1">
+<h1>Purpose of this Presentation</h1>
+<p>Let us see how the intermingling of 2 concepts - Serverless + Open Source LLMs - help you build demo-able PoC LLM applications, at minimal cost.</p>
+<pre><code>#LLMOps
+#MLOps
+#AWSLambda
+#LLMonServerless
+#OpenSourceLLMs</code></pre>
+<hr>
+</section>
+<section id="llm-recipes-we-are-discussing-today" class="level1">
+<h1>LLM Recipes we are discussing today</h1>
+<ul>
+<li><ol type="1">
+<li>A Lambda to run inference on a purpose-built Transformer ML Model
+<ul>
+<li>A Lambda to <strong>Anonymize Text</strong> using a Huggingface BERT Transformer-based Language Model for PII De-identification</li>
+</ul></li>
+</ol></li>
+<li><ol start="2" type="1">
+<li>A Lambda to run a <strong>Small Language Model</strong> like Microsoft’s Phi3</li>
+</ol></li>
+<li><ol start="3" type="1">
+<li>A Lambda to run a <strong>RAG</strong> Implementation on a Small Language Model like Phi3</li>
+</ol></li>
+<li><ol start="4" type="1">
+<li>A Lambda to invoke <strong>a LLM like Mistral 7B Instruct</strong> that is running in a SageMaker Endpoint</li>
+</ol></li>
+</ul>
+<hr>
+<section id="lambda-to-anonymize-text" class="level2">
+<h2 class="anchored" data-anchor-id="lambda-to-anonymize-text">1. Lambda to Anonymize Text</h2>
+<ul>
+<li>A Lambda to run inference on a purpose-built ML Model
+<ul>
+<li>This lambda can <strong>Anonymize Text</strong></li>
+<li>using a Huggingface BERT Transformer-based Fine-tuned Model</li>
+</ul></li>
+</ul>
+<section id="a.-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="a.-architecture">1.A. Architecture</h3>
+<p><img src="./images/serverless_llm/container_lambda_with_api_gateway.png" class="img-fluid"></p>
+</section>
+<section id="b.-how-to-invoke-the-api-gateway-endpoint" class="level3">
+<h3 class="anchored" data-anchor-id="b.-how-to-invoke-the-api-gateway-endpoint">1.B. How to invoke the API Gateway Endpoint</h3>
+<p><img src="./images/serverless_llm/anonymize_output.png" class="img-fluid"></p>
+</section>
+<section id="c.-how-the-output-looks-in-a-streamlit-app" class="level3">
+<h3 class="anchored" data-anchor-id="c.-how-the-output-looks-in-a-streamlit-app">1.C. How the output looks in a Streamlit App</h3>
+<p><img src="./images/serverless_llm/anonymize_text.png" class="img-fluid"></p>
+</section>
+<section id="d.-aws-cli-commands-to-create-the-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="d.-aws-cli-commands-to-create-the-architecture">1.D. AWS CLI commands to create the Architecture</h3>
+<p align="center">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="50">
+</p>
+<h5 align="center" class="anchored">
+<a href="https://senthilkumarm1901.github.io/aws_serverless_recipes/container_lambda_anonymize_text/">https://senthilkumarm1901.github.io/aws_serverless_recipes/container_lambda_anonymize_text/</a>
+</h5>
+<hr>
+</section>
+</section>
+<section id="small-language-model" class="level2">
+<h2 class="anchored" data-anchor-id="small-language-model">2. Small Language Model</h2>
+<ul>
+<li>A Lambda to run a <strong>Small Language Model</strong> like Microsoft’s Phi3</li>
+</ul>
+<section id="a.-architecture-1" class="level3">
+<h3 class="anchored" data-anchor-id="a.-architecture-1">2.A. Architecture</h3>
+<p><img src="./images/serverless_llm/container_lambda_with_api_gateway_diag2.png" class="img-fluid"></p>
+</section>
+<section id="b.-how-to-invoke-the-api-gateway-endpoint-1" class="level3">
+<h3 class="anchored" data-anchor-id="b.-how-to-invoke-the-api-gateway-endpoint-1">2.B. How to invoke the API Gateway Endpoint</h3>
+<p><img src="./images/serverless_llm/slm_output.png" class="img-fluid"></p>
+</section>
+<section id="c.-how-the-output-looks-in-a-streamlit-app-1" class="level3">
+<h3 class="anchored" data-anchor-id="c.-how-the-output-looks-in-a-streamlit-app-1">2.C. How the output looks in a Streamlit App</h3>
+<p><img src="./images/serverless_llm/phi3_mini_llm_text_cls.png" class="img-fluid"></p>
+</section>
+<section id="d.-aws-cli-commands-to-create-the-architecture-1" class="level3">
+<h3 class="anchored" data-anchor-id="d.-aws-cli-commands-to-create-the-architecture-1">2.D. AWS CLI commands to create the Architecture</h3>
+<p align="center">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="50">
+</p>
+<h5 align="center" class="anchored">
+<a href="https://senthilkumarm1901.github.io/aws_serverless_recipes/container_lambda_to_run_slm/">https://senthilkumarm1901.github.io/aws_serverless_recipes/container_lambda_to_run_slm/</a>
+</h5>
+<hr>
+</section>
+</section>
+<section id="small-language-model-with-rag" class="level2">
+<h2 class="anchored" data-anchor-id="small-language-model-with-rag">3. Small Language Model with RAG</h2>
+<ul>
+<li>A Lambda to run a RAG Implementation on a Small Language Model like Phi3, that gives better context</li>
+</ul>
+<section id="a.-a-brief-overview-on-rag" class="level3">
+<h3 class="anchored" data-anchor-id="a.-a-brief-overview-on-rag">3.A. A Brief Overview on RAG</h3>
+<p><strong>What is RAG</strong>, <strong>How does RAG improve LLM Accuracy</strong>?</p>
+<blockquote class="blockquote">
+<p>Retrieval augmented generation, or RAG, is an architectural approach that can improve the efficacy of large language model (LLM) applications by leveraging custom data.</p>
+</blockquote>
+<p>Source: <a href="https://www.databricks.com/glossary/retrieval-augmented-generation-rag">Databricks</a></p>
+<p><strong>How does LLM work?</strong></p>
+<p><img src="https://images.ctfassets.net/xjan103pcp94/3TBU5BOctjuaPyxuA8PGul/1c1b0b0129be5fef9eaef73063491582/image1.png" width="500"></p>
+<p>Source: <a href="https://www.anyscale.com/blog/a-comprehensive-guide-for-building-rag-based-llm-applications-part-1">AnyScale Blog: a-comprehensive-guide-for-building-rag-based-llm-applications</a></p>
+<p><strong>How does RAG in LLM work?</strong></p>
+<p><img src="https://files.realpython.com/media/Screenshot_2023-10-28_at_2.05.18_PM.92b839a5972b.png" width="700"></p>
+<p>Source: <a href="https://realpython.com/chromadb-vector-database/">RealPython Blog: chromadb-vector-database</a></p>
+<p><strong>How is a Vector DB created</strong></p>
+<p><img src="./images/serverless_llm/how_is_vector_db_created.png" width="700"></p>
+<p>Source: <a href="https://www.anyscale.com/blog/a-comprehensive-guide-for-building-rag-based-llm-applications-part-1">AnyScale Blog: a-comprehensive-guide-for-building-rag-based-llm-applications</a></p>
+<p><strong>Detour: If you wish to use other Vector databases</strong></p>
+<p><img src="https://thedataquarry.com/posts/vector-db-1/vector-db-source-available.png" width="700"></p>
+<p>Source: <a href="https://thedataquarry.com/posts/vector-db-1/">Data Quarry Blog: Vector databases - What makes each one different?</a></p>
+</section>
+<section id="b.-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="b.-architecture">3.B. Architecture</h3>
+<p><img src="./images/serverless_llm/slm_with_rag_3.png" class="img-fluid"></p>
+<ul>
+<li>URL we are testing on is from my favorite DL/NLP Researcher.
+<ul>
+<li>https://magazine.sebastianraschka.com/p/understanding-large-language-models</li>
+</ul></li>
+</ul>
+<p><img src="./images/serverless_llm/article_we_are_using_as_context.png" width="500"></p>
+</section>
+<section id="c.-how-to-invoke-the-api-gateway-endpoint" class="level3">
+<h3 class="anchored" data-anchor-id="c.-how-to-invoke-the-api-gateway-endpoint">3.C. How to invoke the API Gateway Endpoint</h3>
+<p><img src="./images/serverless_llm/rag_slm_output.png" class="img-fluid"></p>
+</section>
+<section id="d.-how-the-output-looks-in-a-streamlit-app" class="level3">
+<h3 class="anchored" data-anchor-id="d.-how-the-output-looks-in-a-streamlit-app">3.D. How the output looks in a Streamlit App</h3>
+<p><img src="./images/serverless_llm/phi3_llm_rag_lora.png" class="img-fluid"></p>
+</section>
+<section id="e.-aws-cli-commands-to-create-the-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="e.-aws-cli-commands-to-create-the-architecture">3.E. AWS CLI commands to create the Architecture</h3>
+<p align="center">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="50">
+</p>
+<h5 align="center" class="anchored">
+<a href="https://senthilkumarm1901.github.io/aws_serverless_recipes/container_lambda_to_run_rag_slm/">https://senthilkumarm1901.github.io/aws_serverless_recipes/container_lambda_to_run_rag_slm/</a>
+</h5>
+<hr>
+</section>
+</section>
+<section id="large-language-model-a-partial-serverless" class="level2">
+<h2 class="anchored" data-anchor-id="large-language-model-a-partial-serverless">4. Large Language Model (A Partial Serverless)</h2>
+<ul>
+<li>A Lambda to invoke <strong>a LLM like Mistral 7B Instruct</strong> that is running in SageMaker Endpoint</li>
+</ul>
+<section id="a.-architecture-2" class="level3">
+<h3 class="anchored" data-anchor-id="a.-architecture-2">4.A. Architecture</h3>
+<p><img src="./images/serverless_llm/lambda_to_invoke_sagemaker_endpoint.png" class="img-fluid"></p>
+</section>
+<section id="b.-how-to-invoke-the-api-gateway-endpoint-2" class="level3">
+<h3 class="anchored" data-anchor-id="b.-how-to-invoke-the-api-gateway-endpoint-2">4.B. How to invoke the API Gateway Endpoint</h3>
+<p><img src="./images/serverless_llm/sage_maker_output.png" class="img-fluid"></p>
+</section>
+<section id="c.-aws-cli-commands-to-create-the-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="c.-aws-cli-commands-to-create-the-architecture">4.C. AWS CLI commands to create the Architecture</h3>
+<p align="center">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="50">
+</p>
+<h5 align="center" class="anchored">
+<a href="https://senthilkumarm1901.github.io/aws_serverless_recipes/lambda_to_invoke_a_sagemaker_endpoint/">https://senthilkumarm1901.github.io/aws_serverless_recipes/lambda_to_invoke_a_sagemaker_endpoint/</a>
+</h5>
+<hr>
+</section>
+</section>
+<section id="key-challenges-faced" class="level2">
+<h2 class="anchored" data-anchor-id="key-challenges-faced">Key Challenges Faced</h2>
+<ul>
+<li>Serverless could mean we end up with low end cpu architecture. Hence, latency high for RAG LLM implementations</li>
+<li>RAG could mean any big context. But converting the RAG context into a vector store will take time. Hence size of the context needs to be lower for “AWS Lambda” implementations</li>
+<li>Maximum timelimit in Lambda is 15 min. API Gateway times out in 30 seconds. Hence could not be used in RAG LLM implementation</li>
+</ul>
+</section>
+<section id="key-learnings" class="level2">
+<h2 class="anchored" data-anchor-id="key-learnings">Key Learnings</h2>
+<p><strong>MLOps Concepts</strong>:</p>
+<ul>
+<li>Dockerizing ML Applications. What works in your machine works everywhere. More than 70% of the time building these LLM Apps is in perfecting the dockerfile.</li>
+<li>The art of storing ML Models in AWS Lambda Containers. Use <code>cache_dir</code> well. Otherwise, models get downloaded everytime docker container is created</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">'HF_HOME'</span>] <span class="op">=</span> <span class="st">'/tmp/model'</span> <span class="co">#the only `write-able` dir in AWS lambda = `/tmp`</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>your_model<span class="op">=</span><span class="st">"ab-ai/pii_model"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(your_model,cache_dir<span class="op">=</span><span class="st">'/tmp/model'</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>ner_model <span class="op">=</span> AutoModelForTokenClassification.from_pretrained(your_model,cache_dir<span class="op">=</span><span class="st">'/tmp/model'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>AWS Concepts</strong>:</p>
+<ul>
+<li><code>aws cli</code> is your friend for shorterning deployment time, especially for Serverless</li>
+<li>API Gateway is a frustratingly beautiful service. But a combination of <code>aws cli</code> and <code>OpenAPI</code> spec makes it replicable</li>
+<li>AWS Lambda Costing is cheap for PoCs</li>
+</ul>
+<p>Finally, the <strong>LLM Concepts</strong>:</p>
+<ul>
+<li>Frameworks: Llama cpp, LangChain, LlamaIndex, Huggingface (and so many more!)</li>
+<li>SLMs work well with Reasoning but are too slow/bad for general knowledge questions</li>
+</ul>
+<blockquote class="blockquote">
+<p>Models are like wines and these LLM frameworks are like bottles. The important thing is the wine more than the bottle. But getting used to how the wines are stored in the bottles help.</p>
+</blockquote>
+</section>
+<section id="next-steps-for-the-author" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps-for-the-author">Next Steps for the Author</h2>
+<ul>
+<li>Codes discussed in recipes may not be fully efficient! We can further reduce cost if run time is reduced</li>
+</ul>
+<p><strong>For Phi3-Mini-RAG</strong>:</p>
+<ul>
+<li>Try leveraging a better embedding model (apart from the ancient <code>Sentence Transformers</code>)</li>
+<li>What about other vector databases? - Like Pinecone Milvus (we have used opensource Chromodb) here</li>
+<li>Ideas to explore: Rust for LLMs. Rust for Lambda.</li>
+</ul>
+<p>Sources: - Rust ML Minimalist framework - Candle: https://github.com/huggingface/candle - Rust for LLM - https://github.com/rustformers/llm - Rust for AWS Lambda - https://www.youtube.com/watch?v=He4inXmMZZI</p>
+<p align="center">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="50">
+</p>
+<h5 align="center" class="anchored">
+<a href="https://github.com/senthilkumarm1901/serverless_nlp_app">github.com/senthilkumarm1901/serverless_nlp_app</a>
+</h5>
+<h5 align="center" class="anchored">
+Thank You
+</h5>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.336">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2021-06-25">
+<meta name="description" content="In this blog post, I cover the process of creating trained ML NER model from Unlabeled data">
+
+<title>Learn by Blogging - How to train a Spacy NER Model</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html" rel="" target="">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">How to train a Spacy NER Model</h1>
+                  <div>
+        <div class="description">
+          In this blog post, I cover the process of creating trained ML NER model from Unlabeled data
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">NLP</div>
+                <div class="quarto-category">DL</div>
+                <div class="quarto-category">Coding</div>
+                <div class="quarto-category">Python</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 25, 2021</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">1. Introduction</a>
+  <ul class="collapse">
+  <li><a href="#tldr-summary-of-the-blog" id="toc-tldr-summary-of-the-blog" class="nav-link" data-scroll-target="#tldr-summary-of-the-blog">TL;DR Summary of the Blog</a></li>
+  </ul></li>
+  <li><a href="#prepare-rules-bootstrapped-data-from-unlabeled-data" id="toc-prepare-rules-bootstrapped-data-from-unlabeled-data" class="nav-link" data-scroll-target="#prepare-rules-bootstrapped-data-from-unlabeled-data">2. Prepare Rules-bootstrapped Data from unlabeled data</a>
+  <ul class="collapse">
+  <li><a href="#a.-loading-the-disease-words-from-an-external-file" id="toc-a.-loading-the-disease-words-from-an-external-file" class="nav-link" data-scroll-target="#a.-loading-the-disease-words-from-an-external-file">2A. Loading the disease words from an external file</a></li>
+  <li><a href="#b.-convert-disease-words-into-spacy-patterns" id="toc-b.-convert-disease-words-into-spacy-patterns" class="nav-link" data-scroll-target="#b.-convert-disease-words-into-spacy-patterns">2B. Convert Disease Words into Spacy Patterns</a></li>
+  <li><a href="#c.-create-disease-ner-out-of-spacy-patterns" id="toc-c.-create-disease-ner-out-of-spacy-patterns" class="nav-link" data-scroll-target="#c.-create-disease-ner-out-of-spacy-patterns">2C. Create <code>Disease NER</code> out of spacy patterns</a></li>
+  <li><a href="#d.-infer-spacy-rules-ner-as-token-level-results" id="toc-d.-infer-spacy-rules-ner-as-token-level-results" class="nav-link" data-scroll-target="#d.-infer-spacy-rules-ner-as-token-level-results">2D. Infer Spacy Rules NER as token-level results</a></li>
+  </ul></li>
+  <li><a href="#human-review-of-the-rules-output" id="toc-human-review-of-the-rules-output" class="nav-link" data-scroll-target="#human-review-of-the-rules-output">3. Human Review of the Rules Output</a>
+  <ul class="collapse">
+  <li><a href="#a.-edit-token-level-results-in-csv-by-human-annotationreview" id="toc-a.-edit-token-level-results-in-csv-by-human-annotationreview" class="nav-link" data-scroll-target="#a.-edit-token-level-results-in-csv-by-human-annotationreview">3A. Edit token-level results in csv by human annotation/review</a></li>
+  </ul></li>
+  <li><a href="#stratify-split-the-data-based-on-human-annotations" id="toc-stratify-split-the-data-based-on-human-annotations" class="nav-link" data-scroll-target="#stratify-split-the-data-based-on-human-annotations">4. Stratify Split the Data based on human annotations</a></li>
+  <li><a href="#train-ml-model" id="toc-train-ml-model" class="nav-link" data-scroll-target="#train-ml-model">5. Train ML Model</a>
+  <ul class="collapse">
+  <li><a href="#a.-convert-token-level-results-2-spacy-model-acceptable-conll-data" id="toc-a.-convert-token-level-results-2-spacy-model-acceptable-conll-data" class="nav-link" data-scroll-target="#a.-convert-token-level-results-2-spacy-model-acceptable-conll-data">5A. Convert token-level Results 2 Spacy Model-acceptable Conll Data</a></li>
+  <li><a href="#b.-train-a-spacy-small-ml-model" id="toc-b.-train-a-spacy-small-ml-model" class="nav-link" data-scroll-target="#b.-train-a-spacy-small-ml-model">5B. Train a Spacy Small ML Model</a></li>
+  <li><a href="#c.-train-a-spacy-roberta-base-ml-model" id="toc-c.-train-a-spacy-roberta-base-ml-model" class="nav-link" data-scroll-target="#c.-train-a-spacy-roberta-base-ml-model">5C. Train a Spacy Roberta Base ML Model</a></li>
+  </ul></li>
+  <li><a href="#evaluate-the-models" id="toc-evaluate-the-models" class="nav-link" data-scroll-target="#evaluate-the-models">6. Evaluate the models</a>
+  <ul class="collapse">
+  <li><a href="#a.-comparing-the-entity-level-f1-score-of-1-rules-2-spacy-small-and-3-spacy-roberta-base-model" id="toc-a.-comparing-the-entity-level-f1-score-of-1-rules-2-spacy-small-and-3-spacy-roberta-base-model" class="nav-link" data-scroll-target="#a.-comparing-the-entity-level-f1-score-of-1-rules-2-spacy-small-and-3-spacy-roberta-base-model">6A. Comparing the entity-level F1-score of (1) Rules, (2) Spacy small and (3) Spacy Roberta-base model</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">7. Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<hr>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">1. Introduction</h2>
+<section id="tldr-summary-of-the-blog" class="level3">
+<h3 class="anchored" data-anchor-id="tldr-summary-of-the-blog">TL;DR Summary of the Blog</h3>
+<p><strong>How do we create ML NER Model from no labeled data?</strong>:</p>
+<ul>
+<li>Prepare <strong>rules-bootstrapped training data</strong> from unlabeled corpus
+<ul>
+<li>If it is possible/easy to annotate directly, one can do that.</li>
+<li>However, if rules taggging is possible
+<ul>
+<li>In the <strong>Disease NER dataset</strong> example here</li>
+<li>there is an opportunity to use a huge list of words to tag via rules first</li>
+<li>then labeling becomes easier than labeling from scratch</li>
+</ul></li>
+</ul></li>
+<li>Rules-boostrapped data is then <strong>reviewed/edited by human annotators</strong></li>
+<li><strong>Stratify Split</strong> the human-reviewed data into train-dev-test at sentences level</li>
+<li>Optimize and <strong>Train</strong> one or more Spacy ML NER Models</li>
+<li><strong>Compare</strong> and <strong>Evaluate</strong> the accuracy of the models</li>
+</ul>
+<p><img src="spacy_model_ner/spacy_ML_model_training_on_unlabeld_data.png" class="img-fluid"></p>
+<p><strong>Now, we can list the above steps with a DISEASE NER example …</strong></p>
+<ul>
+<li><p>We have a <code>ncbi_disease</code> dataset of <code>7295</code> sentences speaking of various entities of which <code>disease</code> entity is of focus for us. &gt; E.g.: “Identification of APC2 , a homologue of the adenomatous polyposis coli tumour suppressor .” <br> &gt; <code>adenomatous polyposis coli tumour</code> is a <code>DISEASE</code> entity</p></li>
+<li><p>Source of this dataset: <a href="https://huggingface.co/datasets/lewtun/autoevaluate__ncbi_disease">link</a></p></li>
+<li><p>For the sake of the argument of this blog, we assume this dataset does not have labels.</p></li>
+<li><p>In most real world datasets, we are not likely to have labeled data</p></li>
+</ul>
+<p><br></p>
+<ul>
+<li>Hence the below pipeline helps in building an ML model &gt; Unlabeled Sentences speaking of various diseases <br> &gt; Tag <code>DISEASE</code> NER via Rules using a huge list of <a href="https://raw.githubusercontent.com/Shivanshu-Gupta/web-scrapers/master/medical_ner/medicinenet-diseases.json">disease words</a> <br> &gt; Review/Edit the Rules-bootstrapped NER (tagging NER from scratch is a lot tougher) <br> &gt; Split the Data into train-dev-test<br> &gt; Train an ML model on train and dev datasets and evaluate on unseen test dataset<br> &gt; Evaluate &amp; Compare the Rules Model (baseline) and Spacy ML NER models (built from spacy-small and roberta base)</li>
+</ul>
+</section>
+</section>
+<section id="prepare-rules-bootstrapped-data-from-unlabeled-data" class="level2">
+<h2 class="anchored" data-anchor-id="prepare-rules-bootstrapped-data-from-unlabeled-data">2. Prepare Rules-bootstrapped Data from unlabeled data</h2>
+<section id="a.-loading-the-disease-words-from-an-external-file" class="level3">
+<h3 class="anchored" data-anchor-id="a.-loading-the-disease-words-from-an-external-file">2A. Loading the disease words from an external file</h3>
+<div class="cell" data-execution_count="7">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">'./spacy_model_ner/diseases_ner.json'</span>,<span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    diseases_json <span class="op">=</span> json.load(f)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>list_of_diseases <span class="op">=</span> [each[<span class="st">'disease'</span>] <span class="cf">for</span> each <span class="kw">in</span> diseases_json <span class="cf">if</span> <span class="kw">not</span> re.search(<span class="st">'[,]|test'</span>,each[<span class="st">'disease'</span>],re.I)]</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>list_of_diseases.extend([<span class="st">'tumor'</span>,<span class="st">'tumour'</span>]) <span class="co">#adding some custom word</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>list_of_diseases[<span class="dv">0</span>:<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>['Hemophilia',
+ 'Hemophilia A',
+ 'Hepatitis A',
+ 'Abdominal Aortic Aneurysm',
+ 'AAA',
+ 'Alpha 1 Antitrypsin Deficiency',
+ 'AAT',
+ 'AATD',
+ 'Scar Tissue',
+ 'Abdominal Adhesions']</code></pre>
+</div>
+</div>
+</section>
+<section id="b.-convert-disease-words-into-spacy-patterns" class="level3">
+<h3 class="anchored" data-anchor-id="b.-convert-disease-words-into-spacy-patterns">2B. Convert Disease Words into Spacy Patterns</h3>
+<div class="cell" data-execution_count="9">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">'en_core_web_sm'</span>,disable<span class="op">=</span>[<span class="st">'ner'</span>]) <span class="co">#ner component is not needed; </span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> list_of_words_2_spacy_patterns(list_of_words,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                                   nlp_model,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                                   label_name</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                                  ):</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    spacy_patterns <span class="op">=</span> []</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> each_word <span class="kw">in</span> list_of_words:</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        sub_pattern_list <span class="op">=</span> [] <span class="co"># [{"ORTH": user_text_entity_df.loc[each_pattern_index,'TEXT']}]</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> token <span class="kw">in</span>  nlp_model(each_word.lower()):</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> re.search(<span class="st">'^\W{1,}$'</span>,token.text):</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                sub_pattern_list.append({<span class="st">"ORTH"</span>: token.text,<span class="st">"OP"</span>:<span class="st">"*"</span>})</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                sub_pattern_list.append({<span class="st">"LOWER"</span>:token.text})</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        temp_dict <span class="op">=</span> {<span class="st">"label"</span>: label_name,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"pattern"</span>: sub_pattern_list}</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        spacy_patterns.append(temp_dict)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> spacy_patterns</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>disease_spacy_rules_patterns <span class="op">=</span> list_of_words_2_spacy_patterns(list_of_diseases,</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>                               nlp,</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"DISEASE"</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>                              )</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>disease_spacy_rules_patterns[<span class="dv">0</span>:<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>[{'label': 'DISEASE', 'pattern': [{'LOWER': 'hemophilia'}]},
+ {'label': 'DISEASE', 'pattern': [{'LOWER': 'hemophilia'}, {'LOWER': 'a'}]},
+ {'label': 'DISEASE', 'pattern': [{'LOWER': 'hepatitis'}, {'LOWER': 'a'}]},
+ {'label': 'DISEASE',
+  'pattern': [{'LOWER': 'abdominal'},
+   {'LOWER': 'aortic'},
+   {'LOWER': 'aneurysm'}]},
+ {'label': 'DISEASE', 'pattern': [{'LOWER': 'aaa'}]}]</code></pre>
+</div>
+</div>
+</section>
+<section id="c.-create-disease-ner-out-of-spacy-patterns" class="level3">
+<h3 class="anchored" data-anchor-id="c.-create-disease-ner-out-of-spacy-patterns">2C. Create <code>Disease NER</code> out of spacy patterns</h3>
+<div class="cell" data-execution_count="11">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_rules_nlp_model_from_spacy_patterns(spacy_patterns):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    rules_nlp <span class="op">=</span> spacy.load(<span class="st">'en_core_web_sm'</span>,disable<span class="op">=</span>[<span class="st">'ner'</span>])</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    rules_config <span class="op">=</span> {</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"validate"</span>: <span class="va">True</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"overwrite_ents"</span>: <span class="va">True</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    disease_rules <span class="op">=</span> rules_nlp.add_pipe(<span class="st">"entity_ruler"</span>, <span class="co"># invoke entity_ruler pipe </span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                                       <span class="st">"disease_rules"</span>, <span class="co"># give a name to the pipe</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                                       config<span class="op">=</span>rules_config)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    disease_rules.add_patterns(spacy_patterns)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rules_nlp</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>disease_ner_rules_nlp <span class="op">=</span> load_rules_nlp_model_from_spacy_patterns(disease_spacy_rules_patterns)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The pipeline components are:"</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(disease_ner_rules_nlp.pipe_names)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"NER entities tracked are:"</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(disease_ner_rules_nlp.pipe_labels[<span class="st">'disease_rules'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>The pipeline components are:
+['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'disease_rules']
+NER entities tracked are:
+['DISEASE']</code></pre>
+</div>
+</div>
+<ul>
+<li>Want to know more about creating rules NER? <br> Refer the below blog article <br><a href="https://senthilkumarm1901.github.io/learn_by_blogging/spacy/ner/2021/05/09/Spacy_Rules_NER.html">learn_by_blogging/How_to_Leverage_Spacy_Rules_NER</a></li>
+</ul>
+</section>
+<section id="d.-infer-spacy-rules-ner-as-token-level-results" class="level3">
+<h3 class="anchored" data-anchor-id="d.-infer-spacy-rules-ner-as-token-level-results">2D. Infer Spacy Rules NER as token-level results</h3>
+<div class="cell" data-execution_count="15">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">## The token-level results from the above model on 7.2K sentences looks like below</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>token_level_rules_output_example <span class="op">=</span> pd.read_csv(<span class="st">'spacy_model_ner/token_level_tags_on_one_unlabeled_sentence.csv'</span>,index_col<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>token_level_rules_output_example <span class="op">=</span> token_level_rules_output_example[[<span class="st">'New_Sentence_Id'</span>,<span class="st">'Token'</span>,<span class="st">'Rules_Tag_BIO'</span>]]</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>token_level_rules_output_example.columns <span class="op">=</span> [<span class="st">'Ramdom_Sentence_Id'</span>,<span class="st">'Token'</span>,<span class="st">'Rules_Tag_BIO'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="16">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>token_level_rules_output_example</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Ramdom_Sentence_Id</th>
+<th data-quarto-table-cell-role="th">Token</th>
+<th data-quarto-table-cell-role="th">Rules_Tag_BIO</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>tr_0</td>
+<td>Identification</td>
+<td>O</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>tr_0</td>
+<td>of</td>
+<td>O</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>tr_0</td>
+<td>APC2</td>
+<td>O</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>tr_0</td>
+<td>,</td>
+<td>O</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>tr_0</td>
+<td>a</td>
+<td>O</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>tr_0</td>
+<td>homologue</td>
+<td>O</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>tr_0</td>
+<td>of</td>
+<td>O</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>tr_0</td>
+<td>the</td>
+<td>O</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>tr_0</td>
+<td>adenomatous</td>
+<td>B-DISEASE</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>tr_0</td>
+<td>polyposis</td>
+<td>I-DISEASE</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>tr_0</td>
+<td>coli</td>
+<td>I-DISEASE</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">11</td>
+<td>tr_0</td>
+<td>tumour</td>
+<td>O</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">12</td>
+<td>tr_0</td>
+<td>suppressor</td>
+<td>O</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">13</td>
+<td>tr_0</td>
+<td>.</td>
+<td>O</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">14</td>
+<td>tr_0</td>
+<td>[SEP]</td>
+<td>[SEP]</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<ul>
+<li>Ofcourse, there are mistakes in this <code>rules_ner output</code> like in row #11 where <code>tumour</code> is not tagged <code>I-DISEASE</code></li>
+<li>We rectify the mistakes of rules by human annotion</li>
+</ul>
+</section>
+</section>
+<section id="human-review-of-the-rules-output" class="level2">
+<h2 class="anchored" data-anchor-id="human-review-of-the-rules-output">3. Human Review of the Rules Output</h2>
+<section id="a.-edit-token-level-results-in-csv-by-human-annotationreview" class="level3">
+<h3 class="anchored" data-anchor-id="a.-edit-token-level-results-in-csv-by-human-annotationreview">3A. Edit token-level results in csv by human annotation/review</h3>
+<div class="cell" data-execution_count="19">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">## The token-level results from the above model on 7.2K sentences looks like below</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>token_level_rules_plus_human_output_example <span class="op">=</span> pd.read_csv(<span class="st">'spacy_model_ner/token_level_tags_on_one_unlabeled_sentence_2.csv'</span>,index_col<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>token_level_rules_plus_human_output_example</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">New_Sentence_Id</th>
+<th data-quarto-table-cell-role="th">Token</th>
+<th data-quarto-table-cell-role="th">Rules_Tag_BIO</th>
+<th data-quarto-table-cell-role="th">Human_Annotated_Tag_BIO</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>tr_0</td>
+<td>Identification</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>tr_0</td>
+<td>of</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>tr_0</td>
+<td>of</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>tr_0</td>
+<td>of</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>tr_0</td>
+<td>of</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>tr_0</td>
+<td>APC2</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>tr_0</td>
+<td>,</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>tr_0</td>
+<td>a</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>tr_0</td>
+<td>homologue</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>tr_0</td>
+<td>the</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>tr_0</td>
+<td>adenomatous</td>
+<td>B-DISEASE</td>
+<td>B-DISEASE</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">11</td>
+<td>tr_0</td>
+<td>polyposis</td>
+<td>I-DISEASE</td>
+<td>I-DISEASE</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">12</td>
+<td>tr_0</td>
+<td>coli</td>
+<td>I-DISEASE</td>
+<td>I-DISEASE</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">13</td>
+<td>tr_0</td>
+<td>tumour</td>
+<td>O</td>
+<td>I-DISEASE</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">14</td>
+<td>tr_0</td>
+<td>suppressor</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">15</td>
+<td>tr_0</td>
+<td>.</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">16</td>
+<td>tr_0</td>
+<td>[SEP]</td>
+<td>[SEP]</td>
+<td>[SEP]</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="stratify-split-the-data-based-on-human-annotations" class="level2">
+<h2 class="anchored" data-anchor-id="stratify-split-the-data-based-on-human-annotations">4. Stratify Split the Data based on human annotations</h2>
+<div class="cell" data-execution_count="22">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sentence_level_count_df <span class="op">=</span> pd.read_csv(<span class="st">'spacy_model_ner/split_of_classes_sentence_level.csv'</span>,index_col<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Total number of Sentences: </span><span class="sc">{</span><span class="bu">sum</span>(sentence_level_count_df[<span class="st">'Count'</span>])<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>sentence_level_count_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total number of Sentences: 7295</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Sentence_level_tags</th>
+<th data-quarto-table-cell-role="th">Count</th>
+<th data-quarto-table-cell-role="th">%_contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>O</td>
+<td>3337</td>
+<td>46.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>B-DISEASE|I-DISEASE|O</td>
+<td>2698</td>
+<td>37.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>B-DISEASE|O</td>
+<td>1260</td>
+<td>17.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>From the above table, we can infer that <br> - there are more multi-token diseases than single-token diseases - there are 3.3K sentences with only <code>O</code> as the token <br> <br> We have to ensure all three splits - train, dev and test - have the same percentage of <code>O</code>, <code>B-DISEASE|I-DISEASE|O</code> and <code>B-DISEASE|O</code></p>
+<p>After spliting into train-dev-test in a 80-10-10 split …</p>
+<div class="cell" data-execution_count="23">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>train_count_df <span class="op">=</span> pd.read_csv(<span class="st">'spacy_model_ner/split_of_classes_sentence_level_train.csv'</span>,index_col<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Total number of Train Sentences: </span><span class="sc">{</span><span class="bu">sum</span>(train_count_df[<span class="st">'Count'</span>])<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>train_count_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total number of Train Sentences: 5836</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Sentence_level_tags</th>
+<th data-quarto-table-cell-role="th">Count</th>
+<th data-quarto-table-cell-role="th">%_contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>O</td>
+<td>2670</td>
+<td>46.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>B-DISEASE|I-DISEASE|O</td>
+<td>2158</td>
+<td>37.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>B-DISEASE|O</td>
+<td>1008</td>
+<td>17.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="24">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dev_count_df <span class="op">=</span> pd.read_csv(<span class="st">'spacy_model_ner/split_of_classes_sentence_level_dev.csv'</span>,index_col<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Total number of Train Sentences: </span><span class="sc">{</span><span class="bu">sum</span>(dev_count_df[<span class="st">'Count'</span>])<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>dev_count_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total number of Train Sentences: 729</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Sentence_level_tags</th>
+<th data-quarto-table-cell-role="th">Count</th>
+<th data-quarto-table-cell-role="th">%_contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>O</td>
+<td>333</td>
+<td>46.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>B-DISEASE|I-DISEASE|O</td>
+<td>270</td>
+<td>37.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>B-DISEASE|O</td>
+<td>126</td>
+<td>17.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="26">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>test_count_df <span class="op">=</span> pd.read_csv(<span class="st">'spacy_model_ner/split_of_classes_sentence_level_test.csv'</span>,index_col<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Total number of Train Sentences: </span><span class="sc">{</span><span class="bu">sum</span>(test_count_df[<span class="st">'Count'</span>])<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>test_count_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total number of Train Sentences: 730</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Sentence_level_tags</th>
+<th data-quarto-table-cell-role="th">Count</th>
+<th data-quarto-table-cell-role="th">%_contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>O</td>
+<td>334</td>
+<td>46.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>B-DISEASE|I-DISEASE|O</td>
+<td>270</td>
+<td>37.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>B-DISEASE|O</td>
+<td>126</td>
+<td>17.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="train-ml-model" class="level2">
+<h2 class="anchored" data-anchor-id="train-ml-model">5. Train ML Model</h2>
+<section id="a.-convert-token-level-results-2-spacy-model-acceptable-conll-data" class="level3">
+<h3 class="anchored" data-anchor-id="a.-convert-token-level-results-2-spacy-model-acceptable-conll-data">5A. Convert token-level Results 2 Spacy Model-acceptable Conll Data</h3>
+<div class="cell" data-execution_count="12">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> convert_token_df_2_conll_string(token_tag_df,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                                    token_column_name,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                                    tag_column_name</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                                   ):</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    token_string <span class="op">=</span> <span class="st">''</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> each <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(token_tag_df)):</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> each <span class="op">%</span><span class="dv">1000</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>each<span class="sc">}</span><span class="ss"> tokens processed"</span>)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>        current_token_string <span class="op">=</span> <span class="bu">str</span>(token_tag_df.loc[each,token_column_name])</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        current_tag_string <span class="op">=</span> <span class="bu">str</span>(token_tag_df.loc[each,tag_column_name])</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> current_token_string <span class="op">!=</span><span class="st">'[SEP]'</span>:</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>            current_line <span class="op">=</span> current_token_string <span class="op">+</span> <span class="st">"</span><span class="ch">\t</span><span class="st">"</span> <span class="op">+</span> current_tag_string <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>            current_line <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>        token_string <span class="op">=</span> token_string <span class="op">+</span> current_line</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> token_string</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-scrolled="true" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>tail <span class="op">-</span>n <span class="dv">25</span> ..<span class="op">/</span>data<span class="op">/</span>diease_ner<span class="op">/</span>train_dev_test_split_conll_data<span class="op">/</span>test_data.conll</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>investigate O
+the O
+rate    O
+of  O
+BRCA2   O
+mutation    O
+in  O
+sporadic    B-DISEASE
+breast  I-DISEASE
+cancers I-DISEASE
+and O
+in  O
+a   O
+set O
+of  O
+cell    O
+lines   O
+that    O
+represent   O
+twelve  O
+other   O
+tumour  B-DISEASE
+types   O
+.   O
+</code></pre>
+</div>
+</div>
+</section>
+<section id="b.-train-a-spacy-small-ml-model" class="level3">
+<h3 class="anchored" data-anchor-id="b.-train-a-spacy-small-ml-model">5B. Train a Spacy Small ML Model</h3>
+<p><strong>CLI command for Spacy Model Training</strong>:</p>
+<pre><code>!python3 -m spacy train $CONFIG_DIR/original_spacy_small_ner_config.cfg \
+--output $SPACY_SMALL_MODEL_DIR_GPU \
+--paths.train $SPACY_DATA_DIR/train_data.spacy \
+--paths.dev $SPACY_DATA_DIR/dev_data.spacy \
+--verbose \
+-g 0</code></pre>
+<p><strong>The output from the Spacy Model Training</strong>:</p>
+<pre><code>[2022-05-24 07:09:39,410] [DEBUG] Config overrides from CLI: ['paths.train', 'paths.dev']
+ℹ Saving to output directory:
+../data/model_weights/spacy_small
+ℹ Using GPU: 0
+
+=========================== Initializing pipeline ===========================
+[2022-05-24 07:09:41,789] [INFO] Set up nlp object from config
+[2022-05-24 07:09:41,797] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/dev_data.spacy
+[2022-05-24 07:09:41,798] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/train_data.spacy
+[2022-05-24 07:09:41,798] [INFO] Pipeline: ['tok2vec', 'ner']
+[2022-05-24 07:09:41,803] [INFO] Created vocabulary
+[2022-05-24 07:09:41,804] [INFO] Finished initializing nlp object
+
+[2022-05-24 07:09:51,839] [INFO] Initialized pipeline components: ['tok2vec', 'ner']
+✔ Initialized pipeline
+
+============================= Training pipeline =============================
+[2022-05-24 07:09:51,852] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/dev_data.spacy
+[2022-05-24 07:09:51,853] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/train_data.spacy
+ℹ Pipeline: ['tok2vec', 'ner']
+ℹ Initial learn rate: 0.001
+E    #       LOSS TOK2VEC  LOSS NER  ENTS_F  ENTS_P  ENTS_R  SCORE 
+---  ------  ------------  --------  ------  ------  ------  ------
+  0       0          0.00     41.00    0.31    0.33    0.29    0.00
+  0     200        195.83   1820.96   41.44   55.56   33.05    0.41             
+  0     400        106.20   1131.87   47.27   66.58   36.64    0.47             
+  0     600         64.99    969.69   74.94   77.17   72.84    0.75             
+  0     800         87.66   1096.80   74.39   76.96   71.98    0.74             
+  1    1000         82.51   1134.93   77.53   79.28   75.86    0.78             
+  1    1200        113.61   1122.73   80.73   82.36   79.17    0.81             
+  1    1400        128.84   1178.08   84.40   86.10   82.76    0.84             
+...   
+ 26    5400        287.07    591.02   85.96   87.04   84.91    0.86             
+ 27    5600        382.16    540.78   86.21   87.56   84.91    0.86             
+ 28    5800        406.03    615.57   86.29   86.67   85.92    0.86             
+Epoch 29:   0%|                                         | 0/200 [00:00&lt;?, ?it/s]✔ Saved pipeline to output directory
+../data/model_weights/spacy_small/model-last</code></pre>
+<p><strong>Command for Evaluating the Model Results</strong>:</p>
+<pre><code>!python3 -m spacy evaluate $SPACY_SMALL_MODEL_DIR_GPU/model-best $SPACY_DATA_DIR/test_data.spacy \
+--output $SPACY_SMALL_MODEL_DIR_GPU/model-best/spacy_small_model_evaluation.json \
+--gpu-id 0</code></pre>
+<p><strong>Output of Evaluate Command</strong> :</p>
+<pre><code>ℹ Using GPU: 0
+
+================================== Results ==================================
+
+TOK     -    
+NER P   89.75
+NER R   82.81
+NER F   86.14
+SPEED   20752
+
+
+=============================== NER (per type) ===============================
+
+              P       R       F
+DISEASE   89.75   82.81   86.14
+
+✔ Saved results to
+../data/model_weights/spacy_small/model-best/spacy_small_model_evaluation.json</code></pre>
+</section>
+<section id="c.-train-a-spacy-roberta-base-ml-model" class="level3">
+<h3 class="anchored" data-anchor-id="c.-train-a-spacy-roberta-base-ml-model">5C. Train a Spacy Roberta Base ML Model</h3>
+<p><strong>CLI command for Spacy Model Training</strong>:</p>
+<pre><code>!python3 -m spacy train $CONFIG_DIR/original_trf_config.cfg \
+--output $SPACY_ROBERTA_MODEL_DIR_GPU \
+--paths.train $SPACY_DATA_DIR/train_data.spacy \
+--paths.dev $SPACY_DATA_DIR/dev_data.spacy \
+--verbose \
+-g 0</code></pre>
+<p><strong>The output from the Spacy Model Training</strong>:</p>
+<pre><code>
+[2022-05-24 07:44:08,351] [DEBUG] Config overrides from CLI: ['paths.train', 'paths.dev']
+✔ Created output directory:
+../data/model_weights/spacy_roberta_base_
+ℹ Saving to output directory:
+../data/model_weights/spacy_roberta_base_
+ℹ Using GPU: 0
+
+=========================== Initializing pipeline ===========================
+[2022-05-24 07:44:11,169] [INFO] Set up nlp object from config
+[2022-05-24 07:44:11,178] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/dev_data.spacy
+[2022-05-24 07:44:11,180] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/train_data.spacy
+[2022-05-24 07:44:11,180] [INFO] Pipeline: ['transformer', 'ner']
+[2022-05-24 07:44:11,184] [INFO] Created vocabulary
+[2022-05-24 07:44:11,185] [INFO] Finished initializing nlp object
+
+[2022-05-24 07:44:22,286] [INFO] Initialized pipeline components: ['transformer', 'ner']
+✔ Initialized pipeline
+
+============================= Training pipeline =============================
+[2022-05-24 07:44:22,298] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/dev_data.spacy
+[2022-05-24 07:44:22,299] [DEBUG] Loading corpus from path: ../data/diease_ner/train_dev_test_split_spacy_binary/train_data.spacy
+ℹ Pipeline: ['transformer', 'ner']
+ℹ Initial learn rate: 0.0
+E    #       LOSS TRANS...  LOSS NER  ENTS_F  ENTS_P  ENTS_R  SCORE 
+---  ------  -------------  --------  ------  ------  ------  ------
+  0       0        4392.55    285.04    0.21    0.17    0.29    0.00
+  1     200      126102.97  33471.51   84.94   81.78   88.36    0.85
+  3     400        1782.34   2642.55   89.50   90.83   88.22    0.90
+  5     600        1123.23   1596.50   90.69   89.06   92.39    0.91
+...
+ 27    2800         153.06    176.41   90.94   90.35   91.52    0.91
+ 29    3000         103.80    128.69   90.86   88.98   92.82    0.91
+ 30    3200         121.04    141.70   91.47   90.56   92.39    0.91
+ 32    3400          90.05    116.95   90.51   89.93   91.09    0.91
+ 34    3600         111.25    131.25   91.12   90.15   92.10    0.91
+ 36    3800          79.87     82.69   90.30   89.66   90.95    0.90
+ 38    4000          82.07     82.97   90.97   90.01   91.95    0.91
+✔ Saved pipeline to output directory
+../data/model_weights/spacy_roberta_base_/model-last
+CPU times: user 11.1 s, sys: 2.78 s, total: 13.9 s
+Wall time: 22min 37s
+</code></pre>
+<p><strong>Command for Evaluating the Model Results</strong>:</p>
+<pre><code>!python3 -m spacy evaluate $SPACY_SMALL_MODEL_DIR_GPU/model-best $SPACY_DATA_DIR/test_data.spacy \
+--output $SPACY_SMALL_MODEL_DIR_GPU/model-best/spacy_small_model_evaluation.json \
+--gpu-id 0</code></pre>
+<p><strong>Output of Evaluate Command</strong> :</p>
+<pre><code>ℹ Using GPU: 0
+
+================================== Results ==================================
+
+TOK     -    
+NER P   88.61
+NER R   90.26
+NER F   89.43
+SPEED   12020
+
+
+=============================== NER (per type) ===============================
+
+              P       R       F
+DISEASE   88.61   90.26   89.43
+
+✔ Saved results to
+../data/model_weights/spacy_roberta_base_/model-best/spacy_roberta_base_evaluation.json</code></pre>
+</section>
+</section>
+<section id="evaluate-the-models" class="level2">
+<h2 class="anchored" data-anchor-id="evaluate-the-models">6. Evaluate the models</h2>
+<section id="a.-comparing-the-entity-level-f1-score-of-1-rules-2-spacy-small-and-3-spacy-roberta-base-model" class="level3">
+<h3 class="anchored" data-anchor-id="a.-comparing-the-entity-level-f1-score-of-1-rules-2-spacy-small-and-3-spacy-roberta-base-model">6A. Comparing the entity-level F1-score of (1) Rules, (2) Spacy small and (3) Spacy Roberta-base model</h3>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.read_csv(<span class="st">'spacy_model_ner/results_of_the_models.csv'</span>,index_col<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Precision</th>
+<th data-quarto-table-cell-role="th">Recall</th>
+<th data-quarto-table-cell-role="th">F1_Score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Rules_Model</td>
+<td>39.85</td>
+<td>2.21</td>
+<td>28.52</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Spacy_Small_Model</td>
+<td>89.75</td>
+<td>82.81</td>
+<td>86.14</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Spacy_Roberta_Base_Model</td>
+<td>88.61</td>
+<td>90.26</td>
+<td>89.43</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">7. Conclusion</h2>
+<p>In this blog article, we have shown how to effectively build a NER model on unlabeled data. <br> - We have compared Rules NER, a Spacy Small NER and roberta-base NER models. - We found <code>roberta_base</code> model is having the highest F1 score of 89%.<br>
+- We can also ensemble results of <code>Spacy Small NER</code> and <code>Spacy Roberta Base NER</code> models.<br>
+- A digression from the scope of this article: There are umpteen good tools (paid mostly) aiding the annotation. Sometimes, for simple NER problem (like tagging only one entity like this <code>Disease NER</code>), even excel is good for annotation</p>
+<p>References: - https://spacy.io/api/cli#evaluate - If you would like to replicate the above results, refer to the <code>DiseaseNER</code> notebooks in <a href="https://github.com/senthilkumarm1901/myCodingProjects/tree/main/SpacyNER/notebooks">this link</a></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
