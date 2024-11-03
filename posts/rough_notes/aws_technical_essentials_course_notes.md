@@ -403,3 +403,647 @@ https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/DEV-AWS-MO-GCNv2/FlaskApp
 ---
 
 ## 2.1 Compute as a Service on AWS
+
+## Understanding Servers
+The first building block you need to host an application is a server. Servers often times can handle Hypertext Transfer Protocol (HTTP) requests and send responses to clients following the client-server model, though any API based communication also falls under this model. A client being a person or computer that sends a request, and a server handling the requests is a computer, or collection of computers, connected to the internet serving websites to internet users. These servers power your application by providing CPU, memory, and networking capacity to process users’ requests and transform them into responses. For context, common HTTP servers include:
+
+Windows options, such as Internet Information Services (IIS).
+
+Linux options, such as Apache HTTP Web Server, Nginx, and Apache Tomcat.
+
+To run an HTTP server on AWS, you need to find a service that provides compute power in the AWS Management Console. You can log into the console and view the complete list of AWS compute services.
+
+
+![alt text](./images/different_compute_options_in_AWS.png)
+
+## Choose the Right Compute Option
+If you’re responsible for setting up servers on AWS to run your infrastructure, you have many compute options. You need to know which service to use for which use case. 
+
+At a fundamental level, there are three types of compute options: 
+- virtual machines
+- container services, and 
+- serverless. 
+
+
+If you’re coming to AWS with prior infrastructure knowledge, a virtual machine can often be the easiest compute option in AWS to understand. This is because a virtual machine emulates a physical server and allows you to install an HTTP server to run your applications. To run these virtual machines, you install a hypervisor on a host machine. This hypervisor provisions the resources to create and run your virtual machines.
+
+In AWS, these virtual machines are called Amazon Elastic Compute Cloud or Amazon EC2. Behind the scenes, AWS operates and manages the host machines and the hypervisor layer. AWS also installs the virtual machine operating system, called the guest operating system.Some AWS compute services use Amazon EC2 or use virtualization concepts under the hood, therefore it is best to understand this service first before moving on to container services and serverless compute. 
+
+A **hypervisor** is software or firmware that creates and manages virtual machines (VMs) by separating a computer's physical hardware from its operating system and applications. It allows multiple OS environments to run on a single physical machine, each with its own resources like CPU, memory, and storage. Hypervisors are fundamental to virtualization, enabling efficient use of hardware and providing flexibility, scalability, and isolation.
+
+> Behind the scenes, AWS operates and manages the host machines and the hypervisor layer. AWS also installs the virtual machine operating system, called the guest operating system.
+
+Some AWS compute services use Amazon EC2 or use virtualization concepts under the hood, therefore it is best to understand this service first before moving on to container services and serverless compute. 
+
+---
+
+## 2.2 Introduction to Amazon Elastic Compute Cloud (AWS EC2)
+
+
+ Amazon EC2 is a web service that provides secure, resizable compute capacity in the cloud. It allows you to provision virtual servers called EC2 instances. Although AWS uses the phrase “web service” to describe it, it doesn’t mean that you are limited to running just web servers on your EC2 instances. You can create and manage these instances through the AWS Management Console, the AWS Command Line Interface (CLI), AWS Software Development Kits (SDKs), or through automation tools and infrastructure orchestration services.In order to create an EC2 instance, you need to define:
+
+- **Hardware** specifications, like CPU, memory, network, and storage.
+- **Logical** configurations, like networking location, firewall rules, authentication, and the operating system of your choice.
+
+When launching an EC2 instance, the first setting you configure is which operating system you want by selecting an Amazon Machine Image (AMI).
+
+### What Is an AMI?
+
+In the traditional infrastructure world, the process of spinning up a server consists of installing an operating system from installation disks, installation drives, or installation wizards over the network. In the AWS Cloud, this operating system installation is no longer your responsibility, and is instead built into the AMI that you choose.Not only does an AMI let you configure which operating system you want, you can also select storage mappings, the architecture type (such as 32-bit, 64-bit, or 64-bit ARM), and additional software installed.
+
+### What Is the Relationship Between AMIs and EC2 Instances?
+
+> A cake is an instantiation of the cake recipe
+> An EC2 instance is an instantiation of the AMI image
+
+EC2 instances are live instantiations of what is defined in an AMI, much like a cake is a live instantiation of a cake recipe. If you are familiar with software development, you can also see this kind of relationship between a Class and an Object.
+
+A Class is something you model and define, while an object is something you interact with. In this case, the AMI is how you model and define your instance, while the EC2 instance is the entity you interact with, where you can install your web server, and serve your content to users.When you launch a new instance, AWS allocates a virtual machine that runs on a hypervisor. Then the AMI you selected is copied to the root device volume, which contains the image used to boot the volume. In the end, you get a server you can connect to and install packages and any additional software. In this case, you install a web server along with the properly configured source code of your employee directory app. 
+
+
+![alt text](./images/ami_ec2_rootvolume.png)
+
+One advantage of using AMIs is that they are reusable. 
+
+You might choose a Linux-based AMI and configure the HTTP server, application packages, and any additional software you may need to run your application. 
+
+If you wanted to create a second EC2 instance with the same configurations, how can you easily do that? One option is to go through the entire instance creation and configuration process and try to match your settings to the first instance. However, this is time consuming and leaves room for human error. 
+
+The second, better option, is to create an AMI from your running instance and use this AMI to start a new instance. This way, your new instance will have all the same configurations as your current instance, because the configurations set in the AMIs are the same.
+
+![alt text](./images/create_ami_from_running_instance.png)
+
+### Where Can You Find AMIs?
+You can select an AMI from the following categories.
+
+- Quick Start AMIs that are premade by AWS and allow you to get started quickly.
+- AWS Marketplace AMIs that provide popular open source and commercial software from third-party vendors.
+- My AMIs that are created from your EC2 instances.
+- Community AMIs that are provided by the AWS user community.
+- Build your own custom image with EC2 Image Builder.
+
+---
+
+## 2.3: Container Services on AWS
+
+AWS offers a broad spectrum of compute offerings that give you the flexibility to choose the right tool for the right job. The three main categories of compute are virtual machines, containers, and serverless. There is no one-size-fits-all service because it depends on your needs.The key is to understand what each option has to offer in order to build a more appropriate cloud architecture for your use case. In this unit, you learn about containers and how to run them on AWS.Containers can host a variety of different workloads, including web applications, lift and shift migrations, distributed applications, and streamlining of development, test, and production environments.
+
+### WHAT IS A CONTAINER?
+
+While containers are often referred to as a new technology, the idea started in the 1970s with certain Linux kernels having the ability to separate their processes through isolation. At the time, this was configured manually, making operations complex.With the evolution of the open source software community, containers evolved. Today, containers are used as a solution to problems of traditional compute, including the issue of getting software to run reliably when it moves from one compute environment to another.
+
+
+A container is a standardized unit that packages up your code and all of its dependencies. This package is designed to run reliably on any platform, because the container creates its own independent environment. This makes it easy to carry workloads from one place to another, such as from development to production or from on-premises to the cloud.
+
+### WHAT IS DOCKER?
+
+When you hear the word container, you may associate it with Docker. **Docker is a popular container runtime** that simplifies the management of the entire operating system stack needed for container isolation, including networking and storage. Docker makes it easy to create, package, deploy, and run containers.
+
+![alt text](./images/containers_and_virtual_machines.png)
+
+
+Containers share the same operating system and kernel as the host they exist on, whereas virtual machines contain their operating system. Since each virtual machine has to maintain a copy of an operating system, there’s a degree of wasted space.A container is more lightweight. They spin up quicker, almost instantly. This difference in startup time becomes instrumental when designing applications that need to scale quickly during input/output (I/O) bursts.While containers can provide speed, virtual machines offer you the full strength of an operating system and offer more resources, like package installation, a dedicated kernel, and more.
+
+### ORCHESTRATE CONTAINERS
+
+In AWS, containers run on EC2 instances. For example, you may have a large instance and run a few containers on that instance.While running one instance is easy to manage, it lacks high availability and scalability. Most companies and organizations run many containers on many EC2 instances across several Availability Zones.If you’re trying to manage your compute at a large scale, you need to know:
+
+- How to place your containers on your instances.
+- What happens if your container fails.
+- What happens if your instance fails.
+- How to monitor deployments of your containers.
+
+
+This coordination is handled by a container orchestration service. AWS offers two container orchestration services: Amazon Elastic Container Service (ECS) and Amazon Elastic Kubernetes Service (EKS).
+
+### MANAGE CONTAINERS WITH AMAZON ELASTIC CONTAINER SERVICE (AMAZON ECS)
+
+Amazon ECS is an end-to-end container orchestration service that allows you to quickly spin up new containers and manage them across a cluster of EC2 instances.
+
+![alt text](./images/one_ec2_multiple_containers.png)
+
+
+To run and manage your containers, you need to install the Amazon ECS Container Agent on your EC2 instances. This agent is open source and responsible for communicating back to the Amazon ECS service about cluster management details. You can run this agent on both Linux and Windows AMIs. An instance with the container agent installed is often called a container instance.
+
+![alt text](./images/ecs_agent_to_orchestrate_containers.png)
+
+
+Once the Amazon ECS container instances are up and running, you can perform actions that include, but are not limited to, launching and stopping containers, getting cluster state, scaling in and out, scheduling the placement of containers across your cluster, assigning permissions, and meeting availability requirements.
+
+To prepare your application to run on Amazon ECS, you create a task definition. The task definition is a text file, in JSON format, that describes one or more containers. A task definition is similar to a blueprint that describes the resources you need to run that container, such as CPU, memory, ports, images, storage, and networking information.
+
+Here is a simple task definition that you can use for your corporate director application. In this example, the runs on the Nginx web server.
+
+
+### Task definition
+```json
+{    
+
+     "family": "webserver",    
+
+     "containerDefinitions": [ {        
+
+          "name": "web",        
+
+          "image": "nginx",        
+
+          "memory": "100",        
+
+          "cpu": "99"    
+
+     } ],    
+
+     "requiresCompatibilities": [ "FARGATE" ],    
+
+     "networkMode": "awsvpc",    
+
+     "memory": "512",    
+
+     "cpu": "256"
+
+}
+```
+
+```
+## Amazon ECS (Elastic Container Service):
+- What it is: A fully managed container orchestration service provided by AWS.
+- Technology: ECS is an AWS-native service and does not use Kubernetes. Instead, it uses its own orchestration technology.
+- Docker integration: ECS works directly with Docker containers, so if you're familiar with Docker, it's relatively straightforward to use ECS. AWS handles a lot of the complex setup, such as networking and container placement, for you.
+
+## How ECS Works:
+- Container Instances (EC2 instances): In ECS, when you launch a cluster of EC2 instances, each instance runs the ECS agent. This agent is responsible for running and managing the containers on that instance. These EC2 instances are called container instances.
+- Tasks: A task is an instantiation of a container or group of containers. It’s how ECS defines a running containerized application. For example, if you launch an application with multiple containers, ECS defines it as a task.
+- Fargate: ECS can also use Fargate, which is a serverless compute engine. With Fargate, you don't even need to manage EC2 instances; AWS runs the containers for you in a completely managed environment.
+
+## Key Points:
+- Native to AWS: ECS is built directly on AWS, and AWS takes care of much of the complexity (like networking, scaling, and load balancing) for you.
+- No Kubernetes: ECS uses AWS-native orchestration, not Kubernetes.
+- Terminology: Containers running on ECS are called tasks.
+```
+
+```
+## Amazon EKS (Elastic Kubernetes Service):
+- What it is: A fully managed service that runs Kubernetes clusters on AWS.
+- Technology: EKS uses Kubernetes, an open-source container orchestration tool originally developed by Google. While ECS is AWS-native, EKS leverages Kubernetes' widespread adoption and flexibility.
+- Docker integration: EKS runs Docker containers, but it uses Kubernetes to manage and orchestrate them, instead of AWS-native orchestration technology.
+
+## How EKS Works:
+- Worker Nodes (EC2 instances): In EKS, the EC2 instances are called worker nodes, and they run your containers. These worker nodes are part of a Kubernetes cluster.
+- Pods: In Kubernetes (and therefore in EKS), a pod is the smallest deployable unit. A pod can contain one or more containers that are tightly coupled. Think of a pod as the Kubernetes equivalent of a task in ECS.
+- Control Plane: EKS manages the Kubernetes control plane for you. The control plane is responsible for making scheduling decisions, scaling, and managing the state of the Kubernetes cluster (worker nodes, pods, etc.).
+
+## Key Points:
+- Kubernetes-based: EKS runs on Kubernetes, which means you get access to the full set of Kubernetes features, such as advanced scheduling, load balancing, service discovery, and much more.
+- More Complex but Flexible: Since Kubernetes is a flexible and powerful orchestration tool, you get more control over how your containers run, but it also comes with more complexity compared to ECS.
+- Terminology: Containers running in EKS are part of a pod, not a task.
+```
+
+
+### USE KUBERNETES WITH AMAZON ELASTIC KUBERNETES SERVICE (AMAZON EKS)
+
+Kubernetes is a portable, extensible, open source platform for managing containerized workloads and services. By bringing software development and operations together by design, Kubernetes created a rapidly growing ecosystem that is very popular and well established in the market.If you already use Kubernetes, you can use Amazon EKS to orchestrate these workloads in the AWS Cloud.Amazon EKS is conceptually similar to Amazon ECS, but there are some differences.
+
+An EC2 instance with the ECS Agent installed and configured is called a container instance. In Amazon EKS, it is called a worker node.
+
+An ECS Container is called a task. In the Amazon EKS ecosystem, it is called a pod.
+
+While Amazon ECS runs on AWS native technology, Amazon EKS runs on top of Kubernetes.
+
+If you have containers running on Kubernetes and want an advanced orchestration solution that can provide simplicity, high availability, and fine-grained control over your infrastructure, Amazon EKS is the tool for you.
+
+
+### Terminology Comparison
+
+| ECS | EKS |
+|---|---|
+| EC2 Instances where containers are run `EC2 Container Instances` | EC2 Instances where containers run `Worker Nodes` |
+| A `task` refers to a set of one or more containers that are scheduled together | A `pod` - the smallest deployable unit and equivalent of `task` in ECS - consists of one or more containers that share resources |
+| Summary: In ECS, the EC2 instances where containers run are called container instances because they have the ECS agent installed to manage `tasks` | Summary: In EKS (Kubernetes), the EC2 instances are called worker nodes, and they are part of the broader Kubernetes cluster. Kubernetes distributes containers (in the form of pods) to these nodes. |
+
+![alt text](./images/a_EKS_worker_node.png)
+
+---
+
+## 2.4 Serverless and AWS Lambda
+
+### REMOVE THE UNDIFFERENTIATED HEAVY LIFTING
+
+If you run your code on Amazon EC2, AWS is responsible for the physical hardware and you are responsible for the logical controls, such as guest operating system, security and patching, networking, security, and scaling.
+
+If you run your code in containers on Amazon ECS and Amazon EKS, AWS is responsible for more of the container management, such as deploying containers across EC2 instances and managing the container cluster. 
+
+However, when running ECS and EKS on EC2, you are still responsible for maintaining the underlying EC2 instances.
+
+If you want to deploy your workloads and applications without having to manage any EC2 instances, you can do that on AWS with serverless compute.
+
+
+### GO SERVERLESS
+
+Every definition of serverless mentions four aspects.
+
+- No servers to provision or manage.
+- Scales with usage.
+- You never pay for idle resources.
+- Availability and fault tolerance are built-in.
+
+With serverless, spend time on the things that differentiate your application, rather than spending time on ensuring availability, scaling, and managing servers.AWS has several serverless compute options, including AWS Fargate and AWS Lambda.
+
+### EXPLORE SERVERLESS CONTAINERS WITH AWS FARGATE
+
+Amazon ECS and Amazon EKS enable you to run your containers in two modes.
+
+- Amazon EC2 mode
+- AWS Fargate mode
+
+
+AWS Fargate is a purpose-built serverless compute engine for containers. Fargate scales and manages the infrastructure, allowing developers to work on what they do best: application development.It achieves this by allocating the right amount of compute, eliminating the need to choose and handle EC2 Instances and cluster capacity and scaling. Fargate supports both Amazon ECS and Amazon EKS architecture and provides workload isolation and improved security by design.
+
+AWS Fargate abstracts the EC2 instance so you’re not required to manage it. However, with AWS Fargate, you can use all the same ECS primitives, APIs, and AWS integrations. It natively integrates with AWS Identity and Access Management (IAM) and Amazon Virtual Private Cloud (VPC). Having native integration with Amazon VPC allows you to launch Fargate containers inside your network and control connectivity to your applications.
+
+### RUN YOUR CODE ON AWS LAMBDA
+
+If you want to deploy your workloads and applications without having to manage any EC2 instances or containers, you can use AWS Lambda.AWS Lambda lets you run code without provisioning or managing servers or containers. You can run code for virtually any type of application or backend service, including data processing, real-time stream processing, machine learning, WebSockets, IoT backends, mobile backends, and web apps, like your corporate directory app!
+
+AWS Lambda requires zero administration from the user. You upload your source code and Lambda takes care of everything required to run and scale your code with high availability. There are no servers to manage, bringing you continuous scaling with subsecond metering and consistent performance.
+
+### HOW LAMBDA WORKS
+
+There are three primary components of a Lambda function: the trigger, code, and configuration.The code is source code, that describes what the Lambda function should run. This code can be authored in three ways.
+
+You create the code from scratch.
+
+You use a blueprint that AWS provides.
+
+You use same code from the AWS Serverless Application Repository, a resource that contains sample applications, such as “hello world” code, Amazon Alexa Skill sample code, image resizing code, video encoding, and more.
+
+When you create your Lambda function, you specify the runtime you want your code to run in. There are built-in runtimes such as Python, Node.js, Ruby, Go, Java, .NET Core, or you can implement your Lambda functions to run on a custom runtime.The configuration of a Lambda function consists of information that describes how the function should run. In the configuration, you specify network placement, environment variables, memory, invocation type, permission sets, and other configurations. To dive deeper into these configurations, check out the resources section of this unit.Triggers describe when the Lambda function should run. 
+
+A trigger integrates your Lambda function with other AWS services, enabling you to run your Lambda function in response to certain API calls that occur in your AWS account. This makes you quicker to respond to events in your console without having to perform manual actions.All you need is the what, how, and when of a Lambda function to have functional compute capacity that runs only when you need it to.Amazon’s CTO, Werner Vogels, says, “No server is easier to manage than no server.” This quote summarizes the convenience you can have when running serverless solutions, like AWS Fargate and AWS Lambda. 
+
+In the next unit, you apply all the information you’ve learned about Amazon EC2, Amazon ECS and Amazon EKS, and AWS Fargate and learn the use cases for each service.
+
+AWS Lambda function handler
+
+The AWS Lambda function handler is the method in your function code that processes events. When your function is invoked, Lambda runs the handler method. When the handler exits or returns a response, it becomes available to handle another event.You can use the following general syntax when creating a function handler in Python:
+
+def handler_name(event, context):  ... return some_value
+
+NAMING
+
+The Lambda function handler name specified at the time you create a Lambda function is derived from the following:the name of the file in which the Lambda handler function is locatedthe name of the Python handler functionA function handler can be any name; however, the default on the Lambda console is lambda_function.lambda_handler. This name reflects the function name as lambda_handler, and the file where the handler code is stored in lambda_function.py.If you choose a different name for your function handler on the Lambda console, you must update the name on the Runtime settings pane.
+
+BILLING GRANULARITY
+
+AWS Lambda lets you run code without provisioning or managing servers, and you pay only for what you use. You are charged for the number of times your code is triggered (requests) and for the time your code executes, rounded up to the nearest 1ms (duration). AWS rounds up duration to the nearest millisecond with no minimum execution time. With this pricing, it can be very cost effective to run functions whose execution time is very low, such as functions with durations under 100ms or low latency APIs. For more information, see 
+AWS News Blog
+. 
+
+SOURCE CODE
+
+This video used a small amount of sample code illustrating a pattern for lazily generating assets using AWS Lambda and Amazon S3. If you’re looking to deploy a service to resize images to production, consider using the new release  
+ Serverless Image Handler 
+which is a robust solution to handle image manipulation and can be deployed via an AWS CloudFormation template.
+
+You can find a tutorial on creating the AWS Lambda function as well as the code used in the AWS Lambda demo here: see 
+
+---
+
+## 2.5 Networking on AWS
+
+### WHAT IS NETWORKING?
+
+Networking is how you connect computers around the world and allow them to communicate with one another. In this trail, you’ve already seen a few examples of networking. One is the AWS global infrastructure. AWS has created a network of resources using data centers, Availability Zones, and Regions.
+
+### KNOW THE NETWORKING BASICS
+
+
+Think about sending a letter. When sending a letter, there are three pieces of information you need.
+- Sender
+- Receiver
+- Payload content
+
+Let’s go further. Each address must contain information such as:
+
+- Name of sender and recipient
+- Street
+- City
+- State or province
+- Zip, area, or postal code
+- Country
+
+
+You need all parts of an address to ensure that your letter gets to its destination. Without the correct address, postal workers are not able to properly deliver the message. In the digital world, computers handle the delivery of messages in a similar way. This is called **routing**.
+
+### WHAT ARE IP ADDRESSES?
+
+In order to properly route your messages to a location, you need an address. Just like each home has a mail address, each computer has an IP address. However, instead of using the combination of street, city, state, zip code, and country, the IP address uses a combination of bits, 0s and 1s. 
+
+ It’s called 32-bit because you have 32 digits of 0s and 1s. 
+
+### WHAT IS IPV4 NOTATION?
+
+Typically, you don’t see an IP address in this binary format. Instead, it’s converted into decimal format and noted as an Ipv4 address. 
+
+In the diagram below, the 32 bits are grouped into groups of 8 bits, also called octets. Each of these groups is converted into decimal format separated by a period. 
+
+![alt text](./images/ipv4_notation.png)
+
+In the end, this is what is called an Ipv4 address. This is important to know when trying to communicate to a single computer. But remember, you’re working with a network. This is where CIDR Notation comes in.
+
+
+### USE CIDR NOTATION
+
+192.168.1.30 is a single IP address. If you wanted to express IP addresses between the range of 192.168.1.0 and 192.168.1.255, how can you do that? 
+
+One way is by using Classless Inter-Domain Routing (CIDR) notation. CIDR notation is a compressed way of specifying a range of IP addresses. Specifying a range determines how many IP addresses are available to you. 
+
+CIDR notation looks like this: 
+
+```
+192.168.1.0/24
+```
+
+It begins with a starting IP address and is separated by a forward slash (the “/” character) followed by a number. The number at the end specifies how many of the bits of the IP address are fixed. In this example, the first 24 bits of the IP address are fixed. The rest are flexible. 
+
+
+```
+# first 24 of the 32 bits are fixed 
+192.168.1.0/24
+
+# 192 - Fixed 
+# 168 - Fixed
+# 1 - Fixed
+# last 8 bits - Flexible 
+
+# each of the last 8 bits can take 0 or 1 - so two choices. 
+# hence 2^8 = 256 IP addresses possible
+```
+
+When working with networks in the AWS Cloud, you choose your network size by using CIDR notation. In AWS, the smallest IP range you can have is `/28`, which provides you `16 IP addresses`. The largest IP range you can have is a `/16`, which provides you with `65,536` IP addresses.
+
+
+---
+
+
+```
+
+# Q) What should be the right CIDR range to choose for my VPC? What factors dictate that? 
+When should I choose a CIDR /24 or CIDR/28 and CIDR/16 range of ip addresses?
+
+Ans: 
+Factors that decide the range of the IP addresses: 
+1. Size of the Network
+2. Subnets
+3. Growth and Scalability
+4. Private vs Public Subnets
+5. Peering and Inter-VPC Connectivity
+6. Service Endpoints & NAT Gateways
+
+Summary: 
+/16: Best for large networks with many subnets, services, or where future scaling is critical.
+/24: Suitable for mid-sized networks with a moderate number of subnets.
+/28: Best for small networks, testing environments, or scenarios with very few resources.
+
+Note: On `Subnets`
+
+AWS reserves 5 IP addresses in every subnet, so in smaller CIDR blocks like /28 (where 16 IP addresses are available), you only have 11 usable IPs. Remaining 5 get used for subnets
+
+```
+
+---
+
+## 2.6. Introduction to VPC
+
+
+3 Requirements to set up a VPC: 
+1. The name of your VPC.
+2. A Region for your VPC to live in. Each VPC spans multiple Availability Zones within the Region you choose.
+3. A IP range for your VPC in CIDR notation. This determines the size of your network. Each VPC can have up to four /16 IP ranges.
+
+![alt text](./images/vpc_azs_region.png)
+
+### Create a Subnet: 
+
+After you create your VPC, you need to create subnets inside of this network. Think of subnets as smaller networks inside your base network—or virtual area networks (VLANs) in a traditional, on-premises network. In an on-premises network, the typical use case for subnets is to isolate or optimize network traffic. In AWS, subnets are used for high availability and providing different connectivity options for your resources. 
+
+> Subnet is a subset of VPC. The size of Both Subnets and VPCs are indicated with CIDR notation.
+> A VPC CIDR range is always bigger than its subnet CIDR range. 
+
+When you create a subnet, you need to choose three settings.
+1. The VPC you want your subnet to live in, in this case VPC (`10.0.0.0/16`).
+2. The Availability Zone you want your subnet to live in, in this case AZ1.
+3. A CIDR block for your subnet, which must be a subset of the VPC CIDR block, in this case 10.0.0.0/24.
+
+ When you launch an EC2 instance, you launch it inside a subnet, which will be located inside the Availability Zone you choose.  
+
+Below is an image of an EC2 instance residing inside a public subnet   
+
+![alt text](./images/public_and_private_subnetets_inside_vpc.png)
+
+How to maintain high availability with a VPC?
+
+- When you create your subnets, keep high availability in mind. In order to maintain redundancy and fault tolerance, create at least two subnets configured in two different Availability Zones.   
+
+**Reserved IPs** For AWS to configure your VPC appropriately, AWS reserves five IP addresses in each subnet. These IP addresses are used for routing, Domain Name System (DNS), and network management.  
+
+What are those 5 Reserved IPs at every Subnet? 
+
+![alt text](./images/5_reserved_ip_addresses.png)
+
+> For example, consider a VPC with the IP range 10.0.0.0/22. The VPC includes `1,024 total IP addresses`. This is divided into four equal-sized subnets, each with a `/24` IP range with `256 IP addresses`. Out of each of those IP ranges, there are only 251 IP addresses that can be used because AWS reserves five.  
+
+Since AWS reserves these five IP addresses, it can impact how you design your network. A common starting place for those who are new to the cloud is to create a VPC with a IP range of /16 and create subnets with a IP range of /24. This provides a large amount of IP addresses to work with at both the VPC and subnet level. 
+
+---
+
+### Gateways
+
+#### Internet Gateway 
+
+- To enable internet connectivity for your VPC, you need to create an internet gateway. 
+
+> Think of this gateway as similar to a modem. Just as a modem connects your computer to the internet, the internet gateway connects your VPC to the internet. Unlike your modem at home, which sometimes goes down or offline, an internet gateway is highly available and scalable. 
+
+- After you create an internet gateway, you then need to attach it to your VPC.  
+
+#### Virtual Private Gateway  
+
+
+A virtual private gateway allows you to connect your AWS VPC to another private network. Once you create and attach a VGW to a VPC, the gateway acts as anchor on the AWS side of the connection. On the other side of the connection, you’ll need to connect a customer gateway to the other private network. A customer gateway device is a physical device or software application on your side of the connection. 
+
+> Once you have both gateways, you can then **establish an encrypted VPN connection between the two sides**. 
+
+
+#### NAT Gateway
+
+NAT Gateway stands for Network Address Translation Gateway. The name "NAT" is derived from the process of Network Address Translation, which allows a device (like an EC2 instance) with a private IP address to communicate with external systems (like the internet) by **translating its private IP into a public IP** for **outbound traffic**.
+
+
+**Why is it called "NAT Gateway"?**
+Network Address Translation (NAT): This is the key process behind the name. NAT allows instances in a private subnet (with only private IP addresses) to send traffic to the internet by translating their private IP addresses to a public IP address as they pass through the NAT Gateway.
+Gateway: It acts as a "gateway" or bridge between instances in a private subnet and external destinations, like the internet.
+
+**Primary Function: Outbound Internet Traffic**
+A NAT Gateway is primarily designed to allow outbound internet access from instances in a private subnet, while preventing inbound traffic from the internet.
+When an instance in a private subnet needs to download updates or communicate with a service on the internet, it sends the request to the NAT Gateway. The NAT Gateway then makes the request on behalf of the instance using its own public IP and routes the response back to the instance.
+
+
+**Important Characteristics**:
+- Outbound-only:
+     - NAT Gateway is designed for outbound traffic only from private subnets to the internet. It does not allow incoming traffic initiated from the internet to reach instances in private subnets.
+
+- Security:
+     - Since instances behind a NAT Gateway do not have public IP addresses, they are not directly reachable from the internet, enhancing security.
+
+
+**Summary**:
+NAT Gateway enables instances in private subnets to connect to the internet (e.g., to download updates or communicate with external APIs), but does not allow inbound internet traffic. It serves as a way to hide the private IP addresses of those instances from external systems while enabling them to make outgoing connections.
+
+---
+
+**Outbound vs. Inbound Traffic Breakdown**
+Outbound Traffic refers to traffic initiated by an instance (in your private subnet) that goes out to the internet. When you send a request to download an update or access an external API, this is outbound traffic because the instance is initiating the connection.
+
+Inbound Traffic refers to traffic initiated from the internet towards your instance. For example, a web server accepting a request from an external user would be receiving inbound traffic.
+
+**Key Concept: Stateful Connections and Outbound Session**
+NAT Gateways maintain **stateful connections**. When your instance starts a connection to the internet, the NAT Gateway tracks that connection. Any return traffic (like the update file) is automatically allowed because it is part of an ongoing session initiated by your instance.
+NAT Gateway does not allow new incoming connections initiated by the external source. It only forwards responses to requests that were initiated by the private instance (which keeps the session active).
+
+
+## What is built in `Public` and `Private` Subnets
+
+```
+Example Architecture Setup for Amazon.com or Facebook.com:
+
+
+**Public-facing Load Balancer (ALB or NLB) in a public subnet**:
+
+- The Load Balancer receives all incoming traffic (e.g., user requests to Amazon.com).
+It distributes the traffic to a pool of web servers based on load and availability.
+
+**Web Servers**:
+- The web servers can be in either a public or private subnet. If they are in a public subnet, they have a public IP address but only accept traffic from the Load Balancer.
+If they are in a private subnet, they do not have a public IP and can only receive traffic forwarded by the Load Balancer.
+
+
+**Backend Components (databases, APIs, etc.) in private subnets**:
+- These are isolated and only accessible from the web servers or other internal systems.
+- They cannot be accessed directly from the internet, ensuring sensitive data and services are protected.
+
+**NAT Gateway (optional for backend services)**:
+- Any backend instances in the private subnet that need to initiate outbound traffic (e.g., for updates, API calls) do so through a NAT Gateway.
+
+Summary:
+- Web Servers (like Amazon.com and Facebook.com) do need to allow inbound traffic for users to access their websites. However, this traffic is typically handled in a controlled and secure manner, often through Load Balancers and strict security group rules.
+- Backend systems, on the other hand, are usually hosted in private subnets and do not allow any unsolicited inbound traffic from the internet. They may make outbound requests through NAT Gateways or other secure channels.
+
+
+The **key security principle** here is that inbound traffic is tightly controlled and usually mediated by a public-facing Load Balancer, while private subnets and backend systems remain isolated and protected from direct exposure to the internet.
+```
+
+---
+
+## 2.7: Amazon VPC Routing and Security
+
+### The Main Route Table
+
+When you create a VPC, AWS creates a route table called the main route table. A route table contains a set of rules, called routes, that are used to determine where network traffic is directed. AWS assumes that when you create a new VPC with subnets, you want traffic to flow between them. Therefore, the default configuration of the main route table is to allow traffic between all subnets in the local network.
+
+![alt text](./images/main_route_table_(of_a_vpc).png)
+
+
+There are two main parts to this route table.
+
+- The **destination**, which is a range of IP addresses where you want your traffic to go. In the example of sending a letter, you need a destination to route the letter to the appropriate place. The same is true for routing traffic. In this case, the destination is the IP range of our VPC network.
+
+- The **target**, which is the connection through which to send the traffic. In this case, the traffic is routed through the local VPC network.
+
+### Custom Route Tables
+
+- Custom Route Tables are Route Tables for specific subnets 
+     - granular way to route your traffic for specific subnets.  
+
+> If you associate a custom route table with a subnet, the subnet will use it instead of the main route table. By default, each custom route table you create will have the `local` route already inside it, allowing communication to flow between all resources and subnets inside the VPC. 
+
+
+![alt text](./images/custom_route_tables.png)
+
+
+### Secure Your Subnets with Network ACLs
+
+
+A NACL (Network Access Control List) is *a stateless firewall* at the subnet level in AWS that controls inbound and outbound traffic to and from subnets. 
+
+> Network ACL’s are considered stateless, so you need to include both the inbound and outbound ports used for the protocol. If you don’t include the outbound range, your server would respond but the traffic would never leave the subnet.   
+
+![alt text](./images/network_acl_inbound_and_outbound_rules.png)
+
+> Note the `non modifiable` rules in both `inbound` and `outbound`
+
+### Secure Your EC2 Instances with Security Groups
+
+![alt text](./images/NACL_vs_sec_group_rules.png)
+
+> Default Security Group Behaviour: Denies all inbound traffic by default, allows all outbound by default
+
+If you have a web server, you may need to accept HTTP and HTTPS requests to allow that type of traffic in through your security group. You can create an inbound rule that will allow port 80 (HTTP) and port 443 (HTTPS) as shown below. 
+
+![alt text](./images/inbound_sg_rules_for_http_https.png)
+
+#### Port 80 vs Port 443: 
+
+```
+Q) 1. What does port 80 and port 443 signify? 
+2. What does HTTP request and HTTPS request ? How are these 2 requests different
+
+> Port 80 (HTTP): When your browser makes an HTTP request over port 80, the communication is unencrypted. 
+- Anyone intercepting the data between the browser and server can read the content in plaintext.
+- HTTP requests are typically used on websites where security is not a concern (e.g., static informational sites).
+
+E.g.: `http://` websites
+
+> Port 443 (HTTPS): When your browser makes an HTTPS request over port 443, the communication is encrypted using SSL/TLS. This means:
+- The data is securely encrypted and can only be decrypted by the server and client.
+- HTTPS requests are used on websites where security is important (e.g., banking, e-commerce, login forms).
+
+E.g.: `https://` websites
+```
+
+![alt text](./images/http_vs_https.png)
+
+
+![alt text](./images/networking_sg_rules_for_a_multi_tier_system.png)
+
+> This example allows you to define three tiers and isolate each tier with the security group rules you define. In this case, you only allow internet traffic to the web tier over HTTPS, Web Tier to Application Tier over HTTP, and Application tier to Database tier over MySQL. This is different from traditional on-premises environments, in which you isolate groups of resources via VLAN configuration. In AWS, security groups allow you to achieve the same isolation without tying it to your network. 
+
+---
+
+## 10 Common network troubleshooting steps for Amazon VPC
+
+Below is a list of configurations you should check if you ever have `a public EC2 instance with a web application` that is not loading as expected.
+
+1. Internet gateway
+> Is IGW attached to VPC?
+> Without the internet gateway, no traffic will be allowed in or out of the VPC.
+
+2. Route tables
+
+> Does the route table of the subnet that has the EC2 application have destination as `0.0.0.0/0` and target as `igw` ? This route allows outbound traffic to the internet and makes the subnet a `public` subnet
+
+
+3. Security groups
+
+> By default all inbound traffic is blocked. 
+
+
+
+
+---
+
+
+
+# Additional References:
+
+- [My ChatGPT Interactions on Networking in AWS](https://chatgpt.com/share/67077451-51e0-800f-ad65-98c6b109e330)
+- [My ChatGPT Interactions on Computing in AWS](https://chatgpt.com/share/6703b5e9-1154-800f-8c1d-03f16c3ae6e0)
