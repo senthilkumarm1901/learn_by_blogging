@@ -1,29 +1,25 @@
 ---
-title: "Learning Notes on `AWS Technical Essentials` copied from Coursera"
-draft: true
+author: Senthil Kumar
+badges: true
+branch: master
+categories:
+- AWS
+description: In this blog, I cover my learnings from the Coursera-AWS course on AWS Cloud Technical Essentials
+date: '2024-10-15'
+title: Learn AWS Series - Notes from my Coursera Course `AWS Cloud Technical Essentials`
+draft: false
 ---
 
-# Welcome to the Course
+> Note: The below notes contain my own writing combined with copy-paste notes from Coursera (Not to be misjudged for plagiarism)
+> Most pics are from Coursera course. If a pic is taken from outside, source is cited below it
+> The below notes are purely to refresh my memory when I take up any AWS exam in future. Unlike other article, the below notes are not meant to be `original`
 
-AWS Cloud Technical Essentials is a fundamental-level course. It’s designed to build your competence, confidence, and credibility with practical cloud skills that can help you innovate and advance your professional future. Here’s a quick overview of the skills that you will learn in each week of this first course. 
-
-## Week 1: Getting Started with AWS Cloud 
-
- In this week, you will learn the definition of cloud computing and how to describe the cloud value proposition. You will learn how to differentiate between workloads that run on premises compared to workloads that run in the cloud, and how to create an AWS account. You will also get an overview of AWS, including how to differentiate between AWS Regions and Availability Zones, and the different ways that you can interact with AWS. Finally, you will learn best practices for using AWS Identity and Access Management (IAM). 
-
-## Week 2: AWS Compute & Networking 
-
-Week 2 is where you will learn how AWS compute services differ from other AWS services. The content for this week covers the basic components of Amazon Elastic Compute Cloud (Amazon EC2) architecture, and how to differentiate between a container and a virtual machine. You will also learn about the features and advantages of using serverless technologies, in addition to basic networking concepts and the features of Amazon Virtual Private Cloud (Amazon VPC). 
-
-## Week 3: Storage & Databases on AWS 
-
-This week, you will learn important concepts for AWS storage services—such as buckets and objects for Amazon Simple Storage Service (Amazon S3), and how Amazon Elastic Block Store (Amazon EBS) is used on AWS. You will also explore databases on AWS, and the use cases for each AWS storage service. 
-
-##  Week 4: Monitoring, Optimizing, and Going Serverless on AWS 
-
-In Week 4, you will learn about the benefits of monitoring on AWS, and how to optimize solutions on AWS. You will also learn about the function of Elastic Load Balancing (ELB), and how to differentiate between vertical scaling and horizontal scaling. 
 
 ---
+
+# Architectue that was used in the Course
+
+![alt text](./images/main_architecture.png)
 
 # Course Roadmap
 
@@ -335,6 +331,8 @@ When creating a policy, it is required to have each of the following elements in
 
 ![alt text](./images/iam_policy_3_essential_elements.png)
 
+
+
 ---
 
 # Role Based Access in AWS
@@ -373,9 +371,17 @@ If you have an organization that spans many employees and multiple AWS accounts,
 
 ---
 
+### Summary:
+
+![alt text](./images/iam_user_differences.png)
+Source: AWS Blg
+
+![alt text](./images/different_groups_different_permissions.png)
+---
+
 # Week 1's Quiz: 
 
-[A GitHub Week 1 Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w1-%20Amazon%20Web%20Services%20(AWS)/Week%201%20Quiz%20_%20Coursera.pdf)
+[A GitHub Source for Week 1 Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w1-%20Amazon%20Web%20Services%20(AWS)/Week%201%20Quiz%20_%20Coursera.pdf)
 
 ---
 
@@ -481,6 +487,38 @@ You can select an AMI from the following categories.
 - My AMIs that are created from your EC2 instances.
 - Community AMIs that are provided by the AWS user community.
 - Build your own custom image with EC2 Image Builder.
+
+### Types of EC2 Instances
+
+```mermaid
+flowchart TD
+  EC2((EC2 Family)) 
+  E1(Gen Purpose)
+  E2(Compute Optimized)
+  E3(Storage Optimized)
+  E4(Memory/RAM Optimized)
+  E5(Accelerated Computing)
+
+  U1[Web Servers]   
+  U2[ML/DL in High power CPU]   
+  U3[MongoDB/NoSQL DBs]
+  U4[Capable of processing<br>large workloads<br>in memory]
+  U5[Workloads<br>needing GPUs]
+
+  EC2 --> E1
+  EC2 --> E2
+  EC2 --> E3
+  EC2 --> E4
+  EC2 --> E5
+
+  E1 --> U1
+  E2 --> U2
+  E3 --> U3
+  E4 --> U4
+  E5 --> U5
+```
+
+
 
 ---
 
@@ -1015,7 +1053,15 @@ E.g.: `https://` websites
 
 ![alt text](./images/networking_sg_rules_for_a_multi_tier_system.png)
 
+
+
 > This example allows you to define three tiers and isolate each tier with the security group rules you define. In this case, you only allow internet traffic to the web tier over HTTPS, Web Tier to Application Tier over HTTP, and Application tier to Database tier over MySQL. This is different from traditional on-premises environments, in which you isolate groups of resources via VLAN configuration. In AWS, security groups allow you to achieve the same isolation without tying it to your network. 
+
+---
+
+## How an EC2 Instance in a Private Subnet reaches the Internet
+
+![alt text](./images/how_EC2_in_private_subnet.png)
 
 ---
 
@@ -1035,15 +1081,1127 @@ Below is a list of configurations you should check if you ever have `a public EC
 3. Security groups
 
 > By default all inbound traffic is blocked. 
+> Make sure there are inbound rules allowing HTTP (port 80) and/or HTTPS (port 443) traffic from the internet (0.0.0.0/0). Also, verify that outbound rules allow traffic to leave the instance.
+
+4. Network Access Control Lists
+
+> Check the NACLs associated with the subnet that has the EC2 instance
+> NACLs are stateless, so you must explicitly allow both inbound and outbound rules that allow the http and https rules to subnet
+
+5. Public IP address (Most important one :))
+
+> Ensure you have `auto-assign IP address` when launching EC2 instance
+
+6. HTTP vs HTTPS
+
+> Confirm that your application is accessible via the correct protocol. If your application is configured for HTTPS, ensure SSL/TLS certificates are correctly installed and configured. Also, check if the web browser is trying to connect via the wrong protocol (HTTP instead of HTTPS or vice versa). For this course, the application is operating via HTTP, double check that your browser is not trying to connect via HTTPS. You can do this by selecting the address bar in the browser and making sure the address starts with http and not https.
+
+7. User data script
+
+> If your instance uses a user data script to configure the application on launch, verify that the script has run successfully. 
+
+> Check the instance logs (`/var/log/cloud-init.log` or `/var/log/cloud-init-output.log`) for any errors that may have occurred during the execution of the user data script.
 
 
+8. Permissions (another important one)
+
+> Verify the permissions and roles attached to your EC2 instance. Ensure the instance has the necessary IAM roles and policies to access any required AWS services, such as S3, DynamoDB, or RDS.
+
+
+9. Personal network permissions
+
+> Ensure that your personal or corporate network does not have restrictions blocking access to the public IP address of your EC2 instance. 
+
+> Some networks might have firewalls or proxy settings that could block outbound traffic to certain IP ranges or ports.
+
+10. Application Code Logs
+
+> Ensure that your application code is correctly deployed and running. Check the application's logs to diagnose any runtime errors. Also, make sure the web server (e.g., Apache, Nginx) is installed and running.
+
+---
+
+[A Github Source for Week 2 Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w2-%20AWS%20Compute%20and%20Networking/Week%202%20Quiz%20_%20Coursera.pdf)
+
+---
+
+## 3.1 Storage Types on AWS
+
+3 Different AWS Storage Types:
+- block storage
+- file storage
+- object storage
+
+### File Storage
+
+- Structure: Data is stored as files in a tree-like hierarchical directory structure (like a traditional file system).
+
+> Each file has metadata such as file name, file size, and the date the file was created. The file also has a path, for example, computer/Application_files/Cat_photos/cats-03.png. When you need to retrieve a file, your system can use the path to find it in the file hierarchy.
+
+> Every additional folder adds latency to the structure
+
+Usecases:
+- Large content repositories
+- Development environments
+- User home directories
+
+### Block Storage
+
+- While file storage treats files as a singular unit, block storage splits files into fixed-size chunks of data called blocks that have their own addresses. Since each block is addressable, blocks can be retrieved efficiently.
+
+![alt text](./images/block_storage.png)
+
+### Object Storage
+
+- Very similar to File Storage but no `hierarchical` storage
+- Flat structure
+- Each object is a file with a unique identifier. This identifier, along with any additional metadata, is bundled with the data and stored.
+
+
+| File Storage | Object Storge |
+|---|---|
+|Hierarchy - YES; Folder or tree-like structure | Flat Structure. No hierarchy |
+|Good for low-latency read-write | Good for high throughput |
+|Edit a portion, you overwrite the whole file | Edit a portion, you overwrite the whole object|
+|Amazon EFS | Amazon S3 |
+
+
+---
+
+## 3.2: Amazon EC2 Instance Storage and Amazon Elastic Block Store
+
+### The two types of EC2 Instance Storage Options
+```mermaid
+flowchart TD
+  A[[Temporary<br>Instance Store]]
+  B[[Permanent<br>EBS]]
+  C(Storage connected<br>to EC2)
+  C --> A
+  C --> B  
+```
+
+### How many EBS to every EC2 Instance
+
+**1 EC2 to Many EBS Volumes**:
+```mermaid
+flowchart LR
+  EC[EC2]
+  EB1[[EBS 1]]
+  EB2[[EBS 2]]
+  EB3[[EBS 3]]
+  EC --> EB1
+  EC --> EB2
+  EC --> EB3
+```
+
+> `In the same AZ`, an EBS can be detached from 1 EC2 and connected to a new EC2 instance
+
+**1 EBS to 1 EC2** (typically):
+
+```mermaid
+flowchart LR
+  EC[EC2] --> EB1[[EBS 1]]
+```
+
+**1 EBS volume to Many EC2 Instances** (recently supported for some instances):
+
+```mermaid
+flowchart LR
+  EB1[[EBS 1]]
+  ECA[EC2 A]
+  ECB[EC2 B]
+
+  EB1 --> ECA
+  EB1 --> ECB
+```
+
+Additional Points: 
+
+> The external drive is separate from the computer. That means, if an accident happens and the computer goes down, you still have your data on your external drive. The same is true for EBS volumes.
+
+> You’re limited to the size of the external drive, since it has a fixed limit to how scalable it can be. For example, you may have a 2 TB external drive and that means you can only have 2 TB of content on there. This relates to EBS as well, since volumes also have a max limitation of how much content you can store on the volume.
+
+### Scale Amazon EBS Volumes
+
+1. Increase the volume size, as long as it doesn’t increase above the maximum size limit. For EBS volumes, the maximum amount of storage you can have is 16 TB. That means if you provision a 5 TB EBS volume, you can choose to increase the size of your volume until you get to 16 TB.
+
+2. Attach multiple volumes to a single Amazon EC2 instance. EC2 has a one-to-many relationship with EBS volumes. You can add these additional volumes during or after EC2 instance creation to provide more storage capacity for your hosts.
+
+
+### Two types of AMIs for EC2 Instances 
+
+```mermaid
+flowchart TD
+  AMI(AMI)
+  AMI1[[Instance Store<br>Backed AMI]]
+  AMI2[[EBS-Volume<br>backed AMI<br>most common]]
+  AMI --> AMI1
+  AMI --> AMI2   
+```
+
+**Key Points**: 
+- When EC2 running on instance-store backed AMI is stopped, data is lost. 
+- Instance-store backed AMIs are useful for stateless applications
+- It can be rebooted without losing data
+
+
+**Latency vs Throughput discussion**
+
+Latency:
+- Amount of time it takes for ONE data packet to reach its destination
+- For databases and Web <-> Server Interactions
+
+```mermaid
+flowchart LR
+  W[Web Server] -- 1 packet sent<br> in 10 millisec --> C[Client]
+```
+
+Throughput:
+- Number of packets that can reach a destination within 1 sec
+- Needed in Big Data Analytics
+
+```mermaid
+flowchart LR
+  W[Web Server] -- 10 packets sent<br> in 1 sec --> C[Client]
+```
+
+### Types of EBS Volumes
+
+```mermaid
+flowchart TD
+  EBS(EBS Volumes)
+  subgraph SSD
+    EBS_SSD(EBS SSD)
+    SSD1[[EBS Provisioned IOPS SSD]]
+    SSD2[[EBS General Purpose SSD]]
+    EBS_SSD --> SSD1
+    EBS_SSD --> SSD2
+    SSD1 --> app1((for latency sensitive<br>workloads))
+    app1 --> ex1((E.g. I/O intensive<br> NoSQL RDS<br>e.g. io2,io3))
+    SSD2 --> app2((for general purpose;<br>variety of transactional<br>workloads))
+    app2 --> ex2((for low-latency interactive apps;<br>e.g.:gp2,gp3)) 
+    max1((Max IOPS/Volume =<br> 64K))
+    vol_size1((Vol Size =<br> 4GB - 16 TB))
+    max2((Max IOPS/Volume =<br> 16K))
+    vol_size2((Vol Size =<br> 1GB - 16 TB))
+    ex1 --> max1
+    ex2 --> max2 
+    max1 --> vol_size1
+    max2 --> vol_size2
+  end
+  subgraph HDD
+    EBS_HDD(EBS HDD)
+    HDD1[[Throughput<br>Optimized HDD]]
+    HDD2[[Cold HDD]]
+    apphd1((for frequently accessed<br>throughput intensive<br>workloads))
+    apphd2((for less frequently<br>accessed workloads))
+    maxhd1((Max IOPS/Volume =<br> 500))
+    vol_sizehd1((Vol Size =<br> 500GB - 16 TB))
+    maxhd2((Max IOPS/Volume =<br> 250))
+    vol_sizehd2((Vol Size =<br> 500GB - 16 TB))
+    EBS_HDD --> HDD1
+    EBS_HDD --> HDD2
+    HDD1 --> apphd1 --> maxhd1 --> vol_sizehd1
+    HDD2 --> apphd2 --> maxhd2 --> vol_sizehd2
+  end      
+  EBS --> EBS_SSD
+  EBS --> EBS_HDD
+
+```
+
+Key Point: 
+- solid-state drives (SSDs) are faster and expensive than hard-disk drives (HDDs)
+
+
+|Need on Latency/Throughput | Applications | Most suited type of EBS |
+|---|---|--|
+| Very low latency | Databases, payment systems | Provisioned IOPS SSD |
+| low latency |  Web Server | General Purpose SSD |
+| Very high throughput | Big Data | Throughput optimized HDD |
+| can tolerate high latency but still might need good throughput because of data transer | Infrequently accessed data | Cold HDD |
+
+### EBS Snapshots:
+
+- Concept: Incremental backups
+     - First time: Stores the entire data
+     - Second Snapshot: Store only data on what has changed
+
+---
+
+## 3.3: Object Storage with Amazon S3
+
+### WHAT IS AMAZON S3?
+
+- Amazon S3 is an object storage service.
+- Object storage stores data in a flat structure, using unique identifiers to look up objects when requested. An object is simply a file combined with metadata and that you can store as many of these objects as you’d like. 
+- All of these characteristics of object storage are also characteristics of Amazon S3. 
+
+### UNDERSTAND AMAZON S3 CONCEPTS
+
+![alt text](./images/s3_url_structure.png)
+
+### Security for S3 Objects
+
+- Everything is private by default
+
+> If you decide that you want everyone on the internet to see your photos, you can choose to make your buckets, folders, and objects public. Keep in mind that a public resource means that everyone on the internet can see it. Most of the time, you don’t want your permissions to be all or nothing. Typically, you want to be more granular about the way you provide access to your resources. 
+
+Amazon S3 provides two main access management features: `IAM policies` and `S3 bucket policies`.
+
+### When should one use S3 bucket policies:
+- When you need a simple way to do cross-account access to S3, without using IAM roles.
+- Your IAM policies bump up against the defined size limit. S3 bucket policies have a larger size limit.
+
+> S3 Bucket policies can only be placed on buckets, and cannot be used for folders or objects. 
+
+### ENCRYPT S3
+
+Amazon **S3 reinforces encryption in transit** (as it travels to and from Amazon S3) and **at rest**. To protect data at rest, you can use:
+
+**Server-side encryption**: This allows Amazon S3 to encrypt your object before saving it on disks in its data centers and then decrypt it when you download the objects.
+
+**Client-side encryption**: Encrypt your data client-side and upload the encrypted data to Amazon S3. In this case, you manage the encryption process, the encryption keys, and all related tools.
+
+### USE VERSIONING TO PRESERVE OBJECTS
+
+Versioning-enabled buckets let you recover objects from accidental deletion or overwrite.
+
+> Deleting an object does not remove the object permanently. Instead, Amazon S3 puts a marker on the object that shows you tried to delete it. If you want to restore the object, you can remove this marker and it reinstates the object.
+
+> If you overwrite an object, it results in a new object version in the bucket. You still have access to previous versions of the object.
+
+Buckets can be in one of three states.
+
+- Unversioned (the default): No new or existing objects in the bucket have a version.
+- Versioning-enabled: This enables versioning for all objects in the bucket.
+- Versioning-suspended: This suspends versioning for new objects. All new objects in the bucket will not have a version. However, all existing objects keep their object versions.
+
+### AMAZON S3 STORAGE CLASSES
+
+Here are the main types of Amazon S3 storage options:
+
+1. **S3 Standard**
+Use Case: Frequently accessed data.
+Availability: 99.99%.
+Durability: 99.999999999% (11 nines).
+Performance: Low latency, high throughput.
+Cost: Higher cost compared to other classes.
+Typical Uses: Websites, content distribution, data analytics, and mobile applications.
+
+2. **S3 Intelligent-Tiering**
+Use Case: Data with unpredictable access patterns.
+Availability: 99.9%.
+Durability: 99.999999999% (11 nines).
+Performance: Automatically moves data between two access tiers (frequent and infrequent) to optimize cost.
+Cost: Slightly higher than Standard but saves on infrequently accessed data by automatically moving data to lower-cost storage tiers.
+
+3. **S3 Standard-Infrequent Access (S3 Standard-IA)**
+Use Case: Data that is infrequently accessed but requires rapid access when needed.
+Availability: 99.9%.
+Durability: 99.999999999% (11 nines).
+Cost: Lower storage cost, higher retrieval cost compared to S3 Standard.
+Typical Uses: Backups, disaster recovery, long-term storage.
+
+4. **S3 One Zone-Infrequent Access (S3 One Zone-IA)**
+Use Case: Infrequently accessed data that doesn't require multi-zone redundancy.
+Availability: 99.5%.
+Durability: 99.999999999% (11 nines) within a single Availability Zone.
+Cost: Lower cost than S3 Standard-IA.
+Typical Uses: Data that can be recreated easily, backups, or secondary copies.
+
+
+5. **S3 Glacier**
+
+Use Case: Long-term archive storage where retrieval time can range from minutes to hours.
+Availability: 99.99%.
+Durability: 99.999999999% (11 nines).
+Cost: Very low storage cost, retrieval incurs additional cost and delay.
+Typical Uses: Archival data, regulatory compliance, and historical records.
+
+
+6. **S3 Glacier Deep Archive**
+Use Case: Long-term archive for data that is rarely accessed and has retrieval times of up to 12 hours.
+Availability: 99.99%.
+Durability: 99.999999999% (11 nines).
+Cost: Lowest-cost storage option in S3, with higher retrieval times.
+Typical Uses: Long-term data retention for compliance or legal purposes.
+
+
+7. **S3 Outposts**
+Use Case: Storing data on-premises for applications that need local data residency.
+Durability: Same as S3 (99.999999999%).
+Typical Uses: Local workloads that need low latency or local data processing, and when compliance requires data to stay on-premises.
+
+### AUTOMATE TIER TRANSITIONS WITH OBJECT LIFECYCLE MANAGEMENT
+
+When you define a lifecycle policy configuration for an object or group of objects, you can choose to automate two actions: transition and expiration actions.
+
+- Transition actions are used to define when you should transition your objects to another storage class.
+- Expiration actions define when objects expire and should be permanently deleted.
+
+The following use cases are good candidates for lifecycle management.
+
+- Periodic logs: If you upload periodic logs to a bucket, your application might need them for a week or a month. After that, you might want to delete them.
+
+- Data that changes in access frequency: Some documents are frequently accessed for a limited period of time. After that, they are infrequently accessed. At some point, you might not need real-time access to them, but your organization or regulations might require you to archive them for a specific period. After that, you can delete them.
+
+---
+
+### AWS Storage Services Recap
+
+#### Amazon EC2 Instance Store
+
+- Instance store is ephemeral block storage
+- For stateless applications
+
+> EC2 Instance Store is not meant for data that is persistent or long-lasting. If you need persistent long-term block storage that can be detached from Amazon EC2 and provide you more management flexibility, such as increasing volume size or creating snapshots, then you should use Amazon EBS. 
+
+#### Amazon EBS
+
+Amazon EBS is meant for data that changes frequently and needs to persist through instance stops, terminations, or hardware failures. Amazon EBS has two different types of volumes
+
+- SSD - For I/O-sensitive workloads
+- HDD - For Throughput-intensive workloads
+
+
+#### Amazon S3
+
+- It is object storage.
+- You pay for what you use (you don’t have to provision storage in advance).
+- Amazon S3 replicates your objects across multiple Availability Zones in a Region.
+- Amazon S3 is not storage attached to compute.
+
+#### Amazon Elastic File System (Amazon EFS) and Amazon FSx
+
+- Also Serverless
+- No need to provision in advance
+- Pay for what you use
+
+---
+
+## 3.5 Explore Databases on AWS
+
+### Q) What is the difference between database, data warehouse and data lake. Explain with examples from AWS. 
+
+
+```mermaid
+flowchart TD
+  Q((Where is<br>data stored?))
+  A1[[Database]]
+  A2[[Data Warehouse]]
+  A3[[Data Lake]]
+
+  P1((for OLTP))
+  P2((for OLAP))
+  P3((for storing raw data))
+
+  E1[Amazon RDS<br>for an e-commerce<br>application]
+  E2[Amazon Redshift<br>to query and analyze <br>vast amounts of <br>structured data<br>quickly and efficiently.]
+  E3[Amazon S3<br>for storing vast amounts of<br>unstructured raw data]
+
+  Q --> A1 
+  Q --> A2
+  Q --> A3
+
+  A1 --> P1 --> E1
+  A2 --> P2 --> E2
+  A3 --> P3 --> E3   
+```
+
+The terms **database**, **data warehouse**, and **data lake** all refer to systems for managing and storing data, but they serve different purposes and are optimized for different types of data and use cases. Here’s a breakdown, along with AWS examples:
+
+#### 1. **Database**  
+- **Purpose:** A **database** is designed to store structured data that can be easily queried and updated. It's typically used for transactional processing (OLTP: Online Transaction Processing) where you need to manage day-to-day operations like inserts, updates, and deletes efficiently.
+  
+- **Data Type:** Structured data (e.g., relational data with tables, rows, and columns).
+  
+- **Use Cases:** Applications like inventory management, customer management, e-commerce websites, or any app that involves a lot of concurrent, real-time transactions.
+
+- **AWS Example:** 
+  - **Amazon RDS (Relational Database Service):** Supports databases like MySQL, PostgreSQL, SQL Server, and Oracle. It's managed, which means AWS takes care of backups, patching, and scaling.
+  - **Amazon DynamoDB:** A NoSQL database for high-speed, low-latency performance, often used for large-scale applications that require flexible data models.
+
+**Example Use Case:** An e-commerce website storing customer orders and product information in **Amazon RDS** for efficient querying and real-time updates.
+
+---
+
+#### 2. **Data Warehouse**  
+- **Purpose:** A **data warehouse** is optimized for **analytical processing** (OLAP: Online Analytical Processing) where large volumes of structured data are aggregated and analyzed. It is ideal for complex queries, reporting, and business intelligence (BI) tasks.
+
+- **Data Type:** Primarily structured data, although it may support semi-structured data (e.g., JSON or Parquet formats). Data is typically cleaned and organized before loading into a data warehouse.
+
+- **Use Cases:** Business analytics, trend analysis, data mining, generating reports or dashboards across large data sets (e.g., sales trends across regions or customer segments).
+
+- **AWS Example:** 
+  - **Amazon Redshift:** A fully managed, petabyte-scale data warehouse designed for fast query execution across large datasets. Redshift is built for complex queries and analytics, and it integrates well with BI tools like Amazon QuickSight.
+
+**Example Use Case:** A retail company uses **Amazon Redshift** to analyze sales data across regions to understand seasonal buying trends and forecast future demand.
+
+---
+
+#### 3. **Data Lake**  
+- **Purpose:** A **data lake** is a centralized repository that allows you to store **structured, semi-structured, and unstructured** data at any scale. It’s highly flexible and is often used to store raw data until it’s needed for analysis. It supports various formats (e.g., JSON, CSV, images, video, text logs) and allows for big data analytics and machine learning.
+
+- **Data Type:** Structured, semi-structured, and unstructured data (e.g., documents, audio, videos, logs, sensor data).
+
+- **Use Cases:** Data exploration, machine learning, big data analytics, and situations where you want to store a vast array of data types before deciding what analysis or processing you need.
+
+- **AWS Example:**
+  - **Amazon S3 (Simple Storage Service):** Typically used to build a data lake in AWS. You can store any type of data in its native format and then later analyze it using other AWS services like AWS Glue (for data transformation), Amazon Athena (for querying), or Amazon EMR (for big data processing).
+
+**Example Use Case:** A healthcare company uses **Amazon S3** to store vast amounts of raw patient data, including medical images, doctor notes, and sensor data from wearables. They later process this data for machine learning models and analytics.
+
+---
+
+#### Key Differences:
+| Feature         | Database (RDS/DynamoDB)         | Data Warehouse (Redshift)         | Data Lake (S3)                |
+|-----------------|---------------------------------|-----------------------------------|-------------------------------|
+| **Primary Use**  | Transactional (OLTP)            | Analytical (OLAP)                 | Store raw data, Big Data       |
+| **Data Type**    | Structured                      | Structured, Semi-structured       | Structured, Semi-structured, Unstructured |
+| **Processing**   | Real-time transactions          | Aggregated, Complex queries       | Data exploration, batch processing |
+| **AWS Service**  | Amazon RDS, DynamoDB            | Amazon Redshift                   | Amazon S3                      |
+| **Example**      | E-commerce apps, customer orders| Business analytics, dashboards    | Raw data for analytics, ML     |
+
+#### Summary of AWS Services:
+- **Database** → **Amazon RDS** for relational databases or **DynamoDB** for NoSQL databases.
+- **Data Warehouse** → **Amazon Redshift** for OLAP and analytical workloads.
+- **Data Lake** → **Amazon S3** to store large datasets in various formats for big data analytics.
+
+---
+
+
+### Q) Are all AWS Databases in EC2 instances? Are they named as db.xxx ?
+
+
+No, **not all AWS databases run on EC2 instances**, and they are **not named as `db.xxx` by default**. While some database services in AWS may use EC2 instances under the hood, many of them are fully managed services, meaning you don't need to worry about the underlying EC2 infrastructure. Let me explain further:
+
+#### 1. **Managed Databases** (Not necessarily tied to EC2 instances)
+AWS provides **fully managed databases**, which abstract away the underlying infrastructure, including EC2 instances, networking, and scaling. With these services, AWS handles most operational tasks like backups, patching, scaling, and failover.
+
+Here are some examples of **fully managed AWS database services**:
+- **Amazon RDS (Relational Database Service):** A managed service for relational databases like MySQL, PostgreSQL, Oracle, SQL Server, and MariaDB. It is designed to handle the operational management of these databases, though the actual database may run on EC2 instances in the background. As a user, you don’t have direct access to the underlying EC2 instances.
+  
+- **Amazon Aurora:** A high-performance, MySQL- and PostgreSQL-compatible relational database built for the cloud. Like RDS, Aurora abstracts away the EC2 instances, providing a managed environment.
+
+- **Amazon DynamoDB:** A fully managed NoSQL database that scales horizontally. It doesn’t require EC2 instances, and you don’t need to manage the underlying servers or instances.
+
+- **Amazon Redshift:** A managed data warehouse that allows you to run analytics on structured data. While Redshift clusters are backed by EC2 instances, you manage them at a higher level through the Redshift interface.
+
+- **Amazon DocumentDB:** A fully managed MongoDB-compatible database that abstracts away the underlying EC2 instances.
+
+In these fully managed services, the database instances are **not explicitly named as `db.xxx`**; instead, you interact with these services through their respective APIs or consoles without seeing the underlying infrastructure. However, you may define instance identifiers or cluster names like "db1" when provisioning databases, but this is customizable.
+
+#### 2. **Self-Managed Databases on EC2** (Named as `db.t3.medium`, etc.)
+If you **self-manage** a database on an EC2 instance, then you directly control the EC2 infrastructure. In this case, you would need to handle database installation, patching, backups, scaling, and networking yourself. You could launch a database server (e.g., MySQL, PostgreSQL) on an EC2 instance, and here you would see the EC2 instance types named in the `t3`, `m5`, `db.m6g`, or similar families.
+
+Some instance types in RDS do use naming patterns like `db.m6g.large`, but this is specific to Amazon RDS and Aurora, which provide a **managed environment on top of EC2**. For example:
+- `db.t3.medium` (RDS instance) → This is an instance class used for databases in Amazon RDS, where `t3.medium` is an EC2 instance type optimized for general-purpose workloads, but **the naming convention** here indicates that it's used for a database (`db.` prefix).
+
+### **Summary**:
+- **Not all AWS databases** run on EC2 instances. Services like DynamoDB and Aurora abstract the infrastructure so you don't manage EC2s directly.
+- In **Amazon RDS**, the underlying instances may be named as `db.xxx` (e.g., `db.t3.medium`), but this is specific to the RDS service.
+- If you're running a database **directly on EC2**, you choose standard EC2 instance types like `t3.medium`, and you’re responsible for managing the database yourself.
+
+---
+
+### Q) So a PostgreSQL DB can be either Self-Managed Databases on EC2 or AWS Managed ?
+
+Yes, in AWS, a PostgreSQL database can be deployed in two primary ways:
+
+1. **Self-Managed on EC2**:
+   - **Description**: You launch a PostgreSQL database on an EC2 instance, essentially creating a self-managed environment where you control the entire database stack.
+   - **Responsibilities**: You handle **installation, configuration, patching, backup, scaling,** and **security management**.
+   - **Flexibility**: Full control over the PostgreSQL settings, customizations, and extensions.
+   - **Use Case**: Ideal if you need custom configurations or PostgreSQL plugins that aren’t supported in managed services, or if you want to control the environment entirely.
+
+2. **AWS Managed PostgreSQL (Amazon RDS or Amazon Aurora)**:
+   - **Description**: Amazon RDS for PostgreSQL and Amazon Aurora (PostgreSQL-compatible) are fully managed database services that AWS operates.
+   - **Responsibilities**: AWS handles **provisioning, patching, backup, scaling,** and **automatic failover**. You only need to manage data, schema, and performance tuning.
+   - **Flexibility**: Limited to configurations and extensions that AWS supports.
+   - **Use Case**: Best for users who prefer a managed, highly available, and scalable PostgreSQL solution without the administrative overhead.
+
+So, **self-managed on EC2** gives you complete control and flexibility, whereas **AWS-managed services** offer ease of use and reduced operational burden at the cost of some customization flexibility.
+
+---
+
+### Managed Databases in Amazon
+
+```mermaid
+
+flowchart TD
+  DB((Databases))
+  ADB[Databases in AWS]   
+  M[AWS Managed Databases]
+  UM[Self Managed Databases]
+  OP[On-Prem Database]
+  SM[Self-managed Database on Amazon EC2]
+
+  M1[Amazon RDS]
+  M2[Amazon Aurora]
+  M3[Amazon DynamoDB]
+  M4[Amazon Redshift]
+
+  REL((Releational DB))   
+  MEX1[MySQL]
+  MEX2[PostgreSQL]
+  MEX3[MariaDB]
+  MEX4[SQLServer]
+  MEX5[Oracle]
+
+  MAA1[Aurora MySQL]
+  MAA2[Aurora PostgreSQL]
+
+  MAAP1((5x faster than RDS))
+  MAAP2[Aurora Serverless]
+
+  NOREL((NoSQL DB))   
+  
+  DDB1((Serverless))
+  BOTH1((Charges based on usage and storage))
+  BOTH2((High Availability))
+  BOTH3((High Durable))
+  BOTH4((Because: SSD-backed Instances))
+
+  DB --> ADB
+  DB --> OP
+
+  ADB --> M
+  ADB --> UM
+  ADB --> SM
+  M --> M1
+  M --> M2
+  M --> M3
+  M --> M4
+  
+  M1 --> REL --> MEX1
+  REL --> MEX2
+  REL --> MEX3
+  REL --> MEX4
+  REL --> MEX5
+
+  M2 --> MAA1 --> MAAP1 
+  M2 --> MAA2 --> MAAP1
+  M2 --> MAA1 --> MAAP2
+  M2 --> MAA2 --> MAAP2   
+  MAAP2 --> BOTH1
+  BOTH2 --> BOTH4
+  BOTH3 --> BOTH4
+
+  M3 --> NOREL --> DDB1 --> BOTH1 
+  DDB1 --> BOTH2 
+  DDB1 --> BOTH3
+  MAAP2 --> BOTH2 
+  MAAP2 --> BOTH3
+```
+
+## Elements to decide for a DB Selection
+
+```mermaid
+flowchart TB
+  DB[Choices<br>in Selecing a DB<br>in AWS]
+  ENG[Engine]
+  STORAGE[Storage]
+  COMPUTE[Compute]  
+
+  ENG1((Commercial))
+  ENG2((Open Source))
+  ENG3((AWS Native))
+
+  ENG1A[[Oracle<br>SQLServer]]
+  ENG2A[[MySQL<br>PostgreSQL]]
+  ENG3A[[Amazon Aurora]]
+
+  
+  STORAGE1[[EBS Volumes for RDS]]
+  COMPUTE1[[Compute Instance <br>Size and Family <br><br>db.xx?]]   
+
+  TYPE1[Standard<br> <code>m</code> classes]
+  TYPE2[Memory<br>Optimized<br><code>r</code> and <code>x` classes]
+  TYPE3[Burstable<br><code>t</code> classes]
+
+  S1[SSD?]
+  S2[HDD?]
+  S3[Magnetic Storage?] 
+
+  DB --> ENG --> ENG1
+  ENG --> ENG2
+  ENG --> ENG3
+
+  ENG1 --> ENG1A
+  ENG2 --> ENG2A
+  ENG3 --> ENG3A
+
+  DB --> STORAGE --> STORAGE1
+  DB --> COMPUTE --> COMPUTE1
+
+  STORAGE1 --> S1
+  STORAGE1 --> S2
+  STORAGE1 --> S3   
+
+  COMPUTE1 --> TYPE1
+  COMPUTE1 --> TYPE2
+  COMPUTE1 --> TYPE3
+```
+
+## Where are Database Instances placed?
+
+### RDS lies inside VPC Private Subnet
+![alt text](./images/dbs_inside_private_subnet.png)
+
+
+
+### Dynamo DB lies outside VPC
+
+![alt text](./images/dynamo_DB_lies_outside_vpc.png)
+
+
+Source: [AWS rePost](https://repost.aws/questions/QUsOBNlERPQZejZsyo3rtxGg/lambda-in-private-subnet-cannot-reach-dynamodb)
+
+### Backups in RDS
+
+```mermaid
+flowchart TD
+  B((Backups))
+  A((Automated Backups))
+  M((Manual Snapshots))
+
+  K((Keep backups<br>for 0 to 35 days))
+  ZERO((0 days means<br>no backup))   
+  E((Enables in<br>point-in-time<br>recovery))
+
+  P((For storage<br>longer than 35 days))
+
+  Q((Which backup<br>to use))
+  ANS((Both Automated &<br>Manual combo))   
+
+  B --> A
+  B --> M
+
+  A --> K --> ZERO --> E
+
+  M --> P
+
+  B --> Q --> ANS
+```
+
+### Redundancy in RDS via Multiple Avalaibility Zones
+
+```mermaid
+flowchart TD
+  RDS[[Amazon RDS]]
+  subgraph AZ1
+     subgraph subnetA
+       C1[[Copy 1 of RDS]]
+     end
+  end
+
+  subgraph AZ2
+    subgraph subnetB
+      C2[[Copy 2 of RDS]]
+    end
+  end
+  RDS --> C1
+  RDS --> C2
+```
+
+- Multi AZ deployment ensure `High Availability` and `High Durability`
+
+---
+
+## Encryption of EBS Volumes
+
+
+> Consider this scenario: You are a cloud engineer who works at a company that uses Amazon Elastic Compute Cloud (Amazon EC2) instances and Amazon Elastic Block Store (Amazon EBS) volumes. The company is currently using unencrypted EBS volumes. You are tasked with migrating the data on these unencrypted EBS volumes to encrypted EBS volumes. What steps can you take to migrate the data to encrypted EBS volumes? 
+
+```
+To migrate data from unencrypted to encrypted Amazon EBS volumes, follow these steps:
+
+Create a snapshot of the unencrypted EBS volume.
+
+Copy the snapshot, and during the copy process, select the option to encrypt the snapshot.
+
+Once the encrypted snapshot is created, create a new EBS volume from the encrypted snapshot.
+
+Detach the unencrypted volume from the EC2 instance.
+
+Attach the new encrypted volume to the EC2 instance in place of the original.
+
+This ensures seamless migration of data from unencrypted to encrypted EBS volumes without downtime.
+```
+---
+
+## DynamoDB
+
+- Amazon DynamoDB is a fully managed NoSQL database service
+- With DynamoDB, you can create database tables that can store and retrieve any amount of data and serve any level of request traffic.
+- Data in DynamoDB stored in Key-Value pair format
+
+
+| RDS | NoSQL DB |
+|---|---|
+| Table | Table |
+| Row/Record | Item |
+| Column| Attribute|
+
+Like a `primary column` in RDS, a `primary attribute` is needed in Dynamo DB. An item could have any number of attributes
+
+
+---
+## 4.1 Monitoring on AWS
+
+**Why?**
+- Ensuring reliable performance
+- Are we using resources in a cost-effective way?
+- Preventive Healthcheck: Prevent outage by scaling infra or fixing issues automated
+- For security
+
+**Services in CloudWatch**:
+- Metrics
+- Alarms (when a metric goes above a threshold)
+- Logs
+
+### Types of Cloudwatch Metrics
+
+```mermaid
+flowchart TD
+  M((Metrics))
+  M1((Default <br>AWS Service Metrics))
+  M2((Custom<br>Application Metrics))
+
+  EX1((Eg -<br>No of hits to a Service))
+  EX2((Eg -<br>Website Load Times))
+
+  M --> M1
+  M --> M2
+
+  M1 --> EX1
+  M2 --> EX2
+```
+
+### Types of Monitoring
+
+- By default, with the AWS account, a `basic monitoring` is enabled (where every 5 minutes some metrics reach the CloudWatch dashboard)
+- A `detailed monitoring` at additional cost can be setup if say, metrics need to be logged every 1 minute instead of 5 minutes
+
+
+### How to filter/categorize Metrics
+
+
+```mermaid
+flowchart TD
+  M((Metrics))
+
+  M1((Dimensions))
+  M2((Namespaces))
+
+  EX1((Key/Value pair-<br>FunctionName/MyLambda))   
+  EX2((Metrics <br>belonging to<br>different categories-<br>aws/ec2,<br>aws/lambda))
+
+  M --> M1 --> EX1
+  M --> M2 --> EX2
+```
+
+- A `Dimension` can be used to filter the metrics
+- A `Namespace` gives a logical grouping of the logs into different categories
+
+### Custom Metrics
+
+Using `boto3` sdk, you can ensure `custom metrics` like the following that reflect the health of your application can be sent to CloudWatch logs
+
+- Web page Load Time
+- Amount of tasks handled 
+
+
+### Understand the CloudWatch Dashboards
+
+- For viewing aggregated statistics of CloudWatch metrics
+
+### CloudWatch Logs
+
+- For lambda, easy to setup: Enable in IAM policy
+- For EC2, enable CW logs agent
+
+
+### CloudWatch Alarms 
+
+- When a metric goes above a threshold
+
+### EventBridge
+
+- For a Rule-triggered workflow 
+- Allows you to define rules that filter events based on specific patterns and forward those events to one or more targets.
+
+---
+
+## 4.3 Optimization in AWS
+
+### Notation in Nines:
+
+![alt text](./images/notation_in_nines.png)
+
+### Automatically use a Second Server in a different availability zone
+
+```mermaid
+flowchart TD
+  client
+  load_balancer
+  subgraph AZ1
+    server_1
+  end
+  subgraph AZ2
+    server_2
+    server_3
+  end 
+
+  client --> load_balancer
+  load_balancer --> server_1
+  load_balancer --> server_2
+```
+
+### Types of High Availability Architecture
+
+```mermaid
+flowchart TD
+  HA[high_availability]
+  AP[active_passive]
+  AA[active_active]
+
+  P1((for Stateful<br>Applications))
+  P2((for Stateless<br>Applications))
+
+  HA --> AP
+  HA --> AA  
+
+  AP --> P1
+  AA --> P2 
+```
+---
+
+## 4.4 Route Traffic with Amazon Elastic Load Balancing
+
+### What is a Load Balancer:
+
+- Purpose is to distribute the requests across all the servers hosting the application using a load balancer
+
+Load balancing refers to the process of distributing tasks across a set of resources. In the case of the corporate directory application, the resources are EC2 instances that host the application, and the tasks are the different requests being sent. It’s time to distribute the requests across all the servers hosting the application using a load balancer.
+
+To do this, you first need to enable the load balancer to take all of the traffic and redirect it to the backend servers based on an algorithm. The most popular algorithm is round-robin, which sends the traffic to each server one after the other.
+
+A typical request for the application would start from the browser of the client. It’s sent to a load balancer. Then, it’s sent to one of the EC2 instances that hosts the application. The return traffic would go back through the load balancer and back to the client browser. Thus, the load balancer is directly in the path of the traffic.
+
+Although it is possible to install your own software load balancing solution on EC2 instances, AWS provides a service for that called Elastic Load Balancing (ELB).
+
+
+### FEATURES OF ELB
+
+The ELB service provides a major advantage over using your own solution to do load balancing, in that you don’t need to manage or operate it. It can distribute incoming application traffic across EC2 instances as well as containers, IP addresses, and AWS Lambda functions.
+
+- The fact that ELB can load balance to IP addresses means that it can work in a hybrid mode as well, where it also load balances to on-premises servers.
+
+- ELB is highly available. The only option you have to ensure is that the load balancer is deployed across multiple Availability Zones.
+
+- In terms of scalability, ELB automatically scales to meet the demand of the incoming traffic. It handles the incoming traffic and sends it to your backend application.
+
+### HEALTH CHECKS
+
+Taking the time to define an appropriate health check is critical. Only verifying that the port of an application is open doesn’t mean that the application is working. It also doesn’t mean that simply making a call to the home page of an application is the right way either.
+
+For example, the employee directory application depends on a database, and S3. The health check should validate all of those elements. One way to do that would be to create a monitoring webpage like “/monitor” that will make a call to the database to ensure it can connect and get data, and make a call to S3. Then, you point the health check on the load balancer to the “/monitor” page.
+
+![alt text](./images/EC2_monitor_health_via_ELB.png)
+
+ After determining the availability of a new EC2 instance, the load balancer starts sending traffic to it. If ELB determines that an EC2 instance is no longer working, it stops sending traffic to it and lets EC2 Auto Scaling know. EC2 Auto Scaling’s responsibility is to remove it from the group and replace it with a new EC2 instance. Traffic only sends to the new instance if it passes the health check.
+
+In the case of a scale down action that EC2 Auto Scaling needs to take due to a scaling policy, it lets ELB know that EC2 instances will be terminated. ELB can prevent EC2 Auto Scaling from terminating the EC2 instance until all connections to that instance end, while preventing any new connections. That feature is called **connection draining**.
+
+### ELB COMPONENTS
+
+
+![alt text](./images/components_of_ELB.png)
+
+- Listeners: The client connects to the listener. This is often referred to as client-side. To define a listener, a port must be provided as well as the protocol, depending on the load balancer type. There can be many listeners for a single load balancer.
+
+- Target groups: The backend servers, or server-side, is defined in one or more target groups. This is where you define the type of backend you want to direct traffic to, such as EC2 Instances, AWS Lambda functions, or IP addresses. Also, a health check needs to be defined for each target group.
+
+- Rules: To associate a target group to a listener, a rule must be used. Rules are made up of a condition that can be the source IP address of the client and a condition to decide which target group to send the traffic to.
+
+### APPLICATION LOAD BALANCER
+
+Here are some primary features of Application Load Balancer (ALB).
+
+ALB routes traffic based on request data. It makes routing decisions based on the HTTP protocol like the URL path (/upload) and host, HTTP headers and method, as well as the source IP address of the client. This enables granular routing to the target groups.
+
+Send responses directly to the client. ALB has the ability to reply directly to the client with a fixed response like a custom HTML page. It also has the ability to send a redirect to the client which is useful when you need to redirect to a specific website or to redirect the request from HTTP to HTTPS, removing that work from your backend servers.
+
+ALB supports TLS offloading. Speaking of HTTPS and saving work from backend servers, ALB understands HTTPS traffic. To be able to pass HTTPS traffic through ALB, an SSL certificate is provided by either importing a certificate via Identity and Access Management (IAM) or AWS Certificate Manager (ACM) services, or by creating one for free using ACM. This ensures the traffic between the client and ALB is encrypted.
+
+Authenticate users. On the topic of security, ALB has the ability to authenticate the users before they are allowed to pass through the load balancer. ALB uses the OpenID Connect protocol and integrates with other AWS services to support more protocols like SAML, LDAP, Microsoft AD, and more.
+
+Secure traffic. To prevent traffic from reaching the load balancer, you configure a security group to specify the supported IP address ranges.
+
+ALB uses the round-robin routing algorithm. ALB ensures each server receives the same number of requests in general. This type of routing works for most applications.
+
+ALB uses the least outstanding request routing algorithm. If the requests to the backend vary in complexity where one request may need a lot more CPU time than another, then the least outstanding request algorithm is more appropriate. It’s also the right routing algorithm to use if the targets vary in processing capabilities. An outstanding request is when a request is sent to the backend server and a response hasn’t been received yet.
+
+For example, if the EC2 instances in a target group aren’t the same size, one server’s CPU utilization will be higher than the other if the same number of requests are sent to each server using the round-robin routing algorithm. That same server will have more outstanding requests as well. Using the least outstanding request routing algorithm would ensure an equal usage across targets.
+
+ALB has sticky sessions. In the case where requests need to be sent to the same backend server because the application is stateful, then use the sticky session feature. This feature uses an HTTP cookie to remember across connections which server to send the traffic to.Finally, ALB is specifically for HTTP and HTTPS traffic. If your application uses a different protocol, then consider the Network Load Balancer (NLB).
+
+### NLB
+
+Here are some primary features of Network Load Balancer (NLB).Network Load Balancer supports TCP, UDP, and TLS protocols. HTTPS uses TCP and TLS as protocol. However, NLB operates at the connection layer, so it doesn’t understand what a HTTPS request is. That means all features discussed above that are required to understand the HTTP and HTTPS protocol, like routing rules based on that protocol, authentication, and least outstanding request routing algorithm, are not available with NLB.
+
+NLB uses a flow hash routing algorithm. The algorithm is based on:
+
+The protocol
+
+The source IP address and source port
+
+The destination IP address and destination port
+
+The TCP sequence number
+
+If all of these parameters are the same, then the packets are sent to the exact same target. If any of them are different in the next packets, then the request may be sent to a different target.
+
+**NLB has sticky sessions**. Different from ALB, these sessions are based on the source IP address of the client instead of a cookie.
+
+**NLB supports TLS offloading**. NLB understands the TLS protocol. It can also offload TLS from the backend servers similar to how ALB works.
+
+**NLB handles millions of requests per second**. While ALB can also support this number of requests, it needs to scale to reach that number. This takes time. NLB can instantly handle this amount of requests.
+
+**NLB supports static and elastic IP addresses**. There are some situations where the application client needs to send requests directly to the load balancer IP address instead of using DNS. For example, this is useful if your application can’t use DNS or if the connecting clients require firewall rules based on IP addresses. In this case, NLB is the right type of load balancer to use.
+
+**NLP preserves source IP address**. NLB preserves the source IP address of the client when sending the traffic to the backend. With ALB, if you look at the source IP address of the requests, you will find the IP address of the load balancer. While with NLB, you would see the real IP address of the client, which is required by the backend application in some cases.
+
+![alt text](./images/different_ELBs.png)
+
+---
+
+## 4.5: Amazon EC2 Auto Scaling
+
+Availability and reachability is improved by adding one more server. However, the entire system can again become unavailable if there is a capacity issue. Let’s look at that load issue with both types of systems we discussed, active-passive and active-active.
+
+**Vertical Scaling**
+If there are too many requests sent to a single active-passive system, the active server will become unavailable and hopefully failover to the passive server. But this doesn’t solve anything. With active-passive, you need vertical scaling. This means increasing the size of the server. With EC2 instances, you select either a larger type or a different instance type. This can only be done while the instance is in a stopped state. In this scenario, the following steps occur: 
+
+1. Stop the passive instance. This doesn’t impact the application since it’s not taking any traffic.
+2. Change the instance size or type, then start the instance again.
+3. Shift the traffic to the passive instance, turning it active.
+4. The last step is to stop, change the size, and start the previous active instance as both instances should match.
+
+When the amount of requests reduces, the same operation needs to be done. Even though there aren’t that many steps involved, it’s actually a lot of manual work to do. Another disadvantage is that a server can only scale vertically up to a certain limit.
+
+Once that limit is reached, the only option is to create another active-passive system and split the requests and functionalities across them. This could require massive application rewriting.This is where the active-active system can help. When there are too many requests, this system can be scaled horizontally by adding more servers.
+
+**Horizontal Scaling**
+As mentioned above, for the application to work in an active-active system, it’s already created as stateless, not storing any client session on the server. This means that having two servers or having four wouldn’t require any application changes. It would only be a matter of creating more instances when required and shutting them down when the traffic decreases.
+
+The Amazon EC2 Auto Scaling service can take care of that task by automatically creating and removing EC2 instances based on metrics from Amazon CloudWatch. 
+
+You can see that there are many more advantages to using an active-active system in comparison with an active-passive. Modifying your application to become stateless enables scalability.
+
+**Integrate ELB with EC2 Auto Scaling**
+The ELB service integrates seamlessly with EC2 Auto Scaling. As soon as a new EC2 instance is added to or removed from the EC2 Auto Scaling group, ELB is notified. However, before it can send traffic to a new EC2 instance, it needs to validate that the application running on that EC2 instance is available.
+
+This validation is done via the health checks feature of ELB. Monitoring is an important part of load balancers, as it should route traffic to only healthy EC2 instances. That’s why ELB supports two types of health checks. 
+
+Establishing a connection to a backend EC2 instance using TCP, and marking the instance as available if that connection is successful.
+
+Making an HTTP or HTTPS request to a webpage that you specify, and validating that an HTTP response code is returned.
+
+Differentiate Between Traditional Scaling and Auto Scaling
+With a traditional approach to scaling, you buy and provision enough servers to handle traffic at its peak. However, this means that at night time, there is more capacity than traffic. This also means you’re wasting money. Turning off those servers at night or at times where the traffic is lower only saves on electricity. 
+
+The cloud works differently, with a pay-as-you-go model. It’s important to turn off the unused services, especially EC2 instances that you pay for On-Demand. One could manually add and remove servers at a predicted time. But with unusual spikes in traffic, this solution leads to a waste of resources with over-provisioning or with a loss of customers due to under-provisioning.
+
+The need here is for a tool that automatically adds and removes EC2 instances according to conditions you define—that’s exactly what the EC2 Auto Scaling service does.
+
+**Use Amazon EC2 Auto Scaling**
+The EC2 Auto Scaling service works to add or remove capacity to keep a steady and predictable performance at the lowest possible cost. By adjusting the capacity to exactly what your application uses, you only pay for what your application needs. And even with applications that have steady usage, EC2 Auto Scaling can help with fleet management. If there is an issue with an EC2 instance, EC2 Auto Scaling can automatically replace that instance. This means that EC2 Auto Scaling helps both to scale your infrastructure and ensure high availability. 
+
+**Configure EC2 Auto Scaling Components**
+There are three main components to EC2 Auto Scaling.
+
+> 1. Launch template or configuration: What resource should be automatically scaled?
+> 2. EC2 Auto Scaling Group: Where should the resources be deployed?
+> 3. Scaling policies: When should the resources be added or removed?
+
+**Learn About Launch Templates**
+
+![alt text](./images/launch_templates.png)
+
+There are multiple parameters required to create EC2 instances: Amazon Machine Image (AMI) ID, instance type, security group, additional Amazon Elastic Block Store (EBS) volumes, and more. All this information is also required by EC2 Auto Scaling to create the EC2 instance on your behalf when there is a need to scale. This information is stored in a launch template.
+
+You can use a launch template to manually launch an EC2 instance. You can also use it with EC2 Auto Scaling. It also supports versioning, which allows for quickly rolling back if there was an issue or to specify a default version of your launch template. This way, while iterating on a new version, other users can continue launching EC2 instances using the default version until you make the necessary changes. 
+
+
+You can create a launch template one of three ways. 
+
+- The fastest way to create a template is to use an existing EC2 instance. All the settings are already defined.
+- Another option is to create one from an already existing template or a previous version of a launch template.
+- The last option is to create a template from scratch. The following options will need to be defined: AMI ID, instance type, key pair, security group, storage, and resource tags.
+
+Note: Another way to define what Amazon EC2 Auto Scaling needs to scale is by using **a launch configuration**. It’s similar to the launch template, but it doesn’t allow for versioning using a previously created launch configuration as a template. Nor does it allow for creating one from an already existing EC2 instance. For these reasons and to ensure that you’re getting the latest features from Amazon EC2, use a launch template instead of launch configuration.
+
+Get to Know EC2 Auto Scaling Groups
+The next component that EC2 Auto Scaling needs is an EC2 Auto Scaling Group (ASG). An ASG enables you to define where EC2 Auto Scaling deploys your resources. This is where you specify the Amazon Virtual Private Cloud (VPC) and subnets the EC2 instance should be launched in. 
+
+EC2 Auto Scaling takes care of creating the EC2 instances across the subnets, so it’s important to select at least two subnets that are across different Availability Zones.
+
+ASGs also allow you to specify the type of purchase for the EC2 instances. You can use On-Demand only, Spot only, or a combination of the two, which allows you to take advantage of Spot instances with minimal administrative overhead.To specify how many instances EC2 Auto Scaling should launch, there are three capacity settings to configure for the group size. 
+
+**Minimum**: The minimum number of instances running in your ASG even if the threshold for lowering the amount of instances is reached.
+
+**Maximum**: The maximum number of instances running in your ASG even if the threshold for adding new instances is reached.
+
+**Desired capacity**: The amount of instances that should be in your ASG. This number can only be within or equal to the minimum or maximum. EC2 Auto Scaling automatically adds or removes instances to match the desired capacity number. 
+
+![alt text](./images/mini_desired_max_capacity.png)
+
+When EC2 Auto Scaling removes EC2 instances because the traffic is minimal, it keeps removing EC2 instances until it reaches a minimum capacity. Depending on your application, using a minimum of two is a good idea to ensure high availability, but you know how many EC2 instances at a bare minimum your application requires at all times. When reaching that limit, even if EC2 Auto Scaling is instructed to remove an instance, it does not, to ensure the minimum is kept.
+
+On the other hand, when the traffic keeps growing, EC2 Auto Scaling keeps adding EC2 instances. This means the cost for your application will also keep growing. That’s why it’s important to set a maximum amount to make sure it doesn’t go above your budget.
+
+The desired capacity is the amount of EC2 instances that EC2 Auto Scaling creates at the time the group is created. If that number decreases, then EC2 Auto Scaling removes the oldest instance by default. If that number increases, then EC2 Auto Scaling creates new instances using the launch template.
+
+Ensure Availability with EC2 Auto Scaling
+
+Using different numbers for minimum, maximum, and desired capacity is used for dynamically adjusting the capacity. However, if you prefer to use EC2 Auto Scaling for fleet management, you can configure the three settings to the same number, for example four. EC2 Auto Scaling will ensure that if an EC2 instance becomes unhealthy, it replaces it to always ensure that four EC2 instances are available. This ensures high availability for your applications.
+
+![alt text](./images/mini_desired_max_capacity_2.png)
+
+**Enable Automation with Scaling Policies**
+By default, an ASG will be kept to its initial desired capacity. Although it’s possible to manually change the desired capacity, you can also use scaling policies.
+
+In the AWS Monitoring module, you learned about Amazon CloudWatch metrics and alarms. You use metrics to keep information about different attributes of your EC2 instance like the CPU percentage. You use alarms to specify an action when a threshold is reached. Metrics and alarms are what scaling policies use to know when to act. For example, you set up an alarm that says when the CPU utilization is above 70% across the entire fleet of EC2 instances, trigger a scaling policy to add an EC2 instance.
+
+There are three types of scaling policies: simple, step, and target tracking scaling.
+
+**Simple Scaling Policy**
+A simple scaling policy allows you to do exactly what’s described above. You use a CloudWatch alarm and specify what to do when it is triggered. This can be a number of EC2 instances to add or remove, or a specific number to set the desired capacity to. You can specify a percentage of the group instead of using an amount of EC2 instances, which makes the group grow or shrink more quickly. 
+
+Once this scaling policy is triggered, it waits a cooldown period before taking any other action. This is important as it takes time for the EC2 instances to start and the CloudWatch alarm may still be triggered while the EC2 instance is booting. For example, you could decide to add an EC2 instance if the CPU utilization across all instances is above 65%. You don’t want to add more instances until that new EC2 instance is accepting traffic. 
+
+However, what if the CPU utilization was now above 85% across the ASG? Only adding one instance may not be the right move here. Instead, you may want to add another step in your scaling policy. Unfortunately, a simple scaling policy can’t help with that.
+
+**Step Scaling Policy**
+This is where a step scaling policy helps. Step scaling policies respond to additional alarms even while a scaling activity or health check replacement is in progress. Similar to the example above, you decide to add two more instances in case the CPU utilization is at 85%, and four more instances when it’s at 95%.
+
+Deciding when to add and remove instances based on CloudWatch alarms may seem like a difficult task. This is why the third type of scaling policy exists: target tracking.
+
+**Target Tracking Scaling Policy**
+If your application scales based on average CPU utilization, average network utilization (in or out), or based on request count, then this scaling policy type is the one to use. All you need to provide is the target value to track and it automatically creates the required CloudWatch alarms.
 
 
 ---
 
 
 
+
 # Additional References:
+
+> Disclaimer: Beware: Not all information provided by ChatGPT is accurate. They get wrong quite a lot in nuanced sub-topics. 
 
 - [My ChatGPT Interactions on Networking in AWS](https://chatgpt.com/share/67077451-51e0-800f-ad65-98c6b109e330)
 - [My ChatGPT Interactions on Computing in AWS](https://chatgpt.com/share/6703b5e9-1154-800f-8c1d-03f16c3ae6e0)
+- [My ChatGPT Interactions on Storage Services in AWS](https://chatgpt.com/share/6728503c-722c-800f-a6fc-f16d4e1888f3)
+- [My ChatGPT Interactions on Database Services in AWS](https://chatgpt.com/share/67285596-cb00-800f-b999-f317d4ae56c4)
