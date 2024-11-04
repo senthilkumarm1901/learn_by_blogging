@@ -7,11 +7,15 @@ categories:
 description: In this blog, I cover my learnings from the Coursera-AWS course on AWS Cloud Technical Essentials
 date: '2024-10-15'
 title: Learn AWS Series - Notes from my Coursera Course `AWS Cloud Technical Essentials`
+image: images/course_certificate.png
+toc: true
 draft: false
 ---
 
 > Note: The below notes contain my own writing combined with copy-paste notes from Coursera (Not to be misjudged for plagiarism)
+<br>
 > Most pics are from Coursera course. If a pic is taken from outside, source is cited below it
+<br>
 > The below notes are purely to refresh my memory when I take up any AWS exam in future. Unlike other article, the below notes are not meant to be `original`
 
 
@@ -19,11 +23,11 @@ draft: false
 
 # Architectue that was used in the Course
 
-![alt text](./images/main_architecture.png)
+![](./images/main_architecture.png)
 
 # Course Roadmap
 
-![alt text](./images/course_roadmap.png)
+![](./images/course_roadmap.png)
 
 ---
 
@@ -83,7 +87,7 @@ Consider four main aspects when deciding which AWS Region to host your applicati
 
 ## AVAILABILITY ZONES
 
-![alt text](./images/availability_zones.png)
+![](./images/availability_zones.png)
 
 Inside every Region is a cluster of Availability Zones (AZ). An AZ consists of one or more data centers with redundant power, networking, and connectivity. These data centers operate in discrete facilities with undisclosed locations. They are connected using redundant high-speed and low-latency links.AZs also have a code name. Since they’re located inside Regions, they can be addressed by appending a letter to the end of the Region code name. For example:
 
@@ -102,7 +106,7 @@ Depending on the AWS Service you use, your resources are either deployed at the 
 
 To keep your application available, you need to maintain high availability and resiliency. A well-known best practice for cloud architecture is to use Region-scoped, managed services. These services come with availability and resiliency built in.When that is not possible, make sure the workload is replicated across multiple AZs. At a minimum, you should use two AZs. If one entire AZ fails, your application will have infrastructure up and running in at least a second AZ to take over the traffic.
 
-![alt text](./images/application_in_2_AZs.png)
+![](./images/application_in_2_AZs.png)
 
 ---
 
@@ -111,7 +115,7 @@ To keep your application available, you need to maintain high availability and r
 
 When you begin working with the AWS Cloud, managing security and compliance is a shared responsibility between AWS and you. To depict this shared responsibility, AWS created the shared responsibility model. This distinction of responsibility is commonly referred to as security of the cloud, versus security in the cloud.
 
-![alt text](./images/shared_responsibility_model.png)
+![](./images/shared_responsibility_model.png)
 
 ## WHAT IS AWS RESPONSIBLE FOR?
 AWS is responsible for security of the cloud. This means AWS is required to protect and secure the infrastructure that runs all the services offered in the AWS Cloud. AWS is responsible for:
@@ -123,7 +127,7 @@ Managing the hardware, software, and networking components that run AWS services
 The level of responsibility AWS has depends on the service. AWS classifies services into three different categories. The following table provides information about each, as well as the AWS responsibility.
 
 
-![alt text](./images/aws_responsibilities.png)
+![](./images/aws_responsibilities.png)
 
 Note: 
 - Container services refer to AWS abstracting application containers behind the scenes, not Docker container services. This enables AWS to move the responsibility of managing that platform away from customers.
@@ -134,7 +138,7 @@ Note:
 
 You’re responsible for security in the cloud. When using any AWS service, you’re responsible for properly configuring the service and your applications, as well as ensuring your data is secure.The level of responsibility you have depends on the AWS service. Some services require you to perform all the necessary security configuration and management tasks, while other more abstracted services require you to only manage the data and control access to your resources. Using the three categories of AWS services, you can determine your level of responsibility for each AWS service you use.
 
-![alt text](./images/customer_responsbilities.png)
+![](./images/customer_responsbilities.png)
 
 
 Due to the varying level of effort, it’s important to consider which AWS service you use and review the level of responsibility required to secure the service. It’s also important to review how the shared security model aligns with the security standards in your IT environment, as well as any applicable laws and regulations.It’s important to note that you maintain complete control of your data and are responsible for managing the security related to your content. Here are some examples of your responsibilities in context.
@@ -217,7 +221,7 @@ If you enable MFA on your root user, you are required to present a piece of iden
 ## Review Supported MFA Devices
 AWS supports a variety of MFA mechanisms, such as virtual MFA devices, hardware devices, and Universal 2nd Factor (U2F) security keys. For instructions on how to set up each method, check out the Resources section.
 
-![alt text](./images/mfa_devices_supported.png)
+![](./images/mfa_devices_supported.png)
 
 ---
 
@@ -329,7 +333,7 @@ After looking at the JSON, you can see that this policy allows the IAM user to c
 
 When creating a policy, it is required to have each of the following elements inside a policy statement.
 
-![alt text](./images/iam_policy_3_essential_elements.png)
+![](./images/iam_policy_3_essential_elements.png)
 
 
 
@@ -373,10 +377,10 @@ If you have an organization that spans many employees and multiple AWS accounts,
 
 ### Summary:
 
-![alt text](./images/iam_user_differences.png)
+![](./images/iam_user_differences.png)
 Source: AWS Blg
 
-![alt text](./images/different_groups_different_permissions.png)
+![](./images/different_groups_different_permissions.png)
 ---
 
 # Week 1's Quiz: 
@@ -420,7 +424,7 @@ Linux options, such as Apache HTTP Web Server, Nginx, and Apache Tomcat.
 To run an HTTP server on AWS, you need to find a service that provides compute power in the AWS Management Console. You can log into the console and view the complete list of AWS compute services.
 
 
-![alt text](./images/different_compute_options_in_AWS.png)
+![](./images/different_compute_options_in_AWS.png)
 
 ## Choose the Right Compute Option
 If you’re responsible for setting up servers on AWS to run your infrastructure, you have many compute options. You need to know which service to use for which use case. 
@@ -467,7 +471,7 @@ EC2 instances are live instantiations of what is defined in an AMI, much like a 
 A Class is something you model and define, while an object is something you interact with. In this case, the AMI is how you model and define your instance, while the EC2 instance is the entity you interact with, where you can install your web server, and serve your content to users.When you launch a new instance, AWS allocates a virtual machine that runs on a hypervisor. Then the AMI you selected is copied to the root device volume, which contains the image used to boot the volume. In the end, you get a server you can connect to and install packages and any additional software. In this case, you install a web server along with the properly configured source code of your employee directory app. 
 
 
-![alt text](./images/ami_ec2_rootvolume.png)
+![](./images/ami_ec2_rootvolume.png)
 
 One advantage of using AMIs is that they are reusable. 
 
@@ -477,7 +481,7 @@ If you wanted to create a second EC2 instance with the same configurations, how 
 
 The second, better option, is to create an AMI from your running instance and use this AMI to start a new instance. This way, your new instance will have all the same configurations as your current instance, because the configurations set in the AMIs are the same.
 
-![alt text](./images/create_ami_from_running_instance.png)
+![](./images/create_ami_from_running_instance.png)
 
 ### Where Can You Find AMIs?
 You can select an AMI from the following categories.
@@ -537,7 +541,7 @@ A container is a standardized unit that packages up your code and all of its dep
 
 When you hear the word container, you may associate it with Docker. **Docker is a popular container runtime** that simplifies the management of the entire operating system stack needed for container isolation, including networking and storage. Docker makes it easy to create, package, deploy, and run containers.
 
-![alt text](./images/containers_and_virtual_machines.png)
+![](./images/containers_and_virtual_machines.png)
 
 
 Containers share the same operating system and kernel as the host they exist on, whereas virtual machines contain their operating system. Since each virtual machine has to maintain a copy of an operating system, there’s a degree of wasted space.A container is more lightweight. They spin up quicker, almost instantly. This difference in startup time becomes instrumental when designing applications that need to scale quickly during input/output (I/O) bursts.While containers can provide speed, virtual machines offer you the full strength of an operating system and offer more resources, like package installation, a dedicated kernel, and more.
@@ -558,12 +562,12 @@ This coordination is handled by a container orchestration service. AWS offers tw
 
 Amazon ECS is an end-to-end container orchestration service that allows you to quickly spin up new containers and manage them across a cluster of EC2 instances.
 
-![alt text](./images/one_ec2_multiple_containers.png)
+![](./images/one_ec2_multiple_containers.png)
 
 
 To run and manage your containers, you need to install the Amazon ECS Container Agent on your EC2 instances. This agent is open source and responsible for communicating back to the Amazon ECS service about cluster management details. You can run this agent on both Linux and Windows AMIs. An instance with the container agent installed is often called a container instance.
 
-![alt text](./images/ecs_agent_to_orchestrate_containers.png)
+![](./images/ecs_agent_to_orchestrate_containers.png)
 
 
 Once the Amazon ECS container instances are up and running, you can perform actions that include, but are not limited to, launching and stopping containers, getting cluster state, scaling in and out, scheduling the placement of containers across your cluster, assigning permissions, and meeting availability requirements.
@@ -658,7 +662,7 @@ If you have containers running on Kubernetes and want an advanced orchestration 
 | A `task` refers to a set of one or more containers that are scheduled together | A `pod` - the smallest deployable unit and equivalent of `task` in ECS - consists of one or more containers that share resources |
 | Summary: In ECS, the EC2 instances where containers run are called container instances because they have the ECS agent installed to manage `tasks` | Summary: In EKS (Kubernetes), the EC2 instances are called worker nodes, and they are part of the broader Kubernetes cluster. Kubernetes distributes containers (in the form of pods) to these nodes. |
 
-![alt text](./images/a_EKS_worker_node.png)
+![](./images/a_EKS_worker_node.png)
 
 ---
 
@@ -784,7 +788,7 @@ Typically, you don’t see an IP address in this binary format. Instead, it’s 
 
 In the diagram below, the 32 bits are grouped into groups of 8 bits, also called octets. Each of these groups is converted into decimal format separated by a period. 
 
-![alt text](./images/ipv4_notation.png)
+![](./images/ipv4_notation.png)
 
 In the end, this is what is called an Ipv4 address. This is important to know when trying to communicate to a single computer. But remember, you’re working with a network. This is where CIDR Notation comes in.
 
@@ -858,7 +862,7 @@ AWS reserves 5 IP addresses in every subnet, so in smaller CIDR blocks like /28 
 2. A Region for your VPC to live in. Each VPC spans multiple Availability Zones within the Region you choose.
 3. A IP range for your VPC in CIDR notation. This determines the size of your network. Each VPC can have up to four /16 IP ranges.
 
-![alt text](./images/vpc_azs_region.png)
+![](./images/vpc_azs_region.png)
 
 ### Create a Subnet: 
 
@@ -876,7 +880,7 @@ When you create a subnet, you need to choose three settings.
 
 Below is an image of an EC2 instance residing inside a public subnet   
 
-![alt text](./images/public_and_private_subnetets_inside_vpc.png)
+![](./images/public_and_private_subnetets_inside_vpc.png)
 
 How to maintain high availability with a VPC?
 
@@ -886,7 +890,7 @@ How to maintain high availability with a VPC?
 
 What are those 5 Reserved IPs at every Subnet? 
 
-![alt text](./images/5_reserved_ip_addresses.png)
+![](./images/5_reserved_ip_addresses.png)
 
 > For example, consider a VPC with the IP range 10.0.0.0/22. The VPC includes `1,024 total IP addresses`. This is divided into four equal-sized subnets, each with a `/24` IP range with `256 IP addresses`. Out of each of those IP ranges, there are only 251 IP addresses that can be used because AWS reserves five.  
 
@@ -988,7 +992,7 @@ The **key security principle** here is that inbound traffic is tightly controlle
 
 When you create a VPC, AWS creates a route table called the main route table. A route table contains a set of rules, called routes, that are used to determine where network traffic is directed. AWS assumes that when you create a new VPC with subnets, you want traffic to flow between them. Therefore, the default configuration of the main route table is to allow traffic between all subnets in the local network.
 
-![alt text](./images/main_route_table_(of_a_vpc).png)
+![](./images/main_route_table_(of_a_vpc).png)
 
 
 There are two main parts to this route table.
@@ -1005,7 +1009,7 @@ There are two main parts to this route table.
 > If you associate a custom route table with a subnet, the subnet will use it instead of the main route table. By default, each custom route table you create will have the `local` route already inside it, allowing communication to flow between all resources and subnets inside the VPC. 
 
 
-![alt text](./images/custom_route_tables.png)
+![](./images/custom_route_tables.png)
 
 
 ### Secure Your Subnets with Network ACLs
@@ -1015,19 +1019,19 @@ A NACL (Network Access Control List) is *a stateless firewall* at the subnet lev
 
 > Network ACL’s are considered stateless, so you need to include both the inbound and outbound ports used for the protocol. If you don’t include the outbound range, your server would respond but the traffic would never leave the subnet.   
 
-![alt text](./images/network_acl_inbound_and_outbound_rules.png)
+![](./images/network_acl_inbound_and_outbound_rules.png)
 
 > Note the `non modifiable` rules in both `inbound` and `outbound`
 
 ### Secure Your EC2 Instances with Security Groups
 
-![alt text](./images/NACL_vs_sec_group_rules.png)
+![](./images/NACL_vs_sec_group_rules.png)
 
 > Default Security Group Behaviour: Denies all inbound traffic by default, allows all outbound by default
 
 If you have a web server, you may need to accept HTTP and HTTPS requests to allow that type of traffic in through your security group. You can create an inbound rule that will allow port 80 (HTTP) and port 443 (HTTPS) as shown below. 
 
-![alt text](./images/inbound_sg_rules_for_http_https.png)
+![](./images/inbound_sg_rules_for_http_https.png)
 
 #### Port 80 vs Port 443: 
 
@@ -1048,10 +1052,10 @@ E.g.: `http://` websites
 E.g.: `https://` websites
 ```
 
-![alt text](./images/http_vs_https.png)
+![](./images/http_vs_https.png)
 
 
-![alt text](./images/networking_sg_rules_for_a_multi_tier_system.png)
+![](./images/networking_sg_rules_for_a_multi_tier_system.png)
 
 
 
@@ -1061,7 +1065,7 @@ E.g.: `https://` websites
 
 ## How an EC2 Instance in a Private Subnet reaches the Internet
 
-![alt text](./images/how_EC2_in_private_subnet.png)
+![](./images/how_EC2_in_private_subnet.png)
 
 ---
 
@@ -1148,7 +1152,7 @@ Usecases:
 
 - While file storage treats files as a singular unit, block storage splits files into fixed-size chunks of data called blocks that have their own addresses. Since each block is addressable, blocks can be retrieved efficiently.
 
-![alt text](./images/block_storage.png)
+![](./images/block_storage.png)
 
 ### Object Storage
 
@@ -1337,7 +1341,7 @@ Key Point:
 
 ### UNDERSTAND AMAZON S3 CONCEPTS
 
-![alt text](./images/s3_url_structure.png)
+![](./images/s3_url_structure.png)
 
 ### Security for S3 Objects
 
@@ -1745,13 +1749,13 @@ flowchart TB
 ## Where are Database Instances placed?
 
 ### RDS lies inside VPC Private Subnet
-![alt text](./images/dbs_inside_private_subnet.png)
+![](./images/dbs_inside_private_subnet.png)
 
 
 
 ### Dynamo DB lies outside VPC
 
-![alt text](./images/dynamo_DB_lies_outside_vpc.png)
+![](./images/dynamo_DB_lies_outside_vpc.png)
 
 
 Source: [AWS rePost](https://repost.aws/questions/QUsOBNlERPQZejZsyo3rtxGg/lambda-in-private-subnet-cannot-reach-dynamodb)
@@ -1936,7 +1940,7 @@ Using `boto3` sdk, you can ensure `custom metrics` like the following that refle
 
 ### Notation in Nines:
 
-![alt text](./images/notation_in_nines.png)
+![](./images/notation_in_nines.png)
 
 ### Automatically use a Second Server in a different availability zone
 
@@ -2007,7 +2011,7 @@ Taking the time to define an appropriate health check is critical. Only verifyin
 
 For example, the employee directory application depends on a database, and S3. The health check should validate all of those elements. One way to do that would be to create a monitoring webpage like “/monitor” that will make a call to the database to ensure it can connect and get data, and make a call to S3. Then, you point the health check on the load balancer to the “/monitor” page.
 
-![alt text](./images/EC2_monitor_health_via_ELB.png)
+![](./images/EC2_monitor_health_via_ELB.png)
 
  After determining the availability of a new EC2 instance, the load balancer starts sending traffic to it. If ELB determines that an EC2 instance is no longer working, it stops sending traffic to it and lets EC2 Auto Scaling know. EC2 Auto Scaling’s responsibility is to remove it from the group and replace it with a new EC2 instance. Traffic only sends to the new instance if it passes the health check.
 
@@ -2016,7 +2020,7 @@ In the case of a scale down action that EC2 Auto Scaling needs to take due to a 
 ### ELB COMPONENTS
 
 
-![alt text](./images/components_of_ELB.png)
+![](./images/components_of_ELB.png)
 
 - Listeners: The client connects to the listener. This is often referred to as client-side. To define a listener, a port must be provided as well as the protocol, depending on the load balancer type. There can be many listeners for a single load balancer.
 
@@ -2072,7 +2076,7 @@ If all of these parameters are the same, then the packets are sent to the exact 
 
 **NLP preserves source IP address**. NLB preserves the source IP address of the client when sending the traffic to the backend. With ALB, if you look at the source IP address of the requests, you will find the IP address of the load balancer. While with NLB, you would see the real IP address of the client, which is required by the backend application in some cases.
 
-![alt text](./images/different_ELBs.png)
+![](./images/different_ELBs.png)
 
 ---
 
@@ -2127,7 +2131,7 @@ There are three main components to EC2 Auto Scaling.
 
 **Learn About Launch Templates**
 
-![alt text](./images/launch_templates.png)
+![](./images/launch_templates.png)
 
 There are multiple parameters required to create EC2 instances: Amazon Machine Image (AMI) ID, instance type, security group, additional Amazon Elastic Block Store (EBS) volumes, and more. All this information is also required by EC2 Auto Scaling to create the EC2 instance on your behalf when there is a need to scale. This information is stored in a launch template.
 
@@ -2155,7 +2159,7 @@ ASGs also allow you to specify the type of purchase for the EC2 instances. You c
 
 **Desired capacity**: The amount of instances that should be in your ASG. This number can only be within or equal to the minimum or maximum. EC2 Auto Scaling automatically adds or removes instances to match the desired capacity number. 
 
-![alt text](./images/mini_desired_max_capacity.png)
+![](./images/mini_desired_max_capacity.png)
 
 When EC2 Auto Scaling removes EC2 instances because the traffic is minimal, it keeps removing EC2 instances until it reaches a minimum capacity. Depending on your application, using a minimum of two is a good idea to ensure high availability, but you know how many EC2 instances at a bare minimum your application requires at all times. When reaching that limit, even if EC2 Auto Scaling is instructed to remove an instance, it does not, to ensure the minimum is kept.
 
@@ -2167,7 +2171,7 @@ Ensure Availability with EC2 Auto Scaling
 
 Using different numbers for minimum, maximum, and desired capacity is used for dynamically adjusting the capacity. However, if you prefer to use EC2 Auto Scaling for fleet management, you can configure the three settings to the same number, for example four. EC2 Auto Scaling will ensure that if an EC2 instance becomes unhealthy, it replaces it to always ensure that four EC2 instances are available. This ensures high availability for your applications.
 
-![alt text](./images/mini_desired_max_capacity_2.png)
+![](./images/mini_desired_max_capacity_2.png)
 
 **Enable Automation with Scaling Policies**
 By default, an ASG will be kept to its initial desired capacity. Although it’s possible to manually change the desired capacity, you can also use scaling policies.
