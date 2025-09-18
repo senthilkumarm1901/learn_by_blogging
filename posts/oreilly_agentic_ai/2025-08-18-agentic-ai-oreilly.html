@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2025-08-18">
+<meta name="description" content="Sharing my learning notes on the best practices of Agentic AI Development">
+
+<title>What I Learned about Agentic AI Development from an O’Reilly Course – Learn by Blogging</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">What I Learned about Agentic AI Development from an O’Reilly Course</h1>
+                  <div>
+        <div class="description">
+          Sharing my learning notes on the best practices of Agentic AI Development
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Agentic AI</div>
+                <div class="quarto-category">LLMs</div>
+                <div class="quarto-category">LangGraph</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 18, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-ai-agents" id="toc-introduction-to-ai-agents" class="nav-link active" data-scroll-target="#introduction-to-ai-agents">1. Introduction to AI Agents</a>
+  <ul class="collapse">
+  <li><a href="#overview-of-ai-agents-and-their-applications" id="toc-overview-of-ai-agents-and-their-applications" class="nav-link" data-scroll-target="#overview-of-ai-agents-and-their-applications">1.1 Overview of AI Agents and Their Applications</a></li>
+  <li><a href="#leading-ai-agent-frameworks" id="toc-leading-ai-agent-frameworks" class="nav-link" data-scroll-target="#leading-ai-agent-frameworks">1.2 Leading AI Agent Frameworks</a></li>
+  <li><a href="#designing-multi-step-workflows-with-langgraph" id="toc-designing-multi-step-workflows-with-langgraph" class="nav-link" data-scroll-target="#designing-multi-step-workflows-with-langgraph">1.3 Designing Multi-step Workflows with LangGraph</a></li>
+  </ul></li>
+  <li><a href="#under-the-hood-of-ai-agents" id="toc-under-the-hood-of-ai-agents" class="nav-link" data-scroll-target="#under-the-hood-of-ai-agents">2. Under the Hood of AI Agents</a>
+  <ul class="collapse">
+  <li><a href="#evolution-of-auto-regressive-llms" id="toc-evolution-of-auto-regressive-llms" class="nav-link" data-scroll-target="#evolution-of-auto-regressive-llms">2.1 Evolution of Auto-regressive LLMs</a></li>
+  <li><a href="#tools-of-ai-agents" id="toc-tools-of-ai-agents" class="nav-link" data-scroll-target="#tools-of-ai-agents">2.2 Tools of AI Agents</a></li>
+  <li><a href="#key-components-of-agent-frameworks-react-reasoning" id="toc-key-components-of-agent-frameworks-react-reasoning" class="nav-link" data-scroll-target="#key-components-of-agent-frameworks-react-reasoning">2.3 Key Components of Agent Frameworks: <strong>ReAct Reasoning</strong></a></li>
+  <li><a href="#another-definition-of-agents---workflows-with-discrete-checkpoints" id="toc-another-definition-of-agents---workflows-with-discrete-checkpoints" class="nav-link" data-scroll-target="#another-definition-of-agents---workflows-with-discrete-checkpoints">2.4 Another Definition of Agents - <code>Workflows with Discrete Checkpoints</code></a></li>
+  </ul></li>
+  <li><a href="#building-your-own-ai-agentic-framework" id="toc-building-your-own-ai-agentic-framework" class="nav-link" data-scroll-target="#building-your-own-ai-agentic-framework">3. Building Your Own AI Agentic Framework</a>
+  <ul class="collapse">
+  <li><a href="#how-does-the-react-agent-class-with-tool-invocation-look" id="toc-how-does-the-react-agent-class-with-tool-invocation-look" class="nav-link" data-scroll-target="#how-does-the-react-agent-class-with-tool-invocation-look">3.1 How does the <code>ReAct Agent Class with Tool Invocation</code> look?</a></li>
+  <li><a href="#building-a-custom-tool" id="toc-building-a-custom-tool" class="nav-link" data-scroll-target="#building-a-custom-tool">3.2 Building a Custom Tool</a></li>
+  <li><a href="#building-an-agent-prompt" id="toc-building-an-agent-prompt" class="nav-link" data-scroll-target="#building-an-agent-prompt">3.3 Building an Agent Prompt</a></li>
+  <li><a href="#sinans-own-agentic-ai-framework---squad-goals" id="toc-sinans-own-agentic-ai-framework---squad-goals" class="nav-link" data-scroll-target="#sinans-own-agentic-ai-framework---squad-goals">3.4 Sinan’s Own Agentic AI Framework - Squad Goals</a></li>
+  </ul></li>
+  <li><a href="#testing-and-evaluating-ai-agents" id="toc-testing-and-evaluating-ai-agents" class="nav-link" data-scroll-target="#testing-and-evaluating-ai-agents">4. Testing and Evaluating AI Agents</a>
+  <ul class="collapse">
+  <li><a href="#core-evaluation-metrics" id="toc-core-evaluation-metrics" class="nav-link" data-scroll-target="#core-evaluation-metrics">4.1 Core Evaluation Metrics</a></li>
+  <li><a href="#evaluating-llm-behavior-inside-agents" id="toc-evaluating-llm-behavior-inside-agents" class="nav-link" data-scroll-target="#evaluating-llm-behavior-inside-agents">4.2 Evaluating LLM Behavior Inside Agents</a></li>
+  <li><a href="#evaluating-tool-selection-and-use" id="toc-evaluating-tool-selection-and-use" class="nav-link" data-scroll-target="#evaluating-tool-selection-and-use">4.3 Evaluating Tool Selection and Use</a></li>
+  <li><a href="#assessing-response-quality" id="toc-assessing-response-quality" class="nav-link" data-scroll-target="#assessing-response-quality">4.4 Assessing Response Quality</a></li>
+  <li><a href="#human-vs-llm-evaluation" id="toc-human-vs-llm-evaluation" class="nav-link" data-scroll-target="#human-vs-llm-evaluation">4.5 Human vs LLM Evaluation</a></li>
+  <li><a href="#key-takeaways-for-agent-evaluation" id="toc-key-takeaways-for-agent-evaluation" class="nav-link" data-scroll-target="#key-takeaways-for-agent-evaluation">4.6 <strong>Key Takeaways for Agent Evaluation</strong></a></li>
+  </ul></li>
+  <li><a href="#expanding-on-react-with-planning-and-reflection" id="toc-expanding-on-react-with-planning-and-reflection" class="nav-link" data-scroll-target="#expanding-on-react-with-planning-and-reflection">5. Expanding on ReAct with Planning and Reflection</a>
+  <ul class="collapse">
+  <li><a href="#why-agents-fail" id="toc-why-agents-fail" class="nav-link" data-scroll-target="#why-agents-fail">5.1 Why Agents Fail?</a></li>
+  <li><a href="#plan-execute-agents" id="toc-plan-execute-agents" class="nav-link" data-scroll-target="#plan-execute-agents">5.2 Plan &amp; Execute Agents</a></li>
+  <li><a href="#reflection-agents" id="toc-reflection-agents" class="nav-link" data-scroll-target="#reflection-agents">5.3 Reflection Agents</a></li>
+  </ul></li>
+  <li><a href="#advanced-applications-and-future-directions" id="toc-advanced-applications-and-future-directions" class="nav-link" data-scroll-target="#advanced-applications-and-future-directions">6. Advanced Applications and Future Directions</a>
+  <ul class="collapse">
+  <li><a href="#integrating-real-time-data-into-ai-agents" id="toc-integrating-real-time-data-into-ai-agents" class="nav-link" data-scroll-target="#integrating-real-time-data-into-ai-agents">6.1 Integrating Real-Time Data into AI Agents</a></li>
+  <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">6.2 Best Practices</a></li>
+  <li><a href="#future-trends" id="toc-future-trends" class="nav-link" data-scroll-target="#future-trends">6.3 Future Trends</a></li>
+  <li><a href="#a-visual-summary" id="toc-a-visual-summary" class="nav-link" data-scroll-target="#a-visual-summary">6.4 A Visual Summary</a></li>
+  </ul></li>
+  <li><a href="#conclusion-key-takeaways-from-the-six-sections" id="toc-conclusion-key-takeaways-from-the-six-sections" class="nav-link" data-scroll-target="#conclusion-key-takeaways-from-the-six-sections">7.<strong>Conclusion: Key Takeaways from the Six Sections</strong></a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<p>I recently completed a course in O’Reilly on “Modern Automated AI Agents: Building Agentic AI to Perform Complex Tasks” by Sinan Ozdemir (<a href="https://learning.oreilly.com/course/modern-automated-ai/9780135414965/">O’reilly course link</a>)</p>
+<p><img src="./attachments/OReilly-AgenticAI-Certificate.png" class="img-fluid"></p>
+<p>I learned quite a few things from that. I have compiled my notes from the course below.</p>
+<section id="introduction-to-ai-agents" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-ai-agents">1. Introduction to AI Agents</h2>
+<section id="overview-of-ai-agents-and-their-applications" class="level3">
+<h3 class="anchored" data-anchor-id="overview-of-ai-agents-and-their-applications">1.1 Overview of AI Agents and Their Applications</h3>
+<p><strong>Definitions of AI Agents</strong> <br></p>
+<ul>
+<li>Business Definition: AI agents are systems that exhibit <strong>autonomy</strong>, <strong>decision-making</strong>, and <strong>adaptation</strong>. They can operate independently, learn from feedback, and improve over time.</li>
+<li>Technical Definition: Agents are LLMs + prompts under the hood. Agents are <strong>prompts layered on top of LLMs</strong>, combined with <strong>tools</strong> and <strong>context</strong> to achieve specific goals.</li>
+</ul>
+<p><strong>Agents vs LLMs</strong><br></p>
+<ul>
+<li><strong>LLMs</strong>: Generate human-like text</li>
+<li><strong>Agents</strong>: Generate human-like text, perform tasks, and make their own decisions.</li>
+</ul>
+<p><strong>Core Components of an Agent</strong><br></p>
+<ol type="1">
+<li><strong>LLM</strong>: The model(s) needed for generating text and making decisions</li>
+<li><strong>Task/Goal</strong>: Example – “Go to thiswebsite.com and summarize.”<br>
+</li>
+<li><strong>Tools</strong>: Example – A web scraper.<br>
+</li>
+<li><strong>Context</strong>: Example – “You are an AWS expert. Check the full website and scroll through all components.”</li>
+<li><strong>Prompt</strong>: Combines task and context, while knowing what tools are available.</li>
+</ol>
+<p><strong>Example of an Agent</strong>: ChatGPT is an agent because it has access to tools like: <br></p>
+<ul>
+<li>Web search<br>
+</li>
+<li>DALL·E for image generation<br>
+</li>
+<li>Python execution tool</li>
+<li>User profile context (memory about you)</li>
+</ul>
+<p><strong>Single vs Multi-agent</strong><br></p>
+<ul>
+<li>ChatGPT = Single agent with sequential task flow.<br>
+</li>
+<li>OpenAI Swarm = Enables consistent agent handoffs.<br>
+</li>
+<li>AutoGen = Multi-agent system for asynchronous, distributed deployments.</li>
+</ul>
+<p>Other examples of agents: <br></p>
+<ul>
+<li><strong>Replit Agent</strong>: Develops apps from scratch.</li>
+</ul>
+<hr>
+</section>
+<section id="leading-ai-agent-frameworks" class="level3">
+<h3 class="anchored" data-anchor-id="leading-ai-agent-frameworks">1.2 Leading AI Agent Frameworks</h3>
+<p>Two major frameworks stand out: <br></p>
+<ul>
+<li><strong>LangChain &amp; LangGraph</strong>: Known for code standardization and stateful workflows. (focused more in this blog)</li>
+<li><strong>CrewAI</strong>: Focused on collaborative, role-based agents.</li>
+</ul>
+<p><strong>Why LangChain/LangGraph?</strong></p>
+<ul>
+<li>Standardized workflows<br>
+</li>
+<li>Stateful multi-actor applications<br>
+</li>
+<li>Human-in-the-loop support</li>
+</ul>
+<p>Other notable frameworks:</p>
+<ul>
+<li><strong>SmolAgents</strong> (HuggingFace)<br>
+</li>
+<li><strong>StrandsAgents</strong> (Amazon)</li>
+</ul>
+<hr>
+<blockquote class="blockquote">
+<p>While I have ignored the CrewAI codes discussed in the course, you can find the <code>Hello World</code> of CrewAI <a href="https://github.com/sinanuozdemir/oreilly-ai-agents/blob/main/notebooks/CrewAI_Hello_World.ipynb">here</a></p>
+</blockquote>
+<hr>
+</section>
+<section id="designing-multi-step-workflows-with-langgraph" class="level3">
+<h3 class="anchored" data-anchor-id="designing-multi-step-workflows-with-langgraph">1.3 Designing Multi-step Workflows with LangGraph</h3>
+<p>Sinan (the author of the O’Reilly course) emphasizes <strong>LangGraph</strong> for its:</p>
+<ul>
+<li><strong>StateGraph</strong><br>
+</li>
+<li><strong>Stateful execution</strong><br>
+</li>
+<li><strong>Traceability and reproducibility</strong></li>
+</ul>
+<p><strong>Approach differences</strong>:</p>
+<ul>
+<li><strong>CrewAI</strong>: Assign tasks and tools, let it figure out execution.<br>
+</li>
+<li><strong>LangGraph</strong>: Hardcode everything and dictate the flow.</li>
+</ul>
+<section id="langgraph-hello-world-key-highlights-of-this-jupyter-notebook" class="level4">
+<h4 class="anchored" data-anchor-id="langgraph-hello-world-key-highlights-of-this-jupyter-notebook">📘 <a href="https://github.com/sinanuozdemir/oreilly-ai-agents/blob/main/notebooks/LangGraph_Hello_World.ipynb">LangGraph Hello World</a> – Key Highlights of this Jupyter Notebook</h4>
+<section id="a.-librariesmodules-used" class="level5">
+<h5 class="anchored" data-anchor-id="a.-librariesmodules-used">🧰 A. Libraries/Modules Used</h5>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 79%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Category</th>
+<th>Library / Tool</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Core LangGraph</td>
+<td><code>langgraph</code>, <code>StateGraph</code>, <code>START</code>, <code>END</code></td>
+</tr>
+<tr class="even">
+<td>LLM + Prompts</td>
+<td><code>langchain_openai</code>, <code>ChatOpenAI</code>, <code>ChatPromptTemplate</code></td>
+</tr>
+<tr class="odd">
+<td>Vector DB &amp; Docs</td>
+<td><code>langchain_community.document_loaders</code>, <code>Chroma</code>, <code>WebBaseLoader</code></td>
+</tr>
+<tr class="even">
+<td>Parsing + Grading</td>
+<td><code>langchain_core.output_parsers</code>, <code>pydantic</code>, <code>StrOutputParser</code></td>
+</tr>
+<tr class="odd">
+<td>Utility</td>
+<td><code>RecursiveCharacterTextSplitter</code>, <code>typing</code>, <code>TypedDict</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="b.-agent-goals" class="level5">
+<h5 class="anchored" data-anchor-id="b.-agent-goals">🎯 B. Agent Goals</h5>
+<p>This LangGraph pipeline simulates a <strong>smart RAG loop with self-correction</strong>.</p>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Load documents from blog posts (e.g., Lilian Weng)</li>
+<li>Build a Vector DB for semantic retrieval</li>
+<li>Validate retrieved docs for relevance</li>
+<li>If irrelevant, <strong>rewrite the question and retry (up to 3 times)</strong></li>
+<li>If relevant, <strong>generate a final answer</strong></li>
+</ul>
+</section>
+<section id="c.-flow-of-steps-with-code-snapshots" class="level5">
+<h5 class="anchored" data-anchor-id="c.-flow-of-steps-with-code-snapshots">C. Flow of Steps with Code Snapshots</h5>
+<p><img src="./attachments/LangGraph_RAG_implementation.png" class="img-fluid"> The above diagram is similar to the one the <code>StateGraph</code> will generate</p>
+<p><strong>⚙️ (i). Setup – Vector DB + Docs</strong></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>docs <span class="op">=</span> [WebBaseLoader(url).load() <span class="cf">for</span> url <span class="kw">in</span> urls]</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>text_splitter <span class="op">=</span> RecursiveCharacterTextSplitter(...)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>doc_splits <span class="op">=</span> text_splitter.split_documents(docs_list)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>vectorstore <span class="op">=</span> Chroma.from_documents(..., persist_directory<span class="op">=</span><span class="st">'./db'</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>retriever <span class="op">=</span> vectorstore.as_retriever()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>🧠 (ii). Retrieval Grader</strong></p>
+<ul>
+<li>Grades relevance of retrieved documents using GPT-4.1-mini:</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> GradeDocuments(BaseModel):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    binary_score: <span class="bu">str</span> <span class="op">=</span> Field(...)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># LLM with structured output</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>llm <span class="op">=</span> ChatOpenAI(model<span class="op">=</span><span class="st">"gpt-4.1-mini"</span>, temperature<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>structured_llm_grader <span class="op">=</span> llm.with_structured_output(GradeDocuments)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Prompt</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>system <span class="op">=</span> <span class="st">"""Give a binary score 'yes' or 'no' to indicate whether the document is relevant to the question."""</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>grade_prompt <span class="op">=</span> ChatPromptTemplate.from_messages(</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"system"</span>, system),</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"human"</span>, <span class="st">"Retrieved document: </span><span class="ch">\n\n</span><span class="st"> </span><span class="sc">{document}</span><span class="st"> </span><span class="ch">\n\n</span><span class="st"> User question: </span><span class="sc">{question}</span><span class="st">"</span>),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>retrieval_grader <span class="op">=</span> grade_prompt <span class="op">|</span> structured_llm_grader</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>✍️ (iii). RAG + Answer Generator</strong></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain <span class="im">import</span> hub</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain_core.output_parsers <span class="im">import</span> StrOutputParser</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> hub.pull(<span class="st">"rlm/rag-prompt"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>rag_chain <span class="op">=</span> prompt <span class="op">|</span> llm <span class="op">|</span> StrOutputParser()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>🔁 (iv). Question Rewriter</strong></p>
+<ul>
+<li>If docs are irrelevant, rewrite the query:</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A different LLM, just to show we can use multiple LLMs in our calls</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>bigger_llm <span class="op">=</span> ChatOpenAI(model<span class="op">=</span><span class="st">"gpt-4.1"</span>, temperature<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>question_rewriter <span class="op">=</span> re_write_prompt <span class="op">|</span> bigger_llm <span class="op">|</span> StrOutputParser()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>🧩 (v). Graph Nodes (Functions)</strong></p>
+<p>Each stage is a callable node:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> retrieve(state): ...</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> grade_documents(state): ...</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> transform_query(state): ...</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate(state): ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>🔗 (vi). Conditional Edge Logic</strong></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> decide_to_generate(state):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> web_search <span class="op">==</span> <span class="st">"Yes"</span> <span class="kw">and</span> state[<span class="st">"times_transformed"</span>] <span class="op">&lt;</span> <span class="dv">3</span>:</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"should_transform_query"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">"should_generate"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>🛠️ (vii). Building the Graph</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>workflow <span class="op">=</span> StateGraph(GraphState)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>workflow.add_node(<span class="st">"retrieve"</span>, retrieve)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>workflow.add_node(<span class="st">"grade_documents"</span>, grade_documents)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>workflow.add_conditional_edges(<span class="st">"grade_documents"</span>, decide_to_generate, {</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"should_transform_query"</span>: <span class="st">"transform_query"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"should_generate"</span>: <span class="st">"generate"</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>🏁 (viii). Final Output</p>
+<ul>
+<li><strong>Relevant docs?</strong> → Direct generation<br>
+</li>
+<li><strong>Irrelevant docs?</strong> → Retry up to 3 rewrites<br>
+</li>
+<li><strong>Output:</strong> Final LLM generation printed via:</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(value[<span class="st">"generation"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example inputs:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> {<span class="st">"question"</span>: <span class="st">"What on earth is few shot learning?"</span>}</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> {<span class="st">"question"</span>: <span class="st">"How big is the moon?"</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Key Takeaways from the Jupyter Notebook:</strong></p>
+<ul>
+<li>Uses LangGraph’s <code>StateGraph</code> for a <strong>dynamic RAG pipeline</strong></li>
+<li>Incorporates <strong>retrieval validation</strong> and <strong>query rewriting</strong></li>
+<li>Mimics <strong>agent self-correction</strong> via looped transitions</li>
+<li>Clear separation of state (<code>GraphState</code>) and function nodes</li>
+</ul>
+<hr>
+</section>
+</section>
+</section>
+</section>
+<section id="under-the-hood-of-ai-agents" class="level2">
+<h2 class="anchored" data-anchor-id="under-the-hood-of-ai-agents">2. Under the Hood of AI Agents</h2>
+<ul>
+<li>This section explains <strong>why agents need auto-regressive LLMs</strong>, <strong>how they reason</strong>, and <strong>what makes frameworks like CrewAI useful</strong>.</li>
+</ul>
+<section id="evolution-of-auto-regressive-llms" class="level3">
+<h3 class="anchored" data-anchor-id="evolution-of-auto-regressive-llms">2.1 Evolution of Auto-regressive LLMs</h3>
+<p><strong>What is Language Modeling?</strong><br>
+Language modeling is the process of generating a <strong>probability distribution over sequences of words</strong>. In simpler terms, it predicts the <strong>next word in a sequence</strong>.</p>
+<p><strong>Evolution of NLP Models</strong> <em>(Image Description)</em>:</p>
+<ul>
+<li><strong>2001</strong>: Neural Language Models<br>
+</li>
+<li><strong>2013</strong>: Encoding Semantic Meaning with Word2Vec<br>
+</li>
+<li><strong>2014–2017</strong>: Seq2Seq + Attention<br>
+</li>
+<li><strong>2017–Present</strong>: Transformers and Large Language Models</li>
+</ul>
+<p><strong>Types of Language Models</strong></p>
+<ol type="1">
+<li><strong>Auto-encoding LMs – The Readers</strong></li>
+</ol>
+<ul>
+<li>Learn the entire sequence by predicting tokens using <strong>past and future context</strong>.<br>
+</li>
+<li>Great at reading and understanding text, but <strong>cannot generate text</strong>.<br>
+</li>
+<li>Examples: <strong>BERT, RoBERTa, XLNet, sBERT</strong><br>
+</li>
+<li>Best for: <strong>Classification, Embedding, Retrieval tasks</strong></li>
+</ul>
+<ol start="2" type="1">
+<li><strong>Auto-regressive LMs – The Generators</strong></li>
+</ol>
+<ul>
+<li>Predict the <strong>next token</strong> using <strong>past context only</strong>.<br>
+</li>
+<li>Great at writing and generating text.<br>
+</li>
+<li>Examples: <strong>GPT, Claude</strong><br>
+</li>
+<li>These are <strong>Generative LLMs</strong> capable of reasoning and conversation, but limited by <strong>context window size</strong>.</li>
+</ul>
+<p><strong>Why Auto-regressive LLMs Matter for Agents</strong><br>
+Most AI agents rely on these models to:</p>
+<ul>
+<li>Decide <strong>which tool to use</strong><br>
+</li>
+<li>Determine <strong>tool inputs and arguments</strong><br>
+</li>
+<li>Decide <strong>when to return the final answer</strong></li>
+</ul>
+<hr>
+</section>
+<section id="tools-of-ai-agents" class="level3">
+<h3 class="anchored" data-anchor-id="tools-of-ai-agents">2.2 Tools of AI Agents</h3>
+<p><strong>Direct Tool Calling vs Agentic Frameworks</strong></p>
+<ul>
+<li><strong>Direct LLM Tool Calling</strong>: Offers <strong>maximum control and customization</strong>.<br>
+</li>
+<li><strong>Agentic Frameworks (e.g., CrewAI)</strong>: Ideal for <strong>orchestrating multi-agent workflows</strong>.</li>
+</ul>
+<blockquote class="blockquote">
+<p>In the same <a href="https://github.com/sinanuozdemir/oreilly-ai-agents/blob/main/notebooks/CrewAI_Hello_World.ipynb">CrewAI Notebook</a>, Sinan shows how he has built a <strong>Search + Email Agent</strong> to send personalized cold emails. The workflow: <strong>Search Task → Email Task</strong></p>
+</blockquote>
+<hr>
+</section>
+<section id="key-components-of-agent-frameworks-react-reasoning" class="level3">
+<h3 class="anchored" data-anchor-id="key-components-of-agent-frameworks-react-reasoning">2.3 Key Components of Agent Frameworks: <strong>ReAct Reasoning</strong></h3>
+<p>Most frameworks use the <strong>ReAct pattern</strong>:<br>
+<strong>Thought → Action → Observation → Response</strong></p>
+<ul>
+<li><strong>Thought</strong>: Decide what to do next<br>
+</li>
+<li><strong>Action</strong>: Execute a tool or step<br>
+</li>
+<li><strong>Observation</strong>: Analyze the result<br>
+</li>
+<li><strong>Response</strong>: Produce the final answer</li>
+</ul>
+<blockquote class="blockquote">
+<p>LLM “thinks” about which tool to activate, performs the “action”, “observes” the result, and loops back if needed or gives the “response”</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Agents often need <strong>multiple tools</strong>. After each observation, the agent may return to <strong>Thought</strong> and select another tool. This iterative reasoning is what makes agents powerful for complex tasks.</p>
+</blockquote>
+<hr>
+</section>
+<section id="another-definition-of-agents---workflows-with-discrete-checkpoints" class="level3">
+<h3 class="anchored" data-anchor-id="another-definition-of-agents---workflows-with-discrete-checkpoints">2.4 Another Definition of Agents - <code>Workflows with Discrete Checkpoints</code></h3>
+<p>Agents operate as <strong>workflows with discrete checkpoints</strong>:</p>
+<ol type="1">
+<li>Did the AI pick the right tool?<br>
+</li>
+<li>Did it use the tool correctly?<br>
+</li>
+<li>Did the tool succeed?<br>
+</li>
+<li>Was the returned information correct?<br>
+</li>
+<li>Did the AI use the info properly?<br>
+</li>
+<li>Did it pick the next tool correctly?</li>
+</ol>
+<p>This loop continues until the final response is ready.</p>
+<hr>
+</section>
+</section>
+<section id="building-your-own-ai-agentic-framework" class="level2">
+<h2 class="anchored" data-anchor-id="building-your-own-ai-agentic-framework">3. Building Your Own AI Agentic Framework</h2>
+<blockquote class="blockquote">
+<p>One can ignore this section if they have chosen an Agentic Framework. This section is important for learning purposes</p>
+</blockquote>
+<section id="how-does-the-react-agent-class-with-tool-invocation-look" class="level3">
+<h3 class="anchored" data-anchor-id="how-does-the-react-agent-class-with-tool-invocation-look">3.1 How does the <code>ReAct Agent Class with Tool Invocation</code> look?</h3>
+<blockquote class="blockquote">
+<p>Code to Explore: <a href="https://colab.research.google.com/drive/14jAlW2E7ya_aS1M6eUsuHciC1WvLfIif?usp=sharing">Google Colab</a> - by Sinan</p>
+</blockquote>
+<p><strong>Goals</strong>:</p>
+<ul>
+<li>Build an agent using a minimal framework from scratch.</li>
+<li>Use a strict prompt schema to drive ReAct-style loops.</li>
+<li>Enforce a stop pattern to avoid uncontrolled generations.</li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>FINAL_ANSWER_TOKEN <span class="op">=</span> <span class="st">"Assistant Response:"</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>OBSERVATION_TOKEN <span class="op">=</span> <span class="st">"Observation:"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>THOUGHT_TOKEN <span class="op">=</span> <span class="st">"Thought:"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>PROMPT_TEMPLATE <span class="op">=</span> <span class="st">"""Today is </span><span class="sc">{today}</span><span class="st"> and you can use tools to get new information. Respond to the user's input as best as you can using the following tools:</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="sc">{tool_description}</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="st">You must follow the following format for every single turn of the conversation:</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="st">User Input: the input question you must answer</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="st">Thought: comment on what you want to do next.</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="st">Action: the action to take, exactly one element of [</span><span class="sc">{tool_names}</span><span class="st">]</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="st">Action Input: the input to the action</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="st">Observation: the result of the action</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="st">Thought: Now comment on what you want to do next.</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="st">Action: the next action to take, exactly one element of [</span><span class="sc">{tool_names}</span><span class="st">]</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="st">Action Input: the input to the next action</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="st">Observation: the result of the next action</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="st">Thought: Now comment on what you want to do next.</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="st">... (this Thought/Action/Action Input/Observation repeats until you are sure of the answer)</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="st">Assistant Thought: I have enough information to respond to the user's input.</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="st">Assistant Response: your final answer to the original input question</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="st">User Input: the input question you must answer</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="st">Thought: comment on what you want to do next.</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="st">Action: the next action to take, exactly one element of [</span><span class="sc">{tool_names}</span><span class="st">]</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="st">Action Input: the input to the next action</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="st">Observation: the result of the next action</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="st">... (this Thought/Action/Action Input/Observation repeats until you are sure of the answer)</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="st">Assistant Thought: I have enough information to respond to the user's input.</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="st">Assistant Response: your final answer to the original input question</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="st">You must end every round with "Assistant Thought:" and "Assistant Response:"</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="st">Begin:</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="sc">{previous_responses}</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Agent(BaseModel):</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    llm: ChatLLM</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    tools: List</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    prompt_template: <span class="bu">str</span> <span class="op">=</span> PROMPT_TEMPLATE</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>    max_loops: <span class="bu">int</span> <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The stop pattern is used, so the LLM does not hallucinate until the end</span></span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    stop_pattern: List[<span class="bu">str</span>] <span class="op">=</span> [<span class="ss">f'</span><span class="ch">\n</span><span class="sc">{</span>OBSERVATION_TOKEN<span class="sc">}</span><span class="ss">'</span>, <span class="ss">f'</span><span class="ch">\n\t</span><span class="sc">{</span>OBSERVATION_TOKEN<span class="sc">}</span><span class="ss">'</span>]</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    human_responses: List[<span class="bu">str</span>] <span class="op">=</span> []</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    ai_responses: List[<span class="bu">str</span>] <span class="op">=</span> []</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>    pretty_responses: List[<span class="bu">str</span>] <span class="op">=</span> []</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>    verbose: <span class="bu">bool</span> <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> tool_description(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join([<span class="ss">f"</span><span class="sc">{</span>tool<span class="sc">.</span>name<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>tool<span class="sc">.</span>description<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> tool <span class="kw">in</span> <span class="va">self</span>.tools])</span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> tool_names(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">", "</span>.join([tool.name <span class="cf">for</span> tool <span class="kw">in</span> <span class="va">self</span>.tools])</span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> tool_by_names(<span class="va">self</span>) <span class="op">-&gt;</span> Dict[<span class="bu">str</span>, ToolInterface]:</span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {tool.name: tool <span class="cf">for</span> tool <span class="kw">in</span> <span class="va">self</span>.tools}</span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> run(<span class="va">self</span>, question: <span class="bu">str</span>):</span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.ai_responses.append(<span class="ss">f'User Input: </span><span class="sc">{</span>question<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.human_responses.append(question)</span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>        previous_responses <span class="op">=</span> copy(<span class="va">self</span>.ai_responses)</span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>        num_loops <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>        prompt <span class="op">=</span> <span class="va">self</span>.prompt_template.<span class="bu">format</span>(</span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>                today <span class="op">=</span> datetime.date.today(),</span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>                tool_description<span class="op">=</span><span class="va">self</span>.tool_description,</span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>                tool_names<span class="op">=</span><span class="va">self</span>.tool_names,</span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>                question<span class="op">=</span>question,</span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>                previous_responses<span class="op">=</span><span class="st">'</span><span class="sc">{previous_responses}</span><span class="st">'</span></span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.verbose:</span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(prompt.<span class="bu">format</span>(previous_responses<span class="op">=</span><span class="st">''</span>))</span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> num_loops <span class="op">&lt;</span> <span class="va">self</span>.max_loops:</span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a>            num_loops <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a>            curr_prompt <span class="op">=</span> prompt.<span class="bu">format</span>(previous_responses<span class="op">=</span><span class="st">'</span><span class="ch">\n</span><span class="st">'</span>.join(previous_responses))</span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a>            generated, tool, tool_input <span class="op">=</span> <span class="va">self</span>.decide_next_action(curr_prompt)</span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="va">self</span>.verbose:</span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'CURR PROMPT'</span>)</span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(curr_prompt)</span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'RAW GENERATED'</span>)</span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(generated)</span>
+<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> tool <span class="op">==</span> <span class="st">'Assistant Response'</span>:</span>
+<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="va">self</span>.verbose:</span>
+<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="st">'FINAL PROMPT'</span>)</span>
+<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(curr_prompt)</span>
+<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.ai_responses.append(<span class="ss">f'Assistant Response: </span><span class="sc">{</span>tool_input<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> tool_input</span>
+<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> tool <span class="kw">not</span> <span class="kw">in</span> <span class="va">self</span>.tool_by_names:</span>
+<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a>                <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"Unknown tool: </span><span class="sc">{</span>tool<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="va">self</span>.verbose:</span>
+<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'tool_input'</span>, tool_input)</span>
+<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a>            tool_result <span class="op">=</span> <span class="va">self</span>.tool_by_names[tool].use(tool_input)</span>
+<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">type</span>(tool_result) <span class="op">==</span> PIL.Image.Image:</span>
+<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a>                plt.imshow(tool_result)</span>
+<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a>                plt.show()</span>
+<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a>            generated <span class="op">+=</span> <span class="ss">f"</span><span class="ch">\n</span><span class="sc">{</span>OBSERVATION_TOKEN<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>tool_result<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.ai_responses.append(generated.strip())</span>
+<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="va">self</span>.verbose:</span>
+<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'PARSED GENERATED'</span>)</span>
+<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(generated)</span>
+<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a>            previous_responses.append(generated)</span>
+<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> decide_next_action(<span class="va">self</span>, prompt: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a>        generated <span class="op">=</span> <span class="va">self</span>.llm.generate(prompt, stop<span class="op">=</span><span class="va">self</span>.stop_pattern)</span>
+<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a>        tool, tool_input <span class="op">=</span> <span class="va">self</span>._parse(generated)</span>
+<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> generated, tool, tool_input</span>
+<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _parse(<span class="va">self</span>, generated: <span class="bu">str</span>) <span class="op">-&gt;</span> Tuple[<span class="bu">str</span>, <span class="bu">str</span>]:</span>
+<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> FINAL_ANSWER_TOKEN <span class="kw">in</span> generated:</span>
+<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="va">self</span>.verbose:</span>
+<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'FINAL ANSWER'</span>)</span>
+<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(generated)</span>
+<span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'------'</span>)</span>
+<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a>            final_answer <span class="op">=</span> generated.split(FINAL_ANSWER_TOKEN)[<span class="op">-</span><span class="dv">1</span>].strip()</span>
+<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.pretty_responses.append(final_answer)</span>
+<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="st">"Assistant Response"</span>, final_answer</span>
+<span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a>        regex <span class="op">=</span> <span class="vs">r"Action: [\[]?(.*?)[\]]?[\n]*Action Input:[\s]*(.*)"</span></span>
+<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a>        match <span class="op">=</span> re.search(regex, generated, re.DOTALL)</span>
+<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> match:</span>
+<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"Output of LLM is not parsable for next tool use: `</span><span class="sc">{</span>generated<span class="sc">}</span><span class="ss">`"</span>)</span>
+<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a>        tool <span class="op">=</span> match.group(<span class="dv">1</span>).strip()</span>
+<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a>        tool_input <span class="op">=</span> match.group(<span class="dv">2</span>)</span>
+<span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tool, tool_input.strip(<span class="st">" "</span>).strip(<span class="st">'"'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="building-a-custom-tool" class="level3">
+<h3 class="anchored" data-anchor-id="building-a-custom-tool">3.2 Building a Custom Tool</h3>
+<ul>
+<li>Create a <code>ToolInterface</code> and implement a Python REPL tool.</li>
+<li>Accept raw Python. Return printed output or error text.</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ToolInterface(BaseModel):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    name: <span class="bu">str</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    description: <span class="bu">str</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> use(<span class="va">self</span>, input_text: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span>(<span class="st">"use() method not implemented"</span>)  <span class="co"># Must implement in subclass</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PythonREPLTool(ToolInterface):</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""A tool for running python code in a REPL."""</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">globals</span>: Optional[Dict] <span class="op">=</span> Field(default_factory<span class="op">=</span><span class="bu">dict</span>, alias<span class="op">=</span><span class="st">"_globals"</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">locals</span>: Optional[Dict] <span class="op">=</span> Field(default_factory<span class="op">=</span><span class="bu">dict</span>, alias<span class="op">=</span><span class="st">"_locals"</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    name: <span class="bu">str</span> <span class="op">=</span> <span class="st">"Python REPL"</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    description: <span class="bu">str</span> <span class="op">=</span> (</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">"A Python shell. Use this to execute python commands. "</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Input should be a valid python command. "</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">"If you want to see the output of a value, you should print it out "</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"with `print(...)`. Include examples of using the code and print "</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"the output."</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _run(<span class="va">self</span>, command: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Run command with own globals/locals and returns anything printed."""</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>        old_stdout <span class="op">=</span> sys.stdout</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>        sys.stdout <span class="op">=</span> mystdout <span class="op">=</span> StringIO()</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>            <span class="bu">exec</span>(command, <span class="va">self</span>.<span class="bu">globals</span>, <span class="va">self</span>.<span class="bu">locals</span>)</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>            sys.stdout <span class="op">=</span> old_stdout</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>            output <span class="op">=</span> mystdout.getvalue()</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>            sys.stdout <span class="op">=</span> old_stdout</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>            output <span class="op">=</span> <span class="bu">str</span>(e)</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> output.strip()</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> use(<span class="va">self</span>, input_text: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>        input_text <span class="op">=</span> input_text.strip().replace(<span class="st">"```python"</span> , <span class="st">""</span>)</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>        input_text <span class="op">=</span> input_text.strip().strip(<span class="st">"```"</span>)</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._run(input_text)</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>repl_tool <span class="op">=</span> PythonREPLTool()</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> repl_tool.use(<span class="st">'print(1+2)'</span>)</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result)</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> result <span class="op">==</span> <span class="st">"3"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="building-an-agent-prompt" class="level3">
+<h3 class="anchored" data-anchor-id="building-an-agent-prompt">3.3 Building an Agent Prompt</h3>
+<ul>
+<li>LLMs act as reasoning machines.</li>
+<li>Prefer few-shot learning for better accuracy.</li>
+<li><em>Language Models are Few-Shot Learners</em> (GPT‑3).</li>
+<li>Use Chain-of-Thought prompting to elicit reasoning first, then the answer.</li>
+<li>Provide a strict, repetitive format to guide tool use and observations.</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>FINAL_ANSWER_TOKEN <span class="op">=</span> <span class="st">"Assistant Response:"</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>OBSERVATION_TOKEN <span class="op">=</span> <span class="st">"Observation:"</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>THOUGHT_TOKEN <span class="op">=</span> <span class="st">"Thought:"</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>PROMPT_TEMPLATE <span class="op">=</span> <span class="st">"""Today is </span><span class="sc">{today}</span><span class="st"> and you can use tools to get new information. Respond to the user's input as best as you can using the following tools:</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="sc">{tool_description}</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="st">You must follow the following format for every single turn of the conversation:</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="st">User Input: the input question you must answer</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="st">Thought: comment on what you want to do next.</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="st">Action: the action to take, exactly one element of [</span><span class="sc">{tool_names}</span><span class="st">]</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="st">Action Input: the input to the action</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="st">Observation: the result of the action</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="st">Thought: Now comment on what you want to do next.</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="st">Action: the next action to take, exactly one element of [</span><span class="sc">{tool_names}</span><span class="st">]</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="st">Action Input: the input to the next action</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="st">Observation: the result of the next action</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="st">Thought: Now comment on what you want to do next.</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="st">... (this Thought/Action/Action Input/Observation repeats until you are sure of the answer)</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="st">Assistant Thought: I have enough information to respond to the user's input.</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="st">Assistant Response: your final answer to the original input question</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="st">User Input: the input question you must answer</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="st">Thought: comment on what you want to do next.</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="st">Action: the next action to take, exactly one element of [</span><span class="sc">{tool_names}</span><span class="st">]</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="st">Action Input: the input to the next action</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="st">Observation: the result of the next action</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="st">... (this Thought/Action/Action Input/Observation repeats until you are sure of the answer)</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="st">Assistant Thought: I have enough information to respond to the user's input.</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="st">Assistant Response: your final answer to the original input question</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="st">You must end every round with "Assistant Thought:" and "Assistant Response:"</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="st">Begin:</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="sc">{previous_responses}</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> <span class="va">self</span>.prompt_template.<span class="bu">format</span>(</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>        today <span class="op">=</span> datetime.date.today(),</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>        tool_description<span class="op">=</span><span class="va">self</span>.tool_description,</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>        tool_names<span class="op">=</span><span class="va">self</span>.tool_names,</span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>        question<span class="op">=</span>question,</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>        previous_responses<span class="op">=</span><span class="st">'</span><span class="sc">{previous_responses}</span><span class="st">'</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+<section id="sinans-own-agentic-ai-framework---squad-goals" class="level3">
+<h3 class="anchored" data-anchor-id="sinans-own-agentic-ai-framework---squad-goals">3.4 Sinan’s Own Agentic AI Framework - Squad Goals</h3>
+<blockquote class="blockquote">
+<p>He is building his own Agent Framework: <a href="https://github.com/sinanuozdemir/squad-goals">Simam Ozmedr’s Squad Goals Agentic Framework</a></p>
+</blockquote>
+<ul>
+<li>Explore the framework to see how the agent loop, tools, and prompt schema come together.</li>
+<li>Review how state, parsing, and stop patterns control execution.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="testing-and-evaluating-ai-agents" class="level2">
+<h2 class="anchored" data-anchor-id="testing-and-evaluating-ai-agents">4. Testing and Evaluating AI Agents</h2>
+<blockquote class="blockquote">
+<p>Evaluating AI agents is as critical as building them. Poor evaluation can lead to unreliable systems, biased decisions, and poor user experience.</p>
+</blockquote>
+<section id="core-evaluation-metrics" class="level3">
+<h3 class="anchored" data-anchor-id="core-evaluation-metrics">4.1 Core Evaluation Metrics</h3>
+<ol type="1">
+<li><strong>Response Time</strong>
+<ul>
+<li>A quick gut check on performance.<br>
+</li>
+<li>Example: ChatGPT is fast because it uses a small set of tools (web, DALL·E, Python, bio), reducing complexity.</li>
+</ul></li>
+<li><strong>Accuracy</strong>
+<ul>
+<li>Measures correctness of decisions and outputs.</li>
+</ul></li>
+<li><strong>Task Completion Rate</strong>
+<ul>
+<li>How often agents successfully complete assigned tasks.</li>
+</ul></li>
+<li><strong>Bias in Decision-making</strong>
+<ul>
+<li>Biases in LLMs propagate to agents. Requires continuous monitoring and retraining.</li>
+</ul></li>
+<li><strong>Explainability</strong>
+<ul>
+<li>Can you trace the agent’s reasoning?<br>
+</li>
+<li>More explainability often means less flexibility.</li>
+</ul></li>
+</ol>
+<blockquote class="blockquote">
+<p><strong>Key Insight:</strong> Evaluating agents is similar to evaluating LLMs.</p>
+</blockquote>
+<hr>
+</section>
+<section id="evaluating-llm-behavior-inside-agents" class="level3">
+<h3 class="anchored" data-anchor-id="evaluating-llm-behavior-inside-agents">4.2 Evaluating LLM Behavior Inside Agents</h3>
+<ul>
+<li>What to measure in <strong>Generative Tasks</strong>: How “good” are the Free-text responses, Accuracy when Multiple Choices are presented.<br>
+</li>
+<li>What to measure <strong>Understanding Tasks</strong>: How good is the semantic meaning in Embeddings, How accurate is the classification.<br>
+</li>
+<li>E.g.: Tool selection is like a <strong>multiple-choice problem</strong>, while generating inputs that need to be fed into a tool is a <strong>free-text problem</strong>.</li>
+</ul>
+<hr>
+</section>
+<section id="evaluating-tool-selection-and-use" class="level3">
+<h3 class="anchored" data-anchor-id="evaluating-tool-selection-and-use">4.3 Evaluating Tool Selection and Use</h3>
+<p>Tool selection is critical for agent reliability. Use <strong>classification metrics</strong>:</p>
+<ul>
+<li><strong>Accuracy</strong>: Overall correctness.<br>
+</li>
+<li><strong>Precision</strong>:<br>
+# times tool was correct / # times tool was selected.<br>
+Useful when false positives are costly.<br>
+</li>
+<li><strong>Recall</strong>:<br>
+# times tool was selected / # times tool should have been selected.<br>
+Useful when missing a tool is costly.</li>
+</ul>
+<p><strong>Example:</strong><br>
+Low recall → Agent often misses the right tool.<br>
+Low precision → Agent confuses tools.</p>
+<p><strong>Positional Bias Problem:</strong></p>
+<pre><code>Following are the tools at an LLM's disposal 
+
+Tool 1
+Tool 2
+Tool 3
+Tool 4
+Tool 5
+
+etc</code></pre>
+<ul>
+<li>Positional bias (present even in Transformer architectures) in prompts affects tool selection. Tools listed first are often over-selected.<br>
+</li>
+<li>The starting tool may be over-prioritized. Tools 4 and 5 could be ignored (low recall). Even OpenAI and Google models show this bias.</li>
+</ul>
+<p><strong>Personal Experience Anecdote from Sinan</strong>: <br> &gt; - Type of LLM chosen affects quality of responses and also tool selection &gt; - From experience, an AI practitioner realized it was NOT “crewAI” that sucked, but it was a small quantized model that sucked at selecting the right tool. Once changed to bigger LLMs, the same crewAI tool worked well.</p>
+<hr>
+</section>
+<section id="assessing-response-quality" class="level3">
+<h3 class="anchored" data-anchor-id="assessing-response-quality">4.4 Assessing Response Quality</h3>
+<p>Two approaches:</p>
+<ul>
+<li><strong>Traditional</strong>: Compare generated text with ground truth using embeddings and cosine similarity.<br>
+</li>
+<li><strong>Modern</strong>: Use <strong>rubrics</strong> (like a teacher’s grading methodology) and LLM-based grading.</li>
+</ul>
+<p><strong>Rubric Criteria Examples:</strong><br>
+- How well does the answer match reference answers?<br>
+- Is it natural, safe, and helpful?</p>
+<p><strong>LLM Grading Example:</strong><br>
+Use GPT-4o to score answers on a scale (e.g., 1–10) for each criterion.</p>
+<hr>
+</section>
+<section id="human-vs-llm-evaluation" class="level3">
+<h3 class="anchored" data-anchor-id="human-vs-llm-evaluation">4.5 Human vs LLM Evaluation</h3>
+<ul>
+<li><strong>Human Evaluation</strong>
+<ul>
+<li>High quality but expensive (e.g., Mechanical Turk).<br>
+</li>
+<li>Consensus among judges is hard.</li>
+</ul></li>
+<li><strong>LLM Evaluation</strong>
+<ul>
+<li>Cheap and scalable.<br>
+</li>
+<li>Risk of bias (e.g., positional bias).<br>
+</li>
+<li>Mitigation: Use <strong>Chain-of-Thought (CoT)</strong> reasoning in grading prompts.</li>
+</ul></li>
+</ul>
+<p><strong>Example Prompt for Pairwise Comparison:</strong></p>
+<pre><code>### User Question
+{question}
+
+### Assistant 1 Answer
+{answer_1}
+
+### Assistant 2 Answer
+{answer_2}
+
+### Rating Task
+Rate which answer is better on a scale of 1–8.
+Output JSON: {"reason": "...", "score": integer}</code></pre>
+<blockquote class="blockquote">
+<p>Adding CoT improves fairness but does not fully eliminate bias.</p>
+</blockquote>
+</section>
+<section id="key-takeaways-for-agent-evaluation" class="level3">
+<h3 class="anchored" data-anchor-id="key-takeaways-for-agent-evaluation">4.6 <strong>Key Takeaways for Agent Evaluation</strong></h3>
+<ul>
+<li>Evaluate <strong>tool selection</strong>, <strong>response quality</strong>, and <strong>bias</strong> systematically.<br>
+</li>
+<li>Use <strong>classification metrics</strong> for tool use and <strong>rubrics</strong> for response quality.<br>
+</li>
+<li>Combine <strong>human evaluation</strong> (for quality) with <strong>LLM evaluation</strong> (for scale).<br>
+</li>
+<li>Watch out for <strong>positional bias</strong> in both tool selection and grading.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="expanding-on-react-with-planning-and-reflection" class="level2">
+<h2 class="anchored" data-anchor-id="expanding-on-react-with-planning-and-reflection">5. Expanding on ReAct with Planning and Reflection</h2>
+<section id="why-agents-fail" class="level3">
+<h3 class="anchored" data-anchor-id="why-agents-fail">5.1 Why Agents Fail?</h3>
+<p>Agents often fail due to:</p>
+<ul>
+<li><strong>Wrong tool selection</strong> (even if previously correct)</li>
+<li><strong>Tool failure</strong> (e.g., invalid parameters, scraping errors)</li>
+<li><strong>Infinite loops</strong> (exceeding time or step limits)</li>
+</ul>
+<p><strong>Debugging Agents</strong></p>
+<ul>
+<li>Test different LLMs for better tool alignment.</li>
+<li>Handle tool errors gracefully and allow retries.</li>
+<li>Add loop limits in prompts to prevent runaway reasoning.</li>
+</ul>
+<p><strong>Understanding ReAct Pattern</strong></p>
+<pre><code>User Query → Thought → Action → Observation → Thought → Action → ... → Final Answer</code></pre>
+<p>Example:</p>
+<ul>
+<li>Query: “Who is Sinan Ozdemir?”</li>
+<li>Thought: “Look him up”</li>
+<li>Action: Search</li>
+<li>Observation: “AI expert, author…”</li>
+<li>Thought: “Check his site”</li>
+<li>Action: Visit site</li>
+<li>Observation: “Consults for companies”</li>
+<li>Final Thought: “I have enough info to respond”</li>
+</ul>
+<p><strong>Plan Ahead</strong></p>
+<ul>
+<li>Instead of step-by-step reasoning, <strong>plan the entire workflow first</strong> for efficiency.</li>
+</ul>
+<p><strong>Feedback Loops</strong></p>
+<ul>
+<li>Add real-time or batch feedback to improve future decisions.</li>
+</ul>
+<hr>
+</section>
+<section id="plan-execute-agents" class="level3">
+<h3 class="anchored" data-anchor-id="plan-execute-agents">5.2 Plan &amp; Execute Agents</h3>
+<section id="optimizing-agents-with-plan-execute" class="level4">
+<h4 class="anchored" data-anchor-id="optimizing-agents-with-plan-execute">5.2.1 Optimizing Agents with Plan &amp; Execute</h4>
+<p>Replace a single LLM doing everything with:</p>
+<ul>
+<li><strong>Planner</strong>: Large LLM creates a multi-step plan.</li>
+<li><strong>Executors</strong>: Smaller, faster LLMs execute steps.</li>
+<li>Benefits: Faster execution, better scalability.</li>
+</ul>
+<p><em>(Planner delegates tasks like “Lookup” and “Summarize” to smaller agents.)</em></p>
+<hr>
+</section>
+<section id="how-to-code-plan-execute-in-langgraph-refer-the-notebook" class="level4">
+<h4 class="anchored" data-anchor-id="how-to-code-plan-execute-in-langgraph-refer-the-notebook">5.2.2 How to code <code>Plan &amp; Execute</code> in LangGraph | <a href="https://github.com/sinanuozdemir/oreilly-ai-agents/blob/main/notebooks/LangGraph_Plan_Execute.ipynb">refer the notebook</a></h4>
+<p><img src="./attachments/langgraph_plan_and_execute.png" class="img-fluid"></p>
+<p><strong>A. Concept and Inspiration</strong></p>
+<ul>
+<li><strong>Plan &amp; Execute</strong> has two parts:
+<ol type="1">
+<li><strong>Planner</strong>. An LLM creates a multi‑step plan for a large task.</li>
+<li><strong>Executor</strong>. An agent executes each step with tools.</li>
+</ol></li>
+<li>Inspiration: https://blog.langchain.dev/planning-agents/</li>
+</ul>
+<p><strong>B. Executor: A Basic ReAct Agent</strong></p>
+<ul>
+<li>Tool: <code>DuckDuckGoSearchRun</code></li>
+<li>Prompt: <code>ih/ih-react-agent-executor</code> from LangChain Hub</li>
+<li>LLM: <code>gpt-4o-mini</code></li>
+<li>Builder: <code>create_react_agent(llm, tools, state_modifier=prompt)</code></li>
+<li>Behavior: Answers user queries by thinking, acting with a tool, and observing the result.</li>
+<li>Example query: “Who won the most recent Ravens game?”
+<ul>
+<li>The agent searched and returned a game summary (correct as of 11/19/24).</li>
+</ul></li>
+</ul>
+<p><strong>C. Planner: Structured Step Generation</strong></p>
+<ul>
+<li><p>Schema:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Plan(BaseModel):</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    steps: List[<span class="bu">str</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ul>
+<p><strong>Prompt goals</strong>:</p>
+<ul>
+<li><p>Produce a <strong>simple, step‑by‑step plan</strong>.</p></li>
+<li><p>Include only <strong>necessary steps</strong>.</p></li>
+<li><p>Ensure <strong>each step has required info</strong>.</p></li>
+<li><p>LLM: <code>gpt-4o-mini</code> with <strong>structured output</strong> to <code>Plan</code>. <strong>Example plan (condensed)</strong>:</p></li>
+</ul>
+<ol type="1">
+<li>Identify the most recent Ravens game.</li>
+<li>Determine if they won.</li>
+<li>If they won, find the starting QB.</li>
+<li>Find the QB’s hometown.</li>
+</ol>
+<p><strong>D. Replanner: Update Plan or Respond</strong></p>
+<ul>
+<li><p>Models:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Response(BaseModel):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    response: <span class="bu">str</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Act(BaseModel):</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    action: Union[Response, Plan]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Prompt inputs:</p>
+<ul>
+<li><strong>Objective</strong></li>
+<li><strong>Original plan</strong></li>
+<li><strong>Past steps completed</strong></li>
+</ul></li>
+<li><p>Behavior:</p>
+<ul>
+<li>If enough info is available, <strong>return a final response</strong>.</li>
+<li>Else, <strong>return only remaining steps</strong>.</li>
+</ul></li>
+<li><p>LLM: <code>gpt-4o</code> with structured output to <code>Act</code>.</p></li>
+<li><p>Example:</p>
+<ul>
+<li>Past step done: “Identify the most recent game”<br>
+</li>
+<li>New plan excludes completed steps and keeps the rest.</li>
+</ul></li>
+</ul>
+<p><strong>E. Graph Assembly in LangGraph</strong></p>
+<ul>
+<li><p><strong>State</strong>:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PlanExecute(TypedDict):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">input</span>: <span class="bu">str</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    plan: List[<span class="bu">str</span>]</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    past_steps: Annotated[List[Tuple], operator.add]</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    response: <span class="bu">str</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Nodes</strong>:</p>
+<ul>
+<li><code>planner</code>: Creates the plan from the user input.</li>
+<li><code>executor</code>: Formats and executes <strong>step 1</strong> with the ReAct agent.</li>
+<li><code>replan</code>: Decides to <strong>respond</strong> or <strong>refine the plan</strong>.</li>
+</ul></li>
+<li><p><strong>Routing</strong>:</p>
+<ul>
+<li><code>START → planner → executor → replan</code></li>
+<li>Conditional edge from <code>replan</code>:
+<ul>
+<li>If a final <strong>response</strong> exists → <code>END</code></li>
+<li>Else → <code>executor</code> (loop)</li>
+</ul></li>
+</ul></li>
+</ul>
+<p><strong>F. Running the Plan &amp; Execute Agent</strong></p>
+<ul>
+<li><p>Input example:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> {<span class="st">"input"</span>: <span class="st">"what is the hometown of the QB of the winner of the Ravens game on 11/17/2024"</span>}</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> event <span class="kw">in</span> app.stream(inputs):</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> node_name, output <span class="kw">in</span> event.items():</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'Node: </span><span class="sc">{</span>node_name<span class="sc">}</span><span class="ss">. Output: </span><span class="sc">{</span>output<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ul>
+<p><strong>Key Takeaways From this Jupyter Notebook</strong></p>
+<ul>
+<li>Plan &amp; Execute <strong>separates planning and action</strong>. This improves clarity.</li>
+<li>The <strong>ReAct</strong> executor handles web lookups and tool calls well.</li>
+<li>The <strong>replanner</strong> removes completed steps. This keeps the loop focused.</li>
+<li>LangGraph makes the loop <strong>traceable</strong> and <strong>composable</strong> with explicit nodes and edges.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="reflection-agents" class="level3">
+<h3 class="anchored" data-anchor-id="reflection-agents">5.3 Reflection Agents</h3>
+<p><strong>Optimizing Agents with Reflection</strong></p>
+<ul>
+<li>Instead of returning the first answer, <strong>reflect and revise</strong> before finalizing.</li>
+<li>Reflection adds a critique loop for quality improvement.</li>
+</ul>
+<section id="reflection-agents-with-langgraph-refer-notebook" class="level4">
+<h4 class="anchored" data-anchor-id="reflection-agents-with-langgraph-refer-notebook">5.3.1. Reflection Agents with LangGraph | <a href="https://github.com/sinanuozdemir/oreilly-ai-agents/blob/main/notebooks/LangGraph_Reflect.ipynb">refer notebook</a></h4>
+<p><img src="./attachments/langgraph_reflection_agent.png" class="img-fluid"></p>
+<ol type="i">
+<li><strong>Concept and Inspiration</strong></li>
+</ol>
+<p><strong>Reflection Agents</strong> introduce a feedback loop:</p>
+<ol type="1">
+<li><strong>Generator</strong>: Produces an initial response (with or without tools).</li>
+<li><strong>Reflector</strong>: Critiques the response and provides actionable feedback for improvement.</li>
+</ol>
+<ul>
+<li>Inspiration: <a href="https://blog.langchain.com/reflection-agents/">LangChain Blog on Reflection Agents</a></li>
+</ul>
+<p><strong>(ii) Building the Generator</strong></p>
+<ul>
+<li><p><strong>Task</strong>: Write engaging LinkedIn posts.</p></li>
+<li><p><strong>Prompt</strong>:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> ChatPromptTemplate.from_messages([</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"system"</span>, <span class="st">"You write engaging Linkedin Posts."</span>),</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    MessagesPlaceholder(variable_name<span class="op">=</span><span class="st">"messages"</span>),</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>LLM</strong>: <code>ChatOpenAI(model="gpt-4o-mini")</code></p></li>
+<li><p><strong>Pipeline</strong>: <code>generate = prompt | llm</code></p></li>
+<li><p><strong>Example</strong>:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>request <span class="op">=</span> <span class="st">"Write one about me completing day one of filming my AI agent course"</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>first_draft_response <span class="op">=</span> generate.invoke({<span class="st">"messages"</span>: [(<span class="st">"user"</span>, request)]})</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(first_draft_response.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ul>
+<p><strong>(iii) Adding Reflection</strong></p>
+<ul>
+<li><p><strong>Reflection Prompt</strong>:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>reflection_prompt <span class="op">=</span> ChatPromptTemplate.from_messages([</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"system"</span>, <span class="st">"You are a marketing strategist... Provide detailed recommendations on length, style, etc."</span>),</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    MessagesPlaceholder(variable_name<span class="op">=</span><span class="st">"messages"</span>),</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>reflect <span class="op">=</span> reflection_prompt <span class="op">|</span> llm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Behavior</strong>: Takes the original request and the first draft, then returns critique and suggestions.</p></li>
+</ul>
+<p><strong>(iv) Turning Reflection into a Loop with LangGraph</strong></p>
+<ul>
+<li><p><strong>State</strong>:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> State(TypedDict):</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    messages: Annotated[<span class="bu">list</span>, add_messages]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Nodes</strong>:</p>
+<ul>
+<li><code>generation_node</code>: Calls <code>generate</code> and appends the draft.</li>
+<li><code>reflection_node</code>:
+<ul>
+<li>Keeps the original user request.</li>
+<li>Adds the latest draft as input for critique.</li>
+<li>Returns feedback as a <code>HumanMessage</code> for the generator.</li>
+</ul></li>
+</ul></li>
+<li><p><strong>Graph Flow</strong>:</p>
+<ul>
+<li><code>START → generate → reflect → generate → ...</code></li>
+</ul></li>
+<li><p><strong>Stopping Condition</strong>:</p>
+<ul>
+<li>After 2 reflections (<code>len(messages) &gt;= 6</code>), end the loop.</li>
+</ul></li>
+</ul>
+<p><strong>(v) Key Takeaways from this Jupyter Notebook</strong></p>
+<ul>
+<li>Reflection Agents <strong>improve quality iteratively</strong> by combining generation and critique.</li>
+<li>LangGraph makes this loop <strong>explicit and traceable</strong> with nodes and conditions.</li>
+<li>Useful for tasks like <strong>content creation</strong>, <strong>code review</strong>, or <strong>answer refinement</strong>.</li>
+</ul>
+<hr>
+</section>
+</section>
+</section>
+<section id="advanced-applications-and-future-directions" class="level2">
+<h2 class="anchored" data-anchor-id="advanced-applications-and-future-directions">6. Advanced Applications and Future Directions</h2>
+<section id="integrating-real-time-data-into-ai-agents" class="level3">
+<h3 class="anchored" data-anchor-id="integrating-real-time-data-into-ai-agents">6.1 Integrating Real-Time Data into AI Agents</h3>
+<ul>
+<li><strong>Why it matters</strong>: Real-time data reduces hallucinations and keeps agents grounded in the current context.</li>
+<li><strong>How to integrate</strong>:
+<ul>
+<li>Connect to APIs (e.g., weather, finance).</li>
+<li>Ensure low-latency processing (edge or distributed systems).</li>
+<li>Preprocess streams to maintain data quality.</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="best-practices" class="level3">
+<h3 class="anchored" data-anchor-id="best-practices">6.2 Best Practices</h3>
+<ul>
+<li><strong>Modular Testing</strong>: Break workflows into smaller units for easier debugging.</li>
+<li><strong>Feedback Loops</strong>: Use telemetry or human feedback for continuous improvement.</li>
+<li><strong>Compliance &amp; Ethics</strong>:
+<ul>
+<li>Secure sensitive data.</li>
+<li>Mitigate bias and ensure explainability.</li>
+<li>Follow regulations (e.g., GDPR) and audit regularly.</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="future-trends" class="level3">
+<h3 class="anchored" data-anchor-id="future-trends">6.3 Future Trends</h3>
+<ul>
+<li><strong>AI + IoT</strong>: Smarter homes, industrial automation, healthcare monitoring.</li>
+<li><strong>Collaborative Multi-Agent Systems</strong>:
+<ul>
+<li>Split tasks across agents to reduce context overload.</li>
+<li>Assign specialized roles (e.g., “Agent for Spotify”).</li>
+</ul></li>
+<li><strong>Real-Time Agent Collaboration</strong>: Frameworks like AutoGen and Swarm enable dynamic teamwork.</li>
+<li><strong>Simpler UIs</strong>: Low-code/no-code agent builders for non-technical users.</li>
+<li><strong>Auto-Generation</strong>:
+<ul>
+<li><strong>Tasks</strong>: From high-level goals.</li>
+<li><strong>Tools</strong>: From API docs.</li>
+<li><strong>Agents</strong>: With dynamic rules and permissions.</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="a-visual-summary" class="level3">
+<h3 class="anchored" data-anchor-id="a-visual-summary">6.4 A Visual Summary</h3>
+<p><img src="./attachments/important_trends_and_next_steps.png" class="img-fluid"></p>
+<p>Want to edit this chart? Refer to <a href="https://gist.github.com/senthilkumarm1901/e9407775b0993bd246ae9c8f343e0880">this github gist</a></p>
+<hr>
+</section>
+</section>
+<section id="conclusion-key-takeaways-from-the-six-sections" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion-key-takeaways-from-the-six-sections">7.<strong>Conclusion: Key Takeaways from the Six Sections</strong></h2>
+<p><strong>Introduction to AI Agents</strong> - Agents combine&nbsp;<strong>LLMs, tools, and context</strong>&nbsp;to perform tasks autonomously. - Frameworks like&nbsp;<strong>CrewAI</strong>&nbsp;and&nbsp;<strong>LangGraph</strong>&nbsp;enable structured, multi-agent workflows.</p>
+<p><strong>Under the Hood of AI Agents</strong> - Most agents rely on&nbsp;<strong>auto-regressive LLMs</strong>&nbsp;for reasoning and decision-making. - The&nbsp;<strong>ReAct pattern</strong>&nbsp;(Thought → Action → Observation → Response) underpins agent logic.</p>
+<p><strong>Building an AI Agent</strong> - Agents can be built from scratch using&nbsp;<strong>custom prompts, tool interfaces, and reasoning loops</strong>. - Few-shot prompting and structured formats improve reliability.</p>
+<p><strong>Testing and Evaluating Agents</strong> - Evaluate on&nbsp;<strong>response time, accuracy, tool selection, and bias</strong>. - Use&nbsp;<strong>classification metrics</strong>&nbsp;for tool use and&nbsp;<strong>rubrics or LLM-based grading</strong>&nbsp;for response quality.</p>
+<p><strong>Expanding with Planning and Reflection</strong> - <strong>Plan &amp; Execute</strong>: Large LLM plans, smaller LLMs execute steps for efficiency. - <strong>Reflection Agents</strong>: Add critique loops for iterative improvement.</p>
+<p><strong>Advanced Applications and Future Directions</strong> - <strong>Real-time data integration</strong>,&nbsp;<strong>modular testing</strong>, and&nbsp;<strong>ethical compliance</strong>&nbsp;are critical. - Future trends:&nbsp;<strong>AI + IoT</strong>,&nbsp;<strong>collaborative multi-agent systems</strong>,&nbsp;<strong>auto-generation of tasks/tools/agents</strong>, and&nbsp;<strong>simpler UIs</strong>&nbsp;for non-technical users.</p>
+<hr>
+<blockquote class="blockquote">
+<p><strong>Plagiarism Disclosure</strong>: <br> - The headings below match the video titles from the course. - These are notes where many of the lines would have been directly taken from the course material. - Sources are attributed to all pics for clarity - I used ample help from ChatGPT to produce these learning notes from the course material.</p>
+</blockquote>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("git@github\.com-learning:senthilkumarm1901\/learn_by_blogging\.git");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

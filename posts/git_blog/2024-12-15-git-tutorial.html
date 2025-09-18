@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2024-12-15">
+<meta name="description" content="In this blog, I explain how to use advanced git commands in a practical, easy-to-understand manner.">
+
+<title>Madness in the Git Multiverse - A Marvel-inspired Tutorial to help you transition from a beginner to an advanced Git User – Learn by Blogging</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Madness in the Git Multiverse - A Marvel-inspired Tutorial to help you transition from a beginner to an advanced Git User</h1>
+                  <div>
+        <div class="description">
+          In this blog, I explain how to use advanced git commands in a practical, easy-to-understand manner.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Git</div>
+                <div class="quarto-category">Advanced Git</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">December 15, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#setting-the-context-to-the-marvel-story" id="toc-setting-the-context-to-the-marvel-story" class="nav-link" data-scroll-target="#setting-the-context-to-the-marvel-story">Setting the Context to the Marvel Story</a></li>
+  <li><a href="#the-lead-script-writers-git-journey" id="toc-the-lead-script-writers-git-journey" class="nav-link" data-scroll-target="#the-lead-script-writers-git-journey">The Lead Script Writer’s Git Journey</a>
+  <ul class="collapse">
+  <li><a href="#the-boilerplate-git-commands" id="toc-the-boilerplate-git-commands" class="nav-link" data-scroll-target="#the-boilerplate-git-commands">The Boilerplate Git Commands</a></li>
+  <li><a href="#scenario-a-git-commit---amend-git-pull---ff-git-push-remote-branch" id="toc-scenario-a-git-commit---amend-git-pull---ff-git-push-remote-branch" class="nav-link" data-scroll-target="#scenario-a-git-commit---amend-git-pull---ff-git-push-remote-branch">Scenario A: <code>git commit --amend &amp;&amp;  git pull --ff &amp;&amp; git push remote branch</code></a>
+  <ul class="collapse">
+  <li><a href="#what-just-happened" id="toc-what-just-happened" class="nav-link" data-scroll-target="#what-just-happened"><strong>What just happened?</strong></a></li>
+  </ul></li>
+  <li><a href="#scenario-b-git-push---force-with-lease" id="toc-scenario-b-git-push---force-with-lease" class="nav-link" data-scroll-target="#scenario-b-git-push---force-with-lease">Scenario B: <code>git push --force-with-lease</code></a>
+  <ul class="collapse">
+  <li><a href="#what-just-happened-1" id="toc-what-just-happened-1" class="nav-link" data-scroll-target="#what-just-happened-1"><strong>What just happened?</strong></a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#writer1s-git-journey" id="toc-writer1s-git-journey" class="nav-link" data-scroll-target="#writer1s-git-journey">Writer1’s Git Journey</a>
+  <ul class="collapse">
+  <li><a href="#the-boilerplate-git-commands-1" id="toc-the-boilerplate-git-commands-1" class="nav-link" data-scroll-target="#the-boilerplate-git-commands-1">The Boilerplate Git Commands</a></li>
+  <li><a href="#scenario-c---understanding-git-diff---staged-usage" id="toc-scenario-c---understanding-git-diff---staged-usage" class="nav-link" data-scroll-target="#scenario-c---understanding-git-diff---staged-usage">Scenario C - Understanding <code>git diff --staged</code> usage</a></li>
+  <li><a href="#scenario-d---altering-history-and-commit-messages-using-interactive-git-rebase" id="toc-scenario-d---altering-history-and-commit-messages-using-interactive-git-rebase" class="nav-link" data-scroll-target="#scenario-d---altering-history-and-commit-messages-using-interactive-git-rebase">Scenario D - Altering history and commit messages using interactive git rebase</a>
+  <ul class="collapse">
+  <li><a href="#what-just-happened-2" id="toc-what-just-happened-2" class="nav-link" data-scroll-target="#what-just-happened-2"><strong>What just happened?</strong></a></li>
+  </ul></li>
+  <li><a href="#scenario-e---usage-of-git-reset---hard-commit-to-go-to" id="toc-scenario-e---usage-of-git-reset---hard-commit-to-go-to" class="nav-link" data-scroll-target="#scenario-e---usage-of-git-reset---hard-commit-to-go-to">Scenario E - Usage of <code>git reset --hard commit-to-go-to</code></a>
+  <ul class="collapse">
+  <li><a href="#what-just-happened-3" id="toc-what-just-happened-3" class="nav-link" data-scroll-target="#what-just-happened-3"><strong>What just happened?</strong></a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#writer2s-git-journey" id="toc-writer2s-git-journey" class="nav-link" data-scroll-target="#writer2s-git-journey">Writer2’s Git Journey</a>
+  <ul class="collapse">
+  <li><a href="#boilerplate-git-commands" id="toc-boilerplate-git-commands" class="nav-link" data-scroll-target="#boilerplate-git-commands">Boilerplate Git Commands</a></li>
+  <li><a href="#scenario-f---rebase-with-main" id="toc-scenario-f---rebase-with-main" class="nav-link" data-scroll-target="#scenario-f---rebase-with-main">Scenario F - Rebase with main</a>
+  <ul class="collapse">
+  <li><a href="#what-just-happened-4" id="toc-what-just-happened-4" class="nav-link" data-scroll-target="#what-just-happened-4">What just happened?</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#writer3s-git-journey" id="toc-writer3s-git-journey" class="nav-link" data-scroll-target="#writer3s-git-journey">Writer3’s Git Journey</a>
+  <ul class="collapse">
+  <li><a href="#boilerplate-git-commands-1" id="toc-boilerplate-git-commands-1" class="nav-link" data-scroll-target="#boilerplate-git-commands-1">Boilerplate Git Commands</a></li>
+  <li><a href="#scenario-g---reverting-to-end-game-commit-before-eternals-commit" id="toc-scenario-g---reverting-to-end-game-commit-before-eternals-commit" class="nav-link" data-scroll-target="#scenario-g---reverting-to-end-game-commit-before-eternals-commit">Scenario G - Reverting to <code>End Game</code> commit (before <code>Eternals</code> commit)</a>
+  <ul class="collapse">
+  <li><a href="#what-just-happened-5" id="toc-what-just-happened-5" class="nav-link" data-scroll-target="#what-just-happened-5"><strong>What just happened?</strong></a></li>
+  </ul></li>
+  <li><a href="#scenario-h---tagging-in-git" id="toc-scenario-h---tagging-in-git" class="nav-link" data-scroll-target="#scenario-h---tagging-in-git">Scenario H - Tagging in Git</a></li>
+  </ul></li>
+  <li><a href="#conclusion---what-have-we-accomplished" id="toc-conclusion---what-have-we-accomplished" class="nav-link" data-scroll-target="#conclusion---what-have-we-accomplished">Conclusion - What have we accomplished?</a></li>
+  <li><a href="#bonus" id="toc-bonus" class="nav-link" data-scroll-target="#bonus">BONUS</a>
+  <ul class="collapse">
+  <li><a href="#forking-a-public-repo-and-request-for-a-pull-request-with-original-repo" id="toc-forking-a-public-repo-and-request-for-a-pull-request-with-original-repo" class="nav-link" data-scroll-target="#forking-a-public-repo-and-request-for-a-pull-request-with-original-repo">Forking a Public Repo and Request for a Pull Request with Original Repo`</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>In this blog we have covered several advanced features of git, all the while unfurling the Marvel universe story</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">--amend</span> <span class="co"># (Scenario A and B)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull <span class="at">--ff</span> <span class="co"># (Scenario A)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push remote branch <span class="at">--force-with-lease</span> <span class="co"># (Scenario B)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> diff <span class="co"># (Scenario C)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase <span class="at">-i</span> commit-hash <span class="co"># (squash and reword disussed in Scenario D)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset <span class="at">--hard</span> commit-hash <span class="co"># (Scenario E)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase <span class="co"># (Scenario F)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> revert  <span class="co"># (Scenario G)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch feature <span class="kw">&amp;&amp;</span> <span class="fu">git</span> rebase main</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge <span class="at">--no-ff</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> tag <span class="er">(</span> <span class="fu">git</span> tag marvel-phase-end<span class="kw">)</span> <span class="co"># (Scenario H)</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Bonus: How are Pull Requests in public repo</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="setting-the-context-to-the-marvel-story" class="level1">
+<h1>Setting the Context to the Marvel Story</h1>
+<p><strong>fun-marvel-git-tutorial</strong>: &gt; This is a Marvel-inspired fun Git Tutorial to help a coder transition from a beginner to an advanced Git User</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you would like to review the history discussed in this blog, refer to the below repo: Repo: https://github.com/senthilkumarm1901/fun-marvel-git-tutorial</p>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Instead of a regular tutorial that explains the <code>git commands</code> one by one, this blog takes up an <code>applied</code> approach by weaving the knowledge of git commands in the most practical manner possible - as part of a story of collaboration in Git. I have attempted to keep this as close to real life experience as possible,</p>
+</blockquote>
+<p><strong>Story - A Team of Script Writers at Marvel Enterprises</strong>:</p>
+<blockquote class="blockquote">
+<p>A Team of 4 Writers are collaborating in Git to create amazing comic stories in the Marvel Universe</p>
+</blockquote>
+<p><strong>About the Team</strong> - A Lead Script Writer at Marvel is tasked with creation of several comics. - He delegates the work to 3 writers with the following responsibilities</p>
+<p><strong>Responsibilities</strong></p>
+<p><img src="mermaid_chart.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>[!IMPORTANT] - Where do all Writers Collaborate - In <code>GitHub</code> <br> - Each Writer can create a branch for them to commit their efforts <br> - Upon completion of the work, they are expected to seek <code>Pull Request</code> Review for merging their branch with <code>main</code> where the Lead Script Writer comments and approves. <br></p>
+</blockquote>
+<p><strong>Lead Script Writer’s Initial Efforts</strong></p>
+<ul>
+<li>Create a repo in remote. <code>git clone</code> locally</li>
+<li>Push all initial ground work such as
+<ul>
+<li>the context portions in <code>README.md</code> and</li>
+<li>the initial empty version of <code>marvel_heroes.md</code></li>
+</ul></li>
+<li>The writers are expected to contribute their efforts in their branches in the file <code>marvel_heroes.md</code></li>
+</ul>
+<blockquote class="blockquote">
+<p>[!NOTE] - The only file all writers are collaborating in is <code>marvel_heroes.md</code></p>
+</blockquote>
+</section>
+<section id="the-lead-script-writers-git-journey" class="level1">
+<h1>The Lead Script Writer’s Git Journey</h1>
+<section id="the-boilerplate-git-commands" class="level2">
+<h2 class="anchored" data-anchor-id="the-boilerplate-git-commands">The Boilerplate Git Commands</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensuring my Personal GitHub Creds are utilized</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git clone git@github.com-personal:senthilkumarm1901/fun-marvel-git-tutorial.git</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cd fun-marvel-git-tutorial.git</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git config user.email <span class="st">"senthilkumar.m1901@gmail.com"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git config user.name <span class="st">"senthilkumarm1901"</span> </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#---</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensuring this git_commands file and folder are ignored by git</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">## will ignore all `git_commands.md` file anywhere in the git repo</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> echo <span class="st">"git_commands.md"</span> <span class="op">&gt;&gt;</span> .gitignore</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">## Ignoring `git_commands/` folder anywhere in the git repo </span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> echo <span class="st">"**git_commands/"</span> <span class="op">&gt;&gt;</span> .gitignore</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#---</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Now, the LeadWriter made a minor edit</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># adding `README.md` and `marvel_heroes.md` files to git</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add README.md  <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"LeadWriter: set up the repo and lay the rules"</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add marvel_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"LeadWriter: Initial marvel_heroes.md file"</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat marvel_heroes.md</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> In <span class="ex">this</span> document, all writers contribute their efforts</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git push origin main</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co">#---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="scenario-a-git-commit---amend-git-pull---ff-git-push-remote-branch" class="level2">
+<h2 class="anchored" data-anchor-id="scenario-a-git-commit---amend-git-pull---ff-git-push-remote-branch">Scenario A: <code>git commit --amend &amp;&amp;  git pull --ff &amp;&amp; git push remote branch</code></h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># LeadWriter made some minor edits to `README.md`</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi README.md</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">## added the changes to previous commit</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add README.md </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git commit <span class="at">--amend</span> <span class="at">--no-edit</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">## It seems after pushing amending commit results in conflicts</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git push origin main</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="ex">To</span> github.com-personal:senthilkumarm1901/fun-marvel-git-tutorial.git</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a> <span class="ot">! </span><span class="ex">[rejected]</span>        main <span class="at">-</span><span class="op">&gt;</span> main <span class="er">(</span><span class="ex">non-fast-forward</span><span class="kw">)</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="ex">error:</span> failed to push some refs to <span class="st">'github.com-personal:senthilkumarm1901/fun-marvel-git-tutorial.git'</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> Updates were rejected because the tip of your current branch is behind</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> its remote counterpart. Integrate the remote changes <span class="er">(</span><span class="ex">e.g.</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> <span class="st">'git pull ...'</span><span class="kw">)</span> <span class="ex">before</span> pushing again.</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> See the <span class="st">'Note about fast-forwards'</span> in <span class="st">'git push --help'</span> for details.</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">## Adhereing to the suggestion above</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git pull <span class="at">--ff</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="ex">Merge</span> made by the <span class="st">'ort'</span> strategy.</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git push origin main</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="ex">Enumerating</span> objects: 8, done.</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="ex">Counting</span> objects: 100% <span class="er">(</span><span class="ex">7/7</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="ex">Delta</span> compression using up to 8 threads</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="ex">Compressing</span> objects: 100% <span class="er">(</span><span class="ex">4/4</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="ex">Writing</span> objects: 100% <span class="er">(</span><span class="ex">4/4</span><span class="kw">)</span><span class="ex">,</span> 532 bytes <span class="kw">|</span> <span class="ex">532.00</span> KiB/s, done.</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="ex">Total</span> 4 <span class="er">(</span><span class="ex">delta</span> 2<span class="kw">)</span><span class="ex">,</span> reused 0 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span><span class="ex">,</span> pack-reused 0</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="ex">remote:</span> Resolving deltas: 100% <span class="er">(</span><span class="ex">2/2</span><span class="kw">)</span><span class="ex">,</span> completed with 1 local object.</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="ex">To</span> github.com-personal:senthilkumarm1901/fun-marvel-git-tutorial.git</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>   <span class="ex">619a879..1aac0d4</span>  main <span class="at">-</span><span class="op">&gt;</span> main</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="what-just-happened" class="level3">
+<h3 class="anchored" data-anchor-id="what-just-happened"><strong>What just happened?</strong></h3>
+<ul>
+<li>After first <code>git push</code> but before <code>git commit --ammend --no-edit</code></li>
+<li>Both <code>main</code> and <code>origin/main</code> are in the same commit <code>C</code></li>
+</ul>
+<pre><code>A---B---C (main &amp; origin/main)</code></pre>
+<ul>
+<li>After <code>git commit --amend</code>, the local and remote main branches have diverged</li>
+</ul>
+<pre><code>A---B---C (origin/main)
+         \
+          C' (main)</code></pre>
+<ul>
+<li>After <code>git pull</code> , a <strong>3-way merge</strong> happened</li>
+</ul>
+<pre><code>A---B---C--- M (main, origin/main)
+         \  /
+          C'</code></pre>
+<p><strong>What is ORT Strategy</strong></p>
+<ul>
+<li>The ‘ort’ strategy refers to the “Optimized Recursive Three-Way Merge” strategy</li>
+<li>A merge commit was created, combining the remote branch and your amended commit.</li>
+</ul>
+<p><strong>Before ORT merge</strong> <img src="before_ort_merge.png" class="img-fluid"></p>
+<p><strong>After ORT merge</strong> <img src="after_ort_merge.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>[!NOTE] <code>git pull --ff</code> allows Git to fast-forward if possible, but if the branches have diverged (as in your case), Git falls back to performing a merge.</p>
+</blockquote>
+<ul>
+<li>If I wish to avoid a <code>merge-commit</code> in the history, I could have done, <code>git push --force</code> (see another example below)</li>
+</ul>
+</section>
+</section>
+<section id="scenario-b-git-push---force-with-lease" class="level2">
+<h2 class="anchored" data-anchor-id="scenario-b-git-push---force-with-lease">Scenario B: <code>git push --force-with-lease</code></h2>
+<p><img src="git_push_force.png" class="img-fluid"> <a href="https://towardsdev.com/understanding-the-power-of-git-push-force-with-lease-30f73858e0dc">Image Source</a></p>
+<blockquote class="blockquote">
+<p>Goal: How about keeping the commit history clean? No, <code>merge commit</code> like above in the 3-way merge.</p>
+</blockquote>
+<p><strong>What if I used <code>git push --force-with-lease</code></strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add README.md </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git commit <span class="at">--amend</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># EDITED MESSAGE:  `LeadWriter: make more changes to README.md formatting`</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">efd7d36</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main<span class="kw">)</span> <span class="ex">LeadWriter:</span> make more changes to README.md formatting</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="ex">1aac0d4</span> <span class="er">(</span><span class="ex">origin/main,</span> origin/HEAD<span class="kw">)</span> <span class="ex">Merge</span> branch <span class="st">'main'</span> of github.com-personal:senthilkumarm1901/fun-marvel-git-tutorial</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="ex">619a879</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="ex">8664973</span> LeadWriter: set up the repo and lay the rules</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aa08cbe</span> Initial commit</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git push origin main <span class="at">--force-with-lease</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="ex">Enumerating</span> objects: 7, done.</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="ex">Counting</span> objects: 100% <span class="er">(</span><span class="ex">7/7</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="ex">Delta</span> compression using up to 8 threads</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="ex">Compressing</span> objects: 100% <span class="er">(</span><span class="ex">3/3</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="ex">Writing</span> objects: 100% <span class="er">(</span><span class="ex">3/3</span><span class="kw">)</span><span class="ex">,</span> 405 bytes <span class="kw">|</span> <span class="ex">405.00</span> KiB/s, done.</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="ex">Total</span> 3 <span class="er">(</span><span class="ex">delta</span> 1<span class="kw">)</span><span class="ex">,</span> reused 0 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span><span class="ex">,</span> pack-reused 0</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="ex">remote:</span> Resolving deltas: 100% <span class="er">(</span><span class="ex">1/1</span><span class="kw">)</span><span class="ex">,</span> completed with 1 local object.</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="ex">To</span> github.com-personal:senthilkumarm1901/fun-marvel-git-tutorial.git</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a> <span class="ex">+</span> 1aac0d4...efd7d36 main <span class="at">-</span><span class="op">&gt;</span> main <span class="er">(</span><span class="ex">forced</span> update<span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>After <code>git push --force-with-lease</code> update</strong> <img src="after_force_push.png" class="img-fluid"></p>
+<p><strong>Unfamiliar with above <code>gitk</code> view, here is the terminal view of the same</strong>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a> <span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span> <span class="at">--decorate</span> <span class="at">--graph</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span>   efd7d36 <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main, origin/main, origin/HEAD<span class="kw">)</span> <span class="ex">LeadWriter:</span> make more changes to README.md formatting</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">\ </span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">*</span> 619a879 LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> <span class="kw">|</span> <span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">/</span>  </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> 8664973 LeadWriter: set up the repo and lay the rules</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> aa08cbe Initial commit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="what-just-happened-1" class="level3">
+<h3 class="anchored" data-anchor-id="what-just-happened-1"><strong>What just happened?</strong></h3>
+<ul>
+<li>Before <code>git commit --amend</code></li>
+</ul>
+<pre><code>A---B---C---M (origin/main, main)</code></pre>
+<ul>
+<li>After <code>git commit --amend</code></li>
+</ul>
+<pre><code>A---B---C---M (origin/main)
+              \
+               M' (main)</code></pre>
+<ul>
+<li>After <code>git push origin main --force-with-lease</code></li>
+</ul>
+<pre><code>A---B---C---M' (origin/main, main)
+</code></pre>
+<p><strong>A Quick Recap of Force Push</strong> <img src="force_push.png" class="img-fluid"></p>
+<p><strong>Scenario Recap</strong>: <br></p>
+<ol type="1">
+<li><strong>I pushed a commit to the remote repository.</strong></li>
+<li>I made additional changes to the same commit (e.g., using <code>git commit --amend</code>).</li>
+<li>I am now trying to sync my updated local branch with the remote branch.</li>
+</ol>
+<p><strong>Pros and Cons of Using <code>git push --force</code> in This Case</strong> <br></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 41%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Aspect</strong></th>
+<th><strong>Using <code>git pull --ff</code> </strong> (git pull==<code>git fetch &amp;&amp; git merge</code>)</th>
+<th><strong>Using <code>git push --force</code></strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Safety</strong></td>
+<td>Ensures you’re up-to-date with remote history.</td>
+<td>Can overwrite remote history if not careful.</td>
+</tr>
+<tr class="even">
+<td><strong>Ease of Use</strong></td>
+<td>Requires resolving conflicts if history diverges.</td>
+<td>Directly applies your local changes to remote.</td>
+</tr>
+<tr class="odd">
+<td><strong>Collaboration</strong></td>
+<td>Safe for shared branches.</td>
+<td>Risky in shared branches (disrupts others).</td>
+</tr>
+<tr class="even">
+<td><strong>Commit History</strong></td>
+<td>Preserves history integrity.</td>
+<td>Rewrites history (can confuse others).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Safer Alternative: <br> <code>git push --force-with-lease</code></strong> (compared to <code>git push --force</code>) If I must force push, I could try <code>--force-with-lease</code>:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push origin <span class="op">&lt;</span>branch-name<span class="op">&gt;</span> --force-with-lease</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This ensures the remote branch hasn’t been updated by someone else since my last fetch. If there’s a mismatch, Git will reject the push, preventing accidental overwrites.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>git push –force vs –force-with-lease discussion in <a href="https://stackoverflow.com/questions/52823692/git-push-force-with-lease-vs-force">slackoverflow</a></p>
+</div>
+</div>
+<p><strong>Cleaner Commit history in Remote Repo because of <code>git push --force-with-lease</code></strong></p>
+<p><img src="remote_repo_main_branch.png" class="img-fluid"></p>
+
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>In general, it is better to use <code>git commit --amend</code> (or even <code>git rebase -i commit-hash</code> - discussed in next section) BEFORE you have pushed your changes to remote branch.</li>
+<li>But if you have pushed your changes to remote, you must be prepared to use <code>git push --force-with-lease</code> or <code>git push --force-if-includes</code></li>
+</ul>
+</div>
+</div>
+<hr>
+</section>
+</section>
+</section>
+<section id="writer1s-git-journey" class="level1">
+<h1>Writer1’s Git Journey</h1>
+<section id="the-boilerplate-git-commands-1" class="level2">
+<h2 class="anchored" data-anchor-id="the-boilerplate-git-commands-1">The Boilerplate Git Commands</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Writer1 clone the repo</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ensure he uses the right user.email and user.name</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git clone  github.com-personal:senthilkumarm1901/fun-marvel-git-tutorial.git</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cd fun-marvel-git-tutorial</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git config user.email <span class="st">"senthilkumar.m1901@gmail.com"</span> <span class="kw">&amp;&amp;</span> <span class="fu">git</span> config user.name <span class="st">"senthilkumarm1901"</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch main</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> branch is up to date with <span class="st">'origin/main'</span>.</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> to commit, working tree clean</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Switch to a new branch `writer1/avengers`</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch <span class="at">-c</span> writer1/avengers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Writer 1 making the first commit <code>Writer1: about main 3 avengers</code></li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi marvel_heroes.md</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add marvel_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Writer1: about main 3 avengers"</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat marvel_heroes.md</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> In <span class="ex">this</span> document, all writers contribute their efforts</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">## About the Main Avengers</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Iron Man:<span class="pp">**</span> Created the Iron Man suit and saved himself from captivity.</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Captain America:<span class="pp">**</span> Led the charge against Hydra during WWII and became a symbol of hope.</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Thor:<span class="pp">**</span> Defended Asgard and Earth, wielding Mjolnir with unshakable valor.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="scenario-c---understanding-git-diff---staged-usage" class="level2">
+<h2 class="anchored" data-anchor-id="scenario-c---understanding-git-diff---staged-usage">Scenario C - Understanding <code>git diff --staged</code> usage</h2>
+<ul>
+<li>Writer1 making second commit - <code>Writer1: about other 3 avengers</code></li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi marvel_heroes.md</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add marvel_heroes.md </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span>  git diff <span class="at">--staged</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span> <span class="at">--git</span> a/marvel_heroes.md b/marvel_heroes.md</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ex">index</span> daf9bed..bacf14a 100644</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="ex">---</span> a/marvel_heroes.md</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="ex">+++</span> b/marvel_heroes.md</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="ex">@@</span> <span class="at">-5,3</span> +5,7 @@</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a> <span class="ex">-</span> <span class="pp">**</span>Captain America:<span class="pp">**</span> Led the charge against Hydra during WWII and became a symbol of hope.</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a> <span class="ex">-</span> <span class="pp">**</span>Thor:<span class="pp">**</span> Defended Asgard and Earth, wielding Mjolnir with unshakable valor.</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="ex">+##</span> Other Main Avengers</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="ex">+-</span> <span class="pp">**</span>Hulk:<span class="pp">**</span> Balanced a life of science with his uncontrollable strength to smash enemies.</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="ex">+-</span> <span class="pp">**</span>Hawkeye:<span class="pp">**</span> The marksman with unerring aim, standing tall against gods and monsters armed with nothing but a bow and arrow.</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="ex">+-</span> <span class="pp">**</span>Black Widow:<span class="pp">**</span> The spy turned Avenger, weaving through shadows with unmatched skill and unwavering loyalty.</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="ex">\ No</span> newline at end of file</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Interpretting <code>git diff --staged</code> command</strong> <img src="interpret_git_diff.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>The green lines are the newly created lines in <code>marvel_heroes.md</code></p>
+</blockquote>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git commit <span class="at">-m</span> <span class="st">"Writer1: about other 3 avengers"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Writer 1 making 3rd and 4th commits <code>Writer2: add deadpool to avengers</code> and <code>Writer2: deadpool fighting villains</code></li>
+</ul>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add marevel_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> diff <span class="at">--staged</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="git_diff_deadpool_added.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>If you see above, a <code>new line</code> is added after Black Widow line and a new section on <code>DeadPool</code> was added</p>
+</blockquote>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git commit <span class="at">-m</span> <span class="st">"Writer2: add deadpool to avengers"</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi marvel_heroes.md </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add marvel_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Writer2: deadpool fighting villains"</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># review the logs</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="ex">35f4935</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> writer1/avengers<span class="kw">)</span> <span class="ex">Writer2:</span> deadpool fighting villains</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="ex">32ed5cc</span> Writer2: add deadpool to avengers</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="ex">bd1338c</span> Writer1: about other 3 avengers</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="ex">d712258</span> Writer1: about main 3 avengers</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="ex">efd7d36</span> <span class="er">(</span><span class="ex">origin/main,</span> origin/HEAD, main<span class="kw">)</span> <span class="ex">LeadWriter:</span> make more changes to README.md formatting</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="ex">619a879</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="ex">8664973</span> LeadWriter: set up the repo and lay the rules</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="ex">aa08cbe</span> Initial commit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="writer_1_commits_before_pushing_2.png" class="img-fluid"></p>
+</section>
+<section id="scenario-d---altering-history-and-commit-messages-using-interactive-git-rebase" class="level2">
+<h2 class="anchored" data-anchor-id="scenario-d---altering-history-and-commit-messages-using-interactive-git-rebase">Scenario D - Altering history and commit messages using interactive git rebase</h2>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Since the commit is not pushed to remote yet, </span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the commit messages can be edited,</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># even the commits can be squished</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git rebase <span class="at">-i</span> HEAD~2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="inside_git_rebase.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>I am rewording the incorrect commit message from <code>Writer2</code> to <code>Writer1</code> I am squashing the newer commit to the previous commit</p>
+</blockquote>
+<p><img src="squash_commit.png" class="img-fluid"></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span>  git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="ex">f7bd564</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> writer1/avengers<span class="kw">)</span> <span class="ex">Writer1:</span> add deadpool to avengers</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="ex">bd1338c</span> Writer1: about other 3 avengers</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="ex">d712258</span> Writer1: about main 3 avengers</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="ex">efd7d36</span> <span class="er">(</span><span class="ex">origin/main,</span> origin/HEAD, main<span class="kw">)</span> <span class="ex">LeadWriter:</span> make more changes to README.md formatting</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="ex">619a879</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="ex">8664973</span> LeadWriter: set up the repo and lay the rules</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="ex">aa08cbe</span> Initial commit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="after_using_rebase_log_in_gitk.png" class="img-fluid"></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git push <span class="at">-u</span> origin writer1/avengers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="what-just-happened-2" class="level3">
+<h3 class="anchored" data-anchor-id="what-just-happened-2"><strong>What just happened?</strong></h3>
+<ul>
+<li>Before <code>git rebase -i HEAD~2</code></li>
+</ul>
+<pre><code>A---B---C---M (origin/main, origin/HEAD, main)
+            \
+             D---E---F--G (HEAD -&gt; writer1/avengers)
+
+D (d712258): "Writer1: about main 3 avengers."
+E (bd1338c): "Writer1: about other 3 avengers."
+F (32ed5cc): "Writer2: add deadpool to avengers."
+G (35f4935): "Writer2: deadpool fighting villains."</code></pre>
+<ul>
+<li>After the following <code>git rebase -i HEAD~2</code></li>
+</ul>
+<pre><code>% git rebase -i HEAD~2
+# in another window, you make the following changes
+# reword 32ed5cc (F) Writer2: add deadpool to avengers --&gt; `Writer1: add deadpool to avengers`
+# squash 35f4935 (G) Writer2: deadpool fighting villains --&gt; Squash it to the previous commit F</code></pre>
+<pre><code>A---B---C---M (origin/main, origin/HEAD, main)
+            \
+             D---E---(F+G) (HEAD -&gt; writer1/avengers)
+
+
+A---B---C---M (origin/main, origin/HEAD, main)
+            \
+             D---E---H (HEAD -&gt; writer1/avengers)</code></pre>
+<ul>
+<li>After <code>git push --force-with-lease</code></li>
+</ul>
+<pre><code>A---B---C---M (origin/main, main)
+            \
+             D---E---H (HEAD --&gt; origin/writer1/avengers, writer1/avengers)
+</code></pre>
+</section>
+</section>
+<section id="scenario-e---usage-of-git-reset---hard-commit-to-go-to" class="level2">
+<h2 class="anchored" data-anchor-id="scenario-e---usage-of-git-reset---hard-commit-to-go-to">Scenario E - Usage of <code>git reset --hard commit-to-go-to</code></h2>
+<ul>
+<li>LeadWriter is unhappy with Writer1 including DeadPool as an avenger</li>
+</ul>
+<p><img src="the_PR_review_process.png" class="img-fluid"></p>
+<p><strong>Writer1 working on removing Deadpool commit entirely</strong>:</p>
+<ul>
+<li><strong>Simplest but most unsafe solution</strong> is <code>git reset --hard</code> but in our case it is okay since we do not want the deadpool commit entirely</li>
+</ul>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># find the commit to reset the git pointer to</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="ex">f7bd564</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> writer1/avengers, origin/writer1/avengers<span class="kw">)</span> <span class="ex">Writer1:</span> add deadpool to avengers</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="ex">bd1338c</span> Writer1: about other 3 avengers</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="ex">d712258</span> Writer1: about main 3 avengers</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="ex">efd7d36</span> <span class="er">(</span><span class="ex">origin/main,</span> origin/HEAD, main<span class="kw">)</span> <span class="ex">LeadWriter:</span> make more changes to README.md formatting</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="ex">619a879</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="ex">8664973</span> LeadWriter: set up the repo and lay the rules</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aa08cbe</span> Initial commit</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co"># the commit to make the HEAD go back to is `bd1338c`</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git reset <span class="at">--hard</span> bd1338c</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="ex">HEAD</span> is now at bd1338c Writer1: about other 3 avengers</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span>  git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="ex">f7bd564</span> <span class="er">(</span><span class="ex">origin/writer1/avengers</span><span class="kw">)</span> <span class="ex">Writer1:</span> add deadpool to avengers</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="ex">bd1338c</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> writer1/avengers<span class="kw">)</span> <span class="ex">Writer1:</span> about other 3 avengers</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="ex">d712258</span> Writer1: about main 3 avengers</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="ex">efd7d36</span> <span class="er">(</span><span class="ex">origin/main,</span> origin/HEAD, main<span class="kw">)</span> <span class="ex">LeadWriter:</span> make more changes to README.md formatting</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="ex">619a879</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="ex">8664973</span> LeadWriter: set up the repo and lay the rules</span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a><span class="ex">aa08cbe</span> Initial commit</span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a><span class="co"># we still need to push this to main branch</span></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="co"># We have already discussed the benefits of `git push --force-with-lease`</span></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git push origin writer1/avengers <span class="at">--force-with-lease</span></span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a><span class="ex">Total</span> 0 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span><span class="ex">,</span> reused 0 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span><span class="ex">,</span> pack-reused 0</span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a><span class="ex">To</span> github.com-personal:senthilkumarm1901/fun-marvel-git-tutorial.git</span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a> <span class="ex">+</span> f7bd564...bd1338c writer1/avengers <span class="at">-</span><span class="op">&gt;</span> writer1/avengers <span class="er">(</span><span class="ex">forced</span> update<span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="what-just-happened-3" class="level3">
+<h3 class="anchored" data-anchor-id="what-just-happened-3"><strong>What just happened?</strong></h3>
+<ul>
+<li>Before <code>git reset --hard E</code></li>
+</ul>
+<pre><code>A---B---C---M (origin/main, main)
+            \
+             D---E---H (origin/writer1/avengers, writer1/avengers)
+
+H - It is the deadpool commit </code></pre>
+<ul>
+<li>After <code>git reset --hard E</code> in local</li>
+</ul>
+<pre><code>A---B---C---M (origin/main, main)
+            \
+             D---E (HEAD -&gt; writer1/avengers)
+                  \
+                   H (origin/writer1/avengers)</code></pre>
+<ul>
+<li>After <code>git push origin writer1/avengers --force-with-lease</code></li>
+</ul>
+<pre><code>A---B---C---M (origin/main, main)
+            \
+             D---E (HEAD -&gt; writer1/avengers, origin/writer1/avengers)
+
+The commit F is permanently removed</code></pre>
+<p><strong>Merge Request can be Approved in Remote ir via CLI - <code>Merge</code> (simple <code>fast forward</code>) </strong>:</p>
+<p><img src="writer1_branch_merged_with_main_in_remote.png" class="img-fluid"></p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bd1338c</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> writer1/avengers, origin/writer1/avengers<span class="kw">)</span> <span class="ex">Writer1:</span> about other 3 avengers</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="ex">d712258</span> Writer1: about main 3 avengers</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="ex">efd7d36</span> <span class="er">(</span><span class="ex">origin/main,</span> origin/HEAD, main<span class="kw">)</span> <span class="ex">LeadWriter:</span> make more changes to README.md formatting</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="ex">619a879</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="ex">8664973</span> LeadWriter: set up the repo and lay the rules</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="ex">aa08cbe</span> Initial commit</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git rebase main</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="ex">Current</span> branch writer1/avengers is up to date.</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch main</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="ex">Switched</span> to branch <span class="st">'main'</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> branch is up to date with <span class="st">'origin/main'</span>.</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git merge writer1/avengers </span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a><span class="ex">Updating</span> efd7d36..bd1338c</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a><span class="ex">Fast-forward</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a> <span class="ex">marvel_heroes.md</span> <span class="kw">|</span> <span class="ex">10</span> ++++++++++</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 10 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a><span class="ex">bd1338c</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main, origin/writer1/avengers, origin/main, origin/HEAD, writer1/avengers<span class="kw">)</span> <span class="ex">Writer1:</span> about other 3 avengers</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a><span class="ex">d712258</span> Writer1: about main 3 avengers</span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a><span class="ex">efd7d36</span> LeadWriter: make more changes to README.md formatting</span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a><span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a><span class="ex">619a879</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a><span class="ex">8664973</span> LeadWriter: set up the repo and lay the rules</span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a><span class="ex">aa08cbe</span> Initial commit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+</section>
+</section>
+<section id="writer2s-git-journey" class="level1">
+<h1>Writer2’s Git Journey</h1>
+<section id="boilerplate-git-commands" class="level2">
+<h2 class="anchored" data-anchor-id="boilerplate-git-commands">Boilerplate Git Commands</h2>
+<ul>
+<li>Writer2 had forked from Lead Script Writer’s commit</li>
+</ul>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># in `Writer2's terminal`</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a> <span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="ex">efd7d36</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> writer2/other_marvel_heroes, origin/main, origin/HEAD, main<span class="kw">)</span> <span class="ex">LeadWriter:</span> make more changes to README.md formatting</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="ex">619a879</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="ex">8664973</span> LeadWriter: set up the repo and lay the rules</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aa08cbe</span> Initial commit</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch writer2/other_marvel_heroes</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> to commit, working tree clean</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="co"># add about `other marvel heroes` like Black Panther, Captain Marvel and Ant-Man</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi marve_heroes.md</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add marvel_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Writer 2: add other marvel heroes stories"</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git push <span class="at">-u</span> origin writer2/other_marvel_heroes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="scenario-f---rebase-with-main" class="level2">
+<h2 class="anchored" data-anchor-id="scenario-f---rebase-with-main">Scenario F - Rebase with main</h2>
+<blockquote class="blockquote">
+<p>Raise a PR for merging <code>writer2/other_marvel_heroes</code> with <code>main</code></p>
+</blockquote>
+<ul>
+<li>The PR shows that there are conflicts</li>
+</ul>
+<p><img src="PR_2.png" class="img-fluid"></p>
+<ul>
+<li>Let us 1) rebase main, 2) resolve conflicts, 3) ff the main branch and 4) merge with <code>writer2</code></li>
+</ul>
+<pre><code># before rebasing
+A---B---C (master)
+     \
+      D---E (feature)
+
+# while on feature branch
+# `git rebase master`
+
+A---B---C (master)
+         \
+          D'---E' (feature)
+
+# now, the `feature` branch can be merged with `master` with a easier `Fast Forward` method</code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git fetch origin main  </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="ex">remote:</span> Enumerating objects: 8, done.</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="ex">remote:</span> Counting objects: 100% <span class="er">(</span><span class="ex">8/8</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="ex">remote:</span> Compressing objects: 100% <span class="er">(</span><span class="ex">6/6</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="ex">remote:</span> Total 6 <span class="er">(</span><span class="ex">delta</span> 1<span class="kw">)</span><span class="ex">,</span> reused 4 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span><span class="ex">,</span> pack-reused 0 <span class="er">(</span><span class="ex">from</span> 0<span class="kw">)</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Unpacking</span> objects: 100% <span class="er">(</span><span class="ex">6/6</span><span class="kw">)</span><span class="ex">,</span> 964 bytes <span class="kw">|</span> <span class="ex">56.00</span> KiB/s, done.</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="ex">From</span> github.com-personal:senthilkumarm1901/fun-marvel-git-tutorial</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a> <span class="ex">*</span> branch            main       <span class="at">-</span><span class="op">&gt;</span> FETCH_HEAD</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>   <span class="ex">efd7d36..bd1338c</span>  main       <span class="at">-</span><span class="op">&gt;</span> origin/main</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="ex">7adc2fc</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> writer2/other_marvel_heroes, origin/writer2/other_marvel_heroes<span class="kw">)</span> <span class="ex">Writer</span> 2: add other marvel heroes stories</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="ex">bd1338c</span> <span class="er">(</span><span class="ex">origin/main,</span> origin/HEAD<span class="kw">)</span> <span class="ex">Writer1:</span> about other 3 avengers</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="ex">d712258</span> Writer1: about main 3 avengers</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="ex">efd7d36</span> <span class="er">(</span><span class="ex">main</span><span class="kw">)</span> <span class="ex">LeadWriter:</span> make more changes to README.md formatting</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a><span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="ex">619a879</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a><span class="ex">8664973</span> LeadWriter: set up the repo and lay the rules</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="ex">aa08cbe</span> Initial commit</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch main</span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a><span class="ex">Switched</span> to branch <span class="st">'main'</span></span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> branch is behind <span class="st">'origin/main'</span> by 2 commits, and can be fast-forwarded.</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>  <span class="kw">(</span><span class="ex">use</span> <span class="st">"git pull"</span> to update your local branch<span class="kw">)</span></span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git pull origin main</span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a><span class="ex">From</span> github.com-personal:senthilkumarm1901/fun-marvel-git-tutorial</span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a> <span class="ex">*</span> branch            main       <span class="at">-</span><span class="op">&gt;</span> FETCH_HEAD</span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a><span class="ex">Updating</span> efd7d36..bd1338c</span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a><span class="ex">Fast-forward</span></span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a> <span class="ex">marvel_heroes.md</span> <span class="kw">|</span> <span class="ex">10</span> ++++++++++</span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 10 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch writer2/other_marvel_heroes </span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a><span class="ex">Switched</span> to branch <span class="st">'writer2/other_marvel_heroes'</span></span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> branch is up to date with <span class="st">'origin/writer2/other_marvel_heroes'</span>.</span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) rebase main</span></span>
+<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a> <span class="ex">%</span> git rebase main</span>
+<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a><span class="ex">Auto-merging</span> marvel_heroes.md</span>
+<span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a><span class="ex">CONFLICT</span> <span class="er">(</span><span class="ex">content</span><span class="kw">)</span><span class="bu">:</span> Merge conflict in marvel_heroes.md</span>
+<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a><span class="ex">error:</span> could not apply 7adc2fc... Writer 2: add other marvel heroes stories</span>
+<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> Resolve all conflicts manually, mark them as resolved with</span>
+<span id="cb33-45"><a href="#cb33-45" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> <span class="st">"git add/rm &lt;conflicted_files&gt;"</span>, then run <span class="st">"git rebase --continue"</span>.</span>
+<span id="cb33-46"><a href="#cb33-46" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> You can instead skip this commit: run <span class="st">"git rebase --skip"</span>.</span>
+<span id="cb33-47"><a href="#cb33-47" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> To abort and get back to the state before <span class="st">"git rebase"</span>, run <span class="st">"git rebase --abort"</span>.</span>
+<span id="cb33-48"><a href="#cb33-48" aria-hidden="true" tabindex="-1"></a><span class="ex">Could</span> not apply 7adc2fc... Writer 2: add other marvel heroes stories</span>
+<span id="cb33-49"><a href="#cb33-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-50"><a href="#cb33-50" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) resolve conflicts</span></span>
+<span id="cb33-51"><a href="#cb33-51" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi marvel_heroes.md</span>
+<span id="cb33-52"><a href="#cb33-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-53"><a href="#cb33-53" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add marvel_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Writer2: resolved conflicts in main rebased under writer2 branch"</span></span>
+<span id="cb33-54"><a href="#cb33-54" aria-hidden="true" tabindex="-1"></a><span class="ex">[detached</span> HEAD 66c7916] Writer2: resolved conflicts in main rebased under writer2 branch</span>
+<span id="cb33-55"><a href="#cb33-55" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 7 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span><span class="ex">,</span> 1 deletion<span class="er">(</span><span class="ex">-</span><span class="kw">)</span></span>
+<span id="cb33-56"><a href="#cb33-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-57"><a href="#cb33-57" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git rebase <span class="at">--continue</span></span>
+<span id="cb33-58"><a href="#cb33-58" aria-hidden="true" tabindex="-1"></a><span class="ex">Successfully</span> rebased and updated refs/heads/writer2/other_marvel_heroes.</span>
+<span id="cb33-59"><a href="#cb33-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-60"><a href="#cb33-60" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb33-61"><a href="#cb33-61" aria-hidden="true" tabindex="-1"></a><span class="ex">66c7916</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> writer2/other_marvel_heroes<span class="kw">)</span> <span class="ex">Writer2:</span> resolved conflicts in main rebased under writer2 branch</span>
+<span id="cb33-62"><a href="#cb33-62" aria-hidden="true" tabindex="-1"></a><span class="ex">7adc2fc</span> <span class="er">(</span><span class="ex">origin/writer2/other_marvel_heroes</span><span class="kw">)</span> <span class="ex">Writer</span> 2: add other marvel heroes stories</span>
+<span id="cb33-63"><a href="#cb33-63" aria-hidden="true" tabindex="-1"></a><span class="ex">bd1338c</span> <span class="er">(</span><span class="ex">origin/main,</span> origin/HEAD, main<span class="kw">)</span> <span class="ex">Writer1:</span> about other 3 avengers</span>
+<span id="cb33-64"><a href="#cb33-64" aria-hidden="true" tabindex="-1"></a><span class="ex">d712258</span> Writer1: about main 3 avengers</span>
+<span id="cb33-65"><a href="#cb33-65" aria-hidden="true" tabindex="-1"></a><span class="ex">efd7d36</span> LeadWriter: make more changes to README.md formatting</span>
+<span id="cb33-66"><a href="#cb33-66" aria-hidden="true" tabindex="-1"></a><span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb33-67"><a href="#cb33-67" aria-hidden="true" tabindex="-1"></a><span class="ex">619a879</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb33-68"><a href="#cb33-68" aria-hidden="true" tabindex="-1"></a><span class="ex">8664973</span> LeadWriter: set up the repo and lay the rules</span>
+<span id="cb33-69"><a href="#cb33-69" aria-hidden="true" tabindex="-1"></a><span class="ex">aa08cbe</span> Initial commit</span>
+<span id="cb33-70"><a href="#cb33-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-71"><a href="#cb33-71" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) switch to main</span></span>
+<span id="cb33-72"><a href="#cb33-72" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch main</span>
+<span id="cb33-73"><a href="#cb33-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-74"><a href="#cb33-74" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git merge writer2/other_marvel_heroes <span class="at">--ff-only</span></span>
+<span id="cb33-75"><a href="#cb33-75" aria-hidden="true" tabindex="-1"></a><span class="ex">Updating</span> bd1338c..66c7916</span>
+<span id="cb33-76"><a href="#cb33-76" aria-hidden="true" tabindex="-1"></a><span class="ex">Fast-forward</span></span>
+<span id="cb33-77"><a href="#cb33-77" aria-hidden="true" tabindex="-1"></a> <span class="ex">marvel_heroes.md</span> <span class="kw">|</span> <span class="ex">8</span> +++++++-</span>
+<span id="cb33-78"><a href="#cb33-78" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 7 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span><span class="ex">,</span> 1 deletion<span class="er">(</span><span class="ex">-</span><span class="kw">)</span></span>
+<span id="cb33-79"><a href="#cb33-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-80"><a href="#cb33-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-81"><a href="#cb33-81" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb33-82"><a href="#cb33-82" aria-hidden="true" tabindex="-1"></a><span class="ex">66c7916</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main, writer2/other_marvel_heroes<span class="kw">)</span> <span class="ex">Writer2:</span> resolved conflicts in main rebased under writer2 branch</span>
+<span id="cb33-83"><a href="#cb33-83" aria-hidden="true" tabindex="-1"></a><span class="ex">7adc2fc</span> <span class="er">(</span><span class="ex">origin/writer2/other_marvel_heroes</span><span class="kw">)</span> <span class="ex">Writer</span> 2: add other marvel heroes stories</span>
+<span id="cb33-84"><a href="#cb33-84" aria-hidden="true" tabindex="-1"></a><span class="ex">bd1338c</span> <span class="er">(</span><span class="ex">origin/main,</span> origin/HEAD<span class="kw">)</span> <span class="ex">Writer1:</span> about other 3 avengers</span>
+<span id="cb33-85"><a href="#cb33-85" aria-hidden="true" tabindex="-1"></a><span class="ex">d712258</span> Writer1: about main 3 avengers</span>
+<span id="cb33-86"><a href="#cb33-86" aria-hidden="true" tabindex="-1"></a><span class="ex">efd7d36</span> LeadWriter: make more changes to README.md formatting</span>
+<span id="cb33-87"><a href="#cb33-87" aria-hidden="true" tabindex="-1"></a><span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb33-88"><a href="#cb33-88" aria-hidden="true" tabindex="-1"></a><span class="ex">619a879</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb33-89"><a href="#cb33-89" aria-hidden="true" tabindex="-1"></a><span class="ex">8664973</span> LeadWriter: set up the repo and lay the rules</span>
+<span id="cb33-90"><a href="#cb33-90" aria-hidden="true" tabindex="-1"></a><span class="ex">aa08cbe</span> Initial commit</span>
+<span id="cb33-91"><a href="#cb33-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-92"><a href="#cb33-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-93"><a href="#cb33-93" aria-hidden="true" tabindex="-1"></a><span class="co"># local and remote `writer2` branches have diverged</span></span>
+<span id="cb33-94"><a href="#cb33-94" aria-hidden="true" tabindex="-1"></a><span class="co"># but main branch is pushed properly</span></span>
+<span id="cb33-95"><a href="#cb33-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-96"><a href="#cb33-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-97"><a href="#cb33-97" aria-hidden="true" tabindex="-1"></a><span class="co"># since `writer2/other_marvel_heroes` is rebased and `origin/writer2/other_marvel_heroes` is not, </span></span>
+<span id="cb33-98"><a href="#cb33-98" aria-hidden="true" tabindex="-1"></a><span class="co"># we need to force push (but we are doing `safely` with `--force-with-lease`)</span></span>
+<span id="cb33-99"><a href="#cb33-99" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git push <span class="at">--all</span> <span class="at">--force-with-lease</span></span>
+<span id="cb33-100"><a href="#cb33-100" aria-hidden="true" tabindex="-1"></a><span class="ex">Total</span> 0 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span><span class="ex">,</span> reused 0 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span><span class="ex">,</span> pack-reused 0</span>
+<span id="cb33-101"><a href="#cb33-101" aria-hidden="true" tabindex="-1"></a><span class="ex">To</span> github.com-personal:senthilkumarm1901/fun-marvel-git-tutorial.git</span>
+<span id="cb33-102"><a href="#cb33-102" aria-hidden="true" tabindex="-1"></a> <span class="ex">+</span> 7adc2fc...66c7916 writer2/other_marvel_heroes <span class="at">-</span><span class="op">&gt;</span> writer2/other_marvel_heroes <span class="er">(</span><span class="ex">forced</span> update<span class="kw">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="what-just-happened-4" class="level3">
+<h3 class="anchored" data-anchor-id="what-just-happened-4">What just happened?</h3>
+<ul>
+<li>The following is the flow when the following is done
+<ul>
+<li><code>git pull origin main</code></li>
+<li><code>git push -u origin writer2/other_marvel_heroes</code></li>
+</ul></li>
+<li>Note, <code>git rebase</code> is not done</li>
+</ul>
+<pre><code>A---B---C---M (HEAD -&gt; main, origin/main, origin/HEAD)
+         \
+          D (HEAD -&gt; writer2/other_marvel_heroes, origin/writer2/other_marvel_heroes)</code></pre>
+<ul>
+<li>Now,
+<ul>
+<li><code>git checkout writer2/other_marvel_heroes &amp;&amp; git rebase main</code></li>
+<li><h1 id="push-the-local-changes-to-remote">push the local changes to remote</h1></li>
+<li><code>git push -u origin writer2/other_marvel_heroes --force-with-lease</code></li>
+</ul></li>
+</ul>
+<pre><code>A---B---C---M (main, origin/main, origin/HEAD)
+            \
+             D' (HEAD -&gt; writer2/other_marvel_heroes, origin/writer2/other_marvel_heroes)
+
+
+D becomes D' after resolving conflicts</code></pre>
+<ul>
+<li>Now,
+<ul>
+<li><code>git checkout main &amp;&amp; git merge writer2/other_marvel_heroes --ff-only</code></li>
+</ul></li>
+</ul>
+<pre><code>A---B---C---M---D' (HEAD -&gt; main, writer2/other_marvel_heroes, origin/main, origin/writer2/other_marvel_heroes, origin/HEAD)</code></pre>
+<hr>
+</section>
+</section>
+</section>
+<section id="writer3s-git-journey" class="level1">
+<h1>Writer3’s Git Journey</h1>
+<section id="boilerplate-git-commands-1" class="level2">
+<h2 class="anchored" data-anchor-id="boilerplate-git-commands-1">Boilerplate Git Commands</h2>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch writer3/end_game</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> to commit, working tree clean</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="ex">efd7d36</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> writer3/end_game, origin/main, origin/HEAD, main<span class="kw">)</span> <span class="ex">LeadWriter:</span> make more changes to README.md formatting</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="ex">619a879</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="ex">8664973</span> LeadWriter: set up the repo and lay the rules</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aa08cbe</span> Initial commit</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi marvel_heroes.md</span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add marvel_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Writer3: add endgame story"</span></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="ex">[writer3/end_game</span> a79640b] Writer3: add endgame story</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 8 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a><span class="co"># added a scene about Eternals watching the Thanos Snap reversed</span></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi marvel_heroes.md</span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add marvel_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Writer3: Eternals post credit to Endgame"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="scenario-g---reverting-to-end-game-commit-before-eternals-commit" class="level2">
+<h2 class="anchored" data-anchor-id="scenario-g---reverting-to-end-game-commit-before-eternals-commit">Scenario G - Reverting to <code>End Game</code> commit (before <code>Eternals</code> commit)</h2>
+<blockquote class="blockquote">
+<p>Raise a PR for merging <code>writer3/end_game</code> with <code>main</code></p>
+</blockquote>
+<p><img src="PR_3.png" class="img-fluid"></p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git fetch origin main</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="ex">remote:</span> Enumerating objects: 11, done.</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="ex">remote:</span> Counting objects: 100% <span class="er">(</span><span class="ex">11/11</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="ex">remote:</span> Compressing objects: 100% <span class="er">(</span><span class="ex">8/8</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="ex">remote:</span> Total 9 <span class="er">(</span><span class="ex">delta</span> 2<span class="kw">)</span><span class="ex">,</span> reused 7 <span class="er">(</span><span class="ex">delta</span> 1<span class="kw">)</span><span class="ex">,</span> pack-reused 0 <span class="er">(</span><span class="ex">from</span> 0<span class="kw">)</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Unpacking</span> objects: 100% <span class="er">(</span><span class="ex">9/9</span><span class="kw">)</span><span class="ex">,</span> 1.45 KiB <span class="kw">|</span> <span class="ex">64.00</span> KiB/s, done.</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="ex">From</span> github.com-personal:senthilkumarm1901/fun-marvel-git-tutorial</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a> <span class="ex">*</span> branch            main       <span class="at">-</span><span class="op">&gt;</span> FETCH_HEAD</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>   <span class="ex">efd7d36..66c7916</span>  main       <span class="at">-</span><span class="op">&gt;</span> origin/main</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span> <span class="at">--decorate</span> <span class="at">--graph</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> 3d07b3a <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> writer3/end_game, origin/writer3/end_game<span class="kw">)</span> <span class="ex">Writer3:</span> Eternals post credit to Endgame</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> a79640b Writer3: add endgame story</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">*</span> 66c7916 <span class="er">(</span><span class="ex">origin/writer2/other_marvel_heroes,</span> origin/main, origin/HEAD, main<span class="kw">)</span> <span class="ex">Writer2:</span> resolved conflicts in main rebased under writer2 branch</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">*</span> bd1338c <span class="er">(</span><span class="ex">origin/writer1/avengers</span><span class="kw">)</span> <span class="ex">Writer1:</span> about other 3 avengers</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">*</span> d712258 Writer1: about main 3 avengers</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">/</span>  </span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span>   efd7d36 LeadWriter: make more changes to README.md formatting</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">\ </span> </span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">*</span> 619a879 LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> <span class="kw">|</span> <span class="ex">b54c24a</span> LeadWriter: Initial marvel_heroes.md file</span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">/</span>  </span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> 8664973 LeadWriter: set up the repo and lay the rules</span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> aa08cbe Initial commit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># go to the endgame commit </span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git revert a79640b</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Auto-merging</span> marvel_heroes.md</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="ex">CONFLICT</span> <span class="er">(</span><span class="ex">content</span><span class="kw">)</span><span class="bu">:</span> Merge conflict in marvel_heroes.md</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="ex">error:</span> could not revert a79640b... Writer3: add endgame story</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> After resolving the conflicts, mark them with</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> <span class="st">"git add/rm &lt;pathspec&gt;"</span>, then run</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> <span class="st">"git revert --continue"</span>.</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> You can instead skip this commit with <span class="st">"git revert --skip"</span>.</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> To abort and get back to the state before <span class="st">"git revert"</span>,</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> run <span class="st">"git revert --abort"</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Resolving conflicts</li>
+</ul>
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch main</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch main</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> branch is behind <span class="st">'origin/main'</span> by 3 commits, and can be fast-forwarded.</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">(</span><span class="ex">use</span> <span class="st">"git pull"</span> to update your local branch<span class="kw">)</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> to commit, working tree clean</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git pull</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="ex">From</span> github.com-personal:senthilkumarm1901/fun-marvel-git-tutorial</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a> <span class="ex">*</span> [new branch]      writer1/avengers            <span class="at">-</span><span class="op">&gt;</span> origin/writer1/avengers</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a> <span class="ex">*</span> [new branch]      writer2/other_marvel_heroes <span class="at">-</span><span class="op">&gt;</span> origin/writer2/other_marvel_heroes</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="ex">Updating</span> efd7d36..66c7916</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a><span class="ex">Fast-forward</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a> <span class="ex">marvel_heroes.md</span> <span class="kw">|</span> <span class="ex">16</span> ++++++++++++++++</span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 16 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git merge writer3/end_game </span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a><span class="ex">Auto-merging</span> marvel_heroes.md</span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a><span class="ex">CONFLICT</span> <span class="er">(</span><span class="ex">content</span><span class="kw">)</span><span class="bu">:</span> Merge conflict in marvel_heroes.md</span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a><span class="ex">Automatic</span> merge failed<span class="kw">;</span> <span class="ex">fix</span> conflicts and then commit the result.</span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a><span class="ex">Auto-merging</span> marvel_heroes.md</span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a><span class="ex">CONFLICT</span> <span class="er">(</span><span class="ex">content</span><span class="kw">)</span><span class="bu">:</span> Merge conflict in marvel_heroes.md</span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a><span class="ex">Automatic</span> merge failed<span class="kw">;</span> <span class="ex">fix</span> conflicts and then commit the result.</span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status</span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch main</span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> branch is up to date with <span class="st">'origin/main'</span>.</span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a><span class="ex">You</span> have unmerged paths.</span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a>  <span class="kw">(</span><span class="ex">fix</span> conflicts and run <span class="st">"git commit"</span><span class="kw">)</span></span>
+<span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a>  <span class="kw">(</span><span class="ex">use</span> <span class="st">"git merge --abort"</span> to abort the merge<span class="kw">)</span></span>
+<span id="cb40-33"><a href="#cb40-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-34"><a href="#cb40-34" aria-hidden="true" tabindex="-1"></a><span class="ex">Unmerged</span> paths:</span>
+<span id="cb40-35"><a href="#cb40-35" aria-hidden="true" tabindex="-1"></a>  <span class="kw">(</span><span class="ex">use</span> <span class="st">"git add &lt;file&gt;..."</span> to mark resolution<span class="kw">)</span></span>
+<span id="cb40-36"><a href="#cb40-36" aria-hidden="true" tabindex="-1"></a>    <span class="ex">both</span> modified:   marvel_heroes.md</span>
+<span id="cb40-37"><a href="#cb40-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-38"><a href="#cb40-38" aria-hidden="true" tabindex="-1"></a><span class="ex">no</span> changes added to commit <span class="er">(</span><span class="ex">use</span> <span class="st">"git add"</span> and/or <span class="st">"git commit -a"</span><span class="kw">)</span></span>
+<span id="cb40-39"><a href="#cb40-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-40"><a href="#cb40-40" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add marvel_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Writer3: Merged conflicts"</span></span>
+<span id="cb40-41"><a href="#cb40-41" aria-hidden="true" tabindex="-1"></a><span class="ex">[main</span> 43ccb28] Writer3: Merged conflicts</span>
+<span id="cb40-42"><a href="#cb40-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-43"><a href="#cb40-43" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git push <span class="at">-u</span> origin main</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="what-just-happened-5" class="level3">
+<h3 class="anchored" data-anchor-id="what-just-happened-5"><strong>What just happened?</strong></h3>
+<ul>
+<li>Before Reverting</li>
+</ul>
+<pre><code>A---B--C--M--D' (main, origin/main, origin/HEAD)
+        \
+         G---H--I (writer3/end_game, origin/writer3/end_game)
+
+H - Endgame commit
+I - Eternals commit         </code></pre>
+<ul>
+<li>After Reverting where I lose the <code>Eternals</code> commit and go back to <code>H</code> (after resolving conflicts)</li>
+</ul>
+<pre><code>A---B--C--M--D' (main, origin/main, origin/HEAD)
+        \
+         G---H--I--H' (writer3/end_game, origin/writer3/end_game)</code></pre>
+<ul>
+<li>Now,
+<ul>
+<li><code>git switch main</code></li>
+<li><code>git merge writer3/end_game</code></li>
+</ul></li>
+</ul>
+<pre><code>A---B--C--M--D' --- M2 (HEAD --&gt; main, origin/main, origin/HEAD)
+        \           /  
+         G---H--I--H' (writer3/end_game, origin/writer3/end_game)</code></pre>
+<hr>
+</section>
+</section>
+<section id="scenario-h---tagging-in-git" class="level2">
+<h2 class="anchored" data-anchor-id="scenario-h---tagging-in-git">Scenario H - Tagging in Git</h2>
+<div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># give a tag to the current commit in main</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git tag End_of_Phase3 </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co"># list the tags</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git tag</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="ex">End_of_Phase3</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="co"># make another tag to the same  commit</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git tag End_of_Phase4 <span class="at">--force</span> </span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git tag                       </span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="ex">End_of_Phase3</span></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a><span class="ex">End_of_Phase4</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a><span class="co"># delete one of the older tags</span></span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git tag <span class="at">--delete</span> End_of_Phase3</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a><span class="ex">Deleted</span> tag <span class="st">'End_of_Phase3'</span> <span class="er">(</span><span class="ex">was</span> 8448312<span class="kw">)</span></span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git tag                       </span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a><span class="ex">End_of_Phase4</span></span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git push origin tag End_of_Phase4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A <code>tag</code> is a git concept whereas a <code>Release</code> is GitHub higher level concept.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="conclusion---what-have-we-accomplished" class="level1">
+<h1>Conclusion - What have we accomplished?</h1>
+<p><img src="conclusion_final_git_history.png" class="img-fluid"></p>
+<p><img src="12_commits_story_in_remote.png" class="img-fluid"></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>With finally 12 commits in the remote <code>main</code> branch, we have explained many advanced commands of Git</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="bonus" class="level1">
+<h1>BONUS</h1>
+<section id="forking-a-public-repo-and-request-for-a-pull-request-with-original-repo" class="level2">
+<h2 class="anchored" data-anchor-id="forking-a-public-repo-and-request-for-a-pull-request-with-original-repo">Forking a Public Repo and Request for a Pull Request with Original Repo`</h2>
+<ul>
+<li>Forking a Public Repo and PR from a Forked Repo to the Original Repo
+<ul>
+<li><ol type="1">
+<li>Fork the Original Public Repo (OPR) and make it F-OPR</li>
+</ol></li>
+<li><ol start="2" type="1">
+<li>Clone the F-OPR to local (automatically adds the Forked Repo as <code>Origin</code> for Remote)</li>
+</ol></li>
+<li><ol start="3" type="1">
+<li>Add a remote pointing to the OPR as <code>Original</code> for Remote (<code>git remote add Original https://github.com/OPR/</code>)</li>
+</ol></li>
+<li><ol start="4" type="1">
+<li>Make changes locally to F-OPR.</li>
+</ol></li>
+<li><ol start="5" type="1">
+<li>Push to F-OPR (which you have permission to do)</li>
+</ol></li>
+<li><ol start="6" type="1">
+<li>Raise a PR to allow F-OPR to merge with OPR</li>
+</ol></li>
+</ul></li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>OPR</strong>: https://github.com/explosion/spaCy <br> <strong>F-OPR</strong>: https://github.com/mribbons/spaCy/tree/master <br> <strong>PR Page</strong>: https://github.com/explosion/spaCy/pull/13613 <br></p>
+<p><code>mribbons wants to merge 2 commits into explosion:master from mribbons:master</code> - <strong>PR Commit Example</strong>: https://github.com/explosion/spaCy/pull/13613/commits/228045464b15de57483926228cb5d045b75998b9 <br></p>
+</blockquote>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("git@github\.com-learning:senthilkumarm1901\/learn_by_blogging\.git");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

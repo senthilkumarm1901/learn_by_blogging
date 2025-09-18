@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2024-05-30">
+<meta name="description" content="In this blog I create an AWS Lambda Endpoint with a custom authorizer Lambda using SAM yaml template. I seek CoPilot’s help to build all of them step by step">
+
+<title>How I used GitHub CoPilot to create a python Lambda API endpoint via SAM template – Learn by Blogging</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">How I used GitHub CoPilot to create a python Lambda API endpoint via SAM template</h1>
+                  <div>
+        <div class="description">
+          In this blog I create an AWS Lambda Endpoint with a custom authorizer Lambda using SAM yaml template. I seek CoPilot’s help to build all of them step by step
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Serverless</div>
+                <div class="quarto-category">AWS</div>
+                <div class="quarto-category">SAM</div>
+                <div class="quarto-category">AWS CLI</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 30, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#core-agenda" id="toc-core-agenda" class="nav-link" data-scroll-target="#core-agenda">Core Agenda</a>
+  <ul class="collapse">
+  <li><a href="#i.-the-architecture-we-are-going-to-build" id="toc-i.-the-architecture-we-are-going-to-build" class="nav-link" data-scroll-target="#i.-the-architecture-we-are-going-to-build">I. The Architecture we are going to build</a></li>
+  <li><a href="#ii.-creation-of-a-simple-python-lambda-that-does-regex-capture" id="toc-ii.-creation-of-a-simple-python-lambda-that-does-regex-capture" class="nav-link" data-scroll-target="#ii.-creation-of-a-simple-python-lambda-that-does-regex-capture">II. Creation of a Simple Python Lambda that does Regex Capture</a>
+  <ul class="collapse">
+  <li><a href="#query-1---who-are-you" id="toc-query-1---who-are-you" class="nav-link" data-scroll-target="#query-1---who-are-you">Query 1 - Who are you</a></li>
+  <li><a href="#query-2---python-code-generation" id="toc-query-2---python-code-generation" class="nav-link" data-scroll-target="#query-2---python-code-generation">Query 2 - Python Code Generation</a></li>
+  </ul></li>
+  <li><a href="#iii.-deploy-the-lambda-with-api-gateway-using-sam-template" id="toc-iii.-deploy-the-lambda-with-api-gateway-using-sam-template" class="nav-link" data-scroll-target="#iii.-deploy-the-lambda-with-api-gateway-using-sam-template">III. Deploy the Lambda with API Gateway using SAM Template</a>
+  <ul class="collapse">
+  <li><a href="#query-3---sam-template-generation" id="toc-query-3---sam-template-generation" class="nav-link" data-scroll-target="#query-3---sam-template-generation">Query 3 - SAM Template Generation</a></li>
+  <li><a href="#query-4---understanding-the-sam-template" id="toc-query-4---understanding-the-sam-template" class="nav-link" data-scroll-target="#query-4---understanding-the-sam-template">Query 4 - Understanding the SAM Template</a></li>
+  <li><a href="#query-5---correcting-the-sam-template" id="toc-query-5---correcting-the-sam-template" class="nav-link" data-scroll-target="#query-5---correcting-the-sam-template">Query 5 - Correcting the SAM Template</a></li>
+  <li><a href="#query-6---editing-the-python-lambda-function-based-on-the-api-path" id="toc-query-6---editing-the-python-lambda-function-based-on-the-api-path" class="nav-link" data-scroll-target="#query-6---editing-the-python-lambda-function-based-on-the-api-path">Query 6 - Editing the Python Lambda function based on the API path</a></li>
+  </ul></li>
+  <li><a href="#iv.-adding-a-custom-lambda-authorizer" id="toc-iv.-adding-a-custom-lambda-authorizer" class="nav-link" data-scroll-target="#iv.-adding-a-custom-lambda-authorizer">IV. Adding a Custom Lambda Authorizer</a>
+  <ul class="collapse">
+  <li><a href="#query-7---how-to-add-a-custom-authorizer-lambda" id="toc-query-7---how-to-add-a-custom-authorizer-lambda" class="nav-link" data-scroll-target="#query-7---how-to-add-a-custom-authorizer-lambda">Query 7 - How to add a Custom Authorizer Lambda</a></li>
+  <li><a href="#query-8---reviewing-the-codes" id="toc-query-8---reviewing-the-codes" class="nav-link" data-scroll-target="#query-8---reviewing-the-codes">Query 8 - Reviewing the Codes</a></li>
+  <li><a href="#query-9---reviewing-the-codes" id="toc-query-9---reviewing-the-codes" class="nav-link" data-scroll-target="#query-9---reviewing-the-codes">Query 9 - Reviewing the Codes</a></li>
+  <li><a href="#query-10---reviewing-the-codes" id="toc-query-10---reviewing-the-codes" class="nav-link" data-scroll-target="#query-10---reviewing-the-codes">Query 10 - Reviewing the Codes</a></li>
+  </ul></li>
+  <li><a href="#v.-deploying-the-final-sam-template" id="toc-v.-deploying-the-final-sam-template" class="nav-link" data-scroll-target="#v.-deploying-the-final-sam-template">V. Deploying the Final SAM Template</a>
+  <ul class="collapse">
+  <li><a href="#query-11---how-to-deploy-in-sam" id="toc-query-11---how-to-deploy-in-sam" class="nav-link" data-scroll-target="#query-11---how-to-deploy-in-sam">Query 11 - How to deploy in SAM</a></li>
+  <li><a href="#query-12---what-is-the-use-of-sam-package-command" id="toc-query-12---what-is-the-use-of-sam-package-command" class="nav-link" data-scroll-target="#query-12---what-is-the-use-of-sam-package-command">Query 12 - What is the use of <code>sam package</code> command</a></li>
+  <li><a href="#query-13---which-files-go-inside-sam-package" id="toc-query-13---which-files-go-inside-sam-package" class="nav-link" data-scroll-target="#query-13---which-files-go-inside-sam-package">Query 13 - Which files go inside <code>SAM package</code></a></li>
+  <li><a href="#query-14---checking-if-all-files-are-present-for-template.yaml" id="toc-query-14---checking-if-all-files-are-present-for-template.yaml" class="nav-link" data-scroll-target="#query-14---checking-if-all-files-are-present-for-template.yaml">Query 14 - Checking if all files are present for <code>template.yaml</code></a></li>
+  <li><a href="#query-15---what-does-sam-build---use-container-do" id="toc-query-15---what-does-sam-build---use-container-do" class="nav-link" data-scroll-target="#query-15---what-does-sam-build---use-container-do">Query 15 - What does <code>sam build --use-container do</code></a></li>
+  <li><a href="#query-16---how-to-test-locally-using-sam" id="toc-query-16---how-to-test-locally-using-sam" class="nav-link" data-scroll-target="#query-16---how-to-test-locally-using-sam">Query 16 - How to test locally using SAM</a></li>
+  <li><a href="#query-17---how-to-use-curl-command-with-an-upload" id="toc-query-17---how-to-use-curl-command-with-an-upload" class="nav-link" data-scroll-target="#query-17---how-to-use-curl-command-with-an-upload">Query 17 - How to use Curl command with an upload</a></li>
+  <li><a href="#query-18---suggesting-edits-to-the-curl-command" id="toc-query-18---suggesting-edits-to-the-curl-command" class="nav-link" data-scroll-target="#query-18---suggesting-edits-to-the-curl-command">Query 18 - Suggesting edits to the Curl Command</a></li>
+  </ul></li>
+  <li><a href="#vi.-fixing-errors-that-arose" id="toc-vi.-fixing-errors-that-arose" class="nav-link" data-scroll-target="#vi.-fixing-errors-that-arose">VI. Fixing Errors that arose</a>
+  <ul class="collapse">
+  <li><a href="#query-20---error-in-sam-build-command" id="toc-query-20---error-in-sam-build-command" class="nav-link" data-scroll-target="#query-20---error-in-sam-build-command">Query 20 - Error in <code>sam build</code> command</a></li>
+  <li><a href="#query-21---a-json-decode-error-in-python" id="toc-query-21---a-json-decode-error-in-python" class="nav-link" data-scroll-target="#query-21---a-json-decode-error-in-python">Query 21 - A json decode error in python</a></li>
+  <li><a href="#query-22---an-error-in-the-yaml-tempalte-related-to-the-authorizers" id="toc-query-22---an-error-in-the-yaml-tempalte-related-to-the-authorizers" class="nav-link" data-scroll-target="#query-22---an-error-in-the-yaml-tempalte-related-to-the-authorizers">Query 22 - An error in the YAML Tempalte related to the Authorizers</a></li>
+  <li><a href="#query-23---error-that-sam-valudate-threw" id="toc-query-23---error-that-sam-valudate-threw" class="nav-link" data-scroll-target="#query-23---error-that-sam-valudate-threw">Query 23 - Error that SAM Valudate threw</a></li>
+  <li><a href="#query-24---error-detected-via-cloudwatch-logs-interpreted" id="toc-query-24---error-detected-via-cloudwatch-logs-interpreted" class="nav-link" data-scroll-target="#query-24---error-detected-via-cloudwatch-logs-interpreted">Query 24 - Error detected via CloudWatch Logs Interpreted</a></li>
+  </ul></li>
+  <li><a href="#vii.-after-successfully-deployment" id="toc-vii.-after-successfully-deployment" class="nav-link" data-scroll-target="#vii.-after-successfully-deployment">VII. After Successfully Deployment</a>
+  <ul class="collapse">
+  <li><a href="#hit-the-endpoint" id="toc-hit-the-endpoint" class="nav-link" data-scroll-target="#hit-the-endpoint">Hit the Endpoint</a></li>
+  <li><a href="#after-successfully-deploying-hit-the-endpoint" id="toc-after-successfully-deploying-hit-the-endpoint" class="nav-link" data-scroll-target="#after-successfully-deploying-hit-the-endpoint">After Successfully Deploying, hit the endpoint</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<ul>
+<li>After securing a 30 day trial license of GitHub CoPilot, I went on with an exploration to create something I have limited experience - Serverless Application Model.</li>
+<li>The style of this blog is in a conversational tone. It includes interactions between <strong>me</strong> (👨) and <strong>GitHub CoPilot</strong> (🤖)</li>
+</ul>
+</section>
+<section id="core-agenda" class="level1">
+<h1>Core Agenda</h1>
+<ul>
+<li>I had asked GitHub CoPilot to help me create the below architecture</li>
+<li>The following flow of topics was how I finally built the architecture</li>
+</ul>
+<pre><code>I. The Architecture we are building 
+
+II. Creation of a Simple Python Lambda
+- That does Regex Capture 
+
+III. Deploy the Lambda with API Gateway using SAM Template &lt;br&gt;
+
+IV. Adding a Custom Lambda Authorizer
+- Editing the SAM Template
+- Adding an Authorizer Lambda
+
+V. Deploying the Final SAM Template
+- In Local
+- To AWS Cloud
+
+VI. Debugging Error
+
+VII. Hit the API Endpoint &amp; Deleting the Stack</code></pre>
+<hr>
+<p><img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="image" width="100"></p>
+<blockquote class="blockquote">
+<p>Before proceeding, do you want to see the codebase? Check this GitHub repo link <a href="https://github.com/senthilkumarm1901/aws_serverless_recipes/tree/main/simple_python_lambda_apigw_via_sam">aws_serverless_recipes/simple_python_lambda_apigw_via_sam</a></p>
+</blockquote>
+<hr>
+<section id="i.-the-architecture-we-are-going-to-build" class="level2">
+<h2 class="anchored" data-anchor-id="i.-the-architecture-we-are-going-to-build">I. The Architecture we are going to build</h2>
+<p><img src="images/lambda_with_sam/lambda_endpoint_with_authorizer.png" class="img-fluid"></p>
+</section>
+<section id="ii.-creation-of-a-simple-python-lambda-that-does-regex-capture" class="level2">
+<h2 class="anchored" data-anchor-id="ii.-creation-of-a-simple-python-lambda-that-does-regex-capture">II. Creation of a Simple Python Lambda that does Regex Capture</h2>
+<section id="query-1---who-are-you" class="level3">
+<h3 class="anchored" data-anchor-id="query-1---who-are-you">Query 1 - Who are you</h3>
+<section id="section" class="level4">
+<h4 class="anchored" data-anchor-id="section">👨</h4>
+<p>Hi which model do you use?</p>
+</section>
+<section id="section-1" class="level4">
+<h4 class="anchored" data-anchor-id="section-1">🤖 <br></h4>
+<p>I use the GPT-4 version of OpenAI’s GPT models</p>
+<hr>
+</section>
+</section>
+<section id="query-2---python-code-generation" class="level3">
+<h3 class="anchored" data-anchor-id="query-2---python-code-generation">Query 2 - Python Code Generation</h3>
+<section id="section-2" class="level4">
+<h4 class="anchored" data-anchor-id="section-2">👨 <br></h4>
+<pre><code>Create a Python code that accepts a text and a regex pattern and returns the matched string portion. Return "No Match" if there is no match for that pattern in that text
+
+The code should be compatible to run in AWS Lambda. 
+
+Ensure the event dictionary is of the below format.
+
+{
+    "text": "Hello, my name is Senthil Kumar. I work as a software engineer at XYZ. my email id is senthil_kumar@gmail.com. Reach me at mobile +91 9876541230",
+    "regex_pattern": "(\w+)[-_.]?(\w+)@((\w|-)+)\.\w+"
+}</code></pre>
+</section>
+<section id="section-3" class="level4">
+<h4 class="anchored" data-anchor-id="section-3">🤖 <br></h4>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lambda_handler(event, context):</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> event[<span class="st">'text'</span>]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    pattern <span class="op">=</span> event[<span class="st">'regex_pattern'</span>]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    match <span class="op">=</span> re.search(regex_pattern, text)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> match:</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">'statusCode'</span>: <span class="dv">200</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">'body'</span>: json.dumps(match.group())</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>            <span class="st">'statusCode'</span>: <span class="dv">200</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">'body'</span>: json.dumps(<span class="st">"No Match"</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+</section>
+</section>
+<section id="iii.-deploy-the-lambda-with-api-gateway-using-sam-template" class="level2">
+<h2 class="anchored" data-anchor-id="iii.-deploy-the-lambda-with-api-gateway-using-sam-template">III. Deploy the Lambda with API Gateway using SAM Template</h2>
+<section id="query-3---sam-template-generation" class="level3">
+<h3 class="anchored" data-anchor-id="query-3---sam-template-generation">Query 3 - SAM Template Generation</h3>
+<section id="section-4" class="level4">
+<h4 class="anchored" data-anchor-id="section-4">👨 <br></h4>
+<pre><code>I want to deploy the above code in AWS Lambda Function with an API Gateway attached. 
+
+Provide me a SAM Template that does the following. 
+- Create IAM Role and Policy
+- Create a Lambda function with the above IAM Role and Policy and below config
+
+FUNCTION_NAME="simple_regex_lambda"
+MEMORY_SIZE=256
+TIMEOUT=30
+ARCHITECTURE=arm64
+
+- Create a AWS API Gateway Service that is integrated to the Lambda Function</code></pre>
+</section>
+<section id="section-5" class="level4">
+<h4 class="anchored" data-anchor-id="section-5">🤖 <br></h4>
+<div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AWSTemplateFormatVersion</span><span class="kw">:</span><span class="at"> </span><span class="st">'2010-09-09'</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Transform</span><span class="kw">:</span><span class="at"> AWS::Serverless-2016-10-31</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Description</span><span class="kw">:</span><span class="at"> An AWS Serverless Specification template describing your function.</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">Resources</span><span class="kw">:</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">SimpleRegexLambdaRole</span><span class="kw">:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Type</span><span class="kw">:</span><span class="at"> AWS::IAM::Role</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Properties</span><span class="kw">:</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">AssumeRolePolicyDocument</span><span class="kw">:</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">Version</span><span class="kw">:</span><span class="at"> </span><span class="st">'2012-10-17'</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">Statement</span><span class="kw">:</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="fu">Effect</span><span class="kw">:</span><span class="at"> Allow</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">Principal</span><span class="kw">:</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">Service</span><span class="kw">:</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="kw">-</span><span class="at"> lambda.amazonaws.com</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">Action</span><span class="kw">:</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="kw">-</span><span class="at"> sts:AssumeRole</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Policies</span><span class="kw">:</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">PolicyName</span><span class="kw">:</span><span class="at"> SimpleRegexLambdaPolicy</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">PolicyDocument</span><span class="kw">:</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">Version</span><span class="kw">:</span><span class="at"> </span><span class="st">'2012-10-17'</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">Statement</span><span class="kw">:</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="kw">-</span><span class="at"> </span><span class="fu">Effect</span><span class="kw">:</span><span class="at"> Allow</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="fu">Action</span><span class="kw">:</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="at">                  </span><span class="kw">-</span><span class="at"> logs:CreateLogGroup</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="at">                  </span><span class="kw">-</span><span class="at"> logs:CreateLogStream</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="at">                  </span><span class="kw">-</span><span class="at"> logs:PutLogEvents</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="fu">Resource</span><span class="kw">:</span><span class="at"> </span><span class="st">'*'</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">SimpleRegexLambda</span><span class="kw">:</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Type</span><span class="kw">:</span><span class="at"> AWS::Serverless::Function</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Properties</span><span class="kw">:</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">FunctionName</span><span class="kw">:</span><span class="at"> simple_regex_lambda</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Handler</span><span class="kw">:</span><span class="at"> lambda_handler.lambda_handler</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Runtime</span><span class="kw">:</span><span class="at"> python3.8</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MemorySize</span><span class="kw">:</span><span class="at"> </span><span class="dv">256</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Timeout</span><span class="kw">:</span><span class="at"> </span><span class="dv">30</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Architecture</span><span class="kw">:</span><span class="at"> arm64</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Role</span><span class="kw">:</span><span class="at"> !GetAtt SimpleRegexLambdaRole.Arn</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Events</span><span class="kw">:</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">SimpleRegexApi</span><span class="kw">:</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">Type</span><span class="kw">:</span><span class="at"> Api</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">Properties</span><span class="kw">:</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">Path</span><span class="kw">:</span><span class="at"> /test</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">Method</span><span class="kw">:</span><span class="at"> post</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="fu">Outputs</span><span class="kw">:</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">SimpleRegexApi</span><span class="kw">:</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Description</span><span class="kw">:</span><span class="at"> </span><span class="st">"API Gateway endpoint URL for Prod environment"</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Value</span><span class="kw">:</span><span class="at"> !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/test/"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+</section>
+<section id="query-4---understanding-the-sam-template" class="level3">
+<h3 class="anchored" data-anchor-id="query-4---understanding-the-sam-template">Query 4 - Understanding the SAM Template</h3>
+<section id="section-6" class="level4">
+<h4 class="anchored" data-anchor-id="section-6">👨 <br></h4>
+<pre><code>How is ${ServerlessRestApi} value replaced? Also, I want the API gateway path to have the same name as the lambda function</code></pre>
+</section>
+<section id="section-7" class="level4">
+<h4 class="anchored" data-anchor-id="section-7">🤖 <br></h4>
+<pre><code>The ${ServerlessRestApi} is a CloudFormation intrinsic variable that AWS SAM automatically generates when you define an AWS::Serverless::Function with an event of type Api. It refers to the logical ID of the API Gateway RestApi resource that is created by AWS SAM.
+
+To have the API Gateway path the same as the Lambda function name, you can modify the Path property under Events in the SAM template. Here's how you can do it:
+
+
+Events:
+  SimpleRegexApi:
+    Type: Api
+    Properties:
+      Path: /simple_regex_lambda
+      Method: post</code></pre>
+<hr>
+</section>
+</section>
+<section id="query-5---correcting-the-sam-template" class="level3">
+<h3 class="anchored" data-anchor-id="query-5---correcting-the-sam-template">Query 5 - Correcting the SAM Template</h3>
+<section id="section-8" class="level4">
+<h4 class="anchored" data-anchor-id="section-8">👨</h4>
+<pre><code>Should the Method be post or put in the API Gateway? We are passing two parameters text and regex_pattern to the lambda. I want them to be passed them in query in the API.</code></pre>
+</section>
+<section id="section-9" class="level4">
+<h4 class="anchored" data-anchor-id="section-9">🤖 <br></h4>
+<pre><code>If you want to pass parameters via the query string, then you should use the GET method. The POST and PUT methods are typically used when you want to send data in the body of the request, not in the query string.
+
+Here's how you can modify the Method property under Events in the SAM template:
+
+Events:
+  SimpleRegexApi:
+    Type: Api
+    Properties:
+      Path: /simple_regex_lambda
+      Method: get
+
+Now, the API Gateway will have a GET method at the /simple_regex_lambda path. You can pass parameters to the Lambda function via the query string like this: /simple_regex_lambda?text=your_text&amp;regex_pattern=your_pattern. </code></pre>
+<hr>
+</section>
+</section>
+<section id="query-6---editing-the-python-lambda-function-based-on-the-api-path" class="level3">
+<h3 class="anchored" data-anchor-id="query-6---editing-the-python-lambda-function-based-on-the-api-path">Query 6 - Editing the Python Lambda function based on the API path</h3>
+<section id="section-10" class="level4">
+<h4 class="anchored" data-anchor-id="section-10">👨</h4>
+<pre><code>If the API pattern is like /simple_regex_lambda?text=your_text&amp;regex_pattern=your_pattern , 
+how should the event in lambda_function.lambda_handler(event,context) be read inside the lambda function</code></pre>
+</section>
+<section id="section-11" class="level4">
+<h4 class="anchored" data-anchor-id="section-11">🤖 <br></h4>
+<pre><code>When you pass parameters via the query string in an API Gateway request, they are included in the event dictionary that is passed to the Lambda function. They are located under the queryStringParameters key.
+
+Here is how you can modify the lambda_handler function to read the text and regex_pattern parameters from the event dictionary:</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lambda_handler(event, context):</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    parameters <span class="op">=</span> event[<span class="st">'queryStringParameters'</span>]</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> parameters[<span class="st">'text'</span>]</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    regex_pattern <span class="op">=</span> parameters[<span class="st">'regex_pattern'</span>]</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    match <span class="op">=</span> re.search(regex_pattern, text)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> match:</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> match.group()</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"No Match"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>This function extracts the text and regex_pattern parameters from the queryStringParameters key of the event dictionary. It then uses these parameters to perform the regex search.</code></pre>
+<hr>
+</section>
+</section>
+</section>
+<section id="iv.-adding-a-custom-lambda-authorizer" class="level2">
+<h2 class="anchored" data-anchor-id="iv.-adding-a-custom-lambda-authorizer">IV. Adding a Custom Lambda Authorizer</h2>
+<section id="query-7---how-to-add-a-custom-authorizer-lambda" class="level3">
+<h3 class="anchored" data-anchor-id="query-7---how-to-add-a-custom-authorizer-lambda">Query 7 - How to add a Custom Authorizer Lambda</h3>
+<section id="section-12" class="level4">
+<h4 class="anchored" data-anchor-id="section-12">👨</h4>
+<pre><code>Is it possible to add a simple custom password protection while invoking the API gateway url. I need a simplest authorizer possible.Is it possible to include that in the SAM template ?</code></pre>
+</section>
+<section id="section-13" class="level4">
+<h4 class="anchored" data-anchor-id="section-13">🤖 <br></h4>
+<pre><code>Yes, you can add a simple Lambda authorizer to your API Gateway for basic password protection. This authorizer will be a separate Lambda function that checks the password provided in the headers of the API request.
+
+Here's how you can modify the SAM template to include a Lambda authorizer:</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AWSTemplateFormatVersion</span><span class="kw">:</span><span class="at"> </span><span class="st">'2010-09-09'</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Transform</span><span class="kw">:</span><span class="at"> AWS::Serverless-2016-10-31</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Description</span><span class="kw">:</span><span class="at"> An AWS Serverless Specification template describing your function.</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">Resources</span><span class="kw">:</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">SimpleRegexLambdaRole</span><span class="kw">:</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Type</span><span class="kw">:</span><span class="at"> AWS::IAM::Role</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Properties</span><span class="kw">:</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">AssumeRolePolicyDocument</span><span class="kw">:</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">Version</span><span class="kw">:</span><span class="at"> </span><span class="st">'2012-10-17'</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">Statement</span><span class="kw">:</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="fu">Effect</span><span class="kw">:</span><span class="at"> Allow</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">Principal</span><span class="kw">:</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">Service</span><span class="kw">:</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="kw">-</span><span class="at"> lambda.amazonaws.com</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">Action</span><span class="kw">:</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="kw">-</span><span class="at"> sts:AssumeRole</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Policies</span><span class="kw">:</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">PolicyName</span><span class="kw">:</span><span class="at"> SimpleRegexLambdaPolicy</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">PolicyDocument</span><span class="kw">:</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">Version</span><span class="kw">:</span><span class="at"> </span><span class="st">'2012-10-17'</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">Statement</span><span class="kw">:</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="kw">-</span><span class="at"> </span><span class="fu">Effect</span><span class="kw">:</span><span class="at"> Allow</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="fu">Action</span><span class="kw">:</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="at">                  </span><span class="kw">-</span><span class="at"> logs:CreateLogGroup</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a><span class="at">                  </span><span class="kw">-</span><span class="at"> logs:CreateLogStream</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="at">                  </span><span class="kw">-</span><span class="at"> logs:PutLogEvents</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="fu">Resource</span><span class="kw">:</span><span class="at"> </span><span class="st">'*'</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">SimpleRegexLambda</span><span class="kw">:</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Type</span><span class="kw">:</span><span class="at"> AWS::Serverless::Function</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Properties</span><span class="kw">:</span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">FunctionName</span><span class="kw">:</span><span class="at"> simple_regex_lambda</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Handler</span><span class="kw">:</span><span class="at"> lambda_handler.lambda_handler</span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Runtime</span><span class="kw">:</span><span class="at"> python3.8</span></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MemorySize</span><span class="kw">:</span><span class="at"> </span><span class="dv">256</span></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Timeout</span><span class="kw">:</span><span class="at"> </span><span class="dv">30</span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Architecture</span><span class="kw">:</span><span class="at"> arm64</span></span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Role</span><span class="kw">:</span><span class="at"> !GetAtt SimpleRegexLambdaRole.Arn</span></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Events</span><span class="kw">:</span></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">SimpleRegexApi</span><span class="kw">:</span></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">Type</span><span class="kw">:</span><span class="at"> Api</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">Properties</span><span class="kw">:</span></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">Path</span><span class="kw">:</span><span class="at"> /simple_regex_lambda</span></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">Method</span><span class="kw">:</span><span class="at"> get</span></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">Auth</span><span class="kw">:</span></span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">Authorizer</span><span class="kw">:</span><span class="at"> SimpleRegexLambdaAuthorizer</span></span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">SimpleRegexLambdaAuthorizer</span><span class="kw">:</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Type</span><span class="kw">:</span><span class="at"> AWS::Serverless::Function</span></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Properties</span><span class="kw">:</span></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">FunctionName</span><span class="kw">:</span><span class="at"> simple_regex_lambda_authorizer</span></span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Handler</span><span class="kw">:</span><span class="at"> authorizer_handler.lambda_handler</span></span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Runtime</span><span class="kw">:</span><span class="at"> python3.8</span></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">MemorySize</span><span class="kw">:</span><span class="at"> </span><span class="dv">128</span></span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Timeout</span><span class="kw">:</span><span class="at"> </span><span class="dv">3</span></span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Role</span><span class="kw">:</span><span class="at"> !GetAtt SimpleRegexLambdaRole.Arn</span></span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a><span class="fu">Outputs</span><span class="kw">:</span></span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">SimpleRegexApi</span><span class="kw">:</span></span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Description</span><span class="kw">:</span><span class="at"> </span><span class="st">"API Gateway endpoint URL for Prod environment"</span></span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Value</span><span class="kw">:</span><span class="at"> !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/simple_regex_lambda/"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>In this template, SimpleRegexLambdaAuthorizer is a new Lambda function that serves as the authorizer. You need to replace authorizer_handler.lambda_handler with the correct path to your authorizer function.
+
+The authorizer function should look something like this:</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lambda_handler(event, context):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    token <span class="op">=</span> event[<span class="st">'headers'</span>][<span class="st">'Authorization'</span>]</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> token <span class="op">==</span> <span class="st">'your_password'</span>:</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> generate_policy(<span class="st">'user'</span>, <span class="st">'Allow'</span>, event[<span class="st">'methodArn'</span>])</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> generate_policy(<span class="st">'user'</span>, <span class="st">'Deny'</span>, event[<span class="st">'methodArn'</span>])</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_policy(principal_id, effect, resource):</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'principalId'</span>: principal_id,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'policyDocument'</span>: {</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">'Version'</span>: <span class="st">'2012-10-17'</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">'Statement'</span>: [{</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>                <span class="st">'Action'</span>: <span class="st">'execute-api:Invoke'</span>,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>                <span class="st">'Effect'</span>: effect,</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>                <span class="st">'Resource'</span>: resource</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>            }]</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="query-8---reviewing-the-codes" class="level3">
+<h3 class="anchored" data-anchor-id="query-8---reviewing-the-codes">Query 8 - Reviewing the Codes</h3>
+<section id="section-14" class="level4">
+<h4 class="anchored" data-anchor-id="section-14">👨</h4>
+<pre><code>I have saved the SimpleRegexLambdaAuthorizer as authorizer_handler.py and the SAM template as template.yaml.
+
+Can you access them in simple_python_lambda_via_sam_copilot_attempt folder? Are they looking correct?</code></pre>
+</section>
+<section id="section-15" class="level4">
+<h4 class="anchored" data-anchor-id="section-15">🤖 <br></h4>
+<pre><code>I'm sorry for any confusion, but as an AI developed by OpenAI, I don't have the ability to access your local file system or any external servers to view or retrieve files. I can only provide assistance based on the information you provide to me directly during our conversation.
+
+However, if you share the content of the files here, I'd be more than happy to review them for you.</code></pre>
+<hr>
+</section>
+</section>
+<section id="query-9---reviewing-the-codes" class="level3">
+<h3 class="anchored" data-anchor-id="query-9---reviewing-the-codes">Query 9 - Reviewing the Codes</h3>
+<section id="section-16" class="level4">
+<h4 class="anchored" data-anchor-id="section-16">👨</h4>
+<pre><code>Ok, I have selected template.yaml file in the adjacent window. Can you review it?</code></pre>
+</section>
+<section id="section-17" class="level4">
+<h4 class="anchored" data-anchor-id="section-17">🤖 <br></h4>
+<pre><code>The template.yaml file you've provided looks correct based on your requirements. It defines an AWS SAM template that:
+
+Creates an IAM role (SimpleRegexLambdaRole) with a policy that allows the role to create and write to CloudWatch Logs.
+Defines a Lambda function (SimpleRegexLambda) with the specified properties (function name, handler, runtime, memory size, timeout, architecture, and role). The function is associated with an API Gateway event trigger.
+The API Gateway event trigger is configured with a GET method at the /simple_regex_lambda path and uses a Lambda authorizer (SimpleRegexLambdaAuthorizer).
+Defines the Lambda authorizer function (SimpleRegexLambdaAuthorizer) with the specified properties (function name, handler, runtime, memory size, timeout, and role).
+Outputs the API Gateway endpoint URL for the Prod environment.
+Please ensure that the handlers (lambda_handler.lambda_handler and authorizer_handler.lambda_handler) correctly point to your Python files and functions. The format is file_name.function_name.
+
+Also, remember to replace 'your_password' in the authorizer function with your actual password.</code></pre>
+<hr>
+</section>
+</section>
+<section id="query-10---reviewing-the-codes" class="level3">
+<h3 class="anchored" data-anchor-id="query-10---reviewing-the-codes">Query 10 - Reviewing the Codes</h3>
+<section id="section-18" class="level4">
+<h4 class="anchored" data-anchor-id="section-18">👨</h4>
+<pre><code>Now, check authorizer_handler.py that is selected</code></pre>
+</section>
+<section id="section-19" class="level4">
+<h4 class="anchored" data-anchor-id="section-19">🤖 <br></h4>
+<pre><code>The authorizer_handler.py code you've provided looks correct. It defines a Lambda function that:
+
+Extracts the Authorization header from the incoming event.
+If the Authorization header matches 'your_password', it generates an IAM policy that allows the request.
+If the Authorization header does not match 'your_password', it generates an IAM policy that denies the request.
+The generate_policy function correctly creates an IAM policy with the provided principal ID, effect (Allow or Deny), and resource.
+
+Please remember to replace 'your_password' with your actual password.</code></pre>
+<hr>
+</section>
+</section>
+</section>
+<section id="v.-deploying-the-final-sam-template" class="level2">
+<h2 class="anchored" data-anchor-id="v.-deploying-the-final-sam-template">V. Deploying the Final SAM Template</h2>
+<section id="query-11---how-to-deploy-in-sam" class="level3">
+<h3 class="anchored" data-anchor-id="query-11---how-to-deploy-in-sam">Query 11 - How to deploy in SAM</h3>
+<section id="section-20" class="level4">
+<h4 class="anchored" data-anchor-id="section-20">👨</h4>
+<pre><code>Give me the SAM command to deploy the final template.yaml file. Allow me to explicitly pass AWS_ACCOUNT_ID and REGION (I may want to deploy it multiple regions or accounts).</code></pre>
+</section>
+<section id="section-21" class="level4">
+<h4 class="anchored" data-anchor-id="section-21">🤖 <br></h4>
+<pre><code>To deploy your AWS SAM application, you can use the sam deploy command. Here's an example command that allows you to explicitly pass the AWS account ID and region:</code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="va">AWS_ACCOUNT_ID</span><span class="op">=</span>your_account_id</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="va">REGION</span><span class="op">=</span>your_region</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="va">STACK_NAME</span><span class="op">=</span>your_stack_name</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="va">S3_BUCKET</span><span class="op">=</span>your_s3_bucket</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="ex">sam</span> build <span class="at">--use-container</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="ex">sam</span> package <span class="dt">\</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output-template-file</span> packaged.yaml <span class="dt">\</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--s3-bucket</span> <span class="va">$S3_BUCKET</span> <span class="dt">\</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> <span class="va">$REGION</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="ex">sam</span> deploy <span class="dt">\</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--template-file</span> packaged.yaml <span class="dt">\</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--stack-name</span> <span class="va">$STACK_NAME</span> <span class="dt">\</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--capabilities</span> CAPABILITY_IAM <span class="dt">\</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> <span class="va">$REGION</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>Replace your_account_id, your_region, your_stack_name, and your_s3_bucket with your actual AWS account ID, the region where you want to deploy the application, the name you want to give to the CloudFormation stack, and the S3 bucket where you want to upload your application code, respectively.
+
+The sam build command builds your application and prepares it for deployment. The sam package command uploads your application code to an S3 bucket and produces a packaged AWS SAM template. The sam deploy command deploys your application using the packaged template.
+
+Please ensure that you have the necessary permissions to perform these operations in the specified AWS account and region.</code></pre>
+<hr>
+</section>
+</section>
+<section id="query-12---what-is-the-use-of-sam-package-command" class="level3">
+<h3 class="anchored" data-anchor-id="query-12---what-is-the-use-of-sam-package-command">Query 12 - What is the use of <code>sam package</code> command</h3>
+<section id="section-22" class="level4">
+<h4 class="anchored" data-anchor-id="section-22">👨</h4>
+<pre><code>What is the use of sam package for simple lambda_function.py ? Can I avoid uploading the code to S3 and directly deploy in to the lambda function? Or is this a best practice?</code></pre>
+</section>
+<section id="section-23" class="level4">
+<h4 class="anchored" data-anchor-id="section-23">🤖 <br></h4>
+<pre><code>The sam package command is used to package an AWS SAM application. It creates a .zip file of your code and dependencies, and uploads them to an S3 bucket. It also returns a copy of your AWS SAM template, replacing references to local artifacts with the Amazon S3 location where the command uploaded the artifacts.
+
+For simple Lambda functions, you might not need to use the sam package command. You can use the AWS CLI's aws lambda update-function-code command to upload your code directly from your local machine to the Lambda function.
+
+However, using sam package and sam deploy is considered a best practice for a few reasons:
+
+Consistency: Whether your application is simple or complex, the process to package and deploy it remains the same. This can make it easier to manage and automate deployments.
+
+Versioning: When you upload your code to an S3 bucket, you have a centralized place to manage and version your code. This can make it easier to roll back deployments, share code across multiple environments, and track changes over time.
+
+Integration with AWS SAM and AWS CloudFormation: The sam package and sam deploy commands are designed to work seamlessly with AWS SAM and AWS CloudFormation. This means you can define your application's resources, permissions, and event sources in a single AWS SAM template, and AWS SAM will handle the rest.
+
+Large applications: If your application's deployment package is larger than 50 MB, you must upload it to an S3 bucket. The sam package command handles this for you.
+
+So, while it's possible to avoid using sam package for simple applications, it's generally a good idea to use it for the reasons listed above.</code></pre>
+<hr>
+</section>
+</section>
+<section id="query-13---which-files-go-inside-sam-package" class="level3">
+<h3 class="anchored" data-anchor-id="query-13---which-files-go-inside-sam-package">Query 13 - Which files go inside <code>SAM package</code></h3>
+<section id="section-24" class="level4">
+<h4 class="anchored" data-anchor-id="section-24">👨</h4>
+<pre><code>Are both lambda_function.py and authorizer_handler.py packaged in the sam package command?</code></pre>
+</section>
+<section id="section-25" class="level4">
+<h4 class="anchored" data-anchor-id="section-25">🤖 <br></h4>
+<pre><code>Yes, the sam package command packages all the AWS Lambda functions defined in your AWS SAM template, including their code and any dependencies.
+
+In your case, if both lambda_function.py and authorizer_handler.py are referenced in your template.yaml file as handlers for different AWS Lambda functions, then both will be included in the package that sam package creates.
+
+The command zips up each function's code and dependencies separately, uploads them to the specified S3 bucket, and then modifies the template to point to the new location of the code in S3. This packaged template is what you then deploy with the sam deploy command.</code></pre>
+<hr>
+</section>
+</section>
+<section id="query-14---checking-if-all-files-are-present-for-template.yaml" class="level3">
+<h3 class="anchored" data-anchor-id="query-14---checking-if-all-files-are-present-for-template.yaml">Query 14 - Checking if all files are present for <code>template.yaml</code></h3>
+<section id="section-26" class="level4">
+<h4 class="anchored" data-anchor-id="section-26">👨</h4>
+<pre><code>I have selected the template.yaml file and I am giving below the all the files inside the current directory. Is everything needed for the template.yaml present in this folder?
+
+simple_python_lambda_via_sam_copilot_attempt 
+├── authorizer_handler.py 
+├── copilot_interactions.md 
+├── lambda_function.py 
+└── template.yaml</code></pre>
+</section>
+<section id="section-27" class="level4">
+<h4 class="anchored" data-anchor-id="section-27">🤖 <br></h4>
+<pre><code>Based on the template.yaml file and the directory structure you've provided, it seems like you have all the necessary files for your AWS SAM application.
+
+Here's a breakdown:
+
+template.yaml: This is your AWS SAM template that describes your serverless application.
+
+authorizer_handler.py: This is the Python file that contains the code for your Lambda authorizer function. In your template.yaml, this is referenced in the Handler property of the SimpleRegexLambdaAuthorizer resource.
+
+lambda_function.py: This is the Python file that contains the code for your main Lambda function. In your template.yaml, this is referenced in the Handler property of the SimpleRegexLambda resource.
+
+copilot_interactions.md: This file doesn't seem to be directly related to your AWS SAM application. It might contain documentation or notes.
+
+So, it looks like you have everything you need to package and deploy your AWS SAM application. Make sure that the lambda_handler function is defined in both authorizer_handler.py and lambda_function.py, as these are the entry points for your Lambda functions.</code></pre>
+<hr>
+</section>
+</section>
+<section id="query-15---what-does-sam-build---use-container-do" class="level3">
+<h3 class="anchored" data-anchor-id="query-15---what-does-sam-build---use-container-do">Query 15 - What does <code>sam build --use-container do</code></h3>
+<section id="section-28" class="level4">
+<h4 class="anchored" data-anchor-id="section-28">👨</h4>
+<pre><code>what does sam build --use-container do?</code></pre>
+</section>
+<section id="section-29" class="level4">
+<h4 class="anchored" data-anchor-id="section-29">🤖 <br></h4>
+<pre><code>The sam build --use-container command is used to build your AWS Serverless Application Model (SAM) application.
+
+Here's what it does:
+
+It creates a deployment package of your application's code and any dependencies. The deployment package is a .zip file that contains your code and any dependencies. The deployment package is what AWS Lambda uses to run your application.
+
+The --use-container option tells SAM to build your application inside a Docker container. This can be useful if your application has native dependencies that need to be compiled on the same type of operating system as the one where your Lambda function will run. By using a Docker container, you can ensure that your application is built in an environment that's similar to the AWS Lambda environment.
+
+The command creates a new directory, .aws-sam/build, where it places the deployment packages and updated AWS SAM template.
+
+So, in summary, sam build --use-container prepares your AWS SAM application for deployment by creating deployment packages of your code and dependencies. It does this inside a Docker container to ensure compatibility with the AWS Lambda environment.</code></pre>
+<hr>
+</section>
+</section>
+<section id="query-16---how-to-test-locally-using-sam" class="level3">
+<h3 class="anchored" data-anchor-id="query-16---how-to-test-locally-using-sam">Query 16 - How to test locally using SAM</h3>
+<section id="section-30" class="level4">
+<h4 class="anchored" data-anchor-id="section-30">👨</h4>
+<pre><code>To invoke your AWS SAM application locally, you can use the sam local start-api command. This command starts a local instance of API Gateway and invokes your Lambda function when you send a request to the local endpoint.</code></pre>
+</section>
+<section id="section-31" class="level4">
+<h4 class="anchored" data-anchor-id="section-31">🤖 <br></h4>
+<pre><code>Here's how you can start your local API:</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sam</span> build <span class="at">--use-container</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="ex">sam</span> local start-api</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>Once your local API is running, you can use curl to send a request to it. Assuming your API has a GET method at the /simple_regex_lambda path, here's how you can send a request:
+
+curl http://127.0.0.1:3000/simple_regex_lambda
+
+Please note that you need Docker running on your machine to use sam local start-api, as it runs your Lambda function inside a Docker container that replicates the AWS Lambda environment.
+
+Also, if your Lambda function requires an Authorization header, you can include it in your curl command like this:
+
+curl -H "Authorization: your_password" http://127.0.0.1:3000/simple_regex_lambda</code></pre>
+<hr>
+</section>
+</section>
+<section id="query-17---how-to-use-curl-command-with-an-upload" class="level3">
+<h3 class="anchored" data-anchor-id="query-17---how-to-use-curl-command-with-an-upload">Query 17 - How to use Curl command with an upload</h3>
+<section id="section-32" class="level4">
+<h4 class="anchored" data-anchor-id="section-32">👨</h4>
+<pre><code>Can you provide me the complete curl command where I upload a test_event.json like below. The authorization password is out_test_password
+
+{
+    "text": "Hello, my name is Senthil Kumar. I work as a software engineer at XYZ. my email id is senthil_kumar@gmail.com. Reach me at mobile +91 9876541230",
+    "regex_pattern": "(\w+)[-_.]?(\w+)@((\w|-)+)\.\w+"
+}</code></pre>
+</section>
+<section id="section-33" class="level4">
+<h4 class="anchored" data-anchor-id="section-33">🤖 <br></h4>
+<pre><code>Sure, you can use the curl command with the -d option to send a POST request with the JSON data in test_event.json. Assuming your local API has a POST method at the /simple_regex_lambda path, here's how you can send a request:</code></pre>
+<div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-X</span> POST <span class="at">-H</span> <span class="st">"Content-Type: application/json"</span> <span class="at">-H</span> <span class="st">"Authorization: out_test_password"</span> <span class="at">-d</span> @test_event.json http://127.0.0.1:3000/simple_regex_lambda</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>This command does the following:
+
+-X POST specifies that this is a POST request.
+-H "Content-Type: application/json" sets the Content-Type header to application/json, indicating that the request body contains JSON data.
+-H "Authorization: out_test_password" sets the Authorization header to out_test_password.
+-d @test_event.json sends the data in test_event.json as the request body.
+http://127.0.0.1:3000/simple_regex_lambda is the URL of your local API.
+Please replace test_event.json with the actual path to your JSON file if it's not in the same directory where you're running the curl command. Also, make sure your local API is running by executing the sam local start-api command.</code></pre>
+<hr>
+</section>
+</section>
+<section id="query-18---suggesting-edits-to-the-curl-command" class="level3">
+<h3 class="anchored" data-anchor-id="query-18---suggesting-edits-to-the-curl-command">Query 18 - Suggesting edits to the Curl Command</h3>
+<section id="section-34" class="level4">
+<h4 class="anchored" data-anchor-id="section-34">👨</h4>
+<pre><code>How will this command work? 
+
+curl -X POST -H "Content-Type: application/json" -H "Authorization: out_test_password" -d @test_event.json http://127.0.0.1:3000/simple_regex_lambda
+
+I am expecting some thing like below inside the lambda_function.py </code></pre>
+<div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lambda_handler(event, context):</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    parameters <span class="op">=</span> event[<span class="st">'queryStringParameters'</span>]</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> parameters[<span class="st">'text'</span>]</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    regex_pattern <span class="op">=</span> parameters[<span class="st">'regex_pattern'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="section-35" class="level4">
+<h4 class="anchored" data-anchor-id="section-35">🤖 <br></h4>
+<pre><code>The curl command you provided sends a POST request to your local API with the JSON data in test_event.json as the request body. However, the lambda_handler function in your lambda_function.py file is expecting the text and regex_pattern parameters to be in the queryStringParameters field of the event object.
+
+When you send a POST request, the data in the request body is typically available in the body field of the event object, not the queryStringParameters field. The queryStringParameters field is used for query string parameters in a GET request.
+
+Here's how you can modify your lambda_handler function to handle a POST request:</code></pre>
+<div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lambda_handler(event, context):</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>    body <span class="op">=</span> json.loads(event[<span class="st">'body'</span>])</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> body[<span class="st">'text'</span>]</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>    regex_pattern <span class="op">=</span> body[<span class="st">'regex_pattern'</span>]</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># rest of your code</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>In this modified version of the function, json.loads(event[<span class="st">'body'</span>]) <span class="kw">is</span> used to parse the JSON data <span class="kw">in</span> the request body. Then, the text <span class="kw">and</span> regex_pattern parameters are extracted <span class="im">from</span> the parsed JSON data.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+</section>
+</section>
+<section id="vi.-fixing-errors-that-arose" class="level2">
+<h2 class="anchored" data-anchor-id="vi.-fixing-errors-that-arose">VI. Fixing Errors that arose</h2>
+<section id="query-20---error-in-sam-build-command" class="level3">
+<h3 class="anchored" data-anchor-id="query-20---error-in-sam-build-command">Query 20 - Error in <code>sam build</code> command</h3>
+<section id="section-36" class="level4">
+<h4 class="anchored" data-anchor-id="section-36">👨</h4>
+<pre><code>I faced below error when trying to use `sam build --use-container`
+Starting Build inside a container
+
+Error: [InvalidResourceException('SimpleRegexLambda', 'property Architecture not defined for resource of type AWS::Serverless::Function'), InvalidResourceException('SimpleRegexLambdaAuthorizer', 'property Architecture not defined for resource of type AWS::Serverless::Function')] ('SimpleRegexLambda', 'property Architecture not defined for resource of type AWS::Serverless::Function') ('SimpleRegexLambdaAuthorizer', 'property Architecture not defined for resource of type AWS::Serverless::Function')
+</code></pre>
+<pre><code>The error message indicates that the Architecture property is not recognized for the AWS::Serverless::Function resource type. This property is used to specify the instruction set architecture for the AWS Lambda function.
+
+As of AWS SAM version 1.27.0, the Architecture property is supported and can be set to x86_64 or arm64. If you're using an older version of AWS SAM, this property is not supported and you'll get an error if you try to use it.
+
+You can check your AWS SAM version by running sam --version in your terminal. If you're using an older version, you can update AWS SAM with the following command:
+
+After updating AWS SAM, try running sam build --use-container again. If you're still getting the error, please remove the Architecture property from your AWS SAM template if you don't need to use the arm64 architecture. If you need to use the arm64 architecture, make sure you're using AWS SAM version 1.27.0 or later.</code></pre>
+<blockquote class="blockquote">
+<p>The above was an error from CoPilot. There was a problem in <code>Architectures</code> section in the <code>template.yaml</code> file (incorrectly mentioned as <code>Architecture</code> in the template) LLMs cannot be correct all the time :D</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="query-21---a-json-decode-error-in-python" class="level3">
+<h3 class="anchored" data-anchor-id="query-21---a-json-decode-error-in-python">Query 21 - A json decode error in python</h3>
+<section id="section-37" class="level4">
+<h4 class="anchored" data-anchor-id="section-37">👨</h4>
+<pre><code>I keep getting json decode error.
+
+[ERROR] JSONDecodeError: Invalid \escape: line 1 column 204 (char 203)
+
+body = json.loads(event['body'])
+
+The input json looks like this:
+
+{ "text": "Hello, my name is Senthil Kumar. I work as a software engineer at XYZ. my email id is senthil_kumar@gmail.com. Reach me at mobile +91 9876541230", "regex_pattern": "(\w+)[-_.]?(\w+)@((\w|-)+).\w+" }</code></pre>
+<pre><code>The issue you're encountering is due to the backslashes in your regular expression. In JSON, the backslash (\) is an escape character, which means it's used to introduce special character sequences. If you want to include an actual backslash in your JSON data, you need to escape it by using two backslashes (\\).
+
+Here's how your JSON data should look:
+{
+    "text": "Hello, my name is Senthil Kumar. I work as a software engineer at XYZ. my email id is senthil_kumar@gmail.com. Reach me at mobile +91 9876541230",
+    "regex_pattern": "(\\w+)[-_.]?(\\w+)@((\\w|-)+)\\.\\w+"
+}
+
+In this version of the JSON data, each backslash in the regular expression is escaped with another backslash. This should resolve the JSONDecodeError you're getting.</code></pre>
+<blockquote class="blockquote">
+<p>Helped me solve the error in my <code>test_event.json</code></p>
+</blockquote>
+</section>
+</section>
+<section id="query-22---an-error-in-the-yaml-tempalte-related-to-the-authorizers" class="level3">
+<h3 class="anchored" data-anchor-id="query-22---an-error-in-the-yaml-tempalte-related-to-the-authorizers">Query 22 - An error in the YAML Tempalte related to the Authorizers</h3>
+<section id="section-38" class="level4">
+<h4 class="anchored" data-anchor-id="section-38">👨</h4>
+<pre><code>When I did
+
+`sam deploy --template-file packaged.yaml --stack-name $STACK_NAME --capabilities CAPABILITY_IAM --region $REGION`
+
+I got the below error. How to rectify the template.yaml that is selected
+
+Error: Failed to create changeset for the stack: regex-lambda-with-api-copilot, ex: Waiter ChangeSetCreateComplete failed: Waiter encountered a terminal failure state: For expression "Status" we matched expected path: "FAILED" Status: FAILED. Reason: Transform AWS::Serverless-2016-10-31 failed with: Invalid Serverless Application Specification document. Number of errors found: 1. Resource with id [SimpleRegexLambda] is invalid. Event with id [SimpleRegexApi] is invalid. Unable to set Authorizer [SimpleRegexLambdaAuthorizer] on API method [post] for path [/simple_regex_lambda] because the related API does not define any Authorizers.</code></pre>
+</section>
+<section id="section-39" class="level4">
+<h4 class="anchored" data-anchor-id="section-39">🤖 <br></h4>
+<pre><code>The error message indicates that the SimpleRegexApi event in the SimpleRegexLambda function is trying to use an authorizer (SimpleRegexLambdaAuthorizer), but the related API does not define any authorizers.
+
+In AWS SAM, authorizers are defined at the AWS::Serverless::Api level, not at the individual event level within a AWS::Serverless::Function.
+
+To fix this issue, you need to define an AWS::Serverless::Api resource in your template and specify the authorizer there. Here's an example:
+
+
+The SimpleRegexApi should be a separate resource at the same level as SimpleRegexLambda, not nested under it. Here's an example of how your AWS SAM template should look:</code></pre>
+<div class="sourceCode" id="cb55"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Resources</span><span class="kw">:</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">SimpleRegexLambda</span><span class="kw">:</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Type</span><span class="kw">:</span><span class="at"> AWS::Serverless::Function</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Properties</span><span class="kw">:</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="co">      # ...</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">SimpleRegexLambdaAuthorizer</span><span class="kw">:</span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Type</span><span class="kw">:</span><span class="at"> AWS::Serverless::Function</span></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Properties</span><span class="kw">:</span></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a><span class="co">      # ...</span></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">SimpleRegexApi</span><span class="kw">:</span></span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Type</span><span class="kw">:</span><span class="at"> AWS::Serverless::Api</span></span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Properties</span><span class="kw">:</span></span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">StageName</span><span class="kw">:</span><span class="at"> Prod</span></span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Auth</span><span class="kw">:</span></span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">DefaultAuthorizer</span><span class="kw">:</span><span class="at"> SimpleRegexLambdaAuthorizer</span></span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">Authorizers</span><span class="kw">:</span></span>
+<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">SimpleRegexLambdaAuthorizer</span><span class="kw">:</span></span>
+<span id="cb55-20"><a href="#cb55-20" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">FunctionArn</span><span class="kw">:</span><span class="at"> !GetAtt SimpleRegexLambdaAuthorizer.Arn</span></span>
+<span id="cb55-21"><a href="#cb55-21" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">DefinitionBody</span><span class="kw">:</span></span>
+<span id="cb55-22"><a href="#cb55-22" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">paths</span><span class="kw">:</span></span>
+<span id="cb55-23"><a href="#cb55-23" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">/simple_regex_lambda</span><span class="kw">:</span></span>
+<span id="cb55-24"><a href="#cb55-24" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">post</span><span class="kw">:</span></span>
+<span id="cb55-25"><a href="#cb55-25" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">x-amazon-apigateway-integration</span><span class="kw">:</span></span>
+<span id="cb55-26"><a href="#cb55-26" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="fu">httpMethod</span><span class="kw">:</span><span class="at"> POST</span></span>
+<span id="cb55-27"><a href="#cb55-27" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="fu">type</span><span class="kw">:</span><span class="at"> aws_proxy</span></span>
+<span id="cb55-28"><a href="#cb55-28" aria-hidden="true" tabindex="-1"></a><span class="at">                </span><span class="fu">uri</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb55-29"><a href="#cb55-29" aria-hidden="true" tabindex="-1"></a><span class="at">                  Fn:</span><span class="fu">:Sub</span><span class="kw">:</span><span class="at"> arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SimpleRegexLambda.Arn}/invocations</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>In this example, SimpleRegexLambda, SimpleRegexLambdaAuthorizer, and SimpleRegexApi are all separate resources defined at the same level under the Resources section of the AWS SAM template.
+
+Please replace the # ... with the actual properties for your Lambda functions and API.
+
+After updating your AWS SAM template, try running the sam deploy command again. If you're still getting the error, please check your AWS SAM template for any syntax errors or unsupported properties.</code></pre>
+</section>
+</section>
+<section id="query-23---error-that-sam-valudate-threw" class="level3">
+<h3 class="anchored" data-anchor-id="query-23---error-that-sam-valudate-threw">Query 23 - Error that SAM Valudate threw</h3>
+<section id="section-40" class="level4">
+<h4 class="anchored" data-anchor-id="section-40">👨</h4>
+<pre><code>When I did sam validate I got the below error for the selected template.yaml file
+
+Error: [InvalidResourceException('SimpleRegexApi', "Unable to add Auth configuration because 'DefinitionBody' does not contain a valid Swagger definition.")] ('SimpleRegexApi', "Unable to add Auth configuration because 'DefinitionBody' does not contain a valid Swagger definition.")</code></pre>
+</section>
+<section id="section-41" class="level4">
+<h4 class="anchored" data-anchor-id="section-41">🤖 <br></h4>
+<pre><code>The error message indicates that the DefinitionBody of the SimpleRegexApi resource does not contain a valid Swagger (OpenAPI) definition. The DefinitionBody is where you define your API's resources and methods.
+
+In your current DefinitionBody, you're missing the swagger or openapi version field, and the info and paths fields are not properly nested under the root of the definition.
+
+Here's how you can fix your DefinitionBody:</code></pre>
+<div class="sourceCode" id="cb59"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">SimpleRegexApi</span><span class="kw">:</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">Type</span><span class="kw">:</span><span class="at"> AWS::Serverless::Api</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">Properties</span><span class="kw">:</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">StageName</span><span class="kw">:</span><span class="at"> Prod</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Auth</span><span class="kw">:</span></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">DefaultAuthorizer</span><span class="kw">:</span><span class="at"> SimpleRegexLambdaAuthorizer</span></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">Authorizers</span><span class="kw">:</span></span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">SimpleRegexLambdaAuthorizer</span><span class="kw">:</span></span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">FunctionArn</span><span class="kw">:</span><span class="at"> !GetAtt SimpleRegexLambdaAuthorizer.Arn</span></span>
+<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">DefinitionBody</span><span class="kw">:</span></span>
+<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">swagger</span><span class="kw">:</span><span class="at"> </span><span class="st">'2.0'</span></span>
+<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">info</span><span class="kw">:</span></span>
+<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">title</span><span class="kw">:</span><span class="at"> SimpleRegexApi</span></span>
+<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">paths</span><span class="kw">:</span></span>
+<span id="cb59-15"><a href="#cb59-15" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">/simple_regex_lambda</span><span class="kw">:</span></span>
+<span id="cb59-16"><a href="#cb59-16" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">post</span><span class="kw">:</span></span>
+<span id="cb59-17"><a href="#cb59-17" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">x-amazon-apigateway-integration</span><span class="kw">:</span></span>
+<span id="cb59-18"><a href="#cb59-18" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">httpMethod</span><span class="kw">:</span><span class="at"> POST</span></span>
+<span id="cb59-19"><a href="#cb59-19" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">type</span><span class="kw">:</span><span class="at"> aws_proxy</span></span>
+<span id="cb59-20"><a href="#cb59-20" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">uri</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb59-21"><a href="#cb59-21" aria-hidden="true" tabindex="-1"></a><span class="at">                Fn:</span><span class="fu">:Sub</span><span class="kw">:</span><span class="at"> arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SimpleRegexLambda.Arn}/invocations</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>In this updated version, the DefinitionBody now contains a valid Swagger definition. It specifies the Swagger version (2.0), provides an info object with a title, and properly nests the paths under the root of the definition.
+
+After updating your AWS SAM template, try running the sam validate command again. If you're still getting the error, please check your AWS SAM template for any syntax errors or unsupported properties.</code></pre>
+</section>
+</section>
+<section id="query-24---error-detected-via-cloudwatch-logs-interpreted" class="level3">
+<h3 class="anchored" data-anchor-id="query-24---error-detected-via-cloudwatch-logs-interpreted">Query 24 - Error detected via CloudWatch Logs Interpreted</h3>
+<section id="section-42" class="level4">
+<h4 class="anchored" data-anchor-id="section-42">👨</h4>
+<pre><code>In the AWS API Gateway console, enabled cloudwatch logs to the api `SimpleRegexApi` and found out the below error
+
+(d0f70f44-e843-42ff-b628-28384d82a707) Sending request to https://lambda.&lt;REGION&gt;.amazonaws.com/2015-03-31/functions/arn:aws:lambda:&lt;REGION&gt;:&lt;ACCOUNT_ID&gt;:function:simple_regex_lambda/invocations
+
+(d0f70f44-e843-42ff-b628-28384d82a707) Execution failed due to configuration error: Invalid permissions on Lambda function. 
+
+I have selected my template.yaml,can you rectify it</code></pre>
+</section>
+<section id="section-43" class="level4">
+<h4 class="anchored" data-anchor-id="section-43">🤖 <br></h4>
+<pre><code>The SimpleRegexLambdaInvokePermission resource has to be added to give API Gateway and it has the necessary permissions to invoke your SimpleRegexLambda function.
+
+Resources:
+  ....
+  SimpleRegexLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt SimpleRegexLambda.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com</code></pre>
+<blockquote class="blockquote">
+<p>This above suggestion fixed the error.</p>
+</blockquote>
+</section>
+</section>
+</section>
+<section id="vii.-after-successfully-deployment" class="level2">
+<h2 class="anchored" data-anchor-id="vii.-after-successfully-deployment">VII. After Successfully Deployment</h2>
+<section id="hit-the-endpoint" class="level3">
+<h3 class="anchored" data-anchor-id="hit-the-endpoint">Hit the Endpoint</h3>
+<ul>
+<li>When running <code>sam local start-api</code></li>
+</ul>
+<div class="sourceCode" id="cb63"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-X</span> POST <span class="at">-H</span> <span class="st">"Content-Type: application/json"</span> <span class="at">-H</span> <span class="st">"Authorization: out_test_password"</span> <span class="at">-d</span> @test_event.json http://127.0.0.1:3000/simple_regex_lambda      </span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="st">"senthil_kumar@gmail.com"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>After deploying in AWS cloud</li>
+</ul>
+<div class="sourceCode" id="cb64"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="va">APIGW_ID</span><span class="op">=&lt;</span>some_id<span class="op">&gt;</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="va">APIGW_URL</span><span class="op">=</span>https://<span class="va">${APIGW_ID}</span>.execute-api.<span class="va">${REGION}</span>.amazonaws.com/Prod/simple_regex_lambda/ </span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-X</span> POST <span class="at">-H</span> <span class="st">"Content-Type: application/json"</span> <span class="at">-H</span> <span class="st">"Authorization: out_test_password"</span> <span class="at">-d</span> @test_event.json <span class="va">${APIGW_URL}</span></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a><span class="st">"senthil_kumar@gmail.com"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="after-successfully-deploying-hit-the-endpoint" class="level3">
+<h3 class="anchored" data-anchor-id="after-successfully-deploying-hit-the-endpoint">After Successfully Deploying, hit the endpoint</h3>
+<ul>
+<li>Using aws cli command how to delete my stack</li>
+</ul>
+<div class="sourceCode" id="cb65"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> cloudformation delete-stack <span class="at">--stack-name</span> <span class="va">${STACK_NAME}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<ul>
+<li>I was pleasantly surprised by the quality of responses from GitHub CoPilot (which ran GPT 4 model underneath)</li>
+<li>It finally helped me build the entire architecture. The entire exercise took me a little more than 2 hours of interaction</li>
+<li>May be, I could have speeded things up there if I had more knowledge on API Gateways or SAM Templates</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("git@github\.com-learning:senthilkumarm1901\/learn_by_blogging\.git");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,2022 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2025-01-22">
+<meta name="description" content="Armed with essential Git weaponry, this blog weaves Git teachings into a real-world scenario, helping readers navigate different Git timelines like pros.">
+
+<title>Navigating the Git Timelines: A Code-along Quest to Master Git – Learn by Blogging</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Navigating the Git Timelines: A Code-along Quest to Master Git</h1>
+                  <div>
+        <div class="description">
+          Armed with essential Git weaponry, this blog weaves Git teachings into a real-world scenario, helping readers navigate different Git timelines like pros.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Git</div>
+                <div class="quarto-category">Advanced Git</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 22, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#how-is-the-blog-structured" id="toc-how-is-the-blog-structured" class="nav-link" data-scroll-target="#how-is-the-blog-structured">1. How is the blog structured?</a></li>
+  <li><a href="#hey-just-tell-me-what-am-i-going-to-learn-here" id="toc-hey-just-tell-me-what-am-i-going-to-learn-here" class="nav-link" data-scroll-target="#hey-just-tell-me-what-am-i-going-to-learn-here">2. “Hey, just tell me, what am I going to learn here?”</a></li>
+  <li><a href="#the-bare-minimum-git-theory" id="toc-the-bare-minimum-git-theory" class="nav-link" data-scroll-target="#the-bare-minimum-git-theory">3. The Bare-minimum Git Theory</a>
+  <ul class="collapse">
+  <li><a href="#what-is-git" id="toc-what-is-git" class="nav-link" data-scroll-target="#what-is-git">3.1 <strong>What is Git</strong>?</a></li>
+  <li><a href="#what-are-git-addstaging-area-and-git-commit-commands" id="toc-what-are-git-addstaging-area-and-git-commit-commands" class="nav-link" data-scroll-target="#what-are-git-addstaging-area-and-git-commit-commands">3.2 <strong>What are <code>git add</code>(staging area) and <code>git commit</code> commands?</strong></a></li>
+  <li><a href="#what-is-a-head" id="toc-what-is-a-head" class="nav-link" data-scroll-target="#what-is-a-head">3.3 <strong>What is a <code>HEAD</code>?</strong></a></li>
+  <li><a href="#btw-what-exactly-is-a-branch" id="toc-btw-what-exactly-is-a-branch" class="nav-link" data-scroll-target="#btw-what-exactly-is-a-branch">3.4 <strong>Btw, what exactly is a branch?</strong></a></li>
+  <li><a href="#how-do-i-merge-2-branches" id="toc-how-do-i-merge-2-branches" class="nav-link" data-scroll-target="#how-do-i-merge-2-branches">How do I merge 2 branches?</a></li>
+  <li><a href="#what-is-a-.git-directory" id="toc-what-is-a-.git-directory" class="nav-link" data-scroll-target="#what-is-a-.git-directory">3.5 What is a <code>.git</code> directory?</a></li>
+  </ul></li>
+  <li><a href="#learning-git-by-way-of-practice" id="toc-learning-git-by-way-of-practice" class="nav-link" data-scroll-target="#learning-git-by-way-of-practice">4. Learning Git by Way of Practice</a>
+  <ul class="collapse">
+  <li><a href="#branch-2-writer1mainheroes" id="toc-branch-2-writer1mainheroes" class="nav-link" data-scroll-target="#branch-2-writer1mainheroes">4.2 Branch 2: <code>Writer1/MainHeroes</code></a></li>
+  <li><a href="#branch-3-writer2otherheroes" id="toc-branch-3-writer2otherheroes" class="nav-link" data-scroll-target="#branch-3-writer2otherheroes">4.3 Branch 3: <code>Writer2/OtherHeroes</code></a></li>
+  <li><a href="#branch-4-writer3endgame" id="toc-branch-4-writer3endgame" class="nav-link" data-scroll-target="#branch-4-writer3endgame">4.4 Branch 4: <code>Writer3/EndGame</code></a></li>
+  <li><a href="#merge-dev-with-main-and-tag" id="toc-merge-dev-with-main-and-tag" class="nav-link" data-scroll-target="#merge-dev-with-main-and-tag">4.5: Merge <code>dev</code> with <code>main</code> and <code>tag</code></a></li>
+  <li><a href="#bonus-how-do-cherry-pick-merge-conflicts-work" id="toc-bonus-how-do-cherry-pick-merge-conflicts-work" class="nav-link" data-scroll-target="#bonus-how-do-cherry-pick-merge-conflicts-work">4.6 Bonus: How do <code>cherry-pick</code>, <code>merge conflicts</code> work</a></li>
+  </ul></li>
+  <li><a href="#remote-git-learnings" id="toc-remote-git-learnings" class="nav-link" data-scroll-target="#remote-git-learnings">5. Remote Git Learnings</a>
+  <ul class="collapse">
+  <li><a href="#remote-repositories" id="toc-remote-repositories" class="nav-link" data-scroll-target="#remote-repositories">5.1 <code>Remote</code> Repositories</a></li>
+  <li><a href="#what-is-a-pullmerge-request" id="toc-what-is-a-pullmerge-request" class="nav-link" data-scroll-target="#what-is-a-pullmerge-request">5.3 What is a <code>Pull/Merge Request</code>?</a></li>
+  <li><a href="#how-to-contribute-to-open-source-public-repositories" id="toc-how-to-contribute-to-open-source-public-repositories" class="nav-link" data-scroll-target="#how-to-contribute-to-open-source-public-repositories">5.3. How to Contribute to Open Source Public Repositories?</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">6. Conclusion</a></li>
+  <li><a href="#epilogue" id="toc-epilogue" class="nav-link" data-scroll-target="#epilogue">7. Epilogue</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>While countless resources teach “top X commands in Git”, many fail to catapult a beginner to an advanced one in a practical way. Those resources explain the details of a command but not the situation that warranted the use of the command. In this code-along blog post, readers can understand “why a git command was used” and “how to use it”.</p>
+<p>In this blog, I am hoping the readers can - gain confidence in using hard-to-understand git commands in a real-world-like scenario <br> - test their acquired knowledge by <a href="https://training.linuxfoundation.org/skillcred/git/">completing Linux Foundation’s Git exam</a> <br></p>
+<p><strong>Pre-requisites</strong>: <br> - Any good terminal you are comfortable with <br> - Install <code>git</code> <br> - A music streaming app in your mobile app playing <a href="https://www.youtube.com/watch?v=wYIbH2I5GZk">this song</a> (ok, that was just for me!) <br></p>
+<hr>
+</section>
+<section id="how-is-the-blog-structured" class="level2">
+<h2 class="anchored" data-anchor-id="how-is-the-blog-structured">1. How is the blog structured?</h2>
+<blockquote class="blockquote">
+<p>Short Answer: Like a real-world scenario involving a team of collaborators in Git</p>
+</blockquote>
+<ul>
+<li>Typically, a team of developers works on a software product and collaborate via Git.</li>
+<li>In this blog, a team of writers writes stories for an amazing comic universe, all the while collaborating in Git. This is an attempt to give that typical developer scenario a fun twist!</li>
+</ul>
+<p><img src="./images/blog_main_pic.jpg" class="img-fluid"></p>
+<p>Fig 1. A team collaborating through Git | Pic Source: Meta AI</p>
+<p><img src="./images/script_writers_1.png" class="img-fluid"> Fig 2. A git tutorial featuring a fictional team of scriptwriters unfurling a comic, superhero universe | Pic Source: Author</p>
+<ul>
+<li>I am going to use 1 <code>LeadScriptWriter</code> (dev) branch and 3 <code>Writer</code> (feature) branches.</li>
+</ul>
+<p><img src="./images/git_journeys_2.png" class="img-fluid"> Fig 3. The above pic depicts the git branches</p>
+<blockquote class="blockquote">
+<p>The above is a typical <a href="https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow">git flow approach</a> . Some would suggest <a href="https://www.atlassian.com/continuous-delivery/continuous-integration/trunk-based-development">Trunk-based development</a> is better. This debate on the <strong>git branching model</strong> is out of the scope of this blog.</p>
+</blockquote>
+<hr>
+</section>
+<section id="hey-just-tell-me-what-am-i-going-to-learn-here" class="level2">
+<h2 class="anchored" data-anchor-id="hey-just-tell-me-what-am-i-going-to-learn-here">2. “Hey, just tell me, what am I going to learn here?”</h2>
+<p>In a fun, practical, and replicable way, we are going to cover the following beginner to advanced git commands</p>
+<pre><code>
+# Dev Branch: dev/LeadScriptWriter/Context (for miscellaneous set of useful commands)
+
+- git commit --amend 
+- git diff
+- git rebase -i commit-hash &amp; git push
+
+# Feature Branch 1: Writer1/MainHeroes (for `reset`)
+- git reset --soft commit-hash
+- git merge --ff-only
+
+# Feature Branch 2: Writer2/OtherHeroes (for `rebase`)
+- git switch feature &amp;&amp; git rebase main
+- git merge --ff-only
+
+# Feature Branch 3: Writer3/EndGame (for `revert`)
+- git revert
+- git merge --no-ff
+
+# Merge `dev` with `main`
+- git merge --no-ff
+- git tag</code></pre>
+<hr>
+</section>
+<section id="the-bare-minimum-git-theory" class="level2">
+<h2 class="anchored" data-anchor-id="the-bare-minimum-git-theory">3. The Bare-minimum Git Theory</h2>
+<blockquote class="blockquote">
+<p>Skip this section if you are already aware of the basics</p>
+</blockquote>
+<section id="what-is-git" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-git">3.1 <strong>What is Git</strong>?</h3>
+<pre><code>- Git is **a version control software** that runs locally. Git is primarily a command-line tool. 
+- You do not need a GitHub/GitLab or other remote repo account to use Git locally. 
+- You need a remote repo like GitHub/GitLab when you wish to **collaborate** and **share** your repository with the outside world. </code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> mkdir <span class="at">-p</span> sample_git_dir</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cd sample_git_dir</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git init</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="what-are-git-addstaging-area-and-git-commit-commands" class="level3">
+<h3 class="anchored" data-anchor-id="what-are-git-addstaging-area-and-git-commit-commands">3.2 <strong>What are <code>git add</code>(staging area) and <code>git commit</code> commands?</strong></h3>
+<pre><code>- Before you `commit`, you add your changes to `a staging area`.  
+- You can add many files to the staging area. You save the progress of all those files via a `commit`.</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> pwd</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/some/path/to/sample_git_dir</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> echo <span class="st">"file1"</span> <span class="op">&gt;</span> file1.txt <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">"file2"</span> <span class="op">&gt;</span> file2.txt</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Before you `commit`, you add your changes to a `staging` area.</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># You can add many files to the staging area.</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add file1.txt file2.txt</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># You save the progress of all those files via a `commit`. </span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git commit <span class="at">-m</span> <span class="st">"first commit"</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="what-is-a-head" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-a-head">3.3 <strong>What is a <code>HEAD</code>?</strong></h3>
+<pre><code>- HEAD is **a pointer** that refers to the "current location" or the "current commit" you are on, in your repository</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> echo <span class="st">"file3"</span> <span class="op">&gt;</span> file3.md</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add file3.md</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git commit <span class="at">-m</span> <span class="st">"second commit"</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ----</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># note that the `HEAD` is at the commit `85de13a`</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="ex">ed71ef7</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main<span class="kw">)</span> <span class="ex">second</span> commit</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="ex">331ee7b</span> first commit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Note that I did not say “latest commit” in the previous sentence :) Whichever commit you are currently “checking out”, that commit becomes the HEAD</li>
+<li>Generally, the HEAD is on the <code>latest commit</code> in a branch you are working.</li>
+<li>You could go to a specific commit <code>git checkout commit-hash-or-tag</code>. Then you would be on a <code>detached HEAD</code> (not to worry!). You can create a new branch from that <code>detached HEAD</code> position or simply go back to an existing branch.</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Even if you progress further, you could go back to any specific commit</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git checkout 331ee7b</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Note:</span> switching to <span class="st">'331ee7b'</span>.</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">You</span> are in <span class="st">'detached HEAD'</span> state. You can look around, make experimental</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="ex">changes</span> and commit them, and you can discard any commits you make in this</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="ex">state</span> without impacting any branches by switching back to a branch.</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="ex">If</span> you want to create a new branch to retain commits you create, you may</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span> <span class="ex">so</span> <span class="er">(</span><span class="ex">now</span> or later<span class="kw">)</span> <span class="ex">by</span> using <span class="at">-c</span> with the switch command. Example:</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">git</span> switch <span class="at">-c</span> <span class="op">&lt;</span>new-branch-name<span class="op">&gt;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="ex">Or</span> undo this operation with:</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">git</span> switch <span class="at">-</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="ex">Turn</span> off this advice by setting config variable advice.detachedHead to false</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="ex">HEAD</span> is now at 331ee7b updating files of type txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>When you are in a <code>detached HEAD</code> state in a particular commit, the state of files then would be shown. In other words, new files or updates created after that commit would not be visible.</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the file `file3.md` was not created during this commit `7db0093`</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> ls</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">file1.txt</span> file2.txt</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --- </span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># I am going from this detached HEAD state back to the `branch`</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="ex">HEAD</span> detached at 331ee7b</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> to commit, working tree clean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>You can always switch to any branch to come out of the <code>detached HEAD</code></li>
+</ul>
+<pre><code>% git checkout main
+Previous HEAD position was 331ee7b updating files of type txt
+Switched to branch 'main'
+
+% ls
+file1.txt file2.txt file3.md</code></pre>
+</section>
+<section id="btw-what-exactly-is-a-branch" class="level3">
+<h3 class="anchored" data-anchor-id="btw-what-exactly-is-a-branch">3.4 <strong>Btw, what exactly is a branch?</strong></h3>
+<ul>
+<li>Branches are like alternate <code>timelines</code>! We can work on multiple tasks in parallel branches or have different branches just to simply separate the different tasks.</li>
+<li>Each branch in a git repo has a specific set of associated commits.</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># what are the branches you have now</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git branch <span class="at">--list</span> <span class="at">-a</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> main</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch main</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> to commit, working tree clean</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat file1.txt&nbsp;</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="ex">file1</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># create and switch to that branch</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch <span class="at">-c</span> sample_branch_1</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co"># add more contents to `file1.txt`</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> echo <span class="st">"\nMore contents here ..."</span> <span class="op">&gt;&gt;</span> file1.txt</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add file1.txt <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"third commit"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Making changes on one branch does not affect other branches until we merge them.</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># what is the content of `file1.txt` in `sample_branch_1`?</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git show sample_branch_1:file1.txt</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ex">file1</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="ex">More</span> contents here ...</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># what is the content of `file1.txt` in `main`</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git show main:file1.txt</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="ex">file1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="how-do-i-merge-2-branches" class="level3">
+<h3 class="anchored" data-anchor-id="how-do-i-merge-2-branches">How do I merge 2 branches?</h3>
+<pre><code>- Let us merge a "feature" branch into "main"</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># currently the HEAD is in `sample_branch_1` branch</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span>                          </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">2bf38e2</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> sample_branch_1<span class="kw">)</span> <span class="ex">third</span> commit</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="ex">ed71ef7</span> <span class="er">(</span><span class="ex">main</span><span class="kw">)</span> <span class="ex">second</span> commit</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="ex">331ee7b</span> first commit</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch sample_branch_1</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> to commit, working tree clean</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch main</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git merge sample_branch_1</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="ex">Updating</span> ed71ef7..2bf38e2</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="ex">Fast-forward</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a> <span class="ex">file1.txt</span> <span class="kw">|</span> <span class="ex">2</span> ++</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 2 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Now, let us see file1.txt again</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git show main:file1.txt</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="ex">file1</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="ex">More</span> contents here ...</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="ex">2bf38e2</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main, sample_branch_1<span class="kw">)</span> <span class="ex">third</span> commit</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="ex">ed71ef7</span> second commit</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="ex">331ee7b</span> first commit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="what-is-a-.git-directory" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-a-.git-directory">3.5 What is a <code>.git</code> directory?</h3>
+<p>The <code>.git</code> directory is essentially the heart of Git. That is what makes version control work.</p>
+<p>When you initialize a Git repository using <code>git init</code>, this directory is created at the root of your project. Below is an overview of the structure and contents of the <code>.git</code> directory:</p>
+<section id="key-components-of-the-.git-directory" class="level4">
+<h4 class="anchored" data-anchor-id="key-components-of-the-.git-directory">Key Components of the <code>.git</code> Directory</h4>
+<p>There are more files and directories than the below ones but I am focusing the spotlight on items I have historically noticed.</p>
+<section id="files" class="level5">
+<h5 class="anchored" data-anchor-id="files">1. <strong>Files</strong></h5>
+<ul>
+<li><code>.git/config</code> A file containing repository-specific configuration</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat .git/config</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">[core]</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">repositoryformatversion</span> = 0</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="ex">filemode</span> = true</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bare</span> = false</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="ex">logallrefupdates</span> = true</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="ex">ignorecase</span> = true</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">precomposeunicode</span> = true</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="ex">[user]</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="ex">email</span> = youremail@something.com</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="ex">name</span> = Your Name</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>.git/HEAD</code> - Refers to the current branch’s latest commit</li>
+</ul>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat .git/HEAD</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ref:</span> refs/heads/main</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>.git/index</code> - Serves as the staging area for changes, holding metadata like timestamps and filenames along with their SHA-1 hashes in binary form</li>
+</ul>
+<p>What is the difference between <code>working directory</code> and <code>index</code> terms in <code>.git</code> directory? - <strong>Working Directory</strong>: This is the actual directory where project files are located. Modifications made to files in the working directory are considered ‘untracked’ until explicitly staged for commit.&nbsp; - <strong>Staging Area (Index)</strong>: The staging area acts as an intermediate step between the working directory and the <code>.git</code> directory</p>
+<ul>
+<li>Skipping explanations for other files like ORIG_HEAD, FETCH_HEAD (you can explore <a href="https://git-scm.com/docs/gitrepository-layout">here</a> )</li>
+</ul>
+<pre><code>% find .git -type f -name "*" -depth 1
+.git/ORIG_HEAD
+.git/config
+.git/HEAD
+.git/description
+.git/index
+.git/packed-refs
+.git/COMMIT_EDITMSG </code></pre>
+</section>
+<section id="directories" class="level5">
+<h5 class="anchored" data-anchor-id="directories">2. <strong>Directories</strong></h5>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> find .git <span class="at">-type</span> d <span class="at">-name</span> <span class="st">"*"</span> <span class="at">-depth</span> 1</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/filter-repo</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/objects</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/info</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/logs</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/hooks</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/refs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>.git/refs</code> - This directory contains references to commits that are pointing to branches or tags</li>
+</ul>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> tree <span class="at">-L</span> 3 .git/refs      </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/refs</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> heads</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> tags</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># stores the commit id where main branch is pointing to</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat .git/refs/heads/main</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="ex">331ee7b90c8ba8a0cdc1a2d2824198114fd82bf7</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="ex">331ee7b</span> <span class="er">(</span><span class="ex">**main**</span><span class="kw">)</span> <span class="ex">first</span> commit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>.git/logs</code> - Stores reference logs (hint: reflogs - <code>git reflog</code> ) that track changes to branch tips, aiding in recovery and auditing processes.</li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> tree <span class="at">-L</span> 3 .git/logs         </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/logs</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> HEAD</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> refs</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="ex">└──</span> heads</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        <span class="ex">├──</span> main</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        <span class="ex">└──</span> sample_branch_1</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="ex">3</span> directories, 3 files</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>.git/objects</code> contains information about 3 types of objects stored here</li>
+</ul>
+<pre><code>- Blobs (content of files),
+- Trees (directories),
+- Commits and Tags (commit metadata).</code></pre>
+<ul>
+<li>Want to learn what are <code>.git/objects</code> hands-on? Follow the commands below.</li>
+</ul>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> mkdir <span class="at">-p</span> git-objects-demo <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> git-objects-demo <span class="kw">&amp;&amp;</span> <span class="fu">git</span> init</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> echo <span class="st">"Hello Reader"</span> <span class="op">&gt;&gt;</span> my_blog_reader.txt</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add my_blog_reader.txt <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"first commit"</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> tree <span class="at">-L</span> 3 .git/objects </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="ex">.git/objects</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> 27</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="ex">│&nbsp;&nbsp;</span> └── ce6a44f95b9e65d69a4ad7222c51a2d43d50b0</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> 55</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="ex">│&nbsp;&nbsp;</span> └── 8f4283c08411bf4dca21aac74c3f0fbdd2d63f</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> d1</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="ex">│&nbsp;&nbsp;</span> └── d8585ee8e0ae24a3996103b36e27c89711d57f</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> info</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> pack</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="ex">6</span> directories, 3 files</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git cat-file <span class="at">--help</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="ex">git-cat-file</span> <span class="at">-</span> Provide content or type and size information for repository objects</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="co"># tree object having the directory,file name and other details</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git cat-file <span class="at">-p</span> 27ce6a44f95b9e65d69a4ad7222c51a2d43d50b0</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="ex">100644</span> blob d1d8585ee8e0ae24a3996103b36e27c89711d57f    my_blog_reader.txt</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="co"># blob object showing raw file content</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git cat-file <span class="at">-p</span> d1d8585ee8e0ae24a3996103b36e27c89711d57f</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> Reader</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="co"># commit object showing the tree object's hash</span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git cat-file <span class="at">-p</span> 558f4283c08411bf4dca21aac74c3f0fbdd2d63f</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a><span class="ex">tree</span> 27ce6a44f95b9e65d69a4ad7222c51a2d43d50b0</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="ex">author</span> Your Name <span class="op">&lt;</span>your_email@something.com<span class="op">&gt;</span> 1739191036 +0530</span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a><span class="ex">committer</span> Your Name <span class="op">&lt;</span>your_email@something.com<span class="op">&gt;</span> 1739191036 +0530</span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a><span class="ex">first</span> commit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>I am skipping explanations about <code>.git/hooks</code> (warrants a blog on its own about <code>precommit hooks</code>)</li>
+<li><code>.git/filter-repo</code> directory helps in rewriting history.</li>
+</ul>
+<p>Source: <a href="https://stackoverflow.com/a/56026788">Stackoverflow discussion on .git</a></p>
+<hr>
+</section>
+</section>
+</section>
+</section>
+<section id="learning-git-by-way-of-practice" class="level2">
+<h2 class="anchored" data-anchor-id="learning-git-by-way-of-practice">4. Learning Git by Way of Practice</h2>
+<blockquote class="blockquote">
+<p>Now, let us move on to the moderate to advanced stuff ### 4.1 Branch 1: <code>dev/LeadScriptWriter/Context</code></p>
+</blockquote>
+<p><img src="./images_2/4_1.png" class="img-fluid"> Fig 4.1.1 A quick summary of what we are going to do in this section (4.1)</p>
+<blockquote class="blockquote">
+<p>In this branch <code>dev/LeadScriptWriter/Context</code> , the Lead Script Writer is setting up the context</p>
+</blockquote>
+<ul>
+<li>Create a directory and set up git there</li>
+</ul>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> mkdir <span class="at">-p</span> comic_universe</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cd comic_universe</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The below command sets up the `.git` directory that helps in version control</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git init</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># The below command helps git know who the committer is</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git config user.email <span class="st">"youremail@something.com"</span> <span class="kw">&amp;&amp;</span> <span class="fu">git</span> config user.name <span class="st">"Your Name"</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch main</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> to commit, working tree clean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>A (main)</code></pre>
+<ul>
+<li>Create a dev branch or, in our case <code>dev/LeadScriptWriter/Context</code></li>
+</ul>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> touch comic_heroes.md</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add comic_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"A: first commit - empty file"</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch <span class="at">-c</span> dev/LeadScriptWriter/Context</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>A pictorial representation of the commits so far (you could try <code>git log --oneline</code>)</li>
+<li>The HEAD of the branch is depicted in the diagram</li>
+</ul>
+<pre><code>A (main, dev)</code></pre>
+<p><img src="./images_2/4_1_2.png" class="img-fluid"></p>
+<ul>
+<li>Now, let us explore <code>git diff</code> and <code>git commit --amend</code> commands</li>
+</ul>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch dev/LeadScriptWriter/Context</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> to commit, working tree clean</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> echo <span class="st">"&gt; In this document, all writers contribute their efforts\n"</span> <span class="op">&gt;&gt;</span> <span class="st">"comic_heroes.md"</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co">#****#</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="co"># to see the changes not staged yet</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git diff</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span> <span class="at">--git</span> a/comic_heroes.md b/comic_heroes.md</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="ex">index</span> e69de29..5fd5f68 100644</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="ex">---</span> a/comic_heroes.md</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="ex">+++</span> b/comic_heroes.md</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="ex">@@</span> <span class="at">-0,0</span> +1,2 @@</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="ex">+</span><span class="op">&gt;</span> In this document, all writers contribute their efforts</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="ex">+</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a><span class="co">#****#</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 69%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Syntax</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>diff --git</code></td>
+<td>Shows the file being compared (<code>a/</code> = old, <code>b/</code> = new)</td>
+</tr>
+<tr class="even">
+<td><code>index e69de29..5fd5f68</code></td>
+<td>Shows the commit hashes before &amp; after changes</td>
+</tr>
+<tr class="odd">
+<td><code>--- a/comic_heroes.md</code></td>
+<td>Old version of the file</td>
+</tr>
+<tr class="even">
+<td><code>+++ b/comic_heroes.md</code></td>
+<td>New version of the file</td>
+</tr>
+<tr class="odd">
+<td><code>@@ -0,0 +1,2 @@</code></td>
+<td>Before: 0 lines, After: 2 lines (2 new lines added)</td>
+</tr>
+<tr class="even">
+<td><code>+</code> (and no <code>-</code>)</td>
+<td>Indicates newly added lines (no lines were deleted)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Basically, the above lines say that there are two lines added to <code>comic_heroes.md</code> (+1,2)</li>
+</ul>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#****#</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># now add the file to staging area</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add comic_heroes.md</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># this command now will now return empty</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git diff</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># but this command will give the right changes</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git diff <span class="at">--staged</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span> <span class="at">--git</span> a/comic_heroes.md b/comic_heroes.md</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="ex">index</span> e69de29..5fd5f68 100644</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="ex">---</span> a/comic_heroes.md</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="ex">+++</span> b/comic_heroes.md</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="ex">@@</span> <span class="at">-0,0</span> +1,2 @@</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="ex">+</span><span class="op">&gt;</span> In this document, all writers contribute their efforts</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="ex">+</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="co">#****#</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git commit <span class="at">-m</span> <span class="st">"set the context"</span></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a><span class="co"># again the below command will not yield any result</span></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a><span class="co"># as the change has been committed and moved out of the staging area</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git diff <span class="at">--staged</span></span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Oops, I wrote the commit message wrong!</span></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a><span class="co"># let me edit the commit message</span></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git commit <span class="at">--amend</span></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a><span class="co"># In a window that will open enter the below message</span></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a><span class="co"># B: set the context (without the initial "# ")</span></span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a><span class="co"># now, let us look at the commit messages</span></span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a><span class="co"># now it is changed to "B: set the context"</span></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> </span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a><span class="ex">a54215f</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> dev/LeadScriptWriter/Context<span class="kw">)</span> <span class="ex">B:</span> set the context</span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a><span class="ex">d033ca6</span> <span class="er">(</span><span class="ex">main</span><span class="kw">)</span> <span class="ex">A:</span> first commit <span class="at">-</span> empty file</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Progress so far:</li>
+</ul>
+<pre><code>A (main)
+  \
+   B (dev)</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> echo <span class="st">"## About the Main Heroes"</span> <span class="op">&gt;&gt;</span> comic_heroes.md</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> echo <span class="st">"\n## Other Heroes"</span> <span class="op">&gt;&gt;</span> comic_heroes.md</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> echo <span class="st">"\n## The EndGame"</span> <span class="op">&gt;&gt;</span> comic_heroes.md</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add comic_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"C: set the context (2)"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Progress so far:</li>
+</ul>
+<pre><code>A (main)
+  \
+   B -- C (dev) </code></pre>
+<p><img src="./images_2/4_1_3.png" class="img-fluid"></p>
+<ul>
+<li>Before I ask my co-writers to start creating their branch from here, I wish to briefly rejig my commit history.</li>
+</ul>
+<div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># I use the git rebase command in `interactive` mode </span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"># going 2 commits back from the HEAD</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git rebase <span class="at">-i</span> HEAD~2</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co"># WINDOW 1: the above command opens a window with the following details</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">#****#</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="ex">pick</span> 1114c09 B: set the context</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="ex">pick</span> 699b40f C: set the context <span class="er">(</span><span class="ex">2</span><span class="kw">)</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Rebase 48ca005..699b40f onto 48ca005 (2 commands)</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Commands:</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="co"># p, pick &lt;commit&gt; = use commit</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a><span class="co"># r, reword &lt;commit&gt; = use commit, but edit the commit message</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a><span class="co"># e, edit &lt;commit&gt; = use commit, but stop for amending</span></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="co"># s, squash &lt;commit&gt; = use commit, but meld into previous commit</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a><span class="co">#****#</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a><span class="co"># WINDOW 2: I am "squashing" commit C and editing the message of commit B</span></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a><span class="co">#****#</span></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a><span class="ex">reword</span> 1114c09 B: set the context</span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a><span class="ex">squash</span> 699b40f C: set the context <span class="er">(</span><span class="ex">2</span><span class="kw">)</span></span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Rebase 48ca005..699b40f onto 48ca005 (2 commands)</span></span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a><span class="ex">....</span></span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a><span class="co">#****#</span></span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a><span class="co"># WINDOW 3: the Reworded commit message can be edited now</span></span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a><span class="co">#****#</span></span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a><span class="ex">B\':</span> set the context story for my team of writers</span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span></span>
+<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a><span class="co">#****#</span></span>
+<span id="cb32-39"><a href="#cb32-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-40"><a href="#cb32-40" aria-hidden="true" tabindex="-1"></a><span class="co"># WINDOW 4: Squashed message </span></span>
+<span id="cb32-41"><a href="#cb32-41" aria-hidden="true" tabindex="-1"></a><span class="co"># just press esc  AND type :wq</span></span>
+<span id="cb32-42"><a href="#cb32-42" aria-hidden="true" tabindex="-1"></a><span class="co"># no need to do anything here, as the commit is getting squashed</span></span>
+<span id="cb32-43"><a href="#cb32-43" aria-hidden="true" tabindex="-1"></a><span class="co">#****#</span></span>
+<span id="cb32-44"><a href="#cb32-44" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>Commit <span class="ex">C</span> will be squashed here<span class="op">&gt;</span> </span>
+<span id="cb32-45"><a href="#cb32-45" aria-hidden="true" tabindex="-1"></a><span class="co">#****#</span></span>
+<span id="cb32-46"><a href="#cb32-46" aria-hidden="true" tabindex="-1"></a><span class="ex">[detached</span> HEAD 08ed2ac] B: set the context</span>
+<span id="cb32-47"><a href="#cb32-47" aria-hidden="true" tabindex="-1"></a> <span class="ex">Date:</span> Thu Feb 13 22:23:54 2025 +0530</span>
+<span id="cb32-48"><a href="#cb32-48" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 7 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb32-49"><a href="#cb32-49" aria-hidden="true" tabindex="-1"></a><span class="ex">Successfully</span> rebased and updated refs/heads/dev/LeadScriptWriter/Context.</span>
+<span id="cb32-50"><a href="#cb32-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-51"><a href="#cb32-51" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span></span>
+<span id="cb32-52"><a href="#cb32-52" aria-hidden="true" tabindex="-1"></a><span class="ex">4b34c23</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> dev/LeadScriptWriter/Context<span class="kw">)</span> <span class="ex">B</span><span class="st">': set the context story for my team of writers</span></span>
+<span id="cb32-53"><a href="#cb32-53" aria-hidden="true" tabindex="-1"></a><span class="st">d033ca6 (main) A: first commit - empty file</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Progress so far:</li>
+</ul>
+<pre><code>A (main)
+  \
+   B' (dev)</code></pre>
+<blockquote class="blockquote">
+<p>Note: - Original commit history of <code>dev</code> branch was <code>A -- B -- C</code>. - New commit history of <code>dev</code> branch is <code>A -- B'</code></p>
+</blockquote>
+<ul>
+<li>Now, I want all my writers to start their work from here.</li>
+</ul>
+<div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git branch Writer1/MainHeroes</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git branch Writer2/OtherHeroes</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git branch Writer3/EndGame</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co"># the below command lists the different branches we have </span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># * indicates we are still in the `dev` branch</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git branch <span class="at">--list</span> </span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Writer1/MainHeroes</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Writer2/OtherHeroes</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Writer3/EndGame</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> dev/LeadScriptWriter/Context</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="ex">main</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Progress so far:
+<ul>
+<li>The pointer for all branches <code>dev</code> and <code>feature</code> branches like <code>Writer</code> are in the same commit</li>
+</ul>
+<pre><code>A (main)
+\
+ B' (dev,Writer1,Writer2,Writer3)</code></pre></li>
+</ul>
+<section id="branch-2-writer1mainheroes" class="level3">
+<h3 class="anchored" data-anchor-id="branch-2-writer1mainheroes">4.2 Branch 2: <code>Writer1/MainHeroes</code></h3>
+<p><img src="./images_2/4.2.png" class="img-fluid"> Fig 4.2.1 A quick summary of section (4.2)</p>
+<ul>
+<li>Now, let us switch to the <code>Writer1</code> branch and start writing about 3 main Heroes in <code>comic_heroes.md</code></li>
+</ul>
+<pre><code>- **Iron Man:** Created the Iron Man suit and saved himself from captivity.
+- **Captain America:** Led the charge against Hydra during WWII and became a symbol of hope.
+- **Thor:** Defended Asgard and Earth, wielding Mjolnir with unshakable valor.</code></pre>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch Writer1/MainHeroes</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat comic_heroes.md</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> In <span class="ex">this</span> document, all writers contribute their efforts</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co">## About the Main Heroes</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co">## Other Heroes</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="co">## The EndGame</span></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="co"># add the lines about Main Heroes</span></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi comic_heroes.md </span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a><span class="co"># command to print only lines 3 to 6 that were newly added</span></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> sed <span class="at">-n</span> <span class="st">'3,6p'</span> comic_heroes.md</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a><span class="co">## About the Main Heroes</span></span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Iron Man:<span class="pp">**</span> ...</span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Captain America:<span class="pp">**</span> ...</span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Thor:<span class="pp">**</span> ...</span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add comic_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"W1-A: add main heroes"</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Progress so far: - The pointer for all branches <code>dev</code> and <code>feature</code> branches like <code>Writer</code> are in the same commit</p>
+<pre><code>A (main)
+  \
+   B' (dev,Writer2,Writer3)
+     \
+      W1-A (Writer1)</code></pre>
+<blockquote class="blockquote">
+<p>Out of his personal favoritism, <code>Writer1</code> chose to add “DeadPool” into the “Main Avengers”</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>DeadPool</strong>: The avenger who cannot be killed at all and is going to be iron man’s best friend and 4th main avenger</p>
+</blockquote>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch Writer1/MainHeroes</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> to commit, working tree clean</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># add the line about `DeadPool`</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi comic_heroes.md </span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co"># printing 3rd and 7th lines from `comic_heroes.md`</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> sed <span class="at">-n</span> <span class="st">'3p'</span> comic_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">sed</span> <span class="at">-n</span> <span class="st">'7p'</span> comic_heroes.md</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="co">## About the Main Heroes</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>DeadPool<span class="pp">**</span>: The avenger who cannot be killed at all and is going to be iron man<span class="dt">\'</span>s best friend and 4th main avenger</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add comic_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"W1-B: add deadpool to main avengers"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Progress so far:
+<ul>
+<li>The pointer for all branches <code>dev</code> and <code>feature</code> branches like <code>Writer</code> are in the same commit</li>
+</ul>
+<pre><code>A (main)
+\
+ B' (dev,Writer2,Writer3)
+   \
+    W1-A -- W1-B (Writer1)</code></pre></li>
+</ul>
+<blockquote class="blockquote">
+<p>Looking into this the LeadWriter got furious ! - “Please remove <code>DeadPool</code> completely. Since no others have used your branch yet.” - “Kindly use <code>git reset commit-before-deadpool-commit</code> and reset all the changes.” - “DO IT NOW!”</p>
+</blockquote>
+<ul>
+<li>Writer1 gets into action to implement what the Lead suggested.</li>
+</ul>
+<div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span> <span class="at">--graph</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> ef032c9 <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> Writer1/MainHeroes<span class="kw">)</span> <span class="ex">W1-B:</span> add deadpool to main avengers</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> 6c21d67 W1-A: add main heroes</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> b6aaf19 <span class="er">(</span><span class="ex">dev/LeadScriptWriter/Context,</span> Writer3/EndGame, Writer2/OtherHeroes<span class="kw">)</span> <span class="ex">B\':</span> set the context story for my team of writers</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> 48ca005 <span class="er">(</span><span class="ex">main</span><span class="kw">)</span> <span class="ex">A:</span> first commit <span class="at">-</span> empty file</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="co"># resetting to W1-A commit</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git reset <span class="at">--soft</span> 6c21d67</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a><span class="co"># want to know more on what is `git reset --soft`?</span></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="co"># try `git reset --help` and search `--soft` in the window that opens `The Git Manual`</span></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch Writer1/MainHeroes</span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a><span class="ex">Changes</span> to be committed:</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">(</span><span class="ex">use</span> <span class="st">"git restore --staged &lt;file&gt;..."</span> to unstage<span class="kw">)</span></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>    <span class="ex">modified:</span>   comic_heroes.md</span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a><span class="co"># thank got that `Deadpool` commit is gone. </span></span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log oneline <span class="at">--all</span></span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a><span class="ex">6c21d67</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> Writer1/MainHeroes<span class="kw">)</span> <span class="ex">W1-A:</span> add main heroes</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a><span class="ex">b6aaf19</span> <span class="er">(</span><span class="ex">dev/LeadScriptWriter/Context,</span> Writer3/EndGame, Writer2/OtherHeroes<span class="kw">)</span> <span class="ex">B\':</span> set the context story for my team of writers</span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a><span class="ex">48ca005</span> <span class="er">(</span><span class="ex">main</span><span class="kw">)</span> <span class="ex">A:</span> first commit <span class="at">-</span> empty file</span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Wait, why does it say `modified: comic_heroes.md` </span></span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a><span class="co"># let us see what is there in the `staged` area</span></span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git diff <span class="at">--staged</span></span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span> <span class="at">--git</span> a/comic_heroes.md b/comic_heroes.md</span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a><span class="ex">index</span> fbc7404..fc2c8e7 100644</span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a><span class="ex">---</span> a/comic_heroes.md</span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a><span class="ex">+++</span> b/comic_heroes.md</span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a><span class="ex">@@</span> <span class="at">-4,6</span> +4,7 @@</span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a> <span class="ex">-</span> <span class="pp">**</span>Iron Man:<span class="pp">**</span> Created the Iron Man suit and saved himself from captivity.</span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a> <span class="ex">-</span> <span class="pp">**</span>Captain America:<span class="pp">**</span> Led the charge against Hydra during WWII and became a symbol of hope.</span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a> <span class="ex">-</span> <span class="pp">**</span>Thor:<span class="pp">**</span> Defended Asgard and Earth, wielding Mjolnir with unshakable valor.</span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a><span class="ex">+-</span> <span class="pp">**</span>DeadPool<span class="pp">**</span>: The avenger who cannot be killed at all and is going to be iron man<span class="dt">\'</span>s best friend and 4th main avenger</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a> <span class="co">## Other Heroes</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="co"># oh, still `Deadpool` line is there. </span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="co"># let me remove the content from the staged area </span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git restore <span class="at">--staged</span> comic_heroes.md</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a> <span class="ex">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status                           </span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch Writer1/MainHeroes</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Changes</span> not staged for commit:</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">(</span><span class="ex">use</span> <span class="st">"git add &lt;file&gt;..."</span> to update what will be committed<span class="kw">)</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">(</span><span class="ex">use</span> <span class="st">"git restore &lt;file&gt;..."</span> to discard changes in working directory<span class="kw">)</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>    <span class="ex">modified:</span>   comic_heroes.md</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a><span class="co"># let me remove the content in the working directory too</span></span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a><span class="co"># as suggested in the above command</span></span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git restore comic_heroes.md <span class="co"># note I have not used the argument `--staged` here</span></span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a><span class="co"># now let us check if all clean</span></span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git status <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">"#****#"</span> <span class="kw">&amp;&amp;</span> <span class="fu">cat</span> comic_heroes.md</span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch Writer1/MainHeroes</span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> to commit, working tree clean</span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a><span class="co">#****#</span></span>
+<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> In <span class="ex">this</span> document, all writers contribute their efforts</span>
+<span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a><span class="co">## About the Main Heroes</span></span>
+<span id="cb42-26"><a href="#cb42-26" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Iron Man:<span class="pp">**</span> Created the Iron Man suit and saved himself from captivity.</span>
+<span id="cb42-27"><a href="#cb42-27" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Captain America:<span class="pp">**</span> Led the charge against Hydra during WWII and became a symbol of hope.</span>
+<span id="cb42-28"><a href="#cb42-28" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Thor:<span class="pp">**</span> Defended Asgard and Earth, wielding Mjolnir with unshakable valor.</span>
+<span id="cb42-29"><a href="#cb42-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-30"><a href="#cb42-30" aria-hidden="true" tabindex="-1"></a><span class="co">## Other Heroes</span></span>
+<span id="cb42-31"><a href="#cb42-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-32"><a href="#cb42-32" aria-hidden="true" tabindex="-1"></a><span class="co">## The EndGame</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><p>Note, I could have used <code>git reset --mixed</code> or <code>git reset --hard</code> as well (verify the <code>The Git Manual</code> using <code>git reset --help</code> for more details)</p></li>
+<li><p>Progress so far</p></li>
+</ul>
+<pre><code>A (main)
+  \
+   B' (dev,Writer2,Writer3)
+     \
+      W1-A (Writer1)</code></pre>
+<ul>
+<li>Time to merge <code>Writer1</code> branch with <code>dev</code> branch</li>
+<li>We are doing a Fast Forward Merge. This is an “implicit” merge and is possible only when <code>dev</code> and <code>Writer1</code> branches have not diverged. Here, we DO NOT have divergent branches.</li>
+</ul>
+<div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch dev/LeadScriptWriter/Context</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git merge Writer1/MainHeroes <span class="at">--ff-only</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><p>We have moved the tip of <code>dev</code> branch to the commit <code>W1-A</code> pointed at by <code>Writer1</code></p></li>
+<li><p>Progress so far:</p></li>
+</ul>
+<pre><code>A (main)
+  \
+   B' (Writer2,Writer3)
+     \
+      W1-A (dev, Writer1)</code></pre>
+</section>
+<section id="branch-3-writer2otherheroes" class="level3">
+<h3 class="anchored" data-anchor-id="branch-3-writer2otherheroes">4.3 Branch 3: <code>Writer2/OtherHeroes</code></h3>
+<p><img src="./images_2/4_3.png" class="img-fluid"> A quick summary of section (4.3)</p>
+<blockquote class="blockquote">
+<p>While <code>Writer1</code> was creating stories about the main heroes, <code>Writer2</code> was writing stories about other heroes.</p>
+</blockquote>
+<div class="sourceCode" id="cb46"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch Writer2/OtherHeroes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Content for Other Heroes</li>
+</ul>
+<pre><code>- **Hulk:** Balanced a life of science with his uncontrollable strength to smash enemies.
+- **Black Panther:** Protected Wakanda and shared Vibranium with the world.
+- **Captain Marvel:** Fought galactic threats and became a cosmic force for good.
+- **Ant-Man:** Mastered the Quantum Realm to fight villains on a microscopic scale.</code></pre>
+<ul>
+<li>Note that the changes made by Writer1 to <code>dev</code> branch are not visible yet. But <code>Writer 2</code> makes his commit</li>
+</ul>
+<div class="sourceCode" id="cb48"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi comic_heroes.md</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat comic_heroes.md</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> In <span class="ex">this</span> document, all writers contribute their efforts</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co">## About the Main Heroes</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="co">## Other Heroes</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Hulk:<span class="pp">**</span> Balanced a life of science with his uncontrollable strength to smash enemies.</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Black Panther:<span class="pp">**</span> Protected Wakanda and shared Vibranium with the world.</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Captain Marvel:<span class="pp">**</span> Fought galactic threats and became a cosmic force for good.</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Ant-Man:<span class="pp">**</span> Mastered the Quantum Realm to fight villains on a microscopic scale.</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="co">## The EndGame</span></span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add comic_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"W2-A: add details about Other Heroes"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Progress so far</li>
+</ul>
+<pre><code>A (main)
+  \
+   B' (Writer3) -- W2-A (Writer2)
+     \
+      W1-A (dev, Writer1)</code></pre>
+<ul>
+<li>Writer2 realizes that it is better to “rebase” the new changes in <code>dev</code> under <code>Writer2</code> , before merging <code>Writer2</code> with <code>dev</code></li>
+</ul>
+<div class="sourceCode" id="cb50"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git rebase dev/LeadScriptWriter/Context</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Successfully</span> rebased and updated refs/heads/Writer2/OtherHeroes.</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch dev/LeadScriptWriter/Context </span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git merge Writer2/OtherHeroes <span class="at">--ff-only</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Updating</span> 6c21d67..c695edd</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Fast-forward</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a> <span class="ex">comic_heroes.md</span> <span class="kw">|</span> <span class="ex">4</span> ++++</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 4 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Progress so far:</li>
+</ul>
+<pre><code>A (main)
+  \
+   B' (Writer3)
+     \
+      W1-A (dev) -- W2-A (dev, Writer2)</code></pre>
+</section>
+<section id="branch-4-writer3endgame" class="level3">
+<h3 class="anchored" data-anchor-id="branch-4-writer3endgame">4.4 Branch 4: <code>Writer3/EndGame</code></h3>
+<p><img src="./images_2/4_4.png" class="img-fluid"> A quick summary of section (4.4)</p>
+<p>The below is the story developed by <code>Writer3</code> for <code>EndGame</code></p>
+<pre><code>- The Avengers and allies assemble to undo the Snap and defeat Thanos.
+- Black Panther leads the Wakandan army into battle.
+- Captain Marvel destroys Thanos' fleet.
+- Ant-Man helps navigate the Quantum Realm for time heist missions.
+- Iron Man sacrifices himself to save the universe.</code></pre>
+<div class="sourceCode" id="cb53"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch Writer3/EndGame</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat comic_heroes.md</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> In <span class="ex">this</span> document, all writers contribute their efforts</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="co">## About the Main Heroes</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="co">## Other Heroes</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a><span class="co">## The EndGame</span></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi comic_heroes.md </span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat comic_heroes.md</span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> In <span class="ex">this</span> document, all writers contribute their efforts</span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a><span class="co">## About the Main Heroes</span></span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a><span class="co">## Other Heroes</span></span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a><span class="co">## The EndGame</span></span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> The Avengers and allies assemble to undo the Snap and defeat Thanos.</span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> Black Panther leads the Wakandan army into battle.</span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> Captain Marvel destroys Thanos<span class="dt">\'</span> fleet.</span>
+<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> Ant-Man helps navigate the Quantum Realm for time heist missions.</span>
+<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> Iron Man sacrifices himself to save the universe.</span>
+<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-26"><a href="#cb53-26" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add comic_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"W3-A: defeat Thanos"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Progress</li>
+</ul>
+<pre><code>A (main)
+  \
+   B'  -- W3-A (Writer3)
+     \
+      W1-A -- W2-A (dev, Writer2)</code></pre>
+<ul>
+<li>Out of enthusiasm, <code>Writer3</code> starts to write heroes happens Post End game</li>
+</ul>
+<div class="sourceCode" id="cb55"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi new_heroes.md</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat new_heroes.md</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> Falcon becomes Captain America</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> World gets a new band of Superheroes called Thunderbolts</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add new_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"W3-B: PostEndGame"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Progress:</li>
+</ul>
+<pre><code>A (main)
+  \
+   B'  -- W3-A -- W3-B (Writer3)
+     \
+      W1-A -- W2-A (dev, Writer2)</code></pre>
+<div class="sourceCode" id="cb57"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span> </span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="ex">6fdd729</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> Writer3/EndGame<span class="kw">)</span> <span class="ex">W3-B:</span> PostEndGame</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="ex">858eaed</span> W3-A: defeat Thanos</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="ex">9515509</span> <span class="er">(</span><span class="ex">dev/LeadScriptWriter/Context,</span> Writer2/OtherHeroes<span class="kw">)</span> <span class="ex">W2-A:</span> add details about Other Heroes</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="ex">25b8db8</span> <span class="er">(</span><span class="ex">Writer1/MainHeroes</span><span class="kw">)</span> <span class="ex">W1-A:</span> add main heroes</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="ex">4b34c23</span> B<span class="dt">\'</span>: set the context story for my team of writers</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="ex">d033ca6</span> <span class="er">(</span><span class="ex">main</span><span class="kw">)</span> <span class="ex">A:</span> first commit <span class="at">-</span> empty file</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Writer3 now talks about “New Captain America”</li>
+</ul>
+<pre><code>## PostSnap
+- Falcon takes over the mantle as Captain America from Steve Rogers who has lived his time in the past</code></pre>
+<div class="sourceCode" id="cb59"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat comic_heroes.md</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> In <span class="ex">this</span> document, all writers contribute their efforts</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="co">## About the Main Heroes</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a><span class="co">## Other Heroes</span></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a><span class="co">## The EndGame</span></span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> The Avengers and allies assemble to undo the Snap and defeat Thanos.</span>
+<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> Black Panther leads the Wakandan army into battle.</span>
+<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> Captain Marvel destroys Thanos<span class="dt">\'</span> fleet.</span>
+<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> Ant-Man helps navigate the Quantum Realm for time heist missions.</span>
+<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> Iron Man sacrifices himself to save the universe.</span>
+<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-15"><a href="#cb59-15" aria-hidden="true" tabindex="-1"></a><span class="co">## PostSnap</span></span>
+<span id="cb59-16"><a href="#cb59-16" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> Falcon takes over the mantle as Captain America from Steve Rogers who has lived his time in the past</span>
+<span id="cb59-17"><a href="#cb59-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-18"><a href="#cb59-18" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add comic_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"W3-C: New Captain America"</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><p>The Lead upon reviewing this, wanted to “revert” the “PostEndGame” commit of <code>W3-B</code> . He wanted EndGame chapter to not have any End Credit scene.</p></li>
+<li><p>Writer3 get back to “reverting” the PostEndGame commit <code>W3-B'</code></p></li>
+</ul>
+<div class="sourceCode" id="cb60"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="ex">7cae9bf</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> Writer3/EndGame<span class="kw">)</span> <span class="ex">W3-C:</span> New Captain America</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="ex">6fdd729</span> W3-B: PostEndGame</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a><span class="ex">858eaed</span> W3-A: defeat Thanos</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a><span class="ex">4b34c23</span> B<span class="st">': set the context story for my team of writers</span></span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a><span class="st">d033ca6 (main) A: first commit - empty file</span></span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a><span class="st">% git revert 6fdd729             </span></span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a><span class="st">[Writer3/EndGame 27c1750] W3-B'</span>: Revert <span class="st">"W3-B: PostEndGame"</span></span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 2 deletions<span class="er">(</span><span class="ex">-</span><span class="kw">)</span></span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a> <span class="ex">delete</span> mode 100644 new_heroes.md</span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Note that `new_heroes.md` is not in the list of files changed since that commit was "reverted" </span></span>
+<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span></span>
+<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a><span class="ex">27c1750</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> Writer3/EndGame<span class="kw">)</span> <span class="ex">W3-B</span><span class="st">': Revert "W3-B: PostEndGame"</span></span>
+<span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a><span class="st">7cae9bf W3-C: New Captain America</span></span>
+<span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a><span class="st">6fdd729 W3-B: PostEndGame</span></span>
+<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a><span class="st">858eaed W3-A: defeat Thanos</span></span>
+<span id="cb60-20"><a href="#cb60-20" aria-hidden="true" tabindex="-1"></a><span class="st">4b34c23 B'</span><span class="ex">:</span> set the context story for my team of writers</span>
+<span id="cb60-21"><a href="#cb60-21" aria-hidden="true" tabindex="-1"></a><span class="ex">d033ca6</span> <span class="er">(</span><span class="ex">main</span><span class="kw">)</span> <span class="ex">A:</span> first commit <span class="at">-</span> empty file</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><p>Note that <code>new_heroes.md</code> is not in the list of files changed since that commit was “reverted”</p></li>
+<li><p>Progress</p></li>
+</ul>
+<pre><code>A (main)
+  \
+   B'  -- W3-A -- W3-B -- W3-C -- W3-B' (Writer3)
+     \
+      W1-A -- W2-A (dev, Writer2)</code></pre>
+<ul>
+<li>Merge <code>Writer3</code> with <code>dev</code> branch</li>
+</ul>
+<div class="sourceCode" id="cb62"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># now let us merge `Wrtier3` branch with `dev` branch</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch dev/LeadScriptWriter/Context</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git merge Writer3/EndGame <span class="at">--no-ff</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Auto-merging</span> comic_heroes.md</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Merge</span> made by the <span class="st">'ort'</span> strategy.</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a> <span class="ex">comic_heroes.md</span> <span class="kw">|</span> <span class="ex">8</span> ++++++++</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 8 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>A (main)
+  \
+   B'  -- W3-A -- W3-B -- W3-C -- W3-B'
+     \                             /
+      W1-A -- W2-A -- -- -- -- MC (dev, Writer3)</code></pre>
+<ul>
+<li>The ‘ort’ strategy refers to the “Optimized Recursive Three-Way Merge” strategy</li>
+<li>A merge commit <code>MC</code> was created when combining the <code>dev</code> branch and the <code>Writer3</code> branch.</li>
+</ul>
+</section>
+<section id="merge-dev-with-main-and-tag" class="level3">
+<h3 class="anchored" data-anchor-id="merge-dev-with-main-and-tag">4.5: Merge <code>dev</code> with <code>main</code> and <code>tag</code></h3>
+<p><img src="./images_2/4_5.png" class="img-fluid"></p>
+<ul>
+<li>As per <code>Git Flow</code> branching model, we are merging a stable branch like <code>dev</code> now to <code>main</code></li>
+</ul>
+<div class="sourceCode" id="cb64"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch main </span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git merge dev/LeadScriptWriter/Context <span class="at">--no-ff</span></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Merge</span> made by the <span class="st">'ort'</span> strategy.</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">comic_heroes.md</span> <span class="kw">|</span> <span class="ex">22</span> ++++++++++++++++++++++</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 22 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--graph</span> <span class="at">--all</span></span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span>   1b4235f <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main<span class="kw">)</span> <span class="ex">MC2:</span> Merge branch <span class="st">'dev/LeadScriptWriter/Context'</span></span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">\ </span> </span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">*</span>   460daed <span class="er">(</span><span class="ex">dev/LeadScriptWriter/Context</span><span class="kw">)</span> <span class="ex">MC:</span> Merge branch <span class="st">'Writer3/EndGame'</span> into dev/LeadScriptWriter/Context</span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="kw">|</span><span class="ex">\ </span> </span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="kw">|</span> <span class="ex">*</span> 27c1750 <span class="er">(</span><span class="ex">Writer3/EndGame</span><span class="kw">)</span> <span class="ex">W3-B</span><span class="st">': Revert "W3-B: PostEndGame"</span></span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a><span class="st">| | * 7cae9bf W3-C: New Captain America</span></span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a><span class="st">| | * 6fdd729 W3-B: PostEndGame</span></span>
+<span id="cb64-15"><a href="#cb64-15" aria-hidden="true" tabindex="-1"></a><span class="st">| | * 858eaed W3-A: defeat Thanos</span></span>
+<span id="cb64-16"><a href="#cb64-16" aria-hidden="true" tabindex="-1"></a><span class="st">| * | 9515509 (Writer2/OtherHeroes) W2-A: add details about Other Heroes</span></span>
+<span id="cb64-17"><a href="#cb64-17" aria-hidden="true" tabindex="-1"></a><span class="st">| * | 25b8db8 (Writer1/MainHeroes) W1-A: add main heroes</span></span>
+<span id="cb64-18"><a href="#cb64-18" aria-hidden="true" tabindex="-1"></a><span class="st">| |/  </span></span>
+<span id="cb64-19"><a href="#cb64-19" aria-hidden="true" tabindex="-1"></a><span class="st">| * 4b34c23 B'</span><span class="ex">:</span> set the context story for my team of writers</span>
+<span id="cb64-20"><a href="#cb64-20" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">/</span>  </span>
+<span id="cb64-21"><a href="#cb64-21" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> d033ca6 A: first commit <span class="at">-</span> empty file</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>From this <code>main</code> branch we can tag the commit for future reference</li>
+</ul>
+<div class="sourceCode" id="cb65"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git tag EndGameCommit</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--graph</span> <span class="at">--all</span></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span>   1b4235f <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main, tag: EndGameCommit<span class="kw">)</span> <span class="ex">MC2:</span> Merge branch <span class="st">'dev/LeadScriptWriter/Context'</span></span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">\ </span> </span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">*</span>   460daed <span class="er">(</span><span class="ex">dev/LeadScriptWriter/Context</span><span class="kw">)</span> <span class="ex">MC:</span> Merge branch <span class="st">'Writer3/EndGame'</span> into dev/LeadScriptWriter/Context</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="kw">|</span><span class="ex">\ </span> </span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="kw">|</span> <span class="ex">*</span> 27c1750 <span class="er">(</span><span class="ex">Writer3/EndGame</span><span class="kw">)</span> <span class="ex">W3-B</span><span class="st">': Revert "W3-B: PostEndGame"</span></span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a><span class="st">| | * 7cae9bf W3-C: New Captain America</span></span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a><span class="st">| | * 6fdd729 W3-B: PostEndGame</span></span>
+<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a><span class="st">| | * 858eaed W3-A: defeat Thanos</span></span>
+<span id="cb65-11"><a href="#cb65-11" aria-hidden="true" tabindex="-1"></a><span class="st">| * | 9515509 (Writer2/OtherHeroes) W2-A: add details about Other Heroes</span></span>
+<span id="cb65-12"><a href="#cb65-12" aria-hidden="true" tabindex="-1"></a><span class="st">| * | 25b8db8 (Writer1/MainHeroes) W1-A: add main heroes</span></span>
+<span id="cb65-13"><a href="#cb65-13" aria-hidden="true" tabindex="-1"></a><span class="st">| |/  </span></span>
+<span id="cb65-14"><a href="#cb65-14" aria-hidden="true" tabindex="-1"></a><span class="st">| * 4b34c23 B'</span><span class="ex">:</span> set the context story for my team of writers</span>
+<span id="cb65-15"><a href="#cb65-15" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">/</span>  </span>
+<span id="cb65-16"><a href="#cb65-16" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> d033ca6 A: first commit <span class="at">-</span> empty file</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+<section id="bonus-how-do-cherry-pick-merge-conflicts-work" class="level3">
+<h3 class="anchored" data-anchor-id="bonus-how-do-cherry-pick-merge-conflicts-work">4.6 Bonus: How do <code>cherry-pick</code>, <code>merge conflicts</code> work</h3>
+<p><img src="./images_2/4_6.png" class="img-fluid"> <img src="./images_2/4_6_2.png" class="img-fluid"></p>
+<ul>
+<li>Now, Writer4 starts to expand the story beyond EndGame.</li>
+</ul>
+<div class="sourceCode" id="cb66"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git checkout dev/LeadScriptWriter/Context</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git switch <span class="at">-c</span> Writer4/PostEndGame</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi new_heroes.md</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="co"># write about Legend of the 10 Rings</span></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat new_heroes.md</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Post EndGame</span></span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Shang-Chi and the Legend of the Ten Rings<span class="pp">**</span>: Shang-Chi confronts his past and unlocks his true potential while battling the mysterious Ten Rings organization.</span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> git add new_heroes.md <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"W4-A: 10 Rings Hero"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Lead tells Writer4 to cherry-pick a commit about <code>PostEndGame</code> by Writer3</li>
+</ul>
+<div class="sourceCode" id="cb67"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="ex">f2135dc</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> Writer4/PostEndGame<span class="kw">)</span> <span class="ex">W4-A:</span> 10 Rings Hero</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="ex">460daed</span> <span class="er">(</span><span class="ex">dev/LeadScriptWriter/Context</span><span class="kw">)</span> <span class="ex">MC:</span> Merge branch <span class="st">'Writer3/EndGame'</span> into dev/LeadScriptWriter/Context</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="ex">27c1750</span> <span class="er">(</span><span class="ex">Writer3/EndGame</span><span class="kw">)</span> <span class="ex">W3-B</span><span class="st">': Revert "W3-B: PostEndGame"</span></span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a><span class="st">7cae9bf W3-C: New Captain America</span></span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a><span class="st">6fdd729 W3-B: PostEndGame</span></span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a><span class="st">858eaed W3-A: defeat Thanos</span></span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a><span class="st">9515509 (Writer2/OtherHeroes) W2-A: add details about Other Heroes</span></span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a><span class="st">25b8db8 (Writer1/MainHeroes) W1-A: add main heroes</span></span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a><span class="st">4b34c23 B'</span><span class="ex">:</span> set the context story for my team of writers</span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a><span class="ex">d033ca6</span> A: first commit <span class="at">-</span> empty file</span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 6fdd729 W3-B: PostEndGame</span></span>
+<span id="cb67-14"><a href="#cb67-14" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git cherry-pick 6fdd729</span>
+<span id="cb67-15"><a href="#cb67-15" aria-hidden="true" tabindex="-1"></a><span class="ex">Auto-merging</span> new_heroes.md</span>
+<span id="cb67-16"><a href="#cb67-16" aria-hidden="true" tabindex="-1"></a><span class="ex">CONFLICT</span> <span class="er">(</span><span class="ex">add/add</span><span class="kw">)</span><span class="bu">:</span> Merge conflict in new_heroes.md</span>
+<span id="cb67-17"><a href="#cb67-17" aria-hidden="true" tabindex="-1"></a><span class="ex">error:</span> could not apply 6fdd729... W3-B: PostEndGame</span>
+<span id="cb67-18"><a href="#cb67-18" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> After resolving the conflicts, mark them with</span>
+<span id="cb67-19"><a href="#cb67-19" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> <span class="st">"git add/rm &lt;pathspec&gt;"</span>, then run</span>
+<span id="cb67-20"><a href="#cb67-20" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> <span class="st">"git cherry-pick --continue"</span>.</span>
+<span id="cb67-21"><a href="#cb67-21" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> You can instead skip this commit with <span class="st">"git cherry-pick --skip"</span>.</span>
+<span id="cb67-22"><a href="#cb67-22" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> To abort and get back to the state before <span class="st">"git cherry-pick"</span>,</span>
+<span id="cb67-23"><a href="#cb67-23" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> run <span class="st">"git cherry-pick --abort"</span>.</span>
+<span id="cb67-24"><a href="#cb67-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-25"><a href="#cb67-25" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat new_heroes.md</span>
+<span id="cb67-26"><a href="#cb67-26" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD</span>
+<span id="cb67-27"><a href="#cb67-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Post EndGame</span></span>
+<span id="cb67-28"><a href="#cb67-28" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Shang-Chi and the Legend of the Ten Rings<span class="pp">**</span>: Shang-Chi confronts his past and unlocks his true potential while battling the mysterious Ten Rings organization.</span>
+<span id="cb67-29"><a href="#cb67-29" aria-hidden="true" tabindex="-1"></a><span class="ex">=======</span></span>
+<span id="cb67-30"><a href="#cb67-30" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> Falcon becomes Captain America</span>
+<span id="cb67-31"><a href="#cb67-31" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> World gets a new band of Superheroes called Thunderbolts</span>
+<span id="cb67-32"><a href="#cb67-32" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> 6fdd729 <span class="kw">(</span><span class="ex">W3-B:</span> PostEndGame<span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>The changes between <code>&lt;&lt;&lt;&lt;</code> and <code>=====</code> are from the initial source <code>Writer4/PostEndGame</code></li>
+<li>The changes from <code>======</code> and <code>&gt;&gt;&gt;&gt;&gt;</code> are from the cherry-picked commit <code>6fdd729 (W3-B: PostEndGame)</code></li>
+<li>Let us resolve it manually</li>
+</ul>
+<div class="sourceCode" id="cb68"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> vi new_heroes.md</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> cat new_heroes.md</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Post EndGame</span></span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> <span class="pp">**</span>Shang-Chi and the Legend of the Ten Rings<span class="pp">**</span>: Shang-Chi confronts his past and unlocks his true potential while battling the mysterious Ten Rings organization.</span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> Falcon becomes Captain America and fights Red Hulk</span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> World gets a new band of Superheroes called Thunderbolts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Now, let us continue the steps mentioned in <code>git cherry-pick &lt;commit&gt;</code></li>
+</ul>
+<div class="sourceCode" id="cb69"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git add new_heroes.md</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git cherry-pick <span class="at">--continue</span></span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="ex">[Writer4/PostEndGame</span> e29bae4] W4-B: Merge conflicts and cherry-picked from W3-B: PostEndGame</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">Date:</span> Thu Feb 13 22:50:16 2025 +0530</span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 2 insertions<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Final status</li>
+</ul>
+<div class="sourceCode" id="cb70"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="ex">e29bae4</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> Writer4/PostEndGame<span class="kw">)</span> <span class="ex">W4-B:</span> Merge conflicts and cherry-picked from W3-B: PostEndGame</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="ex">f2135dc</span> W4-A: 10 Rings Hero</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a><span class="ex">1b4235f</span> <span class="er">(</span><span class="ex">tag:</span> EndGameCommit, main<span class="kw">)</span> <span class="ex">MC2:</span> Merge branch <span class="st">'dev/LeadScriptWriter/Context'</span></span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a><span class="ex">460daed</span> <span class="er">(</span><span class="ex">dev/LeadScriptWriter/Context</span><span class="kw">)</span> <span class="ex">MC:</span> Merge branch <span class="st">'Writer3/EndGame'</span> into dev/LeadScriptWriter/Context</span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a><span class="ex">27c1750</span> <span class="er">(</span><span class="ex">Writer3/EndGame</span><span class="kw">)</span> <span class="ex">W3-B</span><span class="st">': Revert "W3-B: PostEndGame"</span></span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a><span class="st">7cae9bf W3-C: New Captain America</span></span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a><span class="st">6fdd729 W3-B: PostEndGame</span></span>
+<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a><span class="st">858eaed W3-A: defeat Thanos</span></span>
+<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a><span class="st">9515509 (Writer2/OtherHeroes) W2-A: add details about Other Heroes</span></span>
+<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a><span class="st">25b8db8 (Writer1/MainHeroes) W1-A: add main heroes</span></span>
+<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a><span class="st">4b34c23 B'</span><span class="ex">:</span> set the context story for my team of writers</span>
+<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a><span class="ex">d033ca6</span> A: first commit <span class="at">-</span> empty file</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>You could keep expanding the story and your learnings of the git commands, this way :D</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="remote-git-learnings" class="level2">
+<h2 class="anchored" data-anchor-id="remote-git-learnings">5. Remote Git Learnings</h2>
+<section id="remote-repositories" class="level3">
+<h3 class="anchored" data-anchor-id="remote-repositories">5.1 <code>Remote</code> Repositories</h3>
+<ul>
+<li>A&nbsp;<strong>local repository</strong>&nbsp;is the Git repository stored on your local computer (whatever we have seen so far). Typical commands- git add, git commit, git log</li>
+<li>A&nbsp;<strong>remote repository</strong>&nbsp;is a Git repository hosted on a server (e.g., GitHub, GitLab, Bitbucket, or self-hosted). It allows multiple developers to collaborate by pushing and pulling changes. Typical commands- git push, git pull, git fetch</li>
+</ul>
+<p>In this blog, we have seen git merge and git rebase but we have not done git fetch , git pull and git push. The following explanation, about push to and pull from an online repo, can hopefully put you in good stead in real-world scenarios.</p>
+<ul>
+<li>For the sake of the demonstrating push and pull in local laptop, let us setup an alternate directory as a remote</li>
+</ul>
+<blockquote class="blockquote">
+<p>Underlying foundation: Whether it is Local or Remote, you are working with branches</p>
+</blockquote>
+<p><strong>How does a <code>pull</code> command works?</strong></p>
+<p><img src="./images/git_pull.png" class="img-fluid"></p>
+<ul>
+<li><p><code>git pull origin branch_name</code> == <code>git fetch origin branch_name &amp;&amp; git switch branch_name &amp;&amp; git merge origin/branch_name</code></p></li>
+<li><p>Also, there are different strategies for <code>git pull</code> (essentially different <code>merge</code> strategies):</p>
+<ul>
+<li><code>git pull --ff</code> (fast forward)</li>
+<li><code>git pull --no-ff</code> and</li>
+<li><code>git pull --rebase</code>.</li>
+</ul></li>
+<li><p>All of the above different merge strategies had been dealt with in the previous section.</p></li>
+<li><p>Why <code>git pull --ff-only</code> is a safe option: <a href="https://blog.sffc.xyz/post/185195398930/why-you-should-use-git-pull-ff-only">link</a></p></li>
+</ul>
+<p><strong>How does a <code>push</code> command work?</strong></p>
+<p><img src="./images/git_push.png" class="img-fluid"></p>
+<ul>
+<li>When you do <code>git push origin branch_name</code>, the following commands happen:
+<ul>
+<li><code>git reverse-fetch branch_name</code> (this is a <strong>fictional</strong> command of my own that just indicates the contents of <code>branch_name</code> are pushed to remote server)</li>
+<li>In the remote_server, you would switch to the origin/branch_name <code>git switch origin/branch_name</code></li>
+<li>In the remote_server, you would merge the new changes from <code>branch_name</code> with <code>origin_branch_name</code></li>
+</ul></li>
+</ul>
+<p><img src="./images/remote_learnings.png" class="img-fluid"></p>
+<ul>
+<li>Putting above learnings to practice.</li>
+<li>Did I not say <code>Whether it is Local or Remote, you are working with branches</code>? Let me prove that in an example below</li>
+</ul>
+<p><br></p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> mkdir <span class="at">-p</span> remote_learnings</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a><span class="co"># `remote_learnings` 1s an empty directory</span></span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings</span> % ls</span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a><span class="co"># create 3 sub directories to help in learning `clone`, `push`, `fetch` and `pull` commands</span></span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings</span> % mkdir <span class="at">-p</span> local_server_1 local_server_2 remote_server</span>
+<span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-9"><a href="#cb71-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-10"><a href="#cb71-10" aria-hidden="true" tabindex="-1"></a><span class="co"># create a local git repo in `local_server_1` directory</span></span>
+<span id="cb71-11"><a href="#cb71-11" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings</span> % cd local_server_1</span>
+<span id="cb71-12"><a href="#cb71-12" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1</span> % mkdir <span class="at">-p</span> fav_books <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> fav_books</span>
+<span id="cb71-13"><a href="#cb71-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-14"><a href="#cb71-14" aria-hidden="true" tabindex="-1"></a><span class="co"># create a file `harry_potters_series.txt ` and list down the names of the books</span></span>
+<span id="cb71-15"><a href="#cb71-15" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % vi harry_potters_series.txt </span>
+<span id="cb71-16"><a href="#cb71-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-17"><a href="#cb71-17" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % cat harry_potters_series.txt</span>
+<span id="cb71-18"><a href="#cb71-18" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Philospher<span class="dt">\'</span>s Stone: The first book in the series </span>
+<span id="cb71-19"><a href="#cb71-19" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Chamber of Secrets: The second book in the series </span>
+<span id="cb71-20"><a href="#cb71-20" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Prisoner of Azkaban: The third book in the series </span>
+<span id="cb71-21"><a href="#cb71-21" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Goblet of Fire: The fourth book in the series </span>
+<span id="cb71-22"><a href="#cb71-22" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Order of the Phoenix: The fifth book in the series </span>
+<span id="cb71-23"><a href="#cb71-23" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Half-Blood Prince: The sixth book in the series </span>
+<span id="cb71-24"><a href="#cb71-24" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Deathly Hallows: The seventh and final book in the series </span>
+<span id="cb71-25"><a href="#cb71-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-26"><a href="#cb71-26" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % git add harry_potters_series.txt <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"first commit - hp series"</span></span>
+<span id="cb71-27"><a href="#cb71-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-28"><a href="#cb71-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Status so far</span></span>
+<span id="cb71-29"><a href="#cb71-29" aria-hidden="true" tabindex="-1"></a><span class="ex">%</span> tree <span class="at">-L</span> 3 /path/to/remote_learnings/</span>
+<span id="cb71-30"><a href="#cb71-30" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span></span>
+<span id="cb71-31"><a href="#cb71-31" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> local_server_1</span>
+<span id="cb71-32"><a href="#cb71-32" aria-hidden="true" tabindex="-1"></a><span class="ex">│&nbsp;&nbsp;</span> └── fav_books</span>
+<span id="cb71-33"><a href="#cb71-33" aria-hidden="true" tabindex="-1"></a><span class="ex">│&nbsp;&nbsp;</span>     └── harry_potters_series.txt</span>
+<span id="cb71-34"><a href="#cb71-34" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> local_server_2</span>
+<span id="cb71-35"><a href="#cb71-35" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> remote_server</span>
+<span id="cb71-36"><a href="#cb71-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-37"><a href="#cb71-37" aria-hidden="true" tabindex="-1"></a><span class="co"># creare a "bare" git repo in `remote_server`</span></span>
+<span id="cb71-38"><a href="#cb71-38" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % cd <span class="va">$PWD</span>/../../remote_server</span>
+<span id="cb71-39"><a href="#cb71-39" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/remote_server</span> % mkdir <span class="at">-p</span> fav_books</span>
+<span id="cb71-40"><a href="#cb71-40" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/remote_server/fav_books</span> % git init <span class="at">--bare</span></span>
+<span id="cb71-41"><a href="#cb71-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-42"><a href="#cb71-42" aria-hidden="true" tabindex="-1"></a><span class="co"># now back to `local_server_1`</span></span>
+<span id="cb71-43"><a href="#cb71-43" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/remote_server</span> % cd ../local_server_1/fav_books</span>
+<span id="cb71-44"><a href="#cb71-44" aria-hidden="true" tabindex="-1"></a><span class="co"># add `remote_server` directory as a remote</span></span>
+<span id="cb71-45"><a href="#cb71-45" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % git add remote remote_server <span class="va">$PWD</span>/../../remote_server/fav_books</span>
+<span id="cb71-46"><a href="#cb71-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-47"><a href="#cb71-47" aria-hidden="true" tabindex="-1"></a><span class="co"># check if the remote is added properly</span></span>
+<span id="cb71-48"><a href="#cb71-48" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % cat .git/config</span>
+<span id="cb71-49"><a href="#cb71-49" aria-hidden="true" tabindex="-1"></a><span class="ex">[core]</span></span>
+<span id="cb71-50"><a href="#cb71-50" aria-hidden="true" tabindex="-1"></a>    <span class="ex">repositoryformatversion</span> = 0</span>
+<span id="cb71-51"><a href="#cb71-51" aria-hidden="true" tabindex="-1"></a>    <span class="ex">filemode</span> = true</span>
+<span id="cb71-52"><a href="#cb71-52" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bare</span> = false</span>
+<span id="cb71-53"><a href="#cb71-53" aria-hidden="true" tabindex="-1"></a>    <span class="ex">logallrefupdates</span> = true</span>
+<span id="cb71-54"><a href="#cb71-54" aria-hidden="true" tabindex="-1"></a>    <span class="ex">ignorecase</span> = true</span>
+<span id="cb71-55"><a href="#cb71-55" aria-hidden="true" tabindex="-1"></a>    <span class="ex">precomposeunicode</span> = true</span>
+<span id="cb71-56"><a href="#cb71-56" aria-hidden="true" tabindex="-1"></a><span class="ex">[remote</span> <span class="st">"remote_server"</span>]</span>
+<span id="cb71-57"><a href="#cb71-57" aria-hidden="true" tabindex="-1"></a>    <span class="ex">url</span> = /path/to/remote_learnings/local_server_1/fav_books/../../remote_server/fav_books</span>
+<span id="cb71-58"><a href="#cb71-58" aria-hidden="true" tabindex="-1"></a>    <span class="ex">fetch</span> = +refs/heads/<span class="pp">*</span>:refs/remotes/remote_server/<span class="pp">*</span></span>
+<span id="cb71-59"><a href="#cb71-59" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb71-60"><a href="#cb71-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-61"><a href="#cb71-61" aria-hidden="true" tabindex="-1"></a><span class="co"># now you can "push" from `local_server_1` to `remote_server`</span></span>
+<span id="cb71-62"><a href="#cb71-62" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % git push remote_server main </span>
+<span id="cb71-63"><a href="#cb71-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-64"><a href="#cb71-64" aria-hidden="true" tabindex="-1"></a><span class="ex">Enumerating</span> objects: 3, done.</span>
+<span id="cb71-65"><a href="#cb71-65" aria-hidden="true" tabindex="-1"></a><span class="ex">Counting</span> objects: 100% <span class="er">(</span><span class="ex">3/3</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb71-66"><a href="#cb71-66" aria-hidden="true" tabindex="-1"></a><span class="ex">Delta</span> compression using up to 8 threads</span>
+<span id="cb71-67"><a href="#cb71-67" aria-hidden="true" tabindex="-1"></a><span class="ex">Compressing</span> objects: 100% <span class="er">(</span><span class="ex">3/3</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb71-68"><a href="#cb71-68" aria-hidden="true" tabindex="-1"></a><span class="ex">Writing</span> objects: 100% <span class="er">(</span><span class="ex">3/3</span><span class="kw">)</span><span class="ex">,</span> 424 bytes <span class="kw">|</span> <span class="ex">424.00</span> KiB/s, done.</span>
+<span id="cb71-69"><a href="#cb71-69" aria-hidden="true" tabindex="-1"></a><span class="ex">Total</span> 3 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span><span class="ex">,</span> reused 0 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span><span class="ex">,</span> pack-reused 0</span>
+<span id="cb71-70"><a href="#cb71-70" aria-hidden="true" tabindex="-1"></a><span class="ex">To</span> /path/to/remote_learnings/local_server_1/fav_books/../../remote_server/fav_books</span>
+<span id="cb71-71"><a href="#cb71-71" aria-hidden="true" tabindex="-1"></a> <span class="ex">*</span> [new branch]      main <span class="at">-</span><span class="op">&gt;</span> main</span>
+<span id="cb71-72"><a href="#cb71-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-73"><a href="#cb71-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-74"><a href="#cb71-74" aria-hidden="true" tabindex="-1"></a><span class="co"># OPTIONAL STEPS</span></span>
+<span id="cb71-75"><a href="#cb71-75" aria-hidden="true" tabindex="-1"></a><span class="co"># you could go to `remote_server` to check if the files are present</span></span>
+<span id="cb71-76"><a href="#cb71-76" aria-hidden="true" tabindex="-1"></a><span class="co"># but remember we created a `bare` remote repo</span></span>
+<span id="cb71-77"><a href="#cb71-77" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % cd <span class="va">$PWD</span>/../../remote_server/fav_books</span>
+<span id="cb71-78"><a href="#cb71-78" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/remote_server/fav_books</span> % ls </span>
+<span id="cb71-79"><a href="#cb71-79" aria-hidden="true" tabindex="-1"></a><span class="ex">HEAD</span>        config      description hooks       info        objects     refs</span>
+<span id="cb71-80"><a href="#cb71-80" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/remote_server/fav_books</span> % cd objects </span>
+<span id="cb71-81"><a href="#cb71-81" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/remote_server/fav_books/objects</span> % tree <span class="at">-L</span> 3 .                                             </span>
+<span id="cb71-82"><a href="#cb71-82" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span></span>
+<span id="cb71-83"><a href="#cb71-83" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> 7e</span>
+<span id="cb71-84"><a href="#cb71-84" aria-hidden="true" tabindex="-1"></a><span class="ex">│&nbsp;&nbsp;</span> └── e6ec54038f2ba0dce7966a14cf010b5a994f8f</span>
+<span id="cb71-85"><a href="#cb71-85" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> be</span>
+<span id="cb71-86"><a href="#cb71-86" aria-hidden="true" tabindex="-1"></a><span class="ex">│&nbsp;&nbsp;</span> └── dbfe43f6aef154a2024eb05a91277b1455f727</span>
+<span id="cb71-87"><a href="#cb71-87" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> e0</span>
+<span id="cb71-88"><a href="#cb71-88" aria-hidden="true" tabindex="-1"></a><span class="ex">│&nbsp;&nbsp;</span> └── 30127f29099ccabe62eea5d929efc655149dff</span>
+<span id="cb71-89"><a href="#cb71-89" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> info</span>
+<span id="cb71-90"><a href="#cb71-90" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> pack</span>
+<span id="cb71-91"><a href="#cb71-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-92"><a href="#cb71-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-93"><a href="#cb71-93" aria-hidden="true" tabindex="-1"></a><span class="co"># note how I am opening files using `git cat-file -p`</span></span>
+<span id="cb71-94"><a href="#cb71-94" aria-hidden="true" tabindex="-1"></a><span class="co"># and now `7e` and `e6ec54038f2ba0dce7966a14cf010b5a994f8f` are clubbed together</span></span>
+<span id="cb71-95"><a href="#cb71-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-96"><a href="#cb71-96" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/remote_server/fav_books/objects</span> %  git cat-file <span class="at">-p</span> 7ee6ec54038f2ba0dce7966a14cf010b5a994f8f</span>
+<span id="cb71-97"><a href="#cb71-97" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Philospher<span class="dt">\'</span>s Stone: The first book in the series </span>
+<span id="cb71-98"><a href="#cb71-98" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Chamber of Secrets: The second book in the series </span>
+<span id="cb71-99"><a href="#cb71-99" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Prisoner of Azkaban: The third book in the series </span>
+<span id="cb71-100"><a href="#cb71-100" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Goblet of Fire: The fourth book in the series </span>
+<span id="cb71-101"><a href="#cb71-101" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Order of the Phoenix: The fifth book in the series </span>
+<span id="cb71-102"><a href="#cb71-102" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Half-Blood Prince: The sixth book in the series </span>
+<span id="cb71-103"><a href="#cb71-103" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Deathly Hallows: The seventh and final book in the series </span>
+<span id="cb71-104"><a href="#cb71-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-105"><a href="#cb71-105" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/remote_server/objects</span> % cd ../local_server_1/fav_books</span>
+<span id="cb71-106"><a href="#cb71-106" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="re">END</span><span class="co"> OF OPTIONAL STEPS</span></span>
+<span id="cb71-107"><a href="#cb71-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-108"><a href="#cb71-108" aria-hidden="true" tabindex="-1"></a><span class="co"># Current status</span></span>
+<span id="cb71-109"><a href="#cb71-109" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % git log <span class="at">--oneline</span> </span>
+<span id="cb71-110"><a href="#cb71-110" aria-hidden="true" tabindex="-1"></a><span class="ex">bedbfe4</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main, remote_server/main<span class="kw">)</span> <span class="ex">first</span> commit <span class="at">-</span> hp series</span>
+<span id="cb71-111"><a href="#cb71-111" aria-hidden="true" tabindex="-1"></a><span class="co"># What if I made a mistake? </span></span>
+<span id="cb71-112"><a href="#cb71-112" aria-hidden="true" tabindex="-1"></a><span class="co"># Shouldn't be `Soceror's Stone` instead of `Philospher's Stone`?</span></span>
+<span id="cb71-113"><a href="#cb71-113" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % vi harry_potters_series.txt </span>
+<span id="cb71-114"><a href="#cb71-114" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % head <span class="at">-n</span> 1 harry_potters_series.txt</span>
+<span id="cb71-115"><a href="#cb71-115" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Sorcerer<span class="dt">\'</span>s Stone: The first book in the series </span>
+<span id="cb71-116"><a href="#cb71-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-117"><a href="#cb71-117" aria-hidden="true" tabindex="-1"></a><span class="co"># reviewing the changing before committing</span></span>
+<span id="cb71-118"><a href="#cb71-118" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % git diff</span>
+<span id="cb71-119"><a href="#cb71-119" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span> <span class="at">--git</span> a/harry_potters_series.txt b/harry_potters_series.txt</span>
+<span id="cb71-120"><a href="#cb71-120" aria-hidden="true" tabindex="-1"></a><span class="ex">index</span> 7ee6ec5..434f014 100644</span>
+<span id="cb71-121"><a href="#cb71-121" aria-hidden="true" tabindex="-1"></a><span class="ex">---</span> a/harry_potters_series.txt</span>
+<span id="cb71-122"><a href="#cb71-122" aria-hidden="true" tabindex="-1"></a><span class="ex">+++</span> b/harry_potters_series.txt</span>
+<span id="cb71-123"><a href="#cb71-123" aria-hidden="true" tabindex="-1"></a><span class="ex">@@</span> <span class="at">-1,4</span> +1,4 @@</span>
+<span id="cb71-124"><a href="#cb71-124" aria-hidden="true" tabindex="-1"></a><span class="ex">-Harry</span> Potter and the Philospher<span class="st">'s Stone: The first book in the series </span></span>
+<span id="cb71-125"><a href="#cb71-125" aria-hidden="true" tabindex="-1"></a><span class="st">+Harry Potter and the Sorcerer'</span>s Stone: The first book in the series </span>
+<span id="cb71-126"><a href="#cb71-126" aria-hidden="true" tabindex="-1"></a> <span class="ex">Harry</span> Potter and the Chamber of Secrets: The second book in the series </span>
+<span id="cb71-127"><a href="#cb71-127" aria-hidden="true" tabindex="-1"></a> <span class="ex">Harry</span> Potter and the Prisoner of Azkaban: The third book in the series </span>
+<span id="cb71-128"><a href="#cb71-128" aria-hidden="true" tabindex="-1"></a> <span class="ex">Harry</span> Potter and the Goblet of Fire: The fourth book in the series </span>
+<span id="cb71-129"><a href="#cb71-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-130"><a href="#cb71-130" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % git commit <span class="at">--amend</span></span>
+<span id="cb71-131"><a href="#cb71-131" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % git log <span class="at">--oneline</span> <span class="at">--all</span></span>
+<span id="cb71-132"><a href="#cb71-132" aria-hidden="true" tabindex="-1"></a><span class="ex">cb41287</span> <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main<span class="kw">)</span> <span class="ex">first</span> commit <span class="at">-</span> hp series</span>
+<span id="cb71-133"><a href="#cb71-133" aria-hidden="true" tabindex="-1"></a><span class="ex">bedbfe4</span> <span class="er">(</span><span class="ex">remote_server/main</span><span class="kw">)</span> <span class="ex">first</span> commit <span class="at">-</span> hp series</span>
+<span id="cb71-134"><a href="#cb71-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-135"><a href="#cb71-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-136"><a href="#cb71-136" aria-hidden="true" tabindex="-1"></a><span class="co"># your push will get rejected !</span></span>
+<span id="cb71-137"><a href="#cb71-137" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % git push remote_server main</span>
+<span id="cb71-138"><a href="#cb71-138" aria-hidden="true" tabindex="-1"></a><span class="ex">To</span> /path/to/remote_learnings/local_server_1/fav_books/../../remote_server/fav_books</span>
+<span id="cb71-139"><a href="#cb71-139" aria-hidden="true" tabindex="-1"></a> <span class="ot">! </span><span class="ex">[rejected]</span>        main <span class="at">-</span><span class="op">&gt;</span> main <span class="er">(</span><span class="ex">non-fast-forward</span><span class="kw">)</span></span>
+<span id="cb71-140"><a href="#cb71-140" aria-hidden="true" tabindex="-1"></a><span class="ex">error:</span> failed to push some refs to <span class="st">'/path/to/remote_learnings/local_server_1/fav_books/../../remote_server/fav_books'</span></span>
+<span id="cb71-141"><a href="#cb71-141" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> Updates were rejected because the tip of your current branch is behind</span>
+<span id="cb71-142"><a href="#cb71-142" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> its remote counterpart. Integrate the remote changes <span class="er">(</span><span class="ex">e.g.</span></span>
+<span id="cb71-143"><a href="#cb71-143" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> <span class="st">'git pull ...'</span><span class="kw">)</span> <span class="ex">before</span> pushing again.</span>
+<span id="cb71-144"><a href="#cb71-144" aria-hidden="true" tabindex="-1"></a><span class="ex">hint:</span> See the <span class="st">'Note about fast-forwards'</span> in <span class="st">'git push --help'</span> for details.</span>
+<span id="cb71-145"><a href="#cb71-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-146"><a href="#cb71-146" aria-hidden="true" tabindex="-1"></a><span class="co"># but you could use `git push --force-with-lease` (a safe alternative)</span></span>
+<span id="cb71-147"><a href="#cb71-147" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % git push remote_server main <span class="at">--force-with-lease</span></span>
+<span id="cb71-148"><a href="#cb71-148" aria-hidden="true" tabindex="-1"></a><span class="ex">Enumerating</span> objects: 3, done.</span>
+<span id="cb71-149"><a href="#cb71-149" aria-hidden="true" tabindex="-1"></a><span class="ex">Counting</span> objects: 100% <span class="er">(</span><span class="ex">3/3</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb71-150"><a href="#cb71-150" aria-hidden="true" tabindex="-1"></a><span class="ex">Delta</span> compression using up to 8 threads</span>
+<span id="cb71-151"><a href="#cb71-151" aria-hidden="true" tabindex="-1"></a><span class="ex">Compressing</span> objects: 100% <span class="er">(</span><span class="ex">3/3</span><span class="kw">)</span><span class="ex">,</span> done.</span>
+<span id="cb71-152"><a href="#cb71-152" aria-hidden="true" tabindex="-1"></a><span class="ex">Writing</span> objects: 100% <span class="er">(</span><span class="ex">3/3</span><span class="kw">)</span><span class="ex">,</span> 426 bytes <span class="kw">|</span> <span class="ex">426.00</span> KiB/s, done.</span>
+<span id="cb71-153"><a href="#cb71-153" aria-hidden="true" tabindex="-1"></a><span class="ex">Total</span> 3 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span><span class="ex">,</span> reused 0 <span class="er">(</span><span class="ex">delta</span> 0<span class="kw">)</span><span class="ex">,</span> pack-reused 0</span>
+<span id="cb71-154"><a href="#cb71-154" aria-hidden="true" tabindex="-1"></a><span class="ex">To</span> /path/to/remote_learnings/local_server_1/fav_books/../../remote_server/fav_books</span>
+<span id="cb71-155"><a href="#cb71-155" aria-hidden="true" tabindex="-1"></a> <span class="ex">+</span> bedbfe4...cb41287 main <span class="at">-</span><span class="op">&gt;</span> main <span class="er">(</span><span class="ex">forced</span> update<span class="kw">)</span></span>
+<span id="cb71-156"><a href="#cb71-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-157"><a href="#cb71-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-158"><a href="#cb71-158" aria-hidden="true" tabindex="-1"></a><span class="co"># now let us go to `local_server_2` and clone the repo</span></span>
+<span id="cb71-159"><a href="#cb71-159" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_1/fav_books</span> % cd <span class="va">$PWD</span>/../../local_server_2</span>
+<span id="cb71-160"><a href="#cb71-160" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_2</span> % git clone <span class="va">$PWD</span>/../remote_server/fav_books</span>
+<span id="cb71-161"><a href="#cb71-161" aria-hidden="true" tabindex="-1"></a><span class="ex">Cloning</span> into <span class="st">'fav_books'</span>...</span>
+<span id="cb71-162"><a href="#cb71-162" aria-hidden="true" tabindex="-1"></a><span class="ex">done.</span></span>
+<span id="cb71-163"><a href="#cb71-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-164"><a href="#cb71-164" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_2</span> % cd fav_books</span>
+<span id="cb71-165"><a href="#cb71-165" aria-hidden="true" tabindex="-1"></a><span class="ex">remote_learnings/local_server_2/fav_books</span> % cat harry_potters_series.txt </span>
+<span id="cb71-166"><a href="#cb71-166" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Sorcerer<span class="dt">\'</span>s Stone: The first book in the series </span>
+<span id="cb71-167"><a href="#cb71-167" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Chamber of Secrets: The second book in the series </span>
+<span id="cb71-168"><a href="#cb71-168" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Prisoner of Azkaban: The third book in the series </span>
+<span id="cb71-169"><a href="#cb71-169" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Goblet of Fire: The fourth book in the series </span>
+<span id="cb71-170"><a href="#cb71-170" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Order of the Phoenix: The fifth book in the series </span>
+<span id="cb71-171"><a href="#cb71-171" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Half-Blood Prince: The sixth book in the series </span>
+<span id="cb71-172"><a href="#cb71-172" aria-hidden="true" tabindex="-1"></a><span class="ex">Harry</span> Potter and the Deathly Hallows: The seventh and final book in the series </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Key Takeaway</strong>: &gt; If you have understood the underlying foundation of commits and branches, there is not much difference between a remote repo and a local repo. They are just different branches in different locations :).</p>
+<hr>
+</section>
+<section id="what-is-a-pullmerge-request" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-a-pullmerge-request">5.3 What is a <code>Pull/Merge Request</code>?</h3>
+<p>A&nbsp;<strong>Pull Request</strong>&nbsp;(PR) is a feature commonly associated with platforms like GitHub, GitLab, and Bitbucket, rather than being a fundamental aspect of Git itself.</p>
+<section id="features-of-pull-requests" class="level4">
+<h4 class="anchored" data-anchor-id="features-of-pull-requests">Features of Pull Requests</h4>
+<ul>
+<li><strong>Code Review</strong>: Pull requests enable team members to review code changes, provide feedback, and suggest improvements before integration.</li>
+<li><strong>Discussion</strong>: They serve as a platform for discussion about the proposed changes, allowing for comments on specific lines of code.</li>
+<li><strong>Integration with CI/CD</strong>: Many platforms integrate pull requests with Continuous Integration/Continuous Deployment (CI/CD) pipelines, automatically running tests on the proposed changes.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="how-to-contribute-to-open-source-public-repositories" class="level3">
+<h3 class="anchored" data-anchor-id="how-to-contribute-to-open-source-public-repositories">5.3. How to Contribute to Open Source Public Repositories?</h3>
+<blockquote class="blockquote">
+<p><code>fork -&gt; clone, edit &amp; push -&gt; pull request</code></p>
+</blockquote>
+<section id="fork-the-original-public-repo-opr" class="level4">
+<h4 class="anchored" data-anchor-id="fork-the-original-public-repo-opr">Fork the Original Public Repo (OPR)</h4>
+<p><img src="./images/v2_fopr_1.png" class="img-fluid"></p>
+</section>
+<section id="push-changes-to-f-oprs-remote" class="level4">
+<h4 class="anchored" data-anchor-id="push-changes-to-f-oprs-remote">Push changes to F-OPR’s remote</h4>
+<p><img src="./images/v2_fopr_2.png" class="img-fluid"></p>
+</section>
+<section id="raise-a-pull-request" class="level4">
+<h4 class="anchored" data-anchor-id="raise-a-pull-request">Raise a Pull Request</h4>
+<p><img src="./images/v2_fopr_3.png" class="img-fluid"></p>
+<p>Example: <br> - <strong>Original Public Repo</strong> (OPR): https://github.com/explosion/spaCy <br> - <strong>Forked-OPR</strong> (F-OPR): https://github.com/mribbons/spaCy/tree/master <br> - <strong>Pull Request Page</strong>: https://github.com/explosion/spaCy/pull/13613 <br> - <strong>A PR Example</strong>: https://github.com/explosion/spaCy/pull/13613/commits/228045464b15de57483926228cb5d045b75998b9 - SomePerson is requesting to merge 2 commits into <code>explosion:master</code> from his own forked <code>SomePerson:master</code></p>
+<hr>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">6. Conclusion</h2>
+<p>There are many more git commands that I have not explored here (a few useful ones that come to my mind - <code>git bisect</code> , <code>git worktree</code>, <code>git stash pop</code>, <a href="https://github.com/newren/git-filter-repo/"><code>git filter-repo</code></a>).</p>
+<p>I believe you could practice all of the above missed commands on your own now, without an iota of fear, by extending the story!</p>
+<p>If you feel the above material was a breeze, you could secure the Linux Skill Cred Git certification like me (<a href="https://www.credly.com/badges/aa76e1a3-877b-4f39-ba68-f4447bc05d18">my_credly_linux_cert</a>).</p>
+<p><img src="./images/linux_skill_cred_cert.png" class="img-fluid"></p>
+<p>Feeling like you need more practice? <br>Do try this <a href="https://gitexercises.fracz.com/">source</a> to test your git knowledge further. <br> Did you completely git it? Happy Git Committing!</p>
+<hr>
+</section>
+<section id="epilogue" class="level2">
+<h2 class="anchored" data-anchor-id="epilogue">7. Epilogue</h2>
+<p><strong>Are you looking to further your knowledge beyond what I have covered?</strong> - Another feature of git that I could not dig deeper into here is <a href="https://www.atlassian.com/git/tutorials/git-hooks">pre-commit hooks</a> (<code>.git/hooks</code>). Precommit hooks can be used to keep the codes &amp; files that enter git clean and in the format we want.</p>
+<ul>
+<li>After committing your code to an online repository in GitHub, GitLab, or elsewhere, a pipeline can be triggered to build (the environment), test (your code), and finally deploy your application. That pipeline is commonly called Continuous Integration/ Continuous Delivery (CICD). You could learn that <a href="https://training.linuxfoundation.org/training/devops-and-sre-fundamentals-implementing-continuous-delivery-lfs261/">here</a></li>
+</ul>
+<hr>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("git@github\.com-learning:senthilkumarm1901\/learn_by_blogging\.git");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

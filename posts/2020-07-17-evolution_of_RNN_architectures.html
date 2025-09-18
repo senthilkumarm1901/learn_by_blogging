@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2020-07-17">
+<meta name="description" content="Highlighting the non-mathematical essentials in the evolution of RNN architectures in Transfer Learning (before Transformer-based models came to the fore)">
+
+<title>Evolution of RNN Architectures for Transfer Learning – Learn by Blogging</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Evolution of RNN Architectures for Transfer Learning</h1>
+                  <div>
+        <div class="description">
+          Highlighting the non-mathematical essentials in the evolution of RNN architectures in Transfer Learning (before Transformer-based models came to the fore)
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">NLP</div>
+                <div class="quarto-category">DL</div>
+                <div class="quarto-category">ML</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 17, 2020</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#agenda" id="toc-agenda" class="nav-link active" data-scroll-target="#agenda">Agenda</a></li>
+  <li><a href="#why-language-modeling" id="toc-why-language-modeling" class="nav-link" data-scroll-target="#why-language-modeling">Why Language Modeling?</a></li>
+  <li><a href="#introduction-to-language-modeling" id="toc-introduction-to-language-modeling" class="nav-link" data-scroll-target="#introduction-to-language-modeling">Introduction to Language Modeling</a>
+  <ul class="collapse">
+  <li><a href="#applications-of-language-model" id="toc-applications-of-language-model" class="nav-link" data-scroll-target="#applications-of-language-model">Applications of Language Model</a></li>
+  <li><a href="#evaluation-metrics-for-lm" id="toc-evaluation-metrics-for-lm" class="nav-link" data-scroll-target="#evaluation-metrics-for-lm">Evaluation Metrics for LM</a></li>
+  </ul></li>
+  <li><a href="#how-transfer-learning-evolved" id="toc-how-transfer-learning-evolved" class="nav-link" data-scroll-target="#how-transfer-learning-evolved">How Transfer Learning Evolved</a></li>
+  <li><a href="#evolution-of-rnn-units---rnn-lstm-gru-awd-lstm" id="toc-evolution-of-rnn-units---rnn-lstm-gru-awd-lstm" class="nav-link" data-scroll-target="#evolution-of-rnn-units---rnn-lstm-gru-awd-lstm">Evolution of RNN units - RNN, LSTM, GRU, AWD-LSTM</a>
+  <ul class="collapse">
+  <li><a href="#cometh-the-rnns" id="toc-cometh-the-rnns" class="nav-link" data-scroll-target="#cometh-the-rnns">Cometh the RNNs:</a></li>
+  <li><a href="#long-short-term-memory-lstm" id="toc-long-short-term-memory-lstm" class="nav-link" data-scroll-target="#long-short-term-memory-lstm">Long Short Term Memory (LSTM):</a></li>
+  <li><a href="#gated-recurrent-unit-gru" id="toc-gated-recurrent-unit-gru" class="nav-link" data-scroll-target="#gated-recurrent-unit-gru">Gated Recurrent Unit (GRU)</a></li>
+  <li><a href="#comparison-of-performance-between-gru-and-lstm" id="toc-comparison-of-performance-between-gru-and-lstm" class="nav-link" data-scroll-target="#comparison-of-performance-between-gru-and-lstm">Comparison of performance between GRU and LSTM:</a></li>
+  </ul></li>
+  <li><a href="#the-rnn-based-transfer-learning-architectures---ulmfit-elmo" id="toc-the-rnn-based-transfer-learning-architectures---ulmfit-elmo" class="nav-link" data-scroll-target="#the-rnn-based-transfer-learning-architectures---ulmfit-elmo">The RNN-based Transfer Learning Architectures - ULMFiT &amp; ELMo</a>
+  <ul class="collapse">
+  <li><a href="#some-history-and-comparison-with-cv" id="toc-some-history-and-comparison-with-cv" class="nav-link" data-scroll-target="#some-history-and-comparison-with-cv">Some history and comparison with CV</a></li>
+  <li><a href="#ulmfit" id="toc-ulmfit" class="nav-link" data-scroll-target="#ulmfit">ULMFit</a></li>
+  <li><a href="#what-does-ulmfit-propose" id="toc-what-does-ulmfit-propose" class="nav-link" data-scroll-target="#what-does-ulmfit-propose">What does ULMFiT propose?</a></li>
+  <li><a href="#the-fine-tuning-differences-in-computer-vision-vs-nlp" id="toc-the-fine-tuning-differences-in-computer-vision-vs-nlp" class="nav-link" data-scroll-target="#the-fine-tuning-differences-in-computer-vision-vs-nlp">The Fine-tuning Differences in Computer Vision vs NLP</a></li>
+  <li><a href="#about-awd-lstm" id="toc-about-awd-lstm" class="nav-link" data-scroll-target="#about-awd-lstm">About AWD LSTM</a></li>
+  <li><a href="#elmo" id="toc-elmo" class="nav-link" data-scroll-target="#elmo">ELMo</a></li>
+  <li><a href="#about-elmo-word-vectors" id="toc-about-elmo-word-vectors" class="nav-link" data-scroll-target="#about-elmo-word-vectors">About ELMo Word Vectors:</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion:</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="agenda" class="level2">
+<h2 class="anchored" data-anchor-id="agenda">Agenda</h2>
+<ul>
+<li>Why Language Modeling?</li>
+<li>A short introduction to Language Modeling</li>
+<li>How Transfer Learning Evolved</li>
+<li>Evolution of RNN units - RNN, LSTM, GRU, AWD-LSTM</li>
+<li>The RNN-based Transfer Learning Architectures - ULMFiT &amp; ELMo</li>
+</ul>
+</section>
+<section id="why-language-modeling" class="level2">
+<h2 class="anchored" data-anchor-id="why-language-modeling">Why Language Modeling?</h2>
+<ul>
+<li>The crux of Transfer Learning in 2 steps: <br></li>
+<li><ol type="1">
+<li>Build a Language Model* that understands the underlying features of the text</li>
+</ol></li>
+<li><ol start="2" type="1">
+<li>Fine-tune the Language Model with additional layers for downstream tasks</li>
+</ol></li>
+</ul>
+<blockquote class="blockquote">
+<p>Why Language Model for pre-training?<br> <em>Language modeling can be seen as the ideal source task as it captures many facets of language relevant for downstream tasks, such as long-term dependencies, hierarchical relations and sentiment</em> (also being self-supervised) <br></p>
+<p>Ruder et al in the ULMFiT paper _______________________________________________________________________________________________________________</p>
+</blockquote>
+</section>
+<section id="introduction-to-language-modeling" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-language-modeling">Introduction to Language Modeling</h2>
+<p>Language Model: <strong>A model of the probability of a sequence of words</strong></p>
+<ul>
+<li>A language model can assign probability to each possible next word. And also, help in assigning a probability to an entire sentence.</li>
+</ul>
+<section id="applications-of-language-model" class="level3">
+<h3 class="anchored" data-anchor-id="applications-of-language-model">Applications of Language Model</h3>
+<ul>
+<li>Speech Recognition: E.g.: P(‘recognize speech’) &gt;&gt; P(‘wreck a nice beach’)</li>
+<li>Spelling Correction: E.g.: P(‘I have a gub’) &lt;&lt; P(‘I have a gun’)</li>
+<li>Machine Translation: E.g.: P(‘strong winds’) &gt; P(‘large winds’)</li>
+<li>Optical Character Recognition/ Handwriting Recognition</li>
+<li>Autoreply Suggestions</li>
+<li>Text Classification (discussed with python implementation of a simple N-gram model)</li>
+<li>Text Generation (discussed this with Char-level and Word-level language models) _______________________________________________________________________________________________________________</li>
+</ul>
+</section>
+<section id="evaluation-metrics-for-lm" class="level3">
+<h3 class="anchored" data-anchor-id="evaluation-metrics-for-lm">Evaluation Metrics for LM</h3>
+<section id="perplexity" class="level4">
+<h4 class="anchored" data-anchor-id="perplexity">(1) Perplexity</h4>
+<ul>
+<li>A low perplexity indicates a better Language Model</li>
+</ul>
+</section>
+<section id="log-probability" class="level4">
+<h4 class="anchored" data-anchor-id="log-probability">(2) Log Probability</h4>
+<ul>
+<li>Higher the log probability value of a LM in predicting a sample, higher is the confidence for that sample to occur in the distribution</li>
+</ul>
+<p>my detailed notes on these 2 evaluation metrics of Language model is <a href="https://senthilkumarm1901.quarto.pub/learn-by-blogging/posts/2020-03-17-introduction_to_statistical_language_modeling.html#evaluation">here</a></p>
+</section>
+</section>
+</section>
+<section id="how-transfer-learning-evolved" class="level2">
+<h2 class="anchored" data-anchor-id="how-transfer-learning-evolved">How Transfer Learning Evolved</h2>
+<ul>
+<li>Stage1: NLP started with rule-based and statistical methodologies</li>
+<li>Stage2: ML algos such as Naive Bayes, SVM, Trees coupled with bag-of-words word representations</li>
+<li>Stage3: Recurrent Neural Networks such as LSTM</li>
+<li>Stage4: RNN based Seq2Seq Transfer Learning Architectures (ULMFit, ELMo, etc.,)</li>
+<li>Stage 5: Transformers –&gt; ‘ImageNet’ moment in NLP</li>
+</ul>
+<p><img src="./images/RNN/TL_and_LM_flow_chart.png" class="img-fluid" alt="Transformer and Language Models"> Source: Evolution of TL in NLP https://arxiv.org/pdf/1910.07370v1.pdf</p>
+</section>
+<section id="evolution-of-rnn-units---rnn-lstm-gru-awd-lstm" class="level2">
+<h2 class="anchored" data-anchor-id="evolution-of-rnn-units---rnn-lstm-gru-awd-lstm">Evolution of RNN units - RNN, LSTM, GRU, AWD-LSTM</h2>
+<p>Why RNNs came into existence? - Models such as the <strong>Multi-layer Perceptron Network, vector machines and logistic regression</strong> did not perform well on sequence modelling tasks (e.g.: text_sequence2sentiment_classification) - Why? <strong>Lack of memory element</strong> ; <strong>No information retention</strong></p>
+<section id="cometh-the-rnns" class="level3">
+<h3 class="anchored" data-anchor-id="cometh-the-rnns">Cometh the RNNs:</h3>
+<ul>
+<li>RNNs attempted to redress this shortcoming by introducing loops within the network, thus allowing the retention of information.</li>
+</ul>
+<p><strong>An unrolled RNN</strong> <img src="./images/RNN/an_unrolled_RNN.png" class="img-fluid" alt="An un-rolled RNN Cell"></p>
+<section id="advantage-of-a-vanilla-rnn" class="level4">
+<h4 class="anchored" data-anchor-id="advantage-of-a-vanilla-rnn">Advantage of a vanilla RNN:</h4>
+<ul>
+<li>Better than traditional ML algos in retaining information</li>
+</ul>
+</section>
+<section id="limitations-of-a-vanilla-rnn" class="level4">
+<h4 class="anchored" data-anchor-id="limitations-of-a-vanilla-rnn">Limitations of a vanilla RNN:</h4>
+<ul>
+<li>RNNs fail to model long term dependencies.</li>
+<li>the information was often <strong>“forgotten”</strong> after the unit activations were multiplied several times by small numbers</li>
+<li>Vanishing gradient and exploding gradient problems</li>
+</ul>
+</section>
+</section>
+<section id="long-short-term-memory-lstm" class="level3">
+<h3 class="anchored" data-anchor-id="long-short-term-memory-lstm">Long Short Term Memory (LSTM):</h3>
+<ul>
+<li>a special type of RNN architecture</li>
+<li>designed to keep information retained for extended number of timesteps</li>
+<li>each LSTM cell consists of 4 layers (3 sigmoid functioins or gates and 1 tanh function)</li>
+<li>The 3 sigmoid functions are called <code>forget</code>, <code>update</code> and <code>output</code> gates</li>
+</ul>
+</section>
+<section id="gated-recurrent-unit-gru" class="level3">
+<h3 class="anchored" data-anchor-id="gated-recurrent-unit-gru">Gated Recurrent Unit (GRU)</h3>
+<ul>
+<li>a curtailed version of LSTM</li>
+<li>retains the resisting vanishing gradient properties of LSTM but GRUs are internally simpler and faster than LSTMs. &gt; 1/ <code>forget</code> and <code>update</code> gates from LSTM are merged into a single <code>update</code> gate <br> &gt; 2/ The update gate decides how much of previous memory to keep around. <br> &gt; 3/ There is a <code>reset</code> gate which defines how to combine new input with previous value.</li>
+</ul>
+<p>If interested in the math behind the RNN architectures, refer <a href="https://nbviewer.org/github/senthilkumarm1901/GeneralNLP/blob/master/General%20NLP%20Snippets%20and%20Notes/notes/LanguageModels_and_TransferLearning/Part1_Evolution_of_RNN_architectures_in_NLP.ipynb">this notebook I wrote in 2019</a></p>
+</section>
+<section id="comparison-of-performance-between-gru-and-lstm" class="level3">
+<h3 class="anchored" data-anchor-id="comparison-of-performance-between-gru-and-lstm">Comparison of performance between GRU and LSTM:</h3>
+<ul>
+<li>GRUs are almost on par with LSTM but with efficient computation.</li>
+<li>However, with large data LSTMs with higher expressiveness may lead to better results</li>
+</ul>
+</section>
+</section>
+<section id="the-rnn-based-transfer-learning-architectures---ulmfit-elmo" class="level2">
+<h2 class="anchored" data-anchor-id="the-rnn-based-transfer-learning-architectures---ulmfit-elmo">The RNN-based Transfer Learning Architectures - ULMFiT &amp; ELMo</h2>
+<section id="some-history-and-comparison-with-cv" class="level3">
+<h3 class="anchored" data-anchor-id="some-history-and-comparison-with-cv">Some history and comparison with CV</h3>
+<p>Historically (before the Transformer era), - Fine-tuning a LM required millions of in-domain corpus (in other words, transfer learning was not possible) - LMs overfit to small datasets and suffered catastrophic forgetting when fine-tuned with a classifier</p>
+<p>Source: - Evolution of TL in NLP: https://arxiv.org/pdf/1910.07370v1.pdf - ULMFiT paper: https://arxiv.org/pdf/1801.06146.pdf</p>
+</section>
+<section id="ulmfit" class="level3">
+<h3 class="anchored" data-anchor-id="ulmfit">ULMFit</h3>
+<ul>
+<li>Universal Language Model Fine-tuning (ULMFiT) for Text Classification</li>
+<li>This paper introduces techniques that are essential to fine-tune an LSTM-based Language Model</li>
+<li>This paper specifically the superior performance of ULMFiT approach in 6 text classification datasets</li>
+</ul>
+</section>
+<section id="what-does-ulmfit-propose" class="level3">
+<h3 class="anchored" data-anchor-id="what-does-ulmfit-propose">What does ULMFiT propose?</h3>
+<ul>
+<li>Pretrain a LM on a large general-domain corpus and fine-tune it on the target task (here, text classification) using novel* techniques</li>
+<li>Why called <strong>Universal</strong> (the following have become synonymous with what a TL model is):</li>
+<li><ol type="1">
+<li>It works across tasks varying in document size, number, and label type</li>
+</ol></li>
+<li><ol start="2" type="1">
+<li>it uses a single architecture and training process;</li>
+</ol></li>
+<li><ol start="3" type="1">
+<li>it requires no custom feature engineering or preprocessing; and</li>
+</ol></li>
+<li><ol start="4" type="1">
+<li>it does not require additional in-domain documents or labels</li>
+</ol></li>
+<li>What are the <strong>novel</strong> techniques:</li>
+<li>discriminative fine-tuning,</li>
+<li>slanted triangular learning rates, and</li>
+<li>gradual unfreezing</li>
+</ul>
+</section>
+<section id="the-fine-tuning-differences-in-computer-vision-vs-nlp" class="level3">
+<h3 class="anchored" data-anchor-id="the-fine-tuning-differences-in-computer-vision-vs-nlp">The Fine-tuning Differences in Computer Vision vs NLP</h3>
+<ul>
+<li>Compared to CV models (which are several layers deep), <strong>NLP models are typically more shallow</strong> and thus require different fine-tuning methods</li>
+<li>Features in deep neural networks in CV have been observed to transition <strong>from general to task-specific</strong> from the <strong>first to the last layer</strong>.</li>
+<li>For this reason, most work in CV focuses on transferring the first layers of the model and fine-tuning the last or several of the last layers and leaving the remaining layers frozen</li>
+</ul>
+<blockquote class="blockquote">
+<p>ULMFiT uses AWD-LSTM cell based Language Model</p>
+</blockquote>
+</section>
+<section id="about-awd-lstm" class="level3">
+<h3 class="anchored" data-anchor-id="about-awd-lstm">About AWD LSTM</h3>
+<ul>
+<li>Average SGD Weight Dropped (AWD) LSTM</li>
+<li>It uses <code>DropConnect</code> and a variant of Average-SGD (<code>NT-ASGD</code>) along with several other well-known regularization strategies</li>
+</ul>
+<p><strong>Why <code>dropout</code> won’t work?</strong> - Dropout, an algorithm that randomly(with a probability p) ignore units’ activations during the training phase allows for the regularization of a neural network. - By diminishing the probability of neurons developing inter-dependencies, it increases the individual power of a neuron and thus reduces overfitting. - However, dropout inhibits the RNNs capability of developing long term dependencies as there is loss of information caused due to randomly ignoring units activations.</p>
+<p><strong>Hence <code>drop connect</code></strong> - the drop connect algorithm randomly drops weights instead of neuron activations. It does so by randomly(with probability 1-p) setting weights of the neural network to zero during the training phase. - Thus <strong>redressing the issue of information loss</strong> in the Recurrent Neural Network <strong>while still performing regularization.</strong></p>
+<p><img src="https://yashuseth.files.wordpress.com/2018/09/nn_do1.jpg?w=685" class="img-fluid"> Source: Yashu Seth on AWD LSTM - https://yashuseth.blog/2018/09/12/awd-lstm-explanation-understanding-language-model/</p>
+<p>If interested in understanding the architecture of ULMFit in-depth, checkout my notebook from 2019 <a href="https://github.com/senthilkumarm1901/myNLPnotes/blob/master/General%20NLP%20Snippets%20and%20Notes/notes/LanguageModels_and_TransferLearning/Part2-AWD-LSTM.ipynb">here</a></p>
+</section>
+<section id="elmo" class="level3">
+<h3 class="anchored" data-anchor-id="elmo">ELMo</h3>
+<ul>
+<li>ELMo comes up with better <code>word representations/embeddings</code> using Language Models that learn the <code>context</code> of the word in focus <img src="https://ahmedhanibrahim.files.wordpress.com/2019/07/52861-1pb5hxsxogjrnda_si4nj9q.png?w=775" class="img-fluid"> <em>Ignore the hidden vectors predicting the padding tokens and only focus on the vectors that predict on the words</em> source: https://medium.com/<span class="citation" data-cites="plusepsilon/the-bidirectional-language-model-1f3961d1fb27">@plusepsilon/the-bidirectional-language-model-1f3961d1fb27</span></li>
+</ul>
+<p>ELMo uses the Bi-directional Language Model to get a new embedding that will be concatenated with the initialized word embedding. The word “are” in the above figure will have a representation formed with the following embedding vectors</p>
+<ul>
+<li>Original embedding, GloVe, Word2Vec or FastText for example</li>
+<li>Forward pass hidden layer representation vector</li>
+<li>Backward pass hidden layer representation vector</li>
+</ul>
+</section>
+<section id="about-elmo-word-vectors" class="level3">
+<h3 class="anchored" data-anchor-id="about-elmo-word-vectors">About ELMo Word Vectors:</h3>
+<p>ELMo models both - (1) complex characteristics of word use (e.g., syntax and semantics) - (2) how these uses vary across linguistic contexts (i.e., to model polysemy) <br> <br> - ELMo <code>word vectors</code> are <strong>learned functions of the internal states of a deep bidirectional language model (biLM)</strong>, which is pretraind on a large text corpus <br> <br> - ELMo assigns each token/word <strong>a representation that is function of the entire input sentence</strong> <br> <br> - ELMo representations are <strong>deep</strong>, in the sense that they are <strong>a function of all of the internal layers of the biLM</strong> - In other words, ELMo doesn’t just use the top LSTM layer, but all the internal layers <br> <br> - <strong>higher-level LSTM states</strong> capture <strong>context-dependent aspects of word meaning</strong> - <strong>lower-level states</strong> model aspects of <strong>syntax</strong></p>
+<p>ELMo does well in 6 diverse NLP tasks</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 20%">
+<col style="width: 17%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Comments about Dataset</th>
+<th>Evaluation Parameter</th>
+<th>Previous SOTA</th>
+<th>ELMo SOTA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SQuAD</td>
+<td style="text-align: center;">Stanford Question Answering Dataset</td>
+<td style="text-align: left;">a reading comprehension dataset, consisting of questions posed by crowdworkers on a set of Wikipedia articles, where the answer to every question is a segment of text, or span, from the corresponding reading passage, or the question might be unanswerable</td>
+<td>F1 score (harmonic mean of precision and recall)</td>
+<td>84.4</td>
+<td>85.8</td>
+</tr>
+<tr class="even">
+<td>SNLI</td>
+<td style="text-align: center;">Stanford Natural Language Inference</td>
+<td style="text-align: left;">SNLI corpus (version 1.0) is a collection of 570k human-written English sentence pairs manually labeled for balanced classification with the labels entailment, contradiction, and neutral, supporting the task of natural language inference (NLI), also known as recognizing textual entailment (RTE)</td>
+<td>Accuracy</td>
+<td>88.6</td>
+<td>88.7</td>
+</tr>
+<tr class="odd">
+<td>SRL</td>
+<td style="text-align: center;">Semantic Role Labeling</td>
+<td style="text-align: left;">Semantic Role Labeling (SRL) recovers the latent predicate argument structure of a sentence, providing representations that answer basic questions about sentence meaning, including “who” did “what” to “whom,” etc</td>
+<td>F1 Score</td>
+<td>81.7</td>
+<td>84.6</td>
+</tr>
+<tr class="even">
+<td>Coref</td>
+<td style="text-align: center;">Coreference resolution</td>
+<td style="text-align: left;">Coreference resolution is the task of finding all expressions that refer to the same entity in a text.</td>
+<td>Average F1</td>
+<td>67.2</td>
+<td>70.4</td>
+</tr>
+<tr class="odd">
+<td>NER</td>
+<td style="text-align: center;">Named Entity Recognition</td>
+<td style="text-align: left;">The named entity recognition model identifies named entities (people, locations, organizations, and miscellaneous) in the input text</td>
+<td>F1</td>
+<td>91.93</td>
+<td>92.22</td>
+</tr>
+<tr class="even">
+<td>SST-5</td>
+<td style="text-align: center;">5-class Stanford Sentiment Treebank Dataset</td>
+<td style="text-align: left;">fine-grained sentiment classification task uses 5 discrete classes: Strongly positive, Weakly positive, Neutral, Weakly negative, Strongly negative</td>
+<td>Accuracy</td>
+<td>53.7</td>
+<td>54.7</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>sources for the Task Description:</strong> - https://rajpurkar.github.io/SQuAD-explorer/ - https://nlp.stanford.edu/projects/snli/ - https://demo.allennlp.org/semantic-role-labeling/MTIzODQzNg== - https://demo.allennlp.org/coreference-resolution/MTIzODQzNA== - https://demo.allennlp.org/named-entity-recognition/MTIzODQzOA== - https://towardsdatascience.com/fine-grained-sentiment-analysis-in-python-part-1-2697bb111ed4</p>
+<p><strong>Pre-trained Bidirectional LM Architecture of ELMo</strong>:</p>
+<p><img src="./images/RNN/ELMo_pretrained_bidirectionalLM_architecture.PNG" class="img-fluid"></p>
+<p><strong>Advantages of ELMo:</strong> - high-quality deep context-dependent representations are learned from biLMs - the biLM layers efficiently encode different types of syntactic and semantic information about words-in-context</p>
+</section>
+<section id="conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion">Conclusion:</h3>
+<ul>
+<li>I hope this blog gives a good understanding of the pre-transformer era history of Transfer Learning architectures in NLP</li>
+<li>I will cover more about BERT and Transformers in the upcoming articles</li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("git@github\.com-learning:senthilkumarm1901\/learn_by_blogging\.git");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

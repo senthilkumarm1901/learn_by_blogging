@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2025-05-18">
+<meta name="description" content="This blog post contains my learning notes from DeepLearning.AI’s Short Course on MCP">
+
+<title>What I Learned About MCP from DeepLearning.AI’s Short Course – Learn by Blogging</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">What I Learned About MCP from DeepLearning.AI’s Short Course</h1>
+                  <div>
+        <div class="description">
+          This blog post contains my learning notes from DeepLearning.AI’s Short Course on MCP
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">MCP</div>
+                <div class="quarto-category">Agentic AI</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 18, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">1. Introduction</a>
+  <ul class="collapse">
+  <li><a href="#flow-of-the-course" id="toc-flow-of-the-course" class="nav-link" data-scroll-target="#flow-of-the-course">Flow of the Course</a></li>
+  </ul></li>
+  <li><a href="#why-mcp" id="toc-why-mcp" class="nav-link" data-scroll-target="#why-mcp">2. Why MCP</a>
+  <ul class="collapse">
+  <li><a href="#without-mcp" id="toc-without-mcp" class="nav-link" data-scroll-target="#without-mcp"><strong>Without MCP</strong></a></li>
+  <li><a href="#with-mcp" id="toc-with-mcp" class="nav-link" data-scroll-target="#with-mcp"><strong>With MCP</strong></a></li>
+  <li><a href="#mcp-ecosystem-comprises" id="toc-mcp-ecosystem-comprises" class="nav-link" data-scroll-target="#mcp-ecosystem-comprises"><strong>MCP Ecosystem</strong> comprises:</a></li>
+  <li><a href="#other-useful-details" id="toc-other-useful-details" class="nav-link" data-scroll-target="#other-useful-details">Other useful details</a></li>
+  </ul></li>
+  <li><a href="#mcp-client-server-architecture" id="toc-mcp-client-server-architecture" class="nav-link" data-scroll-target="#mcp-client-server-architecture">3. MCP Client Server Architecture</a>
+  <ul class="collapse">
+  <li><a href="#primitives-of-mcp" id="toc-primitives-of-mcp" class="nav-link" data-scroll-target="#primitives-of-mcp">Primitives of MCP</a></li>
+  <li><a href="#mcp-communication-lifecycle" id="toc-mcp-communication-lifecycle" class="nav-link" data-scroll-target="#mcp-communication-lifecycle">MCP Communication Lifecycle</a></li>
+  <li><a href="#a-brief-note-about-a-demo-video-in-the-course" id="toc-a-brief-note-about-a-demo-video-in-the-course" class="nav-link" data-scroll-target="#a-brief-note-about-a-demo-video-in-the-course">A Brief Note about A Demo Video in the Course</a></li>
+  <li><a href="#code-examples" id="toc-code-examples" class="nav-link" data-scroll-target="#code-examples">Code Examples</a></li>
+  </ul></li>
+  <li><a href="#chatbot-example" id="toc-chatbot-example" class="nav-link" data-scroll-target="#chatbot-example">4. Chatbot Example</a></li>
+  <li><a href="#mcp-server" id="toc-mcp-server" class="nav-link" data-scroll-target="#mcp-server">5. MCP Server</a></li>
+  <li><a href="#mcp-client" id="toc-mcp-client" class="nav-link" data-scroll-target="#mcp-client">6. MCP Client</a></li>
+  <li><a href="#connecting-the-mcp-compatible-chatbot-to-reference-mcp-servers" id="toc-connecting-the-mcp-compatible-chatbot-to-reference-mcp-servers" class="nav-link" data-scroll-target="#connecting-the-mcp-compatible-chatbot-to-reference-mcp-servers">7. Connecting the MCP-compatible Chatbot to Reference MCP Servers</a></li>
+  <li><a href="#prompt-and-resource-features" id="toc-prompt-and-resource-features" class="nav-link" data-scroll-target="#prompt-and-resource-features">8. Prompt and Resource Features</a></li>
+  <li><a href="#creating-and-deploying-remote-servers" id="toc-creating-and-deploying-remote-servers" class="nav-link" data-scroll-target="#creating-and-deploying-remote-servers">9. Creating and Deploying Remote Servers</a></li>
+  <li><a href="#other-interesting-areas-in-mcp" id="toc-other-interesting-areas-in-mcp" class="nav-link" data-scroll-target="#other-interesting-areas-in-mcp">10. Other Interesting Areas in MCP</a>
+  <ul class="collapse">
+  <li><a href="#oauth-authentication-in-mcp" id="toc-oauth-authentication-in-mcp" class="nav-link" data-scroll-target="#oauth-authentication-in-mcp">10.1 OAuth Authentication in MCP</a></li>
+  <li><a href="#primitives-in-client-had-not-been-explored-in-the-above-sections" id="toc-primitives-in-client-had-not-been-explored-in-the-above-sections" class="nav-link" data-scroll-target="#primitives-in-client-had-not-been-explored-in-the-above-sections">10.2 Primitives in Client had not been explored in the above sections</a>
+  <ul class="collapse">
+  <li><a href="#root" id="toc-root" class="nav-link" data-scroll-target="#root">10.2.1. Root</a></li>
+  <li><a href="#sampling" id="toc-sampling" class="nav-link" data-scroll-target="#sampling">10.2.2 Sampling</a></li>
+  </ul></li>
+  <li><a href="#composability-client-and-server-are-interchangeable" id="toc-composability-client-and-server-are-interchangeable" class="nav-link" data-scroll-target="#composability-client-and-server-are-interchangeable">10.3 Composability: Client and Server are Interchangeable</a></li>
+  <li><a href="#mcp-registry-api" id="toc-mcp-registry-api" class="nav-link" data-scroll-target="#mcp-registry-api">10.4 MCP Registry API</a></li>
+  <li><a href="#other-evolving-topics" id="toc-other-evolving-topics" class="nav-link" data-scroll-target="#other-evolving-topics">10.5 Other Evolving Topics</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<p>I recently completed a short course from DeepLearning.ai on Model Context Protocol. <a href="https://www.deeplearning.ai/short-courses/mcp-build-rich-context-ai-apps-with-anthropic/">link to the course</a> I got to learn quite a few things in that. I have collated below my notes from the course.</p>
+<p><img src="./images/mcp_course_certification.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p><strong>Plagiarism Disclosure</strong>: <br> - The headings below match the video titles from the course. <br> - These are notes where many of the lines would have been directly taken from course material. <br> - Sources are attributed to all pics for clarity</p>
+</blockquote>
+<section id="introduction" class="level1">
+<h1>1. Introduction</h1>
+<ul>
+<li><p><a href="https://modelcontextprotocol.io/introduction">The Model Context Protocol (MCP), introduced by Anthropic</a> is a standardized <strong>protocol</strong> for supplying structured, real-time <strong>context</strong> (such as tools and data) to large language <strong>models</strong> (LLMs).</p></li>
+<li><p>MCP works on client-server architecture</p></li>
+</ul>
+<pre><code>Key Components:
+Client:
+- A piece of software or device that initiates requests to the server. 
+- Examples include web browsers, email clients, CLI and mobile applications.
+
+Server:
+- A powerful computer or software that provides services to clients. 
+- It handles requests, processes data, and delivers responses. 
+Source: Google Search
+
+How it works:
+The client sends a request to the server.
+The server processes the request and gathers the necessary information.
+The server sends a response back to the client.
+The client displays the response to the user. </code></pre>
+<p><img src="./images/mcp_used_in_application_dl.png" class="img-fluid"> Source: Author</p>
+<section id="flow-of-the-course" class="level2">
+<h2 class="anchored" data-anchor-id="flow-of-the-course">Flow of the Course</h2>
+<p><strong>Steps of learning in this course</strong>:</p>
+<ul>
+<li>Understand MCP’s Client Server Architecture</li>
+<li>Make a Chatbot application MCP compatible</li>
+<li>Build and Test your MCP Server</li>
+<li>In the MCP Server, you could have
+<ul>
+<li>Tools</li>
+<li>Prompt Templates</li>
+<li>trusted 3rd party servers</li>
+<li>any resource …</li>
+</ul></li>
+<li>Connect the MCP-compatible Chatbot to the MCP Server</li>
+</ul>
+<blockquote class="blockquote">
+<p>MCP is <strong>not just useful for AI developers</strong> to help them connect their AI/LLM to many data and tools, it is helping <strong>tool/API developers</strong> make their tool available to multiple AI applications</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="why-mcp" class="level1">
+<h1>2. Why MCP</h1>
+<section id="without-mcp" class="level2">
+<h2 class="anchored" data-anchor-id="without-mcp"><strong>Without MCP</strong></h2>
+<p><img src="./images/so_much_repetition.png" class="img-fluid"></p>
+<p>Source: DeepLearning.ai MCP Course</p>
+<ul>
+<li>MCP is similar to Rest APIs (that standardized way/protocol for Web Applications to interact with backend)</li>
+</ul>
+</section>
+<section id="with-mcp" class="level2">
+<h2 class="anchored" data-anchor-id="with-mcp"><strong>With MCP</strong></h2>
+<p><img src="./images/mcp_connecting_LLM_to_tools.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<p><img src="./images/reusable_mcp_servers.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<p><img src="./images/standardized_ai_development.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+</section>
+<section id="mcp-ecosystem-comprises" class="level2">
+<h2 class="anchored" data-anchor-id="mcp-ecosystem-comprises"><strong>MCP Ecosystem</strong> comprises:</h2>
+<ul>
+<li>AI Applications utilizing MCP</li>
+<li>MCP Server Builders</li>
+</ul>
+</section>
+<section id="other-useful-details" class="level2">
+<h2 class="anchored" data-anchor-id="other-useful-details">Other useful details</h2>
+<p><strong>Different types of MCP Applications</strong> - Web App, Desktop App and Agentic Products (including Mobile app)</p>
+<p><strong>Who can write the MCP Servers</strong>: - Anyone in the OpenSource community can.</p>
+<p><strong>What is a MCP Server</strong></p>
+<ul>
+<li>A gateway or wrapper on top of API.</li>
+<li>If you do not want to call the API and instead want to use Natural Language and let the MCP server handle the right server for you.</li>
+</ul>
+<p><strong>3 components of an MCP-compatible Application</strong> - Host - MCP Client - MCP Server</p>
+<hr>
+</section>
+</section>
+<section id="mcp-client-server-architecture" class="level1">
+<h1>3. MCP Client Server Architecture</h1>
+<p><img src="./images/mcp_client_server_arch.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<ul>
+<li><strong>Host</strong>: LLM Applications that access data and tools through MCP</li>
+<li><strong>MCP Servers</strong>: Lightweight programs that expose specific capabilities through MCP protocol</li>
+<li><strong>MCP Client</strong>: Programs that maintain 1:1 connections with Servers inside the host application</li>
+</ul>
+<p><img src="./images/how_does_mcp_client_server_arch_work.png" class="img-fluid"></p>
+<section id="primitives-of-mcp" class="level2">
+<h2 class="anchored" data-anchor-id="primitives-of-mcp">Primitives of MCP</h2>
+<p>Before we discuss the client-server architecture, let us discuss the <strong>primitives</strong> or <strong>fundamental pieces</strong> of the protocol</p>
+<ul>
+<li>Tools: Functions &amp; Tools that can be invoked by the client (like “POST” request that does some kind of modification)</li>
+<li>Resources: Read-only Data or Context exposed by server (mostly read-only) (like “GET” request)</li>
+<li>Prompt Templates: Pre-defined templates for AI interactions</li>
+</ul>
+<p><img src="./images/mcp_tool.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<p><img src="./images/mcp_resources.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<p><img src="./images/referencing_in_client_cli_or_in_prompt_inside.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<p><img src="./images/mcp_prompt.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+</section>
+<section id="mcp-communication-lifecycle" class="level2">
+<h2 class="anchored" data-anchor-id="mcp-communication-lifecycle">MCP Communication Lifecycle</h2>
+<p><img src="./images/mcp_communication_lifecycle.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<p><img src="./images/mcp_transports.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<p><img src="./images/stdio_exchange_for_local_communication.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<p><img src="./images/remote_server_exchange.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<p><img src="./images/streamable_http.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+</section>
+<section id="a-brief-note-about-a-demo-video-in-the-course" class="level2">
+<h2 class="anchored" data-anchor-id="a-brief-note-about-a-demo-video-in-the-course">A Brief Note about A Demo Video in the Course</h2>
+<blockquote class="blockquote">
+<p><em>In the course, I saw a wonderful demo of how MCP servers and tools were used in Claude Desktop</em></p>
+</blockquote>
+<ul>
+<li>Before drafting the prompt in Claud Desktop (a tool similar to ChatGPT for the unfamiliar folks), the author shows how he has various mcp tools for SQL lite processing at his disposal.</li>
+<li>The Claude desktop uses “an MCP tool” (under the mcp server) called <code>list_tables</code> and then also does a <code>read_query</code> mcp tool for the question <code>what tables do I have and how many records aren  there</code></li>
+<li>There are several tool calls being made seamlessly one after the other</li>
+<li>He is then asking for “Generate a visualization based on data in the products table”</li>
+<li>The LLM responses in following steps:
+<ul>
+<li>At first, the llm lists the tools that are at its disposal</li>
+<li>Then, runs <code>read_query</code> tool to fetch data of <code>products_table</code></li>
+<li>It then creats a “javascript” visualization via an another tool</li>
+</ul></li>
+</ul>
+</section>
+<section id="code-examples" class="level2">
+<h2 class="anchored" data-anchor-id="code-examples">Code Examples</h2>
+<p><strong>Tools</strong>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.tool</span>()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add(a,b):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="op">+</span> b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Resources</strong></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.resources</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"docs://documents"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    mime_type<span class="op">=</span><span class="st">"application/json"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> list_docs()</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># return a list</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="chatbot-example" class="level1">
+<h1>4. Chatbot Example</h1>
+<ul>
+<li>Highlighting in this section the important functions that were created to build the chatbot (without MCP)</li>
+</ul>
+<p><strong>Create Functions/Tools</strong></p>
+<ul>
+<li><code>search_papers()</code></li>
+<li><code>extract_info()</code></li>
+</ul>
+<p><strong>Tool_Schema</strong> - Create the tool schema in a json format - Tool mapping and tool execution functions</p>
+<p><strong>Chatbot CLI Client Functions</strong> ()</p>
+<p>The following functions make the chatbot client work: - <code>process_query()</code> - <code>chat_loop()</code></p>
+<p><a href="https://github.com/dzlab/deeplearning.ai/blob/main/2025/05/MCPBuildRichContextAIAppswithAnthropic/L3/L3_Executed.ipynb">Source for GitHub Code Materials</a></p>
+</section>
+<section id="mcp-server" class="level1">
+<h1>5. MCP Server</h1>
+<p>In this section, we will wrap the tools of the chatbot of the previous lesson, to build an MCP server that exposes 2 tools. we will use here the <code>stdio</code> transport and run the server in the provided local environment.</p>
+<ul>
+<li><p>Two main requests that an MCP server needs to handle from MCP Client</p></li>
+<li><p>Server List Tools</p></li>
+</ul>
+<p><img src="./images/server_list_tools.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<ul>
+<li>Server Call Tools</li>
+</ul>
+<p><img src="./images/server_call_tool.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<ul>
+<li><p>The library FastMCP takes care of MCP Protocol details like server_call_tool and server_list_tool</p></li>
+<li><p>You will wrap the tools in <span class="citation" data-cites="mcp.tool">@mcp.tool</span>()</p></li>
+<li><p>There is an inspector window that can be used to test how the MCP tools are functioning</p></li>
+</ul>
+<p><img src="./images/inspector2.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<p><a href="https://github.com/dzlab/deeplearning.ai/tree/main/2025/05/MCPBuildRichContextAIAppswithAnthropic/L4">Source for GitHub Code Materials</a></p>
+</section>
+<section id="mcp-client" class="level1">
+<h1>6. MCP Client</h1>
+<p><img src="./images/a_recap.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<ul>
+<li>In the previous section, we created an MCP research server that exposes 2 tools.</li>
+</ul>
+<p>How <strong>Tools Discovery</strong> happens:</p>
+<p><img src="./images/tools_discovery.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<p><strong>Invoking a particular Tool</strong>: <img src="./images/tool_invocation.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<ul>
+<li><p>In this section, we will make the chatbot communicate to the server through an MCP client.</p></li>
+<li><p>The functions <code>process_query()</code> and <code>chatbot_loop()</code> (that were created in Section #4) are now encapsulated inside <code>class MCP_Chatbot</code></p></li>
+<li><p>The course materials used a package manager called uv (uv, built in Rust, is a Python Package Manager)</p></li>
+</ul>
+<p><a href="https://github.com/dzlab/deeplearning.ai/tree/main/2025/05/MCPBuildRichContextAIAppswithAnthropic/L5">Source for GitHub Code Materials</a></p>
+</section>
+<section id="connecting-the-mcp-compatible-chatbot-to-reference-mcp-servers" class="level1">
+<h1>7. Connecting the MCP-compatible Chatbot to Reference MCP Servers</h1>
+<blockquote class="blockquote">
+<p>(not just local MCP servers built in section 5)</p>
+</blockquote>
+<ul>
+<li>In this section, we extend the MCP chatbot capabilities by making it connect to any (reference) MCP server</li>
+</ul>
+<p><img src="./images/reference_servers.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<ul>
+<li>Reference servers are implmented with <code>npx</code> and <code>uvx</code> commands</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"mcpServers"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"filesystem"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"command"</span><span class="fu">:</span> <span class="st">"npx"</span><span class="fu">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"args"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                <span class="st">"-y"</span><span class="ot">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                <span class="st">"@modelcontextprotocol/server-filesystem"</span><span class="ot">,</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                <span class="st">"."</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>            <span class="ot">]</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">},</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"research"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"command"</span><span class="fu">:</span> <span class="st">"uv"</span><span class="fu">,</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"args"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"run"</span><span class="ot">,</span> <span class="st">"research_server.py"</span><span class="ot">]</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">},</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"fetch"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"command"</span><span class="fu">:</span> <span class="st">"uvx"</span><span class="fu">,</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"args"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"mcp-server-fetch"</span><span class="ot">]</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/how_the_lesson_updated.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<ul>
+<li>One can run the below command in Terminal or Inspector</li>
+</ul>
+<pre><code>uv run mcp_chatbot.py</code></pre>
+<p><a href="https://github.com/dzlab/deeplearning.ai/tree/main/2025/05/MCPBuildRichContextAIAppswithAnthropic/L6">Source for GitHub Code Materials</a></p>
+</section>
+<section id="prompt-and-resource-features" class="level1">
+<h1>8. Prompt and Resource Features</h1>
+<ul>
+<li>In this section, the mcp compatible chatbot utilizing 2 tools is extended with “Prompt Template” and “Resources” (<code>folders</code> and <code>topic</code>)</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.resource</span>(<span class="st">"papers://</span><span class="sc">{topic}</span><span class="st">"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_topic_papers(topic: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    ...</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.resource</span>(<span class="st">"papers://folders"</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_available_folders() <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    ...</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.prompt</span>()</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_search_prompt(topic: <span class="bu">str</span>, num_papers: <span class="bu">int</span> <span class="op">=</span> <span class="dv">5</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>How does Prompt Discovery and Invocation work</li>
+</ul>
+<p><img src="./images/prompt_discovery.png" class="img-fluid"> <img src="./images/prompt_invocation.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<p><img src="./images/resource_discovery.png" class="img-fluid"> <img src="./images/resource_invocation.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<ul>
+<li>How to use the Prompts and Resources</li>
+</ul>
+<pre><code>@folders
+@ai_interpretability
+/prompts
+/prompt generate_search_prompt topic=history num_papers=2</code></pre>
+</section>
+<section id="creating-and-deploying-remote-servers" class="level1">
+<h1>9. Creating and Deploying Remote Servers</h1>
+<ul>
+<li><p>In the previous sections, we worked with servers running locally using <code>stdio</code> transport.</p></li>
+<li><p>In this section, we will learn how to create a remote server using <code>FastMCP</code>, test it using MCP inspector and then learn how to deploy it on <code>render.com</code> (a remote server could be in AWS, Azure, Heroku).</p></li>
+<li><p>The course focused on the <code>sse transport</code> (which is depcrecated in the upcoming MCP versions).</p></li>
+<li><p>In actual implementaiton, we would use <code>streamable_http</code> protocol (provided by FastMCP)</p></li>
+</ul>
+</section>
+<section id="other-interesting-areas-in-mcp" class="level1">
+<h1>10. Other Interesting Areas in MCP</h1>
+<section id="oauth-authentication-in-mcp" class="level2">
+<h2 class="anchored" data-anchor-id="oauth-authentication-in-mcp">10.1 OAuth Authentication in MCP</h2>
+<p><img src="./images/conclusion_authentication.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+</section>
+<section id="primitives-in-client-had-not-been-explored-in-the-above-sections" class="level2">
+<h2 class="anchored" data-anchor-id="primitives-in-client-had-not-been-explored-in-the-above-sections">10.2 Primitives in Client had not been explored in the above sections</h2>
+<p><img src="./images/conclusion_primitives.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<p><strong>Client Primitives</strong>: - Root - Sampling</p>
+<section id="root" class="level3">
+<h3 class="anchored" data-anchor-id="root">10.2.1. Root</h3>
+<blockquote class="blockquote">
+<p>A Root is a Unique Resource Identifier Root primitive from the client dictates the server what resource to use/checkout “Look only these places for answers”</p>
+</blockquote>
+<ul>
+<li>Root is primarily a filesystem path. But it could be any URI, for e.g.&nbsp;HTTP URL</li>
+</ul>
+</section>
+<section id="sampling" class="level3">
+<h3 class="anchored" data-anchor-id="sampling">10.2.2 Sampling</h3>
+<ul>
+<li>Allows a server to request inference from the LLM</li>
+<li>Sampling helps in Servers to leverage LLM’s intelligence as part of their processing pipeline <img src="./images/conclusion_sampling.png" class="img-fluid"></li>
+</ul>
+<p><strong>Example Usecase</strong>: Server is Down</p>
+<ul>
+<li>If a server is down, and based on metrics like compute used or usage, server identifies itself that it is slow</li>
+<li>Server could request the client to initiate a “Diagnosis of the Performance Issues”</li>
+<li>The LLM then analyzes server logs, error logs, performance metrics.</li>
+<li>The LLM will dictate steps to make the Website less slow</li>
+<li>“Sampling Loops” could be very useful</li>
+</ul>
+</section>
+</section>
+<section id="composability-client-and-server-are-interchangeable" class="level2">
+<h2 class="anchored" data-anchor-id="composability-client-and-server-are-interchangeable">10.3 Composability: Client and Server are Interchangeable</h2>
+<ul>
+<li><p>Clients and Server can play other’s roles <img src="./images/composabiity.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p></li>
+<li><p>Sampling + Composability could be used in Multi-agent Architecture <img src="./images/composability-2.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p></li>
+</ul>
+</section>
+<section id="mcp-registry-api" class="level2">
+<h2 class="anchored" data-anchor-id="mcp-registry-api">10.4 MCP Registry API</h2>
+<ul>
+<li>Like a Docker Registry or Python Package Manager, MCP would also have an official list of Servers and Clients held in a registy. That is useful to keep in server_config.json. It allows versioning.</li>
+<li></li>
+</ul>
+<p><img src="./images/mcp_registry_api.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<ul>
+<li>In fact, we could have an MCP agent that auto-discovers relevant MCP Registry servers, implements and runs them</li>
+</ul>
+<p><img src="./images/a_mcp_agent_self_evolving.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+<ul>
+<li>An example showcasing this Self Discovery of right MCP Servers <img src="./images/agent_looking_up_registry.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</li>
+</ul>
+</section>
+<section id="other-evolving-topics" class="level2">
+<h2 class="anchored" data-anchor-id="other-evolving-topics">10.5 Other Evolving Topics</h2>
+<p><img src="./images/other_evolving_mcp_topics.png" class="img-fluid"> Source: DeepLearning.ai MCP Course</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("git@github\.com-learning:senthilkumarm1901\/learn_by_blogging\.git");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

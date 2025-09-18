@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2021-05-09">
+<meta name="description" content="This blog post outlines the important features in Spacy Rules NER">
+
+<title>How to Leverage Spacy Rules NER – Learn by Blogging</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">How to Leverage Spacy Rules NER</h1>
+                  <div>
+        <div class="description">
+          This blog post outlines the important features in Spacy Rules NER
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">NLP</div>
+                <div class="quarto-category">Coding</div>
+                <div class="quarto-category">Python</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 9, 2021</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-spacy-and-ner" id="toc-introduction-to-spacy-and-ner" class="nav-link active" data-scroll-target="#introduction-to-spacy-and-ner">Introduction to SpaCy and NER</a>
+  <ul class="collapse">
+  <li><a href="#about-spacy" id="toc-about-spacy" class="nav-link" data-scroll-target="#about-spacy">About SpaCy</a></li>
+  <li><a href="#what-is-ner" id="toc-what-is-ner" class="nav-link" data-scroll-target="#what-is-ner">What is NER</a></li>
+  <li><a href="#the-spacy-version-used-here" id="toc-the-spacy-version-used-here" class="nav-link" data-scroll-target="#the-spacy-version-used-here">The Spacy Version used here</a></li>
+  </ul></li>
+  <li><a href="#basic-featues-of-spacy-rules-ner" id="toc-basic-featues-of-spacy-rules-ner" class="nav-link" data-scroll-target="#basic-featues-of-spacy-rules-ner">1. Basic Featues of SpaCy Rules NER</a>
+  <ul class="collapse">
+  <li><a href="#a.-about-token-matcher" id="toc-a.-about-token-matcher" class="nav-link" data-scroll-target="#a.-about-token-matcher">1A. About Token Matcher</a></li>
+  <li><a href="#b.-about-phrase-matcher" id="toc-b.-about-phrase-matcher" class="nav-link" data-scroll-target="#b.-about-phrase-matcher">1B. About Phrase Matcher</a></li>
+  <li><a href="#c.-explaining-token-and-phrase-matchers-with-a-model_names-ner-capture" id="toc-c.-explaining-token-and-phrase-matchers-with-a-model_names-ner-capture" class="nav-link" data-scroll-target="#c.-explaining-token-and-phrase-matchers-with-a-model_names-ner-capture">1C. Explaining Token and Phrase Matchers with a <code>MODEL_NAMES NER</code> Capture</a></li>
+  </ul></li>
+  <li><a href="#externalizing-rules-from-codes" id="toc-externalizing-rules-from-codes" class="nav-link" data-scroll-target="#externalizing-rules-from-codes">2. Externalizing Rules from Codes</a>
+  <ul class="collapse">
+  <li><a href="#a.-saving-spacy-rules-in-a-json-format" id="toc-a.-saving-spacy-rules-in-a-json-format" class="nav-link" data-scroll-target="#a.-saving-spacy-rules-in-a-json-format">2A. Saving spacy rules in a json format</a></li>
+  <li><a href="#b.-prepare-an-entity-ruler-loading-rules-from-a-json" id="toc-b.-prepare-an-entity-ruler-loading-rules-from-a-json" class="nav-link" data-scroll-target="#b.-prepare-an-entity-ruler-loading-rules-from-a-json">2B. Prepare an Entity Ruler loading rules from a json</a></li>
+  <li><a href="#c.-testing-on-sample-phone-sentences" id="toc-c.-testing-on-sample-phone-sentences" class="nav-link" data-scroll-target="#c.-testing-on-sample-phone-sentences">2C. Testing on Sample Phone Sentences</a></li>
+  </ul></li>
+  <li><a href="#advanced-features-in-spacy-rules-ner" id="toc-advanced-features-in-spacy-rules-ner" class="nav-link" data-scroll-target="#advanced-features-in-spacy-rules-ner">3. Advanced Features in Spacy Rules NER</a>
+  <ul class="collapse">
+  <li><a href="#a.-adding-regex-patterns-as-a-custom-component" id="toc-a.-adding-regex-patterns-as-a-custom-component" class="nav-link" data-scroll-target="#a.-adding-regex-patterns-as-a-custom-component">3A. Adding RegEx patterns as a custom component</a></li>
+  <li><a href="#b.-chaining-spacy-ner-components" id="toc-b.-chaining-spacy-ner-components" class="nav-link" data-scroll-target="#b.-chaining-spacy-ner-components">3B. Chaining Spacy NER components</a></li>
+  </ul></li>
+  <li><a href="#how-to-save-rules-ner-as-a-package" id="toc-how-to-save-rules-ner-as-a-package" class="nav-link" data-scroll-target="#how-to-save-rules-ner-as-a-package">4. How to save Rules NER as a package</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">5. Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="introduction-to-spacy-and-ner" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-spacy-and-ner">Introduction to SpaCy and NER</h2>
+<section id="about-spacy" class="level3">
+<h3 class="anchored" data-anchor-id="about-spacy">About SpaCy</h3>
+<ul>
+<li>SpaCy is a NLP library offering easy-to-use Python API for many information extraction and machine learning tasks in text data</li>
+<li>They are internally written in Cython and hence occupies low memory foot print with its <code>small</code> models and are quite fast with decent accuracy</li>
+</ul>
+<p>Source: - <a href="https://spacy.io/">more about spaCy</a></p>
+</section>
+<section id="what-is-ner" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-ner">What is NER</h3>
+<blockquote class="blockquote">
+<p>Named-entity recognition (NER) (also known as (named) entity identification, entity chunking, and entity extraction) is <code>a subtask of information extraction</code> that seeks to locate and classify named entities mentioned in unstructured text into pre-defined categories</p>
+</blockquote>
+<p>Source: <a href="https://en.wikipedia.org/wiki/Named-entity_recognition">Wikipedia Article on NER</a></p>
+<blockquote class="blockquote">
+<p>In information extraction, a named entity is a real-world object, such as a person, location, organization, product, etc., that can be denoted with a proper noun. <br> For example, in the sentence - “Biden is the president of the United States”, <br> “Biden” and “the United States” are <code>named entities</code> (proper nouns). “president” is not a named entity</p>
+</blockquote>
+<p>Source: <a href="https://en.wikipedia.org/wiki/Named_entity">Wikipedia Article on Named Entities</a></p>
+</section>
+<section id="the-spacy-version-used-here" class="level3">
+<h3 class="anchored" data-anchor-id="the-spacy-version-used-here">The Spacy Version used here</h3>
+<div id="dd812f48" class="cell" data-execution_count="74">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>python3 <span class="op">-</span>m spacy validate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>✔ Loaded compatibility table
+
+================= Installed pipeline packages (spaCy v3.1.3) =================
+ℹ spaCy installation: /usr/local/lib/python3.7/dist-packages/spacy
+
+NAME             SPACY            VERSION                            
+en_core_web_sm   &gt;=3.1.0,&lt;3.2.0   3.1.0   ✔
+</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="basic-featues-of-spacy-rules-ner" class="level2">
+<h2 class="anchored" data-anchor-id="basic-featues-of-spacy-rules-ner">1. Basic Featues of SpaCy Rules NER</h2>
+<section id="a.-about-token-matcher" class="level3">
+<h3 class="anchored" data-anchor-id="a.-about-token-matcher">1A. About Token Matcher</h3>
+<ul>
+<li>Spacy’s Token <code>Matcher</code> lets you prepare Spacy Rules at token level invoking all complex</li>
+<li>Example 1 from Spacy Documentation</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>patterns <span class="op">=</span> [</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    [{<span class="st">"LOWER"</span>: <span class="st">"hello"</span>}, {<span class="st">"IS_PUNCT"</span>: <span class="va">True</span>}, {<span class="st">"LOWER"</span>: <span class="st">"world"</span>}], <span class="co"># captures any case variant of "hello-world", "hello!world"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    [{<span class="st">"LOWER"</span>: <span class="st">"hello"</span>}, {<span class="st">"LOWER"</span>: <span class="st">"world"</span>}] <span class="co"># captures any case variant of "hello world"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Example 2 using Token-level Regex</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pattern <span class="op">=</span> [{<span class="st">"TEXT"</span>: {<span class="st">"REGEX"</span>: <span class="st">"^[Uu](\.?|nited)$"</span>}}, <span class="co">#</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>           {<span class="st">"TEXT"</span>: {<span class="st">"REGEX"</span>: <span class="st">"^[Ss](\.?|tates)$"</span>}},</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>           {<span class="st">"LOWER"</span>: <span class="st">"president"</span>}] <span class="co"># captures (U.S or US or United States or united states) President</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="b.-about-phrase-matcher" class="level3">
+<h3 class="anchored" data-anchor-id="b.-about-phrase-matcher">1B. About Phrase Matcher</h3>
+<ul>
+<li>If we have a huge list of phrases in a list or in a csv file, phrase matcher can be applied directly</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy.matcher <span class="im">import</span> PhraseMatcher</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">"en_core_web_sm"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>matcher <span class="op">=</span> PhraseMatcher(nlp.vocab)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>terms <span class="op">=</span> [<span class="st">"Barack Obama"</span>, <span class="st">"Angela Merkel"</span>, <span class="st">"Washington, D.C."</span>]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Only run nlp.make_doc to speed things up</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>patterns <span class="op">=</span> [nlp.make_doc(text) <span class="cf">for</span> text <span class="kw">in</span> terms]</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>matcher.add(<span class="st">"TerminologyList"</span>, patterns)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>doc <span class="op">=</span> nlp(<span class="st">"German Chancellor Angela Merkel and US President Barack Obama "</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>          <span class="st">"converse in the Oval Office inside the White House in Washington, D.C."</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>matches <span class="op">=</span> matcher(doc)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> match_id, start, end <span class="kw">in</span> matches:</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    span <span class="op">=</span> doc[start:end]</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(span.text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>source: https://spacy.io/usage/rule-based-matching#adding-phrase-patterns</p>
+</section>
+<section id="c.-explaining-token-and-phrase-matchers-with-a-model_names-ner-capture" class="level3">
+<h3 class="anchored" data-anchor-id="c.-explaining-token-and-phrase-matchers-with-a-model_names-ner-capture">1C. Explaining Token and Phrase Matchers with a <code>MODEL_NAMES NER</code> Capture</h3>
+<div id="aa16e32b" class="cell" data-execution_count="75">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># goal: to capture Car Models to their corresponding Makes</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>sample_sentence_1 <span class="op">=</span> <span class="st">"Go for ford mustang mache variants. Mustang has a deceivingly huge trunk and good horse power. If you want reliability, Toyota Lexus should be your choice. Lexus has good body style too"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sample_sentence_2 <span class="op">=</span> <span class="st">"Considering the harsh winters here, I am considering 2014 Nissan Murano or the '14 Subaru Forester"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>sample_sentence_3 <span class="op">=</span> <span class="st">"Among used cars, I am still not sure what to choose - Civic or Corolla?"</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>sample_models_sentences <span class="op">=</span> [sample_sentence_1, </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                    sample_sentence_2,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                    sample_sentence_3</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                   ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="5382f8da" class="cell" data-execution_count="76">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy.matcher <span class="im">import</span> Matcher, PhraseMatcher</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy.tokens <span class="im">import</span> Span</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy.util <span class="im">import</span> filter_spans</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy <span class="im">import</span> displacy</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>model_names_nlp <span class="op">=</span> spacy.load(<span class="st">'en_core_web_sm'</span>,disable<span class="op">=</span>[<span class="st">'ner'</span>])</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>matcher <span class="op">=</span> Matcher(model_names_nlp.vocab)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># pattern rules matching every token</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>ford_pattern <span class="op">=</span> [{<span class="st">"LOWER"</span>: <span class="st">"ford"</span>, <span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>                   {<span class="st">"LOWER"</span>: <span class="st">"mustang"</span>},</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                   {<span class="st">"LOWER"</span>:{<span class="st">"IN"</span>:[<span class="st">"mache"</span>,<span class="st">"gt"</span>,<span class="st">"bulitt"</span>]},<span class="st">"OP"</span>:<span class="st">"*"</span>}</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>                  ]</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>toyota_pattern <span class="op">=</span> [{<span class="st">"LOWER"</span>: <span class="st">"toyota"</span>,<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>                 {<span class="st">"LOWER"</span>: {<span class="st">"IN"</span>:[<span class="st">"lexus"</span>,<span class="st">"corolla"</span>,<span class="st">"camry"</span>]}}</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>                ]</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>honda_pattern <span class="op">=</span> [{<span class="st">"LOWER"</span>: <span class="st">"honda"</span>,<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>                 {<span class="st">"LOWER"</span>: {<span class="st">"IN"</span>:[<span class="st">"civic"</span>,<span class="st">"accord"</span>]}}</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>                ]</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>token_matcher_patterns <span class="op">=</span> {<span class="st">"FORD"</span>: ford_pattern,</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"TOYOTA"</span>: toyota_pattern,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"HONDA"</span>: honda_pattern,</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>                         }</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co"># phrase pattern looks for exact match</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>nissan_phrase_pattern <span class="op">=</span> [<span class="st">"Nissan Murano"</span>, <span class="st">"Murano"</span>, <span class="st">"murano"</span>, <span class="st">"nissan murano"</span>]</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>subaru_phrase_pattern <span class="op">=</span> [<span class="st">"Subaru Forester"</span>, <span class="st">"Forester"</span>, <span class="st">"forester"</span>, <span class="st">"subaru forester"</span>]</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>phrase_matcher_patterns <span class="op">=</span> {<span class="st">"NISSAN"</span>: nissan_phrase_pattern,</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>                           <span class="st">"SUBARU"</span>: subaru_phrase_pattern</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>                          }</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_token_matcher_and_phrase_matcher_patterns(nlp_model,</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>                                                  token_patterns_dict<span class="op">=</span>token_matcher_patterns,</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>                                                  phrase_patterns_dict<span class="op">=</span>phrase_matcher_patterns</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>                                                 ):</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    token_matcher <span class="op">=</span> Matcher(nlp_model.vocab)</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> key, value <span class="kw">in</span> token_patterns_dict.items():</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>        token_matcher.add(key,[value])</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>    phrase_matcher <span class="op">=</span> PhraseMatcher(nlp_model.vocab)</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> key, terms_list <span class="kw">in</span> phrase_patterns_dict.items():</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>        phrase_patterns <span class="op">=</span> [nlp_model.make_doc(text) <span class="cf">for</span> text <span class="kw">in</span> terms_list]</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>        phrase_matcher.add(key, phrase_patterns)</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> token_matcher, phrase_matcher</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>doc <span class="op">=</span> model_names_nlp(sample_sentence_1)</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> modify_doc(token_matcher,</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>               phrase_matcher,</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>               doc):</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>    original_ents <span class="op">=</span> <span class="bu">list</span>(doc.ents)</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>    matches <span class="op">=</span> token_matcher(doc) <span class="op">+</span> phrase_matcher(doc)</span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> match_id, start, end <span class="kw">in</span> matches:</span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>        span <span class="op">=</span> Span(doc, start, end, match_id)</span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>        original_ents.append(span)</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>    filtered <span class="op">=</span> filter_spans(original_ents)</span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>    doc.ents <span class="op">=</span> filtered</span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> doc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="b3437ed7" class="cell" data-scrolled="true" data-execution_count="77">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>token_matcher, phrase_matcher <span class="op">=</span> add_token_matcher_and_phrase_matcher_patterns(model_names_nlp, </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                                                                              token_matcher_patterns,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                                                                              phrase_matcher_patterns</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                                                                             )</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>modelnames_dict <span class="op">=</span> {</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"HONDA"</span>: <span class="st">"#ffcccb"</span>,  <span class="co"># light red (pink)</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TOYOTA"</span>: <span class="st">"#A865C9"</span>,  <span class="co"># light purple</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"NISSAN"</span>: <span class="st">"#FFD580"</span>,  <span class="co"># light orange</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SUBARU"</span>: <span class="st">" #FFCCCB"</span>,  <span class="co"># green</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FORD"</span>: <span class="st">"#ADD8E6"</span>  <span class="co"># light blue</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> <span class="bu">list</span>(modelnames_dict.keys())</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>options_dict <span class="op">=</span> {<span class="st">"ents"</span>: models,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>           <span class="st">"colors"</span>: modelnames_dict</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>          }</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, doc <span class="kw">in</span> <span class="bu">enumerate</span>(model_names_nlp.pipe(sample_models_sentences,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>             as_tuples<span class="op">=</span><span class="va">False</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>            )):</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    new_doc <span class="op">=</span> modify_doc(token_matcher,</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>                         phrase_matcher,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>                         doc</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>                        )</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\033</span><span class="ss">[1mProcessing Sentence </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss"> </span><span class="ch">\033</span><span class="ss">[1m"</span>)</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    displacy.render(new_doc,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>                    style<span class="op">=</span><span class="st">'ent'</span>,</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>                    options<span class="op">=</span>options_dict,</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>                    minify<span class="op">=</span><span class="va">True</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>                   )</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"***************"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 0 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">Go for <mark class="entity" style="background: #ADD8E6; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">ford mustang mache<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">FORD</span></mark> variants. <mark class="entity" style="background: #ADD8E6; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Mustang<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">FORD</span></mark> has a deceivingly huge trunk and good horse power. If you want reliability, <mark class="entity" style="background: #A865C9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Toyota Lexus<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">TOYOTA</span></mark> should be your choice. <mark class="entity" style="background: #A865C9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Lexus<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">TOYOTA</span></mark> has good body style too</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>***************
+Processing Sentence 1 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">Considering the harsh winters here, I am considering 2014 <mark class="entity" style="background: #FFD580; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Nissan Murano<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">NISSAN</span></mark> or the '14 <mark class="entity" style="background:  #FFCCCB; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Subaru Forester<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">SUBARU</span></mark></div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>***************
+Processing Sentence 2 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">Among used cars, I am still not sure what to choose - <mark class="entity" style="background: #ffcccb; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Civic<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">HONDA</span></mark> or <mark class="entity" style="background: #A865C9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Corolla<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">TOYOTA</span></mark>?</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>***************</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="externalizing-rules-from-codes" class="level2">
+<h2 class="anchored" data-anchor-id="externalizing-rules-from-codes">2. Externalizing Rules from Codes</h2>
+<section id="a.-saving-spacy-rules-in-a-json-format" class="level3">
+<h3 class="anchored" data-anchor-id="a.-saving-spacy-rules-in-a-json-format">2A. Saving spacy rules in a json format</h3>
+<blockquote class="blockquote">
+<p>Note that the official spacy document advocates josnl format but json is much more readable for multitoken spacy patterns</p>
+</blockquote>
+<div id="f0ff9efb" class="cell" data-execution_count="78">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pprint <span class="im">import</span> pprint</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># "+1 (901)-985-4567" or "(901)-985-4567" or 901-985-4567 or 901 985 4567</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>phone_pattern_1 <span class="op">=</span> [{<span class="st">"ORTH"</span>: {<span class="st">"IN"</span>:[<span class="st">"+1"</span>,<span class="st">"1"</span>]},<span class="st">'OP'</span>:<span class="st">'?'</span>},</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                   {<span class="st">"ORTH"</span>: <span class="st">'('</span>, <span class="st">"OP"</span>:<span class="st">"?"</span>}, </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                   {<span class="st">'SHAPE'</span>: <span class="st">'ddd'</span>}, </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>                   {<span class="st">"ORTH"</span>: <span class="st">')'</span>, <span class="st">"OP"</span>:<span class="st">"?"</span>}, </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>                   {<span class="st">'ORTH'</span>: <span class="st">'-'</span>, <span class="st">'OP'</span>:<span class="st">'?'</span>},</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>                   {<span class="st">'SHAPE'</span>: <span class="st">'ddd'</span>}, </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>                   {<span class="st">'ORTH'</span>: <span class="st">'-'</span>, <span class="st">'OP'</span>:<span class="st">'?'</span>}, </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>                   {<span class="st">'SHAPE'</span>: <span class="st">'dddd'</span>}]</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 901 985 4567</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>phone_pattern_2 <span class="op">=</span> [{<span class="st">"TEXT"</span>: {<span class="st">"REGEX"</span>: <span class="st">"\d</span><span class="sc">{10}</span><span class="st">"</span>}}]</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co"># +19019854567</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>phone_pattern_3 <span class="op">=</span> [{<span class="st">"TEXT"</span>: {<span class="st">"REGEX"</span>: <span class="st">"\+1\d</span><span class="sc">{10}</span><span class="st">"</span>}}]</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>phone_patterns_list <span class="op">=</span> [phone_pattern_1, phone_pattern_2, phone_pattern_3]</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>spacy_patterns_dict_list <span class="op">=</span> []</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> each_phone_pattern <span class="kw">in</span> phone_patterns_list:</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    spacy_patterns_dict_list.append({<span class="st">"label"</span>:<span class="st">"PHONE"</span>,</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>                                     <span class="st">"pattern"</span>: each_phone_pattern</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>                                    })</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">'spacy_rules_ner/phone_patterns.json'</span>, <span class="st">'w'</span>, encoding<span class="op">=</span><span class="st">'utf-8'</span>) <span class="im">as</span> f:</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>    json.dump(spacy_patterns_dict_list, f, ensure_ascii<span class="op">=</span><span class="va">False</span>, indent<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="b.-prepare-an-entity-ruler-loading-rules-from-a-json" class="level3">
+<h3 class="anchored" data-anchor-id="b.-prepare-an-entity-ruler-loading-rules-from-a-json">2B. Prepare an Entity Ruler loading rules from a json</h3>
+<div id="f9b93122" class="cell" data-execution_count="79">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>loaded_spacy_patterns <span class="op">=</span> json.load(<span class="bu">open</span>(<span class="st">'spacy_rules_ner/phone_patterns.json'</span>,<span class="st">'r'</span>,encoding<span class="op">=</span><span class="st">'utf-8'</span>))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Asserting if the loaded spacy patterns are same as the prepared"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> loaded_spacy_patterns <span class="op">==</span> spacy_patterns_dict_list</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--&gt; Assertion successful"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Asserting if the loaded spacy patterns are same as the prepared
+--&gt; Assertion successful</code></pre>
+</div>
+</div>
+<div id="63871022" class="cell" data-execution_count="80">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Token-level Spacy Phone Regex"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>pprint(loaded_spacy_patterns)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Token-level Spacy Phone Regex
+[{'label': 'PHONE',
+  'pattern': [{'OP': '?', 'ORTH': {'IN': ['+1', '1']}},
+              {'OP': '?', 'ORTH': '('},
+              {'SHAPE': 'ddd'},
+              {'OP': '?', 'ORTH': ')'},
+              {'OP': '?', 'ORTH': '-'},
+              {'SHAPE': 'ddd'},
+              {'OP': '?', 'ORTH': '-'},
+              {'SHAPE': 'dddd'}]},
+ {'label': 'PHONE', 'pattern': [{'TEXT': {'REGEX': '\\d{10}'}}]},
+ {'label': 'PHONE', 'pattern': [{'TEXT': {'REGEX': '\\+1\\d{10}'}}]}]</code></pre>
+</div>
+</div>
+<div id="ed00d397" class="cell" data-execution_count="81">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>phone_nlp <span class="op">=</span> spacy.load(<span class="st">'en_core_web_sm'</span>, disable<span class="op">=</span>[<span class="st">'ner'</span>])</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>rules_config <span class="op">=</span> {</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"validate"</span>: <span class="va">True</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"overwrite_ents"</span>: <span class="va">True</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>phone_nlp_rules <span class="op">=</span> phone_nlp.add_pipe(<span class="st">"entity_ruler"</span>, <span class="co"># invoke entity_ruler pipe </span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                                     <span class="st">"phone_nlp_rules"</span>, <span class="co"># give a name to the pipe</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                                     config<span class="op">=</span>rules_config)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>phone_nlp_rules.add_patterns(loaded_spacy_patterns) <span class="co"># load patterns to the `phone_nlp_rules` pipe of `phone_nlp` model</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="c.-testing-on-sample-phone-sentences" class="level3">
+<h3 class="anchored" data-anchor-id="c.-testing-on-sample-phone-sentences">2C. Testing on Sample Phone Sentences</h3>
+<div id="90254c75" class="cell" data-execution_count="82">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>phones_list <span class="op">=</span> [<span class="st">"+1 (901)-985-4567"</span>, </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>               <span class="st">"+1(901)-985-4567"</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">"(901) 985 4567"</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>               <span class="st">"9019854567"</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>              ]</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>sample_phone_sentences <span class="op">=</span> [<span class="ss">f"If you want to talk more. Reach me at </span><span class="sc">{</span>each<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> each <span class="kw">in</span> phones_list]</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>sample_phone_sentences</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="82">
+<pre><code>['If you want to talk more. Reach me at +1 (901)-985-4567',
+ 'If you want to talk more. Reach me at +1(901)-985-4567',
+ 'If you want to talk more. Reach me at (901) 985 4567',
+ 'If you want to talk more. Reach me at 9019854567']</code></pre>
+</div>
+</div>
+<div id="82e3a7be" class="cell" data-scrolled="true" data-execution_count="83">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">'ignore'</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, doc <span class="kw">in</span> <span class="bu">enumerate</span>(phone_nlp.pipe(sample_phone_sentences,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>             as_tuples<span class="op">=</span><span class="va">False</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>            )):</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\033</span><span class="ss">[1mProcessing Sentence </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss"> </span><span class="ch">\033</span><span class="ss">[1m"</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    displacy.render(doc,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>                    style<span class="op">=</span><span class="st">'ent'</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>                   )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 0 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at +1 (901)-985-4567</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 1 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at +1(901)-985-4567</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 2 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    (901) 985 4567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 3 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    9019854567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Some of the phone patterns are not captured using the above patterns, let us add a Phone <code>regex</code> that cuts across multiple tokens</p>
+</blockquote>
+<div id="02cf3a8d" class="cell" data-execution_count="84">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">"If you want to talk more. Reach me at +1 (901)-985-4567"</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>doc <span class="op">=</span> phone_nlp(text)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>[(token.text, token.ent_type_) <span class="cf">for</span> token <span class="kw">in</span> doc]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="84">
+<pre><code>[('If', ''),
+ ('you', ''),
+ ('want', ''),
+ ('to', ''),
+ ('talk', ''),
+ ('more', ''),
+ ('.', ''),
+ ('Reach', ''),
+ ('me', ''),
+ ('at', ''),
+ ('+1', ''),
+ ('(', ''),
+ ('901)-985', ''),
+ ('-', ''),
+ ('4567', '')]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="advanced-features-in-spacy-rules-ner" class="level2">
+<h2 class="anchored" data-anchor-id="advanced-features-in-spacy-rules-ner">3. Advanced Features in Spacy Rules NER</h2>
+<section id="a.-adding-regex-patterns-as-a-custom-component" class="level3">
+<h3 class="anchored" data-anchor-id="a.-adding-regex-patterns-as-a-custom-component">3A. Adding RegEx patterns as a custom component</h3>
+<div id="59fda597" class="cell" data-execution_count="85">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy <span class="im">import</span> Language</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy.tokens <span class="im">import</span> Span</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_entity_ruler_based_phone_pattern(location_spacy_json):</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    loaded_spacy_patterns <span class="op">=</span> json.load(<span class="bu">open</span>(location_spacy_json,<span class="st">'r'</span>,encoding<span class="op">=</span><span class="st">'utf-8'</span>))</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    phone_nlp <span class="op">=</span> spacy.load(<span class="st">'en_core_web_sm'</span>, disable<span class="op">=</span>[<span class="st">'ner'</span>])</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    rules_config <span class="op">=</span> {</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"validate"</span>: <span class="va">True</span>,</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"overwrite_ents"</span>: <span class="va">True</span>,</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>    phone_nlp_rules <span class="op">=</span> phone_nlp.add_pipe(<span class="st">"entity_ruler"</span>, <span class="co"># invoke entity_ruler pipe </span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"phone_nlp_rules"</span>, <span class="co"># give a name to the pipe</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>                                         config<span class="op">=</span>rules_config)</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    phone_nlp_rules.add_patterns(loaded_spacy_patterns) <span class="co"># load patterns to the `phone_nlp_rules` pipe of `phone_nlp` model</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> phone_nlp</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>       </span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>location_spacy_json <span class="op">=</span> <span class="st">'spacy_rules_ner/phone_patterns.json'</span></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>phone_nlp <span class="op">=</span> load_entity_ruler_based_phone_pattern(location_spacy_json)</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pipeline Components before adding regex custom component:"</span>)</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(phone_nlp.pipe_names)</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Entities tracked in phone_nlp_rules"</span>)</span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(phone_nlp.pipe_labels[<span class="st">'phone_nlp_rules'</span>])</span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>phone_regex_pattern <span class="op">=</span> <span class="vs">r"([+]?[\d]?[\d]?.?[(]?\d</span><span class="sc">{3}</span><span class="vs">[)]?.?\d</span><span class="sc">{3}</span><span class="vs">.?\d</span><span class="sc">{4}</span><span class="vs">)"</span></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a><span class="co">#noting the token position for every character in a doc</span></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_chars2tokens_dict(doc):</span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>    chars_to_tokens <span class="op">=</span> {}</span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> token <span class="kw">in</span> doc:</span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(token.idx, token.idx <span class="op">+</span> <span class="bu">len</span>(token.text)):</span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>            chars_to_tokens[i] <span class="op">=</span> token.i</span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> chars_to_tokens</span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a><span class="at">@Language.component</span>(<span class="st">"phone_multitoken_regex_capture"</span>)</span>
+<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> phone_multitoken_regex_capture(doc):</span>
+<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>    original_ents <span class="op">=</span> <span class="bu">list</span>(doc.ents)</span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>    chars_to_tokens <span class="op">=</span> generate_chars2tokens_dict(doc)</span>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>    phone_regex_ents <span class="op">=</span> []</span>
+<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> match <span class="kw">in</span> re.finditer(phone_regex_pattern, doc.text):</span>
+<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>        start, end <span class="op">=</span> match.span()</span>
+<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>        span <span class="op">=</span> doc.char_span(start, end)</span>
+<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> span <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a>            phone_regex_ents.append((span.start, span.end, span.text))</span>
+<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a>            start_token <span class="op">=</span> chars_to_tokens.get(start)</span>
+<span id="cb28-53"><a href="#cb28-53" aria-hidden="true" tabindex="-1"></a>            end_token <span class="op">=</span> chars_to_tokens.get(end)</span>
+<span id="cb28-54"><a href="#cb28-54" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> start_token <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> end_token <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb28-55"><a href="#cb28-55" aria-hidden="true" tabindex="-1"></a>                span <span class="op">=</span> doc[start_token:end_token <span class="op">+</span> <span class="dv">1</span>]</span>
+<span id="cb28-56"><a href="#cb28-56" aria-hidden="true" tabindex="-1"></a>                phone_regex_ents.append((span.start, span.end, span.text))</span>
+<span id="cb28-57"><a href="#cb28-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> regex_ent <span class="kw">in</span> phone_regex_ents:</span>
+<span id="cb28-58"><a href="#cb28-58" aria-hidden="true" tabindex="-1"></a>        start_char, end_char, span_text <span class="op">=</span> regex_ent</span>
+<span id="cb28-59"><a href="#cb28-59" aria-hidden="true" tabindex="-1"></a>        proper_spacy_ent <span class="op">=</span> Span(doc, start_char, end_char, label<span class="op">=</span><span class="st">"PHONE"</span>)</span>
+<span id="cb28-60"><a href="#cb28-60" aria-hidden="true" tabindex="-1"></a>        original_ents.append(proper_spacy_ent)     </span>
+<span id="cb28-61"><a href="#cb28-61" aria-hidden="true" tabindex="-1"></a>    filtered <span class="op">=</span> filter_spans(original_ents) <span class="co">#removes overlapping ents</span></span>
+<span id="cb28-62"><a href="#cb28-62" aria-hidden="true" tabindex="-1"></a>    doc.ents <span class="op">=</span> filtered</span>
+<span id="cb28-63"><a href="#cb28-63" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> doc</span>
+<span id="cb28-64"><a href="#cb28-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-65"><a href="#cb28-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-66"><a href="#cb28-66" aria-hidden="true" tabindex="-1"></a>phone_nlp.add_pipe(<span class="st">"phone_multitoken_regex_capture"</span>, after<span class="op">=</span><span class="st">"phone_nlp_rules"</span>)</span>
+<span id="cb28-67"><a href="#cb28-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-68"><a href="#cb28-68" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pipeline Components after adding regex custom component:"</span>)</span>
+<span id="cb28-69"><a href="#cb28-69" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(phone_nlp.pipe_names)</span>
+<span id="cb28-70"><a href="#cb28-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-71"><a href="#cb28-71" aria-hidden="true" tabindex="-1"></a><span class="co"># inspiration for the above code piece: </span></span>
+<span id="cb28-72"><a href="#cb28-72" aria-hidden="true" tabindex="-1"></a><span class="co"># https://spacy.io/usage/rule-based-matching#regex-text</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pipeline Components before adding regex custom component:
+['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules']
+
+Entities tracked in phone_nlp_rules
+['PHONE']
+Pipeline Components after adding regex custom component:
+['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules', 'phone_multitoken_regex_capture']</code></pre>
+</div>
+</div>
+<div id="af73c9b6" class="cell" data-execution_count="86">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, doc <span class="kw">in</span> <span class="bu">enumerate</span>(phone_nlp.pipe(sample_phone_sentences,</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>             as_tuples<span class="op">=</span><span class="va">False</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>            )):</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\033</span><span class="ss">[1mProcessing Sentence </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss"> </span><span class="ch">\033</span><span class="ss">[1m"</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    displacy.render(doc,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>                    style<span class="op">=</span><span class="st">'ent'</span>,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>                   )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 0 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    +1 (901)-985-4567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 1 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    +1(901)-985-4567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 2 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    (901) 985 4567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 3 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    9019854567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>By adding the custom component, we are able to capture the missed out sentences also</p>
+</blockquote>
+</section>
+<section id="b.-chaining-spacy-ner-components" class="level3">
+<h3 class="anchored" data-anchor-id="b.-chaining-spacy-ner-components">3B. Chaining Spacy NER components</h3>
+<blockquote class="blockquote">
+<p>Chaining spacy NER components makes the patterns more manageable <br> It is similar to modular programming but for building a complex spacy NER rules</p>
+</blockquote>
+<p><em>Let us discuss creation of a first degree NER + second degree NER (chaining NER) written on top of first degree NER entities</em></p>
+<p>It is better to train a model for <code>ADDRESS</code> entity.<br> But for the sake of explanation of the <code>Chiaining NER</code> technique, let us build an ADDRESS NER using spacy rules</p>
+<div id="a1cedc13" class="cell" data-execution_count="87">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Goal: To capture the different types of ADDRESSES in the following ADDRESS SENTENCES</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>sample_address_sentences <span class="op">=</span> [<span class="st">'My office is located at 1 American rd, Dearborn, MI 48126, United States'</span>,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a> <span class="st">'My office is located at one American Road Dearborb Michigan 48126 United States'</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a> <span class="st">'My office is located at 1 American High way, South Dakota 48126, United States'</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a> <span class="st">'My office is located at 1 American rd, Dearborn, MI, United States'</span>,</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a> <span class="st">'My office is located at 717 N 2ND ST, MANKATO, MN 56001 US'</span>,</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a> <span class="st">'My office is located at 717 N 2ND ST, MANKATO, MN, 56001'</span>,</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a> <span class="st">'My office is located at 717 N 2ND ST MANKATO MN 56001'</span>,</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a> <span class="st">'My office is located at Dearborn Michigan'</span>,</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a> <span class="st">'My office is located at Chennai, TamilNadu'</span>,</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a> <span class="st">'My office is located at Dearborn, Michigan'</span>,</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a> <span class="st">'My office is located at PO Box 107050, Albany, NY 12201-7050'</span>,</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a> <span class="st">'My office is located at PO Box 107050, Albany, NY 12201'</span>,</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a> <span class="st">'My office is located at P.O. Box 107050, Albany, NY 12201-7050'</span>,</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a> <span class="st">'My office is located at P.O. Box 107050, Albany, NY 12201'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="d7f19c54" class="cell" data-execution_count="91">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Capture following first degree NER entities</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co"># `DOOR_NUM` entity to capture </span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co"># `STREET_NAME` entity</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co"># `CITY`</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co"># `STATE`</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co"># `COUNTRY`</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="co"># `ZIP_CODE`</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="co"># `P_O_BOX`</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a><span class="co"># one or more of the above 1st degree NER entities form the final ADDRESS entity</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>door_num_spacy_pattern <span class="op">=</span> [{<span class="st">"label"</span>:<span class="st">"POTENTIAL_DOOR_NUM"</span>,</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>                           <span class="st">"pattern"</span>:[{<span class="st">"LOWER"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">b([0-9]{1,4}|one|two|three|four|five|six|seven|eight|nine|ten)</span><span class="ch">\\</span><span class="st">b"</span>}}]</span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>                         }]</span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>street_spacy_pattern <span class="op">=</span> [{<span class="st">"label"</span>:<span class="st">"POTENTIAL_STREET_NAME"</span>,</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"pattern"</span>:[{<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>: <span class="st">"^(N|S|E|W)$"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>                                    {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"^[A-Z][a-zA-Z]+$|\d(st|nd|rd|th|ST|ND|RD|TH)|[Ff]irst|[Ss]econd|[Tt]hird|[Ff]ourth|[Ff]ifth|[Ss]ixth|[Ss]eventh|[Ee]ighth|[Nn]inth|[Tt]enth"</span>},<span class="st">"OP"</span>:<span class="st">"+"</span>},</span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>                                    {<span class="st">"LOWER"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">b(street|st|avenue|ave|road|rd|highway|hwy|square|sq|trail|trl|drive|dr|court|ct|park|parkway|pkwy|circle|cir|boulevard|blvd|high|park|way|cross)</span><span class="ch">\\</span><span class="st">b"</span>},<span class="st">"OP"</span>:<span class="st">"+"</span>}]</span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>                       }]</span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>city_or_country_spacy_pattern <span class="op">=</span> [{<span class="st">"label"</span>:<span class="st">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span>,</span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">"pattern"</span>:[{<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"^[A-Z][a-zA-Z]+$"</span>},<span class="st">"OP"</span>:<span class="st">"+"</span>, <span class="st">"TAG"</span>:{<span class="st">"REGEX"</span>:<span class="st">"^NN|HYPH"</span>},}],</span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>                               }]</span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>zip_code_spacy_pattern <span class="op">=</span>  [{<span class="st">"label"</span>:<span class="st">"ZIP_CODE"</span>,</span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"pattern"</span>: [{<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">b</span><span class="ch">\\</span><span class="st">d</span><span class="sc">{5}</span><span class="ch">\\</span><span class="st">b"</span>}},</span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a>                                        {<span class="st">"ORTH"</span>:<span class="st">"-"</span>,<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>                                        {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">b</span><span class="ch">\\</span><span class="st">d+</span><span class="ch">\\</span><span class="st">b"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>} </span>
+<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a>                                       ]  </span>
+<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a>                                }] </span>
+<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a>p_o_box_pattern <span class="op">=</span> [{<span class="st">"label"</span>:<span class="st">"P_O_BOX"</span>,</span>
+<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"pattern"</span>:[{<span class="st">"LOWER"</span>:{<span class="st">"IN"</span>:[<span class="st">"po"</span>,<span class="st">"p.o"</span>,<span class="st">"p.o."</span>,<span class="st">"post"</span>]}},</span>
+<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"LOWER"</span>:{<span class="st">"IN"</span>:[<span class="st">"office"</span>,<span class="st">"."</span>]},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"LOWER"</span>:{<span class="st">"IN"</span>:[<span class="st">"box"</span>]}},</span>
+<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">b</span><span class="ch">\\</span><span class="st">d+</span><span class="ch">\\</span><span class="st">b"</span>}}</span>
+<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a>                               ]  </span>
+<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a>                   }]</span>
+<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-44"><a href="#cb36-44" aria-hidden="true" tabindex="-1"></a>first_degree_address_patterns <span class="op">=</span> door_num_spacy_pattern <span class="op">+</span> street_spacy_pattern <span class="op">+</span> city_or_country_spacy_pattern <span class="op">+</span> p_o_box_pattern <span class="op">+</span> zip_code_spacy_pattern</span>
+<span id="cb36-45"><a href="#cb36-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-46"><a href="#cb36-46" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_first_degree_address_nlp(first_degree_address_patterns):</span>
+<span id="cb36-47"><a href="#cb36-47" aria-hidden="true" tabindex="-1"></a>    first_degree_address_nlp <span class="op">=</span> spacy.load(<span class="st">'en_core_web_sm'</span>, disable<span class="op">=</span>[<span class="st">'ner'</span>])</span>
+<span id="cb36-48"><a href="#cb36-48" aria-hidden="true" tabindex="-1"></a>    rules_config <span class="op">=</span> {<span class="st">"validate"</span>: <span class="va">True</span>,</span>
+<span id="cb36-49"><a href="#cb36-49" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"overwrite_ents"</span>: <span class="va">True</span>,</span>
+<span id="cb36-50"><a href="#cb36-50" aria-hidden="true" tabindex="-1"></a>                   }</span>
+<span id="cb36-51"><a href="#cb36-51" aria-hidden="true" tabindex="-1"></a>    first_degree_rules <span class="op">=</span> first_degree_address_nlp.add_pipe(<span class="st">"entity_ruler"</span>,</span>
+<span id="cb36-52"><a href="#cb36-52" aria-hidden="true" tabindex="-1"></a>                                                           <span class="st">"first_degree_rules"</span>,</span>
+<span id="cb36-53"><a href="#cb36-53" aria-hidden="true" tabindex="-1"></a>                                                           config<span class="op">=</span>rules_config)</span>
+<span id="cb36-54"><a href="#cb36-54" aria-hidden="true" tabindex="-1"></a>    first_degree_rules.add_patterns(first_degree_address_patterns)</span>
+<span id="cb36-55"><a href="#cb36-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> first_degree_address_nlp                                </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="598220f3" class="cell" data-execution_count="93">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>first_degree_address_nlp <span class="op">=</span> create_first_degree_address_nlp(first_degree_address_patterns)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, doc <span class="kw">in</span> <span class="bu">enumerate</span>(first_degree_address_nlp.pipe(sample_address_sentences,</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>             as_tuples<span class="op">=</span><span class="va">False</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>            )):</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\033</span><span class="ss">[1mProcessing Sentence </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss"> </span><span class="ch">\033</span><span class="ss">[1m"</span>)</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    displacy.render(doc,</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>                    style<span class="op">=</span><span class="st">'ent'</span>,</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>                   )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 0 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    1
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_DOOR_NUM</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    American rd
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_STREET_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Dearborn
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    MI
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    48126
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ZIP_CODE</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    United States
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 1 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    one
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_DOOR_NUM</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    American Road Dearborb Michigan
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    48126
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ZIP_CODE</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    United States
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 2 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    1
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_DOOR_NUM</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    American High way
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_STREET_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    South Dakota
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    48126
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ZIP_CODE</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    United States
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 3 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    1
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_DOOR_NUM</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    American rd
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_STREET_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Dearborn
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    MI
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    United States
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 4 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    717
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_DOOR_NUM</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    N 2ND ST
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_STREET_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    MANKATO
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    MN
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    56001
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ZIP_CODE</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    US
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 5 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    717
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_DOOR_NUM</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    N 2ND ST
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_STREET_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    MANKATO
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    MN
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    56001
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ZIP_CODE</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 6 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    717
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_DOOR_NUM</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    N 2ND ST
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_STREET_NAME</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    MANKATO MN
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    56001
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ZIP_CODE</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 7 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Dearborn Michigan
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 8 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Chennai
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    TamilNadu
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 9 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Dearborn
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Michigan
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 10 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    PO Box 107050
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">P_O_BOX</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Albany
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    NY
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    12201-7050
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ZIP_CODE</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 11 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    PO Box 107050
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">P_O_BOX</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Albany
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    NY
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    12201
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ZIP_CODE</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 12 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    P.O. Box 107050
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">P_O_BOX</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Albany
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    NY
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    12201-7050
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ZIP_CODE</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 13 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    P.O. Box 107050
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">P_O_BOX</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Albany
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    NY
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    12201
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ZIP_CODE</span>
+</mark>
+</div></span>
+</div>
+</div>
+<div id="f3bb7950" class="cell" data-execution_count="102">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pattern for: 1 American rd, Dearborn, MI 48126, United States</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pattenr for: 1 American High way, South Dakota 48126, United States</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="co"># pattern for: 1 American rd, Dearborn, MI, United States</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="co"># pattern for: 717 N 2ND ST, MANKATO, MN 56001 US</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>ADDRESS_PATTERN_1 <span class="op">=</span> [{<span class="st">"label"</span>:<span class="st">"ADDRESS"</span>,</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"pattern"</span>:[{<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_DOOR_NUM"</span>},</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_STREET_NAME"</span>,<span class="st">"OP"</span>:<span class="st">"+"</span>},</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span>,<span class="st">"OP"</span>:<span class="st">"*"</span>},</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span>,<span class="st">"OP"</span>:<span class="st">"*"</span>},</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"ENT_TYPE"</span>:<span class="st">"ZIP_CODE"</span>,<span class="st">"OP"</span>:<span class="st">"*"</span>},</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>}, </span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span>,<span class="st">"OP"</span>:<span class="st">"+"</span>},</span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>                               ]  </span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>                   },</span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>                   ]</span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a><span class="co"># pattern for: one American Road Dearborb Michigan 48126 United States</span></span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>ADDRESS_PATTERN_2 <span class="op">=</span> [{<span class="st">"label"</span>:<span class="st">"ADDRESS"</span>,</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"pattern"</span>:[{<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_DOOR_NUM"</span>},</span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span>,<span class="st">"OP"</span>:<span class="st">"+"</span>},</span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"ENT_TYPE"</span>:<span class="st">"ZIP_CODE"</span>,<span class="st">"OP"</span>:<span class="st">"*"</span>},</span>
+<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>}, </span>
+<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a>                                {<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span>,<span class="st">"OP"</span>:<span class="st">"+"</span>},</span>
+<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a>                               ]  </span>
+<span id="cb52-31"><a href="#cb52-31" aria-hidden="true" tabindex="-1"></a>                   },</span>
+<span id="cb52-32"><a href="#cb52-32" aria-hidden="true" tabindex="-1"></a>                   ]</span>
+<span id="cb52-33"><a href="#cb52-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-34"><a href="#cb52-34" aria-hidden="true" tabindex="-1"></a><span class="co"># 717 N 2ND ST, MANKATO, MN, 56001</span></span>
+<span id="cb52-35"><a href="#cb52-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 717 N 2ND ST MANKATO MN 56001</span></span>
+<span id="cb52-36"><a href="#cb52-36" aria-hidden="true" tabindex="-1"></a>ADDRESS_PATTERN_3 <span class="op">=</span> [{<span class="st">"label"</span>: <span class="st">"ADDRESS"</span>,</span>
+<span id="cb52-37"><a href="#cb52-37" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"pattern"</span>:[{<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_DOOR_NUM"</span>},</span>
+<span id="cb52-38"><a href="#cb52-38" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-39"><a href="#cb52-39" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_STREET_NAME"</span>,<span class="st">"OP"</span>:<span class="st">"+"</span>},</span>
+<span id="cb52-40"><a href="#cb52-40" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-41"><a href="#cb52-41" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span>,<span class="st">"OP"</span>:<span class="st">"+"</span>},</span>
+<span id="cb52-42"><a href="#cb52-42" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-43"><a href="#cb52-43" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"ENT_TYPE"</span>:<span class="st">"ZIP_CODE"</span>,<span class="st">"OP"</span>:<span class="st">"+"</span>},</span>
+<span id="cb52-44"><a href="#cb52-44" aria-hidden="true" tabindex="-1"></a>                      ]</span>
+<span id="cb52-45"><a href="#cb52-45" aria-hidden="true" tabindex="-1"></a>                     }</span>
+<span id="cb52-46"><a href="#cb52-46" aria-hidden="true" tabindex="-1"></a>                    ]</span>
+<span id="cb52-47"><a href="#cb52-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-48"><a href="#cb52-48" aria-hidden="true" tabindex="-1"></a><span class="co"># Chennai, TamilNadu</span></span>
+<span id="cb52-49"><a href="#cb52-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Dearborn Michigan</span></span>
+<span id="cb52-50"><a href="#cb52-50" aria-hidden="true" tabindex="-1"></a>ADDRESS_PATTERN_4 <span class="op">=</span> [{<span class="st">"label"</span>: <span class="st">"ADDRESS"</span>,</span>
+<span id="cb52-51"><a href="#cb52-51" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"pattern"</span>:[{<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span>,<span class="st">"OP"</span>:<span class="st">"+"</span>},</span>
+<span id="cb52-52"><a href="#cb52-52" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-53"><a href="#cb52-53" aria-hidden="true" tabindex="-1"></a>                      ]</span>
+<span id="cb52-54"><a href="#cb52-54" aria-hidden="true" tabindex="-1"></a>                     }</span>
+<span id="cb52-55"><a href="#cb52-55" aria-hidden="true" tabindex="-1"></a>                    ]</span>
+<span id="cb52-56"><a href="#cb52-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-57"><a href="#cb52-57" aria-hidden="true" tabindex="-1"></a><span class="co"># PO Box 107050, Albany, NY 12201-7050</span></span>
+<span id="cb52-58"><a href="#cb52-58" aria-hidden="true" tabindex="-1"></a><span class="co"># PO Box 107050, Albany, NY 12201</span></span>
+<span id="cb52-59"><a href="#cb52-59" aria-hidden="true" tabindex="-1"></a><span class="co"># PO Box 107050, Albany, NY, US 12201</span></span>
+<span id="cb52-60"><a href="#cb52-60" aria-hidden="true" tabindex="-1"></a>ADDRESS_PATTERN_5 <span class="op">=</span> [{<span class="st">"label"</span>: <span class="st">"ADDRESS"</span>,</span>
+<span id="cb52-61"><a href="#cb52-61" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"pattern"</span>:[{<span class="st">"ENT_TYPE"</span>:<span class="st">"P_O_BOX"</span>,<span class="st">"OP"</span>:<span class="st">"+"</span>},</span>
+<span id="cb52-62"><a href="#cb52-62" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-63"><a href="#cb52-63" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span>,<span class="st">"OP"</span>:<span class="st">"+"</span>},</span>
+<span id="cb52-64"><a href="#cb52-64" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-65"><a href="#cb52-65" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span>,<span class="st">"OP"</span>:<span class="st">"+"</span>},</span>
+<span id="cb52-66"><a href="#cb52-66" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-67"><a href="#cb52-67" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"ENT_TYPE"</span>:<span class="st">"POTENTIAL_CITY_OR_STATE_OR_COUNTRY_NAME"</span>,<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-68"><a href="#cb52-68" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"TEXT"</span>:{<span class="st">"REGEX"</span>:<span class="st">"</span><span class="ch">\\</span><span class="st">W{1,2}"</span>},<span class="st">"OP"</span>:<span class="st">"?"</span>},</span>
+<span id="cb52-69"><a href="#cb52-69" aria-hidden="true" tabindex="-1"></a>                                 {<span class="st">"ENT_TYPE"</span>:<span class="st">"ZIP_CODE"</span>,<span class="st">"OP"</span>:<span class="st">"+"</span>},</span>
+<span id="cb52-70"><a href="#cb52-70" aria-hidden="true" tabindex="-1"></a>                                 </span>
+<span id="cb52-71"><a href="#cb52-71" aria-hidden="true" tabindex="-1"></a>                      ]</span>
+<span id="cb52-72"><a href="#cb52-72" aria-hidden="true" tabindex="-1"></a>                     }</span>
+<span id="cb52-73"><a href="#cb52-73" aria-hidden="true" tabindex="-1"></a>                    ]</span>
+<span id="cb52-74"><a href="#cb52-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-75"><a href="#cb52-75" aria-hidden="true" tabindex="-1"></a>second_degree_address_patterns <span class="op">=</span> ADDRESS_PATTERN_1 <span class="op">+</span> ADDRESS_PATTERN_2 <span class="op">+</span> ADDRESS_PATTERN_3 <span class="op">+</span> ADDRESS_PATTERN_4 <span class="op">+</span> ADDRESS_PATTERN_5</span>
+<span id="cb52-76"><a href="#cb52-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-77"><a href="#cb52-77" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_second_degree_address_nlp(first_degree_address_patterns,</span>
+<span id="cb52-78"><a href="#cb52-78" aria-hidden="true" tabindex="-1"></a>                                          second_degree_address_patterns</span>
+<span id="cb52-79"><a href="#cb52-79" aria-hidden="true" tabindex="-1"></a>                                         ):</span>
+<span id="cb52-80"><a href="#cb52-80" aria-hidden="true" tabindex="-1"></a>    second_degree_address_nlp <span class="op">=</span> spacy.load(<span class="st">'en_core_web_sm'</span>, disable<span class="op">=</span>[<span class="st">'ner'</span>])</span>
+<span id="cb52-81"><a href="#cb52-81" aria-hidden="true" tabindex="-1"></a>    rules_config <span class="op">=</span> {<span class="st">"validate"</span>: <span class="va">True</span>,</span>
+<span id="cb52-82"><a href="#cb52-82" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"overwrite_ents"</span>: <span class="va">True</span>,</span>
+<span id="cb52-83"><a href="#cb52-83" aria-hidden="true" tabindex="-1"></a>                   }</span>
+<span id="cb52-84"><a href="#cb52-84" aria-hidden="true" tabindex="-1"></a>    first_degree_rules <span class="op">=</span> second_degree_address_nlp.add_pipe(<span class="st">"entity_ruler"</span>,</span>
+<span id="cb52-85"><a href="#cb52-85" aria-hidden="true" tabindex="-1"></a>                                                           <span class="st">"first_degree_rules"</span>,</span>
+<span id="cb52-86"><a href="#cb52-86" aria-hidden="true" tabindex="-1"></a>                                                           config<span class="op">=</span>rules_config)</span>
+<span id="cb52-87"><a href="#cb52-87" aria-hidden="true" tabindex="-1"></a>    first_degree_rules.add_patterns(first_degree_address_patterns)</span>
+<span id="cb52-88"><a href="#cb52-88" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb52-89"><a href="#cb52-89" aria-hidden="true" tabindex="-1"></a>    second_degree_rules <span class="op">=</span> second_degree_address_nlp.add_pipe(<span class="st">"entity_ruler"</span>,</span>
+<span id="cb52-90"><a href="#cb52-90" aria-hidden="true" tabindex="-1"></a>                                                           <span class="st">"second_degree_rules"</span>,</span>
+<span id="cb52-91"><a href="#cb52-91" aria-hidden="true" tabindex="-1"></a>                                                           config<span class="op">=</span>rules_config,</span>
+<span id="cb52-92"><a href="#cb52-92" aria-hidden="true" tabindex="-1"></a>                                                           after<span class="op">=</span><span class="st">'first_degree_rules'</span>)</span>
+<span id="cb52-93"><a href="#cb52-93" aria-hidden="true" tabindex="-1"></a>    second_degree_rules.add_patterns(second_degree_address_patterns)</span>
+<span id="cb52-94"><a href="#cb52-94" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> second_degree_address_nlp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="c73b490f" class="cell" data-execution_count="103">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>second_degree_address_nlp <span class="op">=</span> create_second_degree_address_nlp(first_degree_address_patterns, second_degree_address_patterns)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, doc <span class="kw">in</span> <span class="bu">enumerate</span>(second_degree_address_nlp.pipe(sample_address_sentences,</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>             as_tuples<span class="op">=</span><span class="va">False</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>            )):</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\033</span><span class="ss">[1mProcessing Sentence </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss"> </span><span class="ch">\033</span><span class="ss">[1m"</span>)</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>    displacy.render(doc,</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>                    style<span class="op">=</span><span class="st">'ent'</span>,</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>                   )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 0 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    1 American rd, Dearborn, MI 48126, United States
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 1 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    one American Road Dearborb Michigan 48126 United States
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 2 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    1 American High way, South Dakota 48126, United States
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 3 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    1 American rd, Dearborn, MI, United States
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 4 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    717 N 2ND ST, MANKATO, MN 56001 US
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 5 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    717 N 2ND ST, MANKATO, MN
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+, 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    56001
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ZIP_CODE</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 6 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    717 N 2ND ST MANKATO MN 56001
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 7 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Dearborn Michigan
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 8 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Chennai,
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    TamilNadu
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 9 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Dearborn,
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Michigan
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 10 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    PO Box 107050, Albany, NY 12201-7050
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 11 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    PO Box 107050, Albany, NY 12201
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 12 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    P.O. Box 107050, Albany, NY 12201-7050
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 13 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">My office is located at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    P.O. Box 107050, Albany, NY 12201
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ADDRESS</span>
+</mark>
+</div></span>
+</div>
+</div>
+</section>
+</section>
+<section id="how-to-save-rules-ner-as-a-package" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-save-rules-ner-as-a-package">4. How to save Rules NER as a package</h2>
+<ul>
+<li>Save the rules ner model <code>phone_nlp</code> to a physical location using <code>nlp.to_disk</code></li>
+<li>Save the custom components in a py file <code>spacy_rules_ner/phone_functions.py</code></li>
+<li>use <code>python -m spacy package input_dir output_dir --code location/to/custom_components.py --name new_model_name</code> to generate <code>.tar.gz</code> format package</li>
+<li>Pip install the tar.gz file using <code>pip install location/to/tar.gz</code></li>
+<li><code>spacy.load('new_model_name')</code> will load your package with custom components</li>
+</ul>
+<div id="b99f0a00" class="cell" data-execution_count="104">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir <span class="op">-</span>p spacy_rules_ner<span class="op">/</span>phone_nlp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="dd8684ef" class="cell" data-execution_count="105">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Let us save the `phone_nlp` and the custom component pipeline </span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>phone_nlp.to_disk(<span class="st">'spacy_rules_ner/phone_nlp'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="05e70409" class="cell" data-execution_count="109">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>ls spacy_rules_ner<span class="op">/</span>phone_nlp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>attribute_ruler  lemmatizer  ner     phone_nlp_rules  tagger   tokenizer
+config.cfg   meta.json   parser  senter       tok2vec  vocab</code></pre>
+</div>
+</div>
+<div id="e81f1b72" class="cell" data-execution_count="128">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>writefile spacy_rules_ner<span class="op">/</span>phone_functions.py</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re </span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy <span class="im">import</span> Language</span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy.tokens <span class="im">import</span> Span</span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy.util <span class="im">import</span> filter_spans</span>
+<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_entity_ruler_based_phone_pattern(location_spacy_json):</span>
+<span id="cb72-11"><a href="#cb72-11" aria-hidden="true" tabindex="-1"></a>    loaded_spacy_patterns <span class="op">=</span> json.load(<span class="bu">open</span>(location_spacy_json,<span class="st">'r'</span>,encoding<span class="op">=</span><span class="st">'utf-8'</span>))</span>
+<span id="cb72-12"><a href="#cb72-12" aria-hidden="true" tabindex="-1"></a>    phone_nlp <span class="op">=</span> spacy.load(<span class="st">'en_core_web_sm'</span>, disable<span class="op">=</span>[<span class="st">'ner'</span>])</span>
+<span id="cb72-13"><a href="#cb72-13" aria-hidden="true" tabindex="-1"></a>    rules_config <span class="op">=</span> {</span>
+<span id="cb72-14"><a href="#cb72-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"validate"</span>: <span class="va">True</span>,</span>
+<span id="cb72-15"><a href="#cb72-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"overwrite_ents"</span>: <span class="va">True</span>,</span>
+<span id="cb72-16"><a href="#cb72-16" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb72-17"><a href="#cb72-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-18"><a href="#cb72-18" aria-hidden="true" tabindex="-1"></a>    phone_nlp_rules <span class="op">=</span> phone_nlp.add_pipe(<span class="st">"entity_ruler"</span>, <span class="co"># invoke entity_ruler pipe </span></span>
+<span id="cb72-19"><a href="#cb72-19" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"phone_nlp_rules"</span>, <span class="co"># give a name to the pipe</span></span>
+<span id="cb72-20"><a href="#cb72-20" aria-hidden="true" tabindex="-1"></a>                                         config<span class="op">=</span>rules_config)</span>
+<span id="cb72-21"><a href="#cb72-21" aria-hidden="true" tabindex="-1"></a>    phone_nlp_rules.add_patterns(loaded_spacy_patterns) <span class="co"># load patterns to the `phone_nlp_rules` pipe of `phone_nlp` model</span></span>
+<span id="cb72-22"><a href="#cb72-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> phone_nlp</span>
+<span id="cb72-23"><a href="#cb72-23" aria-hidden="true" tabindex="-1"></a>       </span>
+<span id="cb72-24"><a href="#cb72-24" aria-hidden="true" tabindex="-1"></a>location_spacy_json <span class="op">=</span> <span class="st">'spacy_rules_ner/phone_patterns.json'</span></span>
+<span id="cb72-25"><a href="#cb72-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-26"><a href="#cb72-26" aria-hidden="true" tabindex="-1"></a>phone_nlp <span class="op">=</span> load_entity_ruler_based_phone_pattern(location_spacy_json)</span>
+<span id="cb72-27"><a href="#cb72-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-28"><a href="#cb72-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pipeline Components before adding regex custom component:"</span>)</span>
+<span id="cb72-29"><a href="#cb72-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(phone_nlp.pipe_names)</span>
+<span id="cb72-30"><a href="#cb72-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb72-31"><a href="#cb72-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Entities tracked in phone_nlp_rules"</span>)</span>
+<span id="cb72-32"><a href="#cb72-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(phone_nlp.pipe_labels[<span class="st">'phone_nlp_rules'</span>])</span>
+<span id="cb72-33"><a href="#cb72-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-34"><a href="#cb72-34" aria-hidden="true" tabindex="-1"></a>phone_regex_pattern <span class="op">=</span> <span class="vs">r"([+]?[\d]?[\d]?.?[(]?\d</span><span class="sc">{3}</span><span class="vs">[)]?.?\d</span><span class="sc">{3}</span><span class="vs">.?\d</span><span class="sc">{4}</span><span class="vs">)"</span></span>
+<span id="cb72-35"><a href="#cb72-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-36"><a href="#cb72-36" aria-hidden="true" tabindex="-1"></a><span class="co">#noting the token position for every character in a doc</span></span>
+<span id="cb72-37"><a href="#cb72-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-38"><a href="#cb72-38" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_chars2tokens_dict(doc):</span>
+<span id="cb72-39"><a href="#cb72-39" aria-hidden="true" tabindex="-1"></a>    chars_to_tokens <span class="op">=</span> {}</span>
+<span id="cb72-40"><a href="#cb72-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> token <span class="kw">in</span> doc:</span>
+<span id="cb72-41"><a href="#cb72-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(token.idx, token.idx <span class="op">+</span> <span class="bu">len</span>(token.text)):</span>
+<span id="cb72-42"><a href="#cb72-42" aria-hidden="true" tabindex="-1"></a>            chars_to_tokens[i] <span class="op">=</span> token.i</span>
+<span id="cb72-43"><a href="#cb72-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> chars_to_tokens</span>
+<span id="cb72-44"><a href="#cb72-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-45"><a href="#cb72-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-46"><a href="#cb72-46" aria-hidden="true" tabindex="-1"></a><span class="at">@Language.component</span>(<span class="st">"phone_multitoken_regex_capture"</span>)</span>
+<span id="cb72-47"><a href="#cb72-47" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> phone_multitoken_regex_capture(doc):</span>
+<span id="cb72-48"><a href="#cb72-48" aria-hidden="true" tabindex="-1"></a>    original_ents <span class="op">=</span> <span class="bu">list</span>(doc.ents)</span>
+<span id="cb72-49"><a href="#cb72-49" aria-hidden="true" tabindex="-1"></a>    chars_to_tokens <span class="op">=</span> generate_chars2tokens_dict(doc)</span>
+<span id="cb72-50"><a href="#cb72-50" aria-hidden="true" tabindex="-1"></a>    phone_regex_ents <span class="op">=</span> []</span>
+<span id="cb72-51"><a href="#cb72-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> match <span class="kw">in</span> re.finditer(phone_regex_pattern, doc.text):</span>
+<span id="cb72-52"><a href="#cb72-52" aria-hidden="true" tabindex="-1"></a>        start, end <span class="op">=</span> match.span()</span>
+<span id="cb72-53"><a href="#cb72-53" aria-hidden="true" tabindex="-1"></a>        span <span class="op">=</span> doc.char_span(start, end)</span>
+<span id="cb72-54"><a href="#cb72-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> span <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb72-55"><a href="#cb72-55" aria-hidden="true" tabindex="-1"></a>            phone_regex_ents.append((span.start, span.end, span.text))</span>
+<span id="cb72-56"><a href="#cb72-56" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb72-57"><a href="#cb72-57" aria-hidden="true" tabindex="-1"></a>            start_token <span class="op">=</span> chars_to_tokens.get(start)</span>
+<span id="cb72-58"><a href="#cb72-58" aria-hidden="true" tabindex="-1"></a>            end_token <span class="op">=</span> chars_to_tokens.get(end)</span>
+<span id="cb72-59"><a href="#cb72-59" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> start_token <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> end_token <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb72-60"><a href="#cb72-60" aria-hidden="true" tabindex="-1"></a>                span <span class="op">=</span> doc[start_token:end_token <span class="op">+</span> <span class="dv">1</span>]</span>
+<span id="cb72-61"><a href="#cb72-61" aria-hidden="true" tabindex="-1"></a>                phone_regex_ents.append((span.start, span.end, span.text))</span>
+<span id="cb72-62"><a href="#cb72-62" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> regex_ent <span class="kw">in</span> phone_regex_ents:</span>
+<span id="cb72-63"><a href="#cb72-63" aria-hidden="true" tabindex="-1"></a>        start_char, end_char, span_text <span class="op">=</span> regex_ent</span>
+<span id="cb72-64"><a href="#cb72-64" aria-hidden="true" tabindex="-1"></a>        proper_spacy_ent <span class="op">=</span> Span(doc, start_char, end_char, label<span class="op">=</span><span class="st">"PHONE"</span>)</span>
+<span id="cb72-65"><a href="#cb72-65" aria-hidden="true" tabindex="-1"></a>        original_ents.append(proper_spacy_ent)     </span>
+<span id="cb72-66"><a href="#cb72-66" aria-hidden="true" tabindex="-1"></a>    filtered <span class="op">=</span> filter_spans(original_ents) <span class="co">#removes overlapping ents</span></span>
+<span id="cb72-67"><a href="#cb72-67" aria-hidden="true" tabindex="-1"></a>    doc.ents <span class="op">=</span> filtered</span>
+<span id="cb72-68"><a href="#cb72-68" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> doc</span>
+<span id="cb72-69"><a href="#cb72-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-70"><a href="#cb72-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-71"><a href="#cb72-71" aria-hidden="true" tabindex="-1"></a>phone_nlp.add_pipe(<span class="st">"phone_multitoken_regex_capture"</span>, after<span class="op">=</span><span class="st">"phone_nlp_rules"</span>)</span>
+<span id="cb72-72"><a href="#cb72-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-73"><a href="#cb72-73" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pipeline Components after adding regex custom component:"</span>)</span>
+<span id="cb72-74"><a href="#cb72-74" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(phone_nlp.pipe_names)</span>
+<span id="cb72-75"><a href="#cb72-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-76"><a href="#cb72-76" aria-hidden="true" tabindex="-1"></a><span class="co"># inspiration for the above code piece: </span></span>
+<span id="cb72-77"><a href="#cb72-77" aria-hidden="true" tabindex="-1"></a><span class="co"># https://spacy.io/usage/rule-based-matching#regex-text</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Overwriting spacy_rules_ner/phone_functions.py</code></pre>
+</div>
+</div>
+<div id="4e908912" class="cell" data-execution_count="131">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the output_dir</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir <span class="op">-</span>p .<span class="op">/</span>spacy_rules_ner<span class="op">/</span>packaged_phone_nlp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="e6955185" class="cell" data-execution_count="136">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co"># now let us package the `phone_nlp`</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>python3 <span class="op">-</span>m spacy package .<span class="op">/</span>spacy_rules_ner<span class="op">/</span>phone_nlp .<span class="op">/</span>spacy_rules_ner<span class="op">/</span>packaged_phone_nlp <span class="op">--</span>code spacy_rules_ner<span class="op">/</span>phone_functions.py <span class="op">--</span>name phone_nlp_2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>ℹ Building package artifacts: sdist
+Pipeline Components before adding regex custom component:
+['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules']
+
+Entities tracked in phone_nlp_rules
+['PHONE']
+Pipeline Components after adding regex custom component:
+['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules', 'phone_multitoken_regex_capture']
+✔ Including 1 Python module(s) with custom code
+✔ Loaded meta.json from file
+spacy_rules_ner/phone_nlp/meta.json
+✔ Generated README.md from meta.json
+✔ Successfully created package 'en_phone_nlp_2-3.1.0'
+spacy_rules_ner/packaged_phone_nlp/en_phone_nlp_2-3.1.0
+running sdist
+running egg_info
+creating en_phone_nlp_2.egg-info
+writing en_phone_nlp_2.egg-info/PKG-INFO
+writing dependency_links to en_phone_nlp_2.egg-info/dependency_links.txt
+writing entry points to en_phone_nlp_2.egg-info/entry_points.txt
+writing requirements to en_phone_nlp_2.egg-info/requires.txt
+writing top-level names to en_phone_nlp_2.egg-info/top_level.txt
+writing manifest file 'en_phone_nlp_2.egg-info/SOURCES.txt'
+reading manifest file 'en_phone_nlp_2.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+warning: no files found matching 'LICENSE'
+warning: no files found matching 'LICENSES_SOURCES'
+writing manifest file 'en_phone_nlp_2.egg-info/SOURCES.txt'
+running check
+creating en_phone_nlp_2-3.1.0
+creating en_phone_nlp_2-3.1.0/en_phone_nlp_2
+creating en_phone_nlp_2-3.1.0/en_phone_nlp_2.egg-info
+creating en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0
+creating en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/attribute_ruler
+creating en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/lemmatizer
+creating en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/lemmatizer/lookups
+creating en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/ner
+creating en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/parser
+creating en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/phone_nlp_rules
+creating en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/senter
+creating en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/tagger
+creating en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/tok2vec
+creating en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/vocab
+copying files to en_phone_nlp_2-3.1.0...
+copying MANIFEST.in -&gt; en_phone_nlp_2-3.1.0
+copying README.md -&gt; en_phone_nlp_2-3.1.0
+copying meta.json -&gt; en_phone_nlp_2-3.1.0
+copying setup.py -&gt; en_phone_nlp_2-3.1.0
+copying en_phone_nlp_2/__init__.py -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2
+copying en_phone_nlp_2/meta.json -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2
+copying en_phone_nlp_2/phone_functions.py -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2
+copying en_phone_nlp_2.egg-info/PKG-INFO -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2.egg-info
+copying en_phone_nlp_2.egg-info/SOURCES.txt -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2.egg-info
+copying en_phone_nlp_2.egg-info/dependency_links.txt -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2.egg-info
+copying en_phone_nlp_2.egg-info/entry_points.txt -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2.egg-info
+copying en_phone_nlp_2.egg-info/not-zip-safe -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2.egg-info
+copying en_phone_nlp_2.egg-info/requires.txt -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2.egg-info
+copying en_phone_nlp_2.egg-info/top_level.txt -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2.egg-info
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/README.md -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/config.cfg -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/meta.json -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/tokenizer -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/attribute_ruler/patterns -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/attribute_ruler
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/lemmatizer/lookups/lookups.bin -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/lemmatizer/lookups
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/ner/cfg -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/ner
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/ner/model -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/ner
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/ner/moves -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/ner
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/parser/cfg -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/parser
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/parser/model -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/parser
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/parser/moves -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/parser
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/phone_nlp_rules/cfg -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/phone_nlp_rules
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/phone_nlp_rules/patterns.jsonl -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/phone_nlp_rules
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/senter/cfg -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/senter
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/senter/model -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/senter
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/tagger/cfg -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/tagger
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/tagger/model -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/tagger
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/tok2vec/cfg -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/tok2vec
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/tok2vec/model -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/tok2vec
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/vocab/key2row -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/vocab
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/vocab/lookups.bin -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/vocab
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/vocab/strings.json -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/vocab
+copying en_phone_nlp_2/en_phone_nlp_2-3.1.0/vocab/vectors -&gt; en_phone_nlp_2-3.1.0/en_phone_nlp_2/en_phone_nlp_2-3.1.0/vocab
+Writing en_phone_nlp_2-3.1.0/setup.cfg
+creating dist
+Creating tar archive
+removing 'en_phone_nlp_2-3.1.0' (and everything under it)
+✔ Successfully created zipped Python package
+spacy_rules_ner/packaged_phone_nlp/en_phone_nlp_2-3.1.0/dist/en_phone_nlp_2-3.1.0.tar.gz</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>The generated <code>tar.gz</code> files can be shared and pip installed</p>
+</blockquote>
+<div id="58aadc35" class="cell" data-execution_count="137">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install spacy_rules_ner<span class="op">/</span>packaged_phone_nlp<span class="op">/</span>en_phone_nlp_2<span class="op">-</span><span class="fl">3.1.0</span><span class="op">/</span>dist<span class="op">/</span>en_phone_nlp_2<span class="op">-</span><span class="fl">3.1.0</span>.tar.gz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Defaulting to user installation because normal site-packages is not writeable
+Processing ./spacy_rules_ner/packaged_phone_nlp/en_phone_nlp_2-3.1.0/dist/en_phone_nlp_2-3.1.0.tar.gz
+  Preparing metadata (setup.py) ... done
+Requirement already satisfied: spacy&lt;3.2.0,&gt;=3.1.3 in /usr/local/lib/python3.7/dist-packages (from en-phone-nlp-2==3.1.0) (3.1.3)
+Requirement already satisfied: requests&lt;3.0.0,&gt;=2.13.0 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (2.26.0)
+Requirement already satisfied: preshed&lt;3.1.0,&gt;=3.0.2 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (3.0.5)
+Requirement already satisfied: pathy&gt;=0.3.5 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (0.6.0)
+Requirement already satisfied: typer&lt;0.5.0,&gt;=0.3.0 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (0.4.0)
+Requirement already satisfied: srsly&lt;3.0.0,&gt;=2.4.1 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (2.4.1)
+Requirement already satisfied: catalogue&lt;2.1.0,&gt;=2.0.6 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (2.0.6)
+Requirement already satisfied: typing-extensions&lt;4.0.0.0,&gt;=3.7.4 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (3.10.0.2)
+Requirement already satisfied: pydantic!=1.8,!=1.8.1,&lt;1.9.0,&gt;=1.7.4 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (1.8.2)
+Requirement already satisfied: thinc&lt;8.1.0,&gt;=8.0.9 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (8.0.10)
+Requirement already satisfied: tqdm&lt;5.0.0,&gt;=4.38.0 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (4.62.2)
+Requirement already satisfied: jinja2 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (3.0.1)
+Requirement already satisfied: blis&lt;0.8.0,&gt;=0.4.0 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (0.7.4)
+Requirement already satisfied: setuptools in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (59.1.1)
+Requirement already satisfied: packaging&gt;=20.0 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (21.0)
+Requirement already satisfied: cymem&lt;2.1.0,&gt;=2.0.2 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (2.0.5)
+Requirement already satisfied: spacy-legacy&lt;3.1.0,&gt;=3.0.8 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (3.0.8)
+Requirement already satisfied: murmurhash&lt;1.1.0,&gt;=0.28.0 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (1.0.5)
+Requirement already satisfied: wasabi&lt;1.1.0,&gt;=0.8.1 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (0.8.2)
+Requirement already satisfied: numpy&gt;=1.15.0 in /usr/local/lib/python3.7/dist-packages (from spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (1.21.2)
+Requirement already satisfied: zipp&gt;=0.5 in /usr/local/lib/python3.7/dist-packages (from catalogue&lt;2.1.0,&gt;=2.0.6-&gt;spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (3.5.0)
+Requirement already satisfied: pyparsing&gt;=2.0.2 in /usr/local/lib/python3.7/dist-packages (from packaging&gt;=20.0-&gt;spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (2.4.7)
+Requirement already satisfied: smart-open&lt;6.0.0,&gt;=5.0.0 in /usr/local/lib/python3.7/dist-packages (from pathy&gt;=0.3.5-&gt;spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (5.2.1)
+Requirement already satisfied: certifi&gt;=2017.4.17 in /usr/lib/python3/dist-packages (from requests&lt;3.0.0,&gt;=2.13.0-&gt;spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (2019.11.28)
+Requirement already satisfied: charset-normalizer~=2.0.0 in /usr/local/lib/python3.7/dist-packages (from requests&lt;3.0.0,&gt;=2.13.0-&gt;spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (2.0.7)
+Requirement already satisfied: idna&lt;4,&gt;=2.5 in /usr/lib/python3/dist-packages (from requests&lt;3.0.0,&gt;=2.13.0-&gt;spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (2.8)
+Requirement already satisfied: urllib3&lt;1.27,&gt;=1.21.1 in /usr/lib/python3/dist-packages (from requests&lt;3.0.0,&gt;=2.13.0-&gt;spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (1.25.8)
+Requirement already satisfied: click&lt;9.0.0,&gt;=7.1.1 in /usr/local/lib/python3.7/dist-packages (from typer&lt;0.5.0,&gt;=0.3.0-&gt;spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (7.1.2)
+Requirement already satisfied: MarkupSafe&gt;=2.0 in /usr/local/lib/python3.7/dist-packages (from jinja2-&gt;spacy&lt;3.2.0,&gt;=3.1.3-&gt;en-phone-nlp-2==3.1.0) (2.0.1)
+Building wheels for collected packages: en-phone-nlp-2
+  Building wheel for en-phone-nlp-2 (setup.py) ... done
+  Created wheel for en-phone-nlp-2: filename=en_phone_nlp_2-3.1.0-py3-none-any.whl size=13618384 sha256=86d51e0f37b26c932184654dd4b82ad7475f0cf41d1e32499263b505a4ea151a
+  Stored in directory: /path/to/dir/.cache/pip/wheels/04/04/8d/81eaf26a25f7dfa433e1be3ad7e6524e81e9a4172a3d9d0d06
+Successfully built en-phone-nlp-2
+Installing collected packages: en-phone-nlp-2
+Successfully installed en-phone-nlp-2-3.1.0
+WARNING: You are using pip version 21.3.1; however, version 22.1 is available.
+You should consider upgrading via the '/usr/bin/python3 -m pip install --upgrade pip' command.</code></pre>
+</div>
+</div>
+<div id="82566e7b" class="cell" data-execution_count="138">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>phone_nlp_new <span class="op">=</span> spacy.load(<span class="st">'en_phone_nlp_2'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pipeline Components before adding regex custom component:
+['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules']
+
+Entities tracked in phone_nlp_rules
+['PHONE']
+Pipeline Components after adding regex custom component:
+['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'phone_nlp_rules', 'phone_multitoken_regex_capture']</code></pre>
+</div>
+</div>
+<div id="f15562b9" class="cell" data-execution_count="139">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, doc <span class="kw">in</span> <span class="bu">enumerate</span>(phone_nlp_new.pipe(sample_phone_sentences,</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>             as_tuples<span class="op">=</span><span class="va">False</span></span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>            )):</span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\033</span><span class="ss">[1mProcessing Sentence </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss"> </span><span class="ch">\033</span><span class="ss">[1m"</span>)</span>
+<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a>    displacy.render(doc,</span>
+<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a>                    style<span class="op">=</span><span class="st">'ent'</span>,</span>
+<span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a>                   )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 0 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    +1 (901)-985-4567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 1 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    +1(901)-985-4567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 2 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    (901) 985 4567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing Sentence 3 </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">If you want to talk more. Reach me at 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    9019854567
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PHONE</span>
+</mark>
+</div></span>
+</div>
+</div>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">5. Conclusion</h2>
+<ul>
+<li>By building ner rules models for <code>MODEL_NAMES</code>, <code>PHONE</code> and <code>ADDRESS</code> entities we discussed the following concepts:
+<ul>
+<li>Spacy’s Token Matcher, Phrase Matcher and our own custom component Regex Matcher</li>
+<li>How to load Spacy patterns from a json file</li>
+<li>How to chain NER entities</li>
+<li>How to save and load ner pipeline with custome component</li>
+</ul></li>
+</ul>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ul>
+<li>Spacy Rules based Matching | <a href="https://spacy.io/usage/rule-based-matching">link</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("git@github\.com-learning:senthilkumarm1901\/learn_by_blogging\.git");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
