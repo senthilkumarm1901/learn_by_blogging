@@ -1,0 +1,361 @@
+---
+author: Senthil Kumar
+badges: true
+branch: master
+categories:
+- LLMs
+- AI Agents
+- LLM Applications
+
+description: While AI Agents are all the rage right now, it is critical to see how these AI Agent systems have come into being - from single LLM API-call applications to the current multi-agent systems.
+
+date: '2025-03-23'
+draft: true
+image: images/image_1.png
+toc: true
+title: "The Evolution of LLM Applications: From Single LLMs to Multi-Agent Applications"
+output-file: 2025-03-23-llm-applications.html
+---
+
+
+# The Evolution of LLM Applications: From Single LLMs to Multi Agent Applications
+
+While AI Agents are all the rage right now, it is critical to see how these AI Agent systems have come into being - from single LLM API-call applications to the current multi-agent systems. 
+In this presentation, I will be taking you through different varieties of LLM Applications one could build. 
+Along with simple system design diagrams depicting what lies under the hood for each type of LLM-powered application, a reference implementation involving libraries like Ollama, CrewAI, LangGraph and OpenAI will be shared during the talk
+
+The focus of this talk is NOT on the codebase (there are a lot of resources to share that!) but on the 25,000 feet view of how the landscape of LLM Applications evolved into its current state. 
+
+## How are Applications leveraging LLMs typically categorized?
+
+<img width="1000" alt="image" src="https://gist.github.com/user-attachments/assets/78cb7f61-8aa9-4065-a3ee-dff537b571ca" />
+
+
+# The Evolution of LLM Applications: From Single LLMs to Multi Agent Applications
+
+> While AI Agents are all the rage right now, it is critical to see how these AI Agent systems have come into being - from single LLM API-call applications to the current multi-agent systems.
+
+- LLM-based applications have evolved dramatically from simple text completion tools to sophisticated AI agents capable of complex decision-making.
+- Understanding this evolution helps developers make more informed architecture choices when building with LLMs.
+- The shift from single API-call setups to full agentic systems reflects growing needs for planning, memory, tool usage, and collaboration.
+- Agentic systems embody intelligence closer to autonomous human workflows rather than isolated completions.
+- This blog will walk through that evolution, illustrating the journey with diagrams and practical examples.
+
+## How are Applications leveraging LLMs typically categorized?
+
+<img width="1000" alt="image" src="https://gist.github.com/user-attachments/assets/78cb7f61-8aa9-4065-a3ee-dff537b571ca" />
+
+**Key Takeaways**:
+- LLM-powered apps fall into two broad categories: Streaming (real-time) and Batch (bulk processing).
+- Agentic applications evolve from these types by adding planning, memory, and tool use.
+- Streaming is ideal for chat interfaces and interactive sessions.
+- Batch is great for high-throughput tasks like summarization or classification at scale.
+- This taxonomy helps frame design choices for real-world implementations.
+
+### 1. A Simple *Streaming* Application (involving 1 LLM api call)
+
+<img width="1049" alt="image" src="https://gist.github.com/user-attachments/assets/3d8b0724-f640-47c4-b787-0ca035101f9a" />
+
+**Alternate View: A Simple Streaming LLM-API Call Application**
+
+```mermaid
+flowchart LR
+  subgraph End_User_Application
+    Q(Query)
+    C[Response]
+  end
+
+  subgraph LLM_Server
+    A[Fixed Prompt Template]
+    B[[LLM]]
+  end
+   Q --> A --> B --> C
+```
+
+**Key Takeaways:**
+- Minimalist design: prompt a user query and return an LLM-generated response.
+- No memory or external tools involved — fast but limited in capability.
+- Great for MVPs or simple assistants.
+- Logic is fixed; customization often requires prompt engineering.
+
+### 2. A Practical Example for a *Streaming* Application: A Chatbot (still involving 1 LLM api call)
+
+<img width="929" alt="image" src="https://gist.github.com/user-attachments/assets/5c608aa6-894c-4549-926d-47a13175a073" />
+
+**Key Takeaways:**
+- Adds contextual history to prompts, enhancing conversational memory.
+- Still makes only one LLM call per message, but simulates continuity.
+- Chat history is stitched manually into each prompt (stateless memory).
+- This architecture is commonly used in apps like ChatGPT or customer support bots.
+
+### 3. A Simple *Batch Job* Application: A Text Classification (involving 1 LLM api call)
+
+<img width="972" alt="image" src="https://gist.github.com/user-attachments/assets/3cbc55a5-6da6-410f-9f75-b1e8d87ea18e" />
+
+**Key Takeaways**:
+- Processes multiple data items (e.g., documents) using the same LLM pipeline.
+- Scales LLM use to bulk operations like tagging or classification.
+- Context or instructions can be dynamically adjusted via prompt templating.
+- External context can be modularized to avoid long, hard-coded prompts.
+
+### Detour: Prompt Engineering in a Batch Job Application
+
+```mermaid
+flowchart LR
+  subgraph End_User_Application
+    User
+    A[(User Data<br> from files)]
+    E[(Response for each file)]
+  end
+  subgraph Prompt_Engineering_System
+    B[Mega Prompt<br>created by<br>Modular Prompts]
+    C[(Main Context)]
+    C2[(Instructions1.txt)]
+    C3[(Instructions2.txt)]
+  end
+  subgraph LLM_Server
+    D[[LLM]]
+  end
+  User --Uploads Files <br> OR<br>Regular Data Ingestion<br>from Source --> A
+  A --Each Data Point--> B
+  C --> B
+  C2 --> B 
+  C3 --> B
+  B --> D --> E
+```
+
+### 4. Extending the Previous *Batch Job* Application Example: A 2-tier Text Classification Pipeline (involving LLM Chaining) 
+
+<img width="1031" alt="image" src="https://gist.github.com/user-attachments/assets/153e8aed-e93d-4e20-be6f-014bbac7a19c" />
+
+**(Alternate View of the LLM Chaining)** 
+
+```mermaid
+flowchart LR
+  A[(User Data<br>from file)] --> B[Prompt Template 1]
+  C[(Externalized<br>Additional Context<br>in Files<br>for avoiding<br>Mega Prompts)] --> B
+  B --> D[[LLM API CALL 1]]
+  D --> E[Answer 1]
+  E --> B2[Prompt Template 2]
+  A --> B2
+  B2 --> G[[LLM API Call 2]]  --> H[Answer 2]
+```
+
+
+**An Example - 2-tier Movie Classification**:
+
+```mermaid
+flowchart LR
+  A[(Movies Data)] --> B[Classify Genre<br>Prompt 1]
+  C[(Requirements Data<br>-List of Genres<br>-List of Sub-genres)] --> B
+  B --> D[[LLM API <br> call 1]]
+  D --> E[Answer1: <br>Predicted Genre]
+  E --> B2[Classify Sub-genre<br>Prompt 2]
+  A --> B2
+  B2 --> G[[LLM API <br> call 2]]  --> H[Answer 2: <br>Predicted Sub-genre]
+```
+**Key Takeaways**
+
+- Uses chained prompts where the output of one LLM call feeds into another.
+- Enables progressive reasoning, like hierarchical classification.
+- Demonstrates how logic can be split into reusable, modular steps.
+- This setup is foundational for more complex pipelines and multi-turn flows.
+
+---
+
+### 5. Retrieval Augmented Generation LLM Application
+
+```mermaid
+flowchart LR
+  A[User Query]
+  B[[Embedding Function Process]]
+  C[(VectorDB + KnowledgeBase)]
+  RD[Relevant Docs]
+  D[(Source <br>Knowledge Documents)]
+  E[[LLM API <br> call]]
+  F[Response]
+  A --> B --> C
+  D --> B --> C
+  C --> RD
+  A --> E
+  RD --> E --> F
+```
+
+**Key Takeaways**:
+- Combines user queries with external knowledge retrieval.
+- Embeddings + vector search = more accurate and context-aware responses.
+- Prevents hallucination by grounding answers in real documents.
+- A powerful architecture for domain-specific assistants (e.g., legal, medical, enterprise).
+
+### 5.1 Embedding Function Process
+
+```mermaid
+flowchart LR
+  A[(Source Knowledge Documents)]
+  B[Each Doc]
+  C[/Semantically<br>Chunked Docs/]
+  D[\Embedding\]
+  E[[Indexing]]
+  F[(Vector DB)]
+  A --Load--> B --Splitting/Chunking-->C
+  C --> D --> E --> F
+```
+
+**Key Takeaways:**
+- Converts raw documents (text/images) into semantically rich embeddings.
+- Embeddings are indexed into a Vector DB for fast similarity search.
+- Document chunking improves search granularity and retrieval accuracy.
+- This process is the foundation for any RAG-based system.
+
+---
+
+## 6. Single Agent Application
+
+```mermaid
+---
+title: Single LLM Agent
+---
+
+flowchart TD
+    
+    subgraph AGENT["Single LLM Agent"]
+        LLM
+        TOOLS
+        Final_Prompt
+        P[(PROMPT TEMPLATE)]
+        subgraph MEMORY
+            B1[(Short-term Memory)]
+            B2[(Long-term Memory)]
+        end
+        subgraph PLANNING
+          T[Task decomposition]
+          CH[Chain of thought/ReAct reasoning]
+        end
+         
+    end
+
+    A[(User Query)] --<br>(1A)--> Final_Prompt
+    P --<br>(1B) General<br>Instructions--> Final_Prompt
+    P --> PLANNING
+    PLANNING --(1C) Agent Planning<br>Instruction --> Final_Prompt
+    Final_Prompt --(2)--> LLM
+    LLM --(3) Makes Action--> TOOLS
+    TOOLS --(4) Gives Response<br>from the Tool--> LLM
+    LLM --(5A)--> MEMORY
+    MEMORY --(5B)--> LLM
+
+
+    AGENT --(6)--> G[Answer]
+```
+
+**Key Takeaways**:
+- Introduces agentic reasoning, memory, and tool use into a single workflow.
+- Utilizes internal planning steps (like Chain-of-Thought or ReAct).
+- Agent can interact with tools (e.g., calculators, file access) and update memory.
+- Serves as a base unit in more complex autonomous systems.
+
+### Example of Single Agent Application: AI Report Generator
+
+> An internal AI tool takes user prompts (e.g., "Generate a summary of Q1 sales data"), plans the task, retrieves relevant files via tools, and composes a report.
+
+```mermaid
+flowchart TD
+    subgraph Prompt_Engineering_System
+        B[Mega Prompt<br>created by<br>Modular Prompts]
+        C[(Main Context)]
+        C2[(Planning - ReAct)]
+        C3[(Additional Instructions.txt)]
+    end
+    A[User Request- Generate Sales Report]
+
+    LLM[[LLM]]
+    TOOL1[/File Access Tool/]
+    TOOL2[/Chart Creator Tool/]
+    MEM[(Memory)]
+    GA(Generated Text)
+    R[[Final Report]]
+    C --> B 
+    C2 --> B
+    C3 --> B
+    A --> B --> LLM
+    LLM --> TOOL1 --> LLM
+    LLM --> TOOL2 --> LLM
+    LLM --> MEM --> LLM
+    LLM --> GA
+    GA --> R
+    MEM --> R
+    TOOL1 --> R 
+    TOOL2 --> R
+```
+
+**Key Takeaways**
+- Task decomposition and ReAct are used to plan and retrieve the data.
+- Tools are used internally to fetch files or generate charts.
+- The system operates independently from the user after the initial input.
+
+---
+
+### 7. Multi Agent Application
+
+**Key Takeaways**:
+- Consists of multiple specialized agents coordinating to complete a task.
+- Shared memory and tools enable collaboration and modular task execution.
+- Parallel execution increases efficiency and allows for specialization.
+- Mirrors real-world human teams, enabling scalable autonomous workflows.
+
+
+```mermaid
+flowchart LR
+  subgraph Crew
+    A1[Agent 1]
+    A2[Agent 2]
+  end
+  M[(Memory)]
+  T[/Tools/]
+  T1[Task 1]
+  T2[Task 2]
+  P[Objective in Prompt]
+  R[Response]
+  
+  M <--> Crew
+  T <--> Crew
+  A1 --> T1
+  A2 --> T2
+  P --> A1 
+  T1 --> T2 --> R
+```
+
+### Example of Multi-Agent Application: Market Research Team
+
+> **Multi-Agent Collaboration for Market Research:** Different agents handle data collection, competitor analysis, and report generation independently, communicating results through a shared memory.
+
+```mermaid
+flowchart TD
+  Prompt[(User Request- Research AI Market Landscape)]
+
+  subgraph Agents
+    A1[Data Collector Agent]
+    A2[Competitor Analyst Agent]
+    A3[Insights Generator Agent]
+  end
+
+  Tools[/Web Search, DBs, Charts/]
+  Memory[(Shared Memory)]
+  Result[Final Research Report]
+
+  Prompt --> A1
+  A1 --> Tools --> A1 --> Memory
+  A2 --> Memory
+  A2 --> Tools --> A2 --> Memory
+  A3 --> Memory --> Result
+```
+
+**Key Takeaways**
+- Agents operate in parallel with their own responsibilities.
+- Shared memory is used for cross-agent communication.
+- Tool usage and autonomy allow scalable, modular problem-solving.
+
+---
+
+
+

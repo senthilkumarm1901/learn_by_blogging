@@ -1,0 +1,143 @@
+
+- Main Pic
+```
+flowchart LR
+    subgraph A[👤 Lead Script Writer]
+        direction LR
+        B[Oversee and Manage <br>the Development of Overall <br>Marvel Universe of <br>Comic Stories]
+    end
+
+    A --> C[👤 Writer 1]
+    C --> D[Create individual story arcs<br> for <b>Main Avengers</b>]
+    A --> E[👤 Writer 2]
+    E --> F[Create story arcs <br>about <b>Other Marvel Heroes</b>]
+    A --> G[👤 Writer 3]
+    G --> H[Write about the Multi-hero Plots<br>culminating in <b>End Game</b>]
+```
+
+- **The Story until the first push to `remote/main`**
+
+```
+%%{
+    init: {
+        'theme': 'base',
+        'gitGraph': {
+            'showCommitLabel': false,
+            'mainBranchName': 'local/main'
+        }
+    }
+}%%
+gitGraph TB:
+   commit id: "initial commit in local" tag: "aa08cbe"
+   commit id: "setup repo and lay rules" tag: "8664973"
+   commit id: "initial marvel_heroes.md file" tag: "619a879"
+   branch remote/main
+   checkout remote/main
+   commit id: "First push to remote" tag: "619a879"
+```
+- **`git commit --amend` and second push after `git pull with 3 way merge`**
+
+```
+%%{
+    init: {
+        'theme': 'base',
+        'gitGraph': {
+            'showCommitLabel': false,
+            'mainBranchName': 'local/main'
+        }
+    }
+}%%
+gitGraph TB:
+   title Locally, the `amend-1` commit tag will also apply to the previous commit. 
+   commit id: "initial commit in local" tag: "aa08cbe"
+   commit id: "setup repo and lay rules" tag: "8664973"
+   commit id: "initial marvel_heroes.md file" tag: "619a879 to amend-1"
+   branch remote/main
+   checkout remote/main
+   commit id: "First push to remote" tag: "619a879"
+   checkout local/main
+   commit id: "same msg - initial marvel_heroes.md file" tag: "amend-1"
+   merge remote/main id: "Merge conflict resolution (git pull)" tag: "merge-1"
+```
+
+
+```
+%%{
+    init: {
+        'theme': 'base',
+        'gitGraph': {
+            'showCommitLabel': false,
+            'mainBranchName': 'local/main'
+        }
+    }
+}%%
+gitGraph TB:
+   title Locally, the `amend-1` commit tag will also apply to the previous commit. 
+   commit id: "initial commit in local" tag: "aa08cbe"
+   commit id: "setup repo and lay rules" tag: "8664973"
+   commit id: "initial marvel_heroes.md file" tag: "619a879 to amend-1"
+   branch remote/main
+   checkout remote/main
+   commit id: "First push to remote" tag: "619a879"
+   checkout local/main
+   commit id: "same msg - initial marvel_heroes.md file" tag: "amend-1"
+   checkout remote/main
+   merge local/main id: "Merge conflict resolution (git pull)" tag: "merge-1"
+
+```
+
+
+```
+%%{
+    init: {
+        'theme': 'base',
+        'gitGraph': {
+            'showCommitLabel': false,
+            'mainBranchName': 'local/main'
+        }
+    }
+}%%
+gitGraph TB:
+   title For the final push, both remote and local have same tag `amend-2`
+   commit id: "initial commit in local" tag: "aa08cbe"
+   commit id: "setup repo and lay rules" tag: "8664973"
+   commit id: "initial marvel_heroes.md file" tag: "619a879 to amend-1"
+   branch remote/main
+   checkout remote/main
+   commit id: "First push to remote" tag: "619a879"
+   checkout local/main
+   commit id: "same msg - initial marvel_heroes.md file" tag: "amend-1"
+   merge remote/main id: "Merge conflict resolution (git pull)" tag: "merge-1"
+   commit id: "Second amend to README.md" tag: "amend-2"
+   checkout remote/main
+   merge local/main id: "Final push to remote (force-with-lease)" tag: "amend-2"
+```
+
+- Simple 3-way merge
+
+```
+%%{
+  init: {
+    'theme': 'base',
+    'gitGraph': {
+      'showCommitLabel': false,
+      'mainBranchName': 'local/main'
+    }
+  }
+}%%
+
+gitGraph TB:
+   title A 3-way Merge
+   commit id: "first commit" tag: "commit1"
+   commit id: "second commit" tag: "commit2"
+   branch remote/main
+   commit id: "pushed to remote"  tag: "commit2"
+   checkout local/main
+   commit id: "second commit (amended)" tag: "commit2-amended"
+   checkout remote/main
+   merge local/main id: "3 way merge" tag:"merge-commit"
+```
+
+```
+
+```

@@ -1,0 +1,30 @@
+---
+title: A Chatbot LLM Application to Access Arxiv Tool with MCP
+---
+
+sequenceDiagram
+    participant U as User
+    participant LA as LLM App
+    participant MC as MCP_Client<br>(part of LLM App)
+    participant LS as LLM_Server
+    participant MS as MCP_Server
+    participant Arxiv as External Tool: Arxiv
+
+    U->>LA: 1. Prompt
+    LA->>MC: 2A. Activate the Client API 
+    MC->>MS: 2B. Extract Tools List
+    MS->>MC: 2C. Return Tools List
+
+    MC->>LS: 3A. Prompt + Right set of Tools List
+    LS->>MC: 3B. LLM decides on the right tool
+    
+    MC->>MS: 4A. Call the Tool/Function `arxiv_search()`
+
+    Arxiv<<->>MS: 4B. Access Arxiv Database and Gets Info
+
+
+    MS->>MC: 4C. Response from Tool/Data
+    MC->>LS: 5A: History of conv + Tool's Response send to LLM 
+    LS->>MC: 5B. LLM's Final Response
+    MC-->>LA: 6. Send the Response to LLM App
+    LA-->>U: 7. User reads the response

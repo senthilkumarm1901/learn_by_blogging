@@ -4,22 +4,21 @@ badges: true
 branch: master
 categories:
 - AWS
-description: In this blog, I cover my learnings from the Coursera-AWS course on AWS Cloud Technical Essentials
+description: In this blog, I cover my learnings from the Coursera-AWS course titled AWS Cloud Technical Essentials
 date: '2024-10-15'
 draft: false
 image: images/course_certificate.png
 toc: true
-title: "Learn AWS Series - Notes from my Coursera Course `AWS Cloud Technical Essentials`"
+title: "What I Learned About AWS Fundamentals from a Coursera Course"
+output-file: 2024-10-15-aws-technical-essentials-course-notes.html
 ---
 
+I’ve pulled together my notes on AWS Fundamentals — covering Security, Compute, Networking, Databases, and more — based on the AWS Technical Essentials course from Coursera.
+I’ve also included my ChatGPT interactions, where I explored specific doubts and clarified tricky concepts along the way. This resource should be handy for anyone attempting to revise concepts before an AWS exam
 
-> Note: The below notes contain my own writing combined with copy-paste notes from Coursera (Not to be misjudged for plagiarism)
-<br>
-> Most pics are from Coursera course. If a pic is taken from outside, source is cited below it
-<br>
-> The below notes are purely to refresh my memory when I take up any AWS exam in future. Unlike other article, the below notes are not meant to be `original`
+![](images/course_certificate.png)
 
----
+> Source: All pictures are from the Coursera Course (unless specified otherwise) and are intended only for learning purposes. 
 
 # 1. Introduction to AWS
 
@@ -35,159 +34,199 @@ title: "Learn AWS Series - Notes from my Coursera Course `AWS Cloud Technical Es
 
 ## 1.3 AWS Global Infrastructure
 
-Infrastructure, like data centers and networking connectivity, still exists as the foundation of every cloud application. In AWS, this physical infrastructure makes up the AWS Global Infrastructure, in the form of Availability Zones and Regions.
-
-Here are a few examples of Region codes:
-
-us-east-1: This is the first Region created in the east of the US. The geographical name for this Region is N. Virginia.
-
-ap-northeast-1: The first Region created in the northeast of Asia Pacific. The geographical name for this Region is Tokyo.
-
-AWS Regions are independent from one another. This means that your data is not replicated from one Region to another, without your explicit consent and authorization.
-
 ### 1.3.1 CHOOSE THE RIGHT AWS REGION
-Consider four main aspects when deciding which AWS Region to host your applications and workloads: latency, price, service availability, and compliance.
 
-- **Latency**. If your application is sensitive to latency, choose a Region that is close to your user base. This helps prevent long wait times for your customers. Synchronous applications such as gaming, telephony, WebSockets, and IoT are significantly affected by higher latency, but even asynchronous workloads, such as ecommerce applications, can suffer from an impact on user connectivity.
-- **Price**. Due to the local economy and the physical nature of operating data centers, prices may vary from one Region to another. The pricing in a Region can be impacted by internet connectivity, prices of imported pieces of equipment, customs, real estate, and more. Instead of charging a flat rate worldwide, AWS charges based on the financial factors specific to the location.
-- **Service availability**. Some services may not be available in some Regions. The AWS documentation provides a table containing the Regions and the available services within each one.
-- **Data compliance**. Enterprise companies often need to comply with regulations that require customer data to be stored in a specific geographic territory. If applicable, you should choose a Region that meets your compliance requirements.
+```{mermaid}
+graph TD;
+    A[Choose the Right AWS Region] --> B[Considerations]
+    B --> C[Latency]
+    B --> D[Price]
+    B --> E[Service Availability]
+    B --> F[Data Compliance]
 
-### 1.4.1 AVAILABILITY ZONES
+    C --> C1{Sensitive to Latency?}
+    C1 -->|Yes| C2[Choose a nearby Region]
+    C1 -->|No| C3[Evaluate other factors]
+
+    D --> D1{Price Variation Factors}
+    D1 -->|Local Economy| D2[Impact on pricing]
+
+    E --> E1{Service Availability Check}
+    E1 --> E2[AWS Documentation for Services]
+
+    F --> F1{Compliance Requirements}
+    F1 -->|Yes| F2[Select compliant Region]
+    F1 -->|No| F3[Proceed with other factors]
+```
+
+### 1.3.1 AVAILABILITY ZONES
 
 ![](./images/availability_zones.png)
 
-Inside every Region is a cluster of Availability Zones (AZ). An AZ consists of one or more data centers with redundant power, networking, and connectivity. These data centers operate in discrete facilities with undisclosed locations. They are connected using redundant high-speed and low-latency links.AZs also have a code name. Since they’re located inside Regions, they can be addressed by appending a letter to the end of the Region code name. For example:
+- Each **AWS Region** contains multiple **Availability Zones (AZs)**.
+- An **AZ** consists of one or more **data centers** with:
+  - Redundant power
+  - Networking
+  - Connectivity
+- Data centers operate in **separate, undisclosed facilities**.
+- AZs are connected with **redundant, high-speed, low-latency links**.
+- Each AZ has a **code name**, formed by appending a **letter** to the Region code:
+  - Example: `us-east-1a` → AZ "a" in `us-east-1` (Northern Virginia Region)
+  - Example: `sa-east-1b` → AZ "b" in `sa-east-1` (São Paulo Region)
+- If a resource is in `us-east-1c`, it means it resides in **AZ "c" of the us-east-1 Region**.
 
-us-east-1a: an AZ in us-east-1 (Northern Virginia Region)
-
-sa-east-1b: an AZ in sa-east-1 (São Paulo Region in South America)
-
-If you see that a resource exists in us-east-1c, you know this resource is located in AZ c of the us-east-1 Region.
-
-### 1.4.2 SCOPE AWS SERVICES
-
-Depending on the AWS Service you use, your resources are either deployed at the AZ, Region, or Global level. Each service is different, so you need to understand how the scope of a service may affect your application architecture.When you operate a Region-scoped service, you only need to select the Region you want to use. If you are not asked to specify an individual AZ to deploy the service in, this is an indicator that the service operates on a Region-scope level. For region-scoped services, AWS automatically performs actions to increase data durability and availability.On the other hand, some services ask you to specify an AZ. With these services, you are often responsible for increasing the data durability and high availability of these resources.
 
 
-### 1.4.3 MAINTAIN RESILIENCY
+### 1.3.2 SCOPE AWS SERVICES
 
-To keep your application available, you need to maintain high availability and resiliency. A well-known best practice for cloud architecture is to use Region-scoped, managed services. These services come with availability and resiliency built in.When that is not possible, make sure the workload is replicated across multiple AZs. At a minimum, you should use two AZs. If one entire AZ fails, your application will have infrastructure up and running in at least a second AZ to take over the traffic.
+```{mermaid}
+graph TD;
+    A[AWS Services Scope] --> B[Region-Scoped Services]
+    A --> C[AZ-Scoped Services]
+    D[AWS Handles Durability &<br> Availability]
+    A --> E[Global Services]
+
+    B --> D
+    D --> B1[[Amazon S3]]
+    D --> B2[[Amazon RDS Multi-AZ]]
+    D --> B3[[Amazon DynamoDB]]
+    
+    C --> D3[Customer responsible<br>for durability &<br>availability]
+    D3 --> C1[[Amazon EC2]]
+    D3 --> C2[[Amazon RDS Single-AZ]]
+    D3 --> C3[[Amazon EBS]]
+    
+    E --> D2[AWS Handles Durability &<br> Availability]
+    D2 --> E1[[AWS IAM]]
+    D2 --> E2[[AWS Route 53]]
+    D2 --> E3[[AWS CloudFront]]
+```
+
+
+### 1.3.3 MAINTAIN RESILIENCY
+
+- To ensure application availability, design for **high availability** and **resiliency**.  
+- Best practice: use **Region-scoped managed services** (they have availability and resiliency built-in).  
+- When Region-scoped services are not possible:  
+  - Replicate workloads across **multiple AZs**.  
+  - Use at least **two AZs**.  
+- If one AZ fails, the application can still run in the **second AZ**, ensuring traffic is handled.  
 
 ![](./images/application_in_2_AZs.png)
 
 ---
 
 
-### 1.4.4 Security and the AWS Shared Responsibility Model
+### 1.3.4 Security and the AWS Shared Responsibility Model
 
-When you begin working with the AWS Cloud, managing security and compliance is a shared responsibility between AWS and you. To depict this shared responsibility, AWS created the shared responsibility model. This distinction of responsibility is commonly referred to as security of the cloud, versus security in the cloud.
+`security of the cloud` (aws responsbility) versus `security in the cloud` (customer responsbility).
 
 ![](./images/shared_responsibility_model.png)
 
 #### WHAT IS AWS RESPONSIBLE FOR?
-AWS is responsible for security of the cloud. This means AWS is required to protect and secure the infrastructure that runs all the services offered in the AWS Cloud. AWS is responsible for:
-
-Protecting and securing AWS Regions, Availability Zones, and data centers, down to the physical security of the buildings
-
-Managing the hardware, software, and networking components that run AWS services, such as the physical server, host operating systems, virtualization layers, and AWS networking components
-
-The level of responsibility AWS has depends on the service. AWS classifies services into three different categories. The following table provides information about each, as well as the AWS responsibility.
-
 
 ![](./images/aws_responsibilities.png)
 
-Note: 
-- Container services refer to AWS abstracting application containers behind the scenes, not Docker container services. This enables AWS to move the responsibility of managing that platform away from customers.
+- **Container services** in AWS ≠ Docker container services.  
+- AWS abstracts and manages application containers **behind the scenes**.  
+- Responsibility for managing the container platform is **shifted from customers to AWS**.  
 
 
 #### WHAT IS THE CUSTOMER RESPONSIBLE FOR?
 
 
-You’re responsible for security in the cloud. When using any AWS service, you’re responsible for properly configuring the service and your applications, as well as ensuring your data is secure.The level of responsibility you have depends on the AWS service. Some services require you to perform all the necessary security configuration and management tasks, while other more abstracted services require you to only manage the data and control access to your resources. Using the three categories of AWS services, you can determine your level of responsibility for each AWS service you use.
-
 ![](./images/customer_responsbilities.png)
 
 
-Due to the varying level of effort, it’s important to consider which AWS service you use and review the level of responsibility required to secure the service. It’s also important to review how the shared security model aligns with the security standards in your IT environment, as well as any applicable laws and regulations.It’s important to note that you maintain complete control of your data and are responsible for managing the security related to your content. Here are some examples of your responsibilities in context.
-
-- Choosing a Region for AWS resources in accordance with data sovereignty regulations
-- Implementing data protection mechanisms, such as encryption and managing backups
-- Using access control to limit who has access to your data and AWS resources
-
 ---
 
-## 1.5 Protect the AWS Root User
+## 1.4 Protect the AWS Root User
 
 ### What’s the Big Deal About Auth?
-When you’re configuring access to any account, two terms come up frequently: authentication and authorization. Though these terms may seem basic, you need to understand them to properly configure access management on AWS. It’s important to keep this mind as you progress in this course. Let’s define both terms.
+
+- When configuring account access, two key terms appear often: **authentication** and **authorization**.  
+- Though basic, they are essential for proper **AWS access management**.
 
 ### Understand Authentication
-When you create your AWS account, you use a combination of an email address and a password to verify your identity. If the user types in the correct email and password, the system assumes the user is allowed to enter and grants them access. This is the process of authentication.Authentication ensures that the user is who they say they are. Usernames and passwords are the most common types of authentication, but you may also work with other forms, such as token-based authentication or biometric data like a fingerprint. Authentication simply answers the question, **“Are you who you say you are?”**
+
+- When creating an AWS account, you log in with **email + password** to verify your identity.  
+- If credentials are correct, the system **grants access** → this is **authentication**.  
+- **Authentication** ensures the user is who they claim to be.  
+- Common methods:  
+  - **Username + password**  
+  - **Token-based authentication**  
+  - **Biometric data** (e.g., fingerprint)  
+- Authentication answers the question: **“Are you who you say you are?”**  
+
 
 ### Understand Authorization
-Once you’re inside your AWS account, you might be curious about what actions you can take. This is where authorization comes in. Authorization is the process of giving users permission to access AWS resources and services. Authorization determines whether the user can perform an action—whether it be to read, edit, delete, or create resources. Authorization answers the question, **“What actions can you perform?”**
+
+- Once inside your AWS account, **authorization** determines what actions you can take.  
+- **Authorization** = granting users permission to access AWS resources and services.  
+- It decides whether a user can:  
+  - **Read** resources  
+  - **Edit** resources  
+  - **Delete** resources  
+  - **Create** resources  
+- Authorization answers the question: **“What actions can you perform?”**  
 
 ### What Is the AWS Root User?
-When you first create an AWS account, you begin with a single sign-in identity that has complete access to all AWS services and resources in the account. This identity is called the AWS root user and is accessed by signing in with the email address and password that you used to create the account.
+
+- When you create an AWS account, you start with a **single sign-in identity**.  
+- This identity has **full access** to all AWS services and resources.  
+- It is called the **AWS root user**.  
+- You access the root user by signing in with the **email + password** used to create the account.  
+
 
 ### Understand the AWS Root User Credentials
-The AWS root user has two sets of credentials associated with it. One set of credentials is the email address and password used to create the account. This allows you to access the AWS Management Console. The second set of credentials is called access keys, which allow you to make programmatic requests from the 
-AWS Command Line Interface (AWS CLI) or AWS API
-.  Access keys consist of two parts:
 
-1. An access key ID, for example, A2lAl5EXAMPLE
-2. A secret access key, for example, wJalrFE/KbEKxE
+- The **AWS root user** has two sets of credentials:  
+  1. **Email + password** → used to sign in to the **AWS Management Console**.  
+  2. **Access keys** → used for **programmatic access** via AWS CLI or AWS API.  
 
-Similar to a username and password combination, you need both the access key ID and secret access key to authenticate your requests via the AWS CLI or AWS API. Access keys should be managed with the same security as an email address and password.
+- **Access keys** consist of two parts:  
+  - **Access key ID** (e.g., `A2lAl5EXAMPLE`)  
+  - **Secret access key** (e.g., `wJalrFE/KbEKxE`)  
+
+- Both parts are required, similar to a **username + password** combination.  
+- Access keys should be treated with the **same level of security** as your email and password.  
+
 
 ### Follow Best Practices When Working with the AWS Root User
-Keep in mind that the root user has complete access to all AWS services and resources in your account, as well as your billing and personal information. Due to this, securely lock away the credentials associated with the root user and do not use the root user for everyday tasks.  To ensure the safety of the root user:
+
+- The **root user** has complete access to:  
+  - All AWS services and resources  
+  - Billing information  
+  - Personal account information  
+
+- Because of this, **do not use the root user for everyday tasks**.  
+- Instead, securely lock away the **root user credentials**.  
+- To ensure root user safety:  
+  - Enable **multi-factor authentication (MFA)**  
+  - Use the root user only for **account setup and rare administrative tasks**  
+
 
 - Choose a strong password for the root user.
 - Never share your root user password or access keys with anyone.
 - Disable or delete the access keys associated with the root user.
 - Do not use the root user for administrative tasks or everyday tasks.
 
-**When is it OK to use the AWS root user?**
+**When is it OK to use the AWS root user?** <br>
 There are some tasks where it makes sense to use the AWS root user. Check out the links at the end of this section to read about them.
 Link: [aws_tasks-that-require-root](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#root-user-tasks)
 
-### Delete Your Keys to Stay Safe
-If you don't already have an access key for your AWS account root user, don't create one unless you absolutely need to. If you do have an access key for your AWS account root user and want to delete the keys:
-
-Go to the 
- My Security Credentials page
- in the AWS Management Console and sign in with the root user’s email address and password.
-
-Open the Access keys section.
-
-Under Actions, click Delete.
-
-Click Yes.
 
 ### The Case for Multi-Factor Authentication
-When you create an AWS account and first log in to that account, you use single-factor authentication. Single-factor authentication is the simplest and most common form of authentication. It only requires one authentication method. In this case, you use a username and password to authenticate as the AWS root user. Other forms of single-factor authentication include a security pin or a security token.However, sometimes a user’s password is easy to guess. 
 
-For example, your coworker Bob’s password, IloveCats222, might be easy for someone who knows Bob personally to guess, because it’s a combination of information that is easy to remember and describes certain things about Bob (1. Bob loves cats, and 2. Bob’s birthday is February 22).
+- When you first log in to AWS, you use **single-factor authentication (SFA)** → usually **username + password**.  
+- SFA is vulnerable (passwords can be guessed, cracked, or stolen).  
+- **Multi-factor authentication (MFA)** adds an extra layer of security by requiring two or more methods from different categories:  
+  - **Something you know** → password, PIN  
+  - **Something you have** → one-time code from device/app  
+  - **Something you are** → biometric (fingerprint, face scan)  
+- Even if a password is compromised, MFA makes it **highly unlikely** an attacker can bypass the second factor.  
+- **Best practice:** Always enable MFA on the **AWS root user**.  
 
-If a bad actor guessed or cracked Bob’s password through social engineering, bots, or scripts, Bob might lose control of his account. Unfortunately, this is a common scenario that users of any website often face.
-
-This is why using MFA has become so important in preventing unwanted account access. MFA requires two or more authentication methods to verify an identity, pulling from three different categories of information.
-
-Something you know, such as a username and password, or pin number
-
-Something you have, such as a one-time passcode from a hardware device or mobile app
-
-Something you are, such as fingerprint or face scanning technology
-
-Using a combination of this information enables systems to provide a layered approach to account access. Even though the first method of authentication, Bob’s password, was cracked by a malicious user, it’s very unlikely that a second method of authentication, such as a fingerprint, would also be cracked. This extra layer of security is needed when protecting your most sacred accounts, which is why it’s important to enable MFA on your AWS root user.
-
-### Use MFA on AWS
-If you enable MFA on your root user, you are required to present a piece of identifying information from both the something you know category and the something you have category. The first piece of identifying information the user enters is an email and password combination. The second piece of information is a temporary numeric code provided by an MFA device.Enabling MFA adds an additional layer of security because it requires users to use a supported MFA mechanism in addition to their regular sign-in credentials. It’s best practice to enable MFA on the root user.
-
-### Review Supported MFA Devices
-AWS supports a variety of MFA mechanisms, such as virtual MFA devices, hardware devices, and Universal 2nd Factor (U2F) security keys. For instructions on how to set up each method, check out the Resources section.
 
 ![](./images/mfa_devices_supported.png)
 
@@ -198,60 +237,76 @@ AWS supports a variety of MFA mechanisms, such as virtual MFA devices, hardware 
 ## 2.1 Introduction to AWS Identity and Access Management
 
 ### WHAT IS IAM?
-IAM is a web service that enables you to manage access to your AWS account and resources. It also provides a centralized view of who and what are allowed inside your AWS account (authentication), and who and what have permissions to use and work with your AWS resources (authorization).With IAM, you can share access to an AWS account and resources without having to share your set of access keys or password. You can also provide granular access to those working in your account, so that people and services only have permissions to the resources they need. For example, to provide a user of your AWS account with read-only access to a particular AWS service, you can granularly select which actions and which resources in that service they can access.
 
+- **IAM (Identity and Access Management)** is a web service for managing access to AWS accounts and resources.  
+- Provides centralized control of:  
+  - **Authentication** → who/what can enter the account  
+  - **Authorization** → who/what can use specific resources  
+- Benefits of IAM:  
+  - Share access without exposing **root credentials** (email/password or access keys)  
+  - Grant **granular permissions** so users/services only access what they need  
+  - Example: give a user **read-only access** to specific actions/resources in one service  
 
 ### GET TO KNOW THE IAM FEATURES
 
-To help control access and manage identities within your AWS account, IAM offers many features to ensure security.
-
-- IAM is global and not specific to any one Region. This means you can see and use your IAM configurations from any Region in the AWS Management Console.
-
-- IAM is integrated with many AWS services 
-by default
-
-
-- You can establish password policies in IAM to specify complexity requirements and mandatory rotation periods for users.
-
-- IAM supports MFA.
-
-- IAM supports identity federation, which allows users who already have passwords elsewhere—for example, in your corporate network or with an internet identity provider—to get temporary access to your AWS account.
-
-- Any AWS customer can use IAM; the service is offered at no additional charge.
+- **IAM is global** → not tied to a specific Region (accessible from any Region).  
+- **Integrated by default** with many AWS services.  
+- Supports **password policies** (complexity rules, rotation).  
+- Supports **MFA** for stronger security.  
+- Supports **identity federation** → users can access AWS with existing credentials (e.g., corporate network, identity provider).  
+- **Free to use** → no additional charge for IAM.  
 
 ### WHAT IS AN IAM USER?
 
-An IAM user represents a person or service that interacts with AWS. You define the user within your AWS account. And any activity done by that user is billed to your account. Once you create a user, that user can sign in to gain access to the AWS resources inside your account.You can also add more users to your account as needed. For example, for your cat photo application, you could create individual users in your AWS account that correspond to the people who are working on your application. Each person should have their own login credentials. Providing users with their own login credentials prevents sharing of credentials.
+- An **IAM user** represents a person or service that interacts with AWS.  
+- Defined within your AWS account → all activity is **billed to your account**.  
+- IAM users can **sign in** to access AWS resources.  
+- You can create **multiple users** as needed (e.g., team members on a project).  
+- Each user should have their **own login credentials** → prevents credential sharing.  
 
 ### IAM USER CREDENTIALS
 
-An IAM user consists of a name and a set of credentials. When creating a user, you can choose to provide the user:
+- An **IAM user** has a name and a set of credentials.  
+- When creating a user, you can provide:  
+  - **Console access** → username + password  
+  - **Programmatic access** → access keys for AWS CLI or AWS API  
+- **IAM user credentials** are permanent until rotated by admins.  
+- Permissions can be granted directly to users, but:  
+  - Works only for a few users  
+  - Becomes hard to manage at scale (e.g., thousands of users)  
+- **Best practice:** Group IAM users and assign permissions at the **group level**.  
 
-- Access to the AWS Management Console
-- Programmatic access to the AWS Command Line Interface (AWS CLI) and AWS Application Programming Interface (AWS API)
-
-To access the AWS Management Console, provide the users with a user name and password. For programmatic access, AWS generates a set of access keys that can be used with the AWS CLI and AWS API. IAM user credentials are considered permanent, in that they stay with the user until there’s a forced rotation by admins.When you create an IAM user, you have the option to grant permissions directly at the user level.This can seem like a good idea if you have only one or a few users. However, as the number of users helping you build your solutions on AWS increases, it becomes more complicated to keep up with permissions. For example, if you have 3,000 users in your AWS account, administering access becomes challenging, and it’s impossible to get a top-level view of who can perform what actions on which resources.If only there were a way to group IAM users and attach permissions at the group level instead. Guess what: There is!
 
 ### WHAT IS AN IAM GROUP?
 
-An IAM group is a collection of users. All users in the group inherit the permissions assigned to the group. This makes it easy to give permissions to multiple users at once. It’s a more convenient and scalable way of managing permissions for users in your AWS account. This is why using IAM groups is a best practice.If you have a an application that you’re trying to build and have multiple users in one account working on the application, you might decide to organize these users by job function. You might want IAM groups organized by developers, security, and admins. You would then place all of your IAM users in the respective group for their job function.This provides a better view to see who has what permissions within your organization and an easier way to scale as new people join, leave, and change roles in your organization.Consider the following examples.
+- An **IAM group** is a collection of IAM users.  
+- All users in a group **inherit the group’s permissions** → easier, scalable permission management.  
+- **Best practice:** Organize groups by job function (e.g., developers, security, admins).  
 
-- A new developer joins your AWS account to help with your application. You simply create a new user and add them to the developer group, without having to think about which permissions they need.
+Examples:  
+- New developer joins → add to **developer group** (no need to assign permissions individually).  
+- User changes role → move from one group to another (permissions updated automatically).  
 
-- A developer changes jobs and becomes a security engineer. Instead of editing the user’s permissions directly, you can instead remove them from the old group and add them to the new group that already has the correct level of access.
+Key features of groups:  
+- A group can have **many users**.  
+- A user can belong to **multiple groups**.  
+- Groups **cannot belong** to other groups.  
 
-Keep in mind the following features of groups.
+⚡ Contrast with root user:  
+- **Root user** = full access to all resources by default.  
+- **New IAM users/groups/roles** = **no permissions by default** until explicitly granted.  
+- Permissions in IAM are granted through **IAM policies**.  
 
-- Groups can have many users.
-- Users can belong to many groups.
-- Groups cannot belong to groups.
-
-
-The root user can perform all actions on all resources inside an AWS account by default. This is in contrast to creating new IAM users, new groups, or new roles. New IAM identities can perform no actions inside your AWS account by default until you explicitly grant them permission.The way you grant permissions in IAM is by using IAM policies.
 
 ### WHAT IS AN IAM POLICY?
 
-To manage access and provide permissions to AWS services and resources, you create IAM policies and attach them to IAM users, groups, and roles. Whenever a user or role makes a request, AWS evaluates the policies associated with them. For example, if you have a developer inside the developers group who makes a request to an AWS service, AWS evaluates any policies attached to the developers group and any policies attached to the developer user to determine if the request should be allowed or denied.
+- **IAM policies** manage access and permissions to AWS services/resources.  
+- Policies can be attached to **users, groups, or roles**.  
+- When a request is made, AWS evaluates:  
+  - Policies on the **user/role**  
+  - Policies on any **groups** the user belongs to  
+- Example: A developer in the **developers group** → AWS checks both the **group policies** and the **user’s policies** to decide allow/deny.  
+
 
 ### IAM POLICY EXAMPLES
 
@@ -269,20 +324,17 @@ Most policies are stored in AWS as JSON documents with several policy elements. 
 }
 ```
 
-In this policy, there are four major JSON elements: Version, Effect, Action, and Resource.
+- An **IAM policy** has four key JSON elements:  
 
-- The Version element defines the version of the policy language. It specifies the language syntax rules that are needed by AWS to process a policy. To use all the available policy features, include "Version": "2012-10-17" before the "Statement" element in all your policies.
+  1. **Version** → defines the policy language version.  
+     - Always use `"Version": "2012-10-17"` for full feature support.  
+  2. **Effect** → specifies whether to **Allow** or **Deny** access.  
+  3. **Action** → describes the allowed/denied actions.  
+     - `"*"` = wildcard → all actions.  
+  4. **Resource** → defines which resources are affected.  
+     - `"*"` = all resources.  
 
-- The Effect element specifies whether the statement will allow or deny access. In this policy, the Effect is "Allow", which means you’re providing access to a particular resource.
-
-- The Action element describes the type of action that should be allowed or denied. In the above policy, the action is "*". This is called a wildcard, and it is used to symbolize every action inside your AWS account.
-
-- The Resource element specifies the object or objects that the policy statement covers. In the policy example above, the resource is also the wildcard "*". This represents all resources inside your AWS console.
-
-Putting all this information together, you have a policy that allows you to perform all actions on all resources inside your AWS account. This is what we refer to as an administrator policy.
-
-Let’s look at another example of a more granular IAM policy.
-
+- Example: Policy with `"Action": "*"` and `"Resource": "*"` → grants **administrator access** (all actions on all resources).  
 
 ```json
 {"Version": "2012-10-17",    
@@ -297,7 +349,11 @@ Let’s look at another example of a more granular IAM policy.
 }
 ```
 
-After looking at the JSON, you can see that this policy allows the IAM user to change their own IAM password (iam:ChangePassword) and get information about their own user (iam:GetUser). It only permits them to access their own credentials because the resource restricts access with the variable substitution ${aws:username}.
+- More granular example:  
+  - Allows a user to:  
+    - `iam:ChangePassword` (change their own password)  
+    - `iam:GetUser` (get info about their own user)  
+  - Uses **variable substitution** `${aws:username}` → limits permissions to the **specific user** only.  
 
 ### UNDERSTAND POLICY STRUCTURE
 
@@ -311,44 +367,154 @@ When creating a policy, it is required to have each of the following elements in
 
 ## 2.2 Role Based Access in AWS
 
-Throughout these last few lessons, there have been sprinklings of IAM best practices. It’s helpful to have a brief summary of some of the most important IAM best practices you need to be familiar with before building out solutions on AWS.
+- **Lock down the root user**  
+  - Don’t share root credentials.  
+  - Delete root access keys if possible.  
+  - Enable MFA on the root account.  
 
-### LOCK DOWN THE AWS ROOT USER
+- **Follow the principle of least privilege**  
+  - Grant only the permissions required to perform a specific job.  
+  - Start with minimum access, then add permissions as needed.  
 
-The root user is an all-powerful and all-knowing identity within your AWS account. If a malicious user were to gain control of root-user credentials, they would be able to access every resource within your account, including personal and billing information. To lock down the root user:
+- **Use IAM appropriately**  
+  - IAM secures access within a single AWS account (users, groups, roles).  
+  - Not for website sign-in/sign-up or OS/network security.  
 
-Don’t share the credentials associated with the root user.
+- **Use IAM roles when possible**  
+  - Roles provide temporary credentials (15 min – 36 hrs).  
+  - Easier to manage than long-term IAM user credentials.  
+  - Reduces risk from leaked/stale access keys.  
 
-Consider deleting the root user access keys.
+- **Consider using an Identity Provider (IdP)**  
+  - Centralizes identity management across multiple AWS accounts.  
+  - Use IAM roles to grant permissions to federated identities.  
+  - Example: manage an employee once in the IdP instead of duplicating IAM users across accounts.  
 
-Enable MFA on the root account.
-
-### FOLLOW THE PRINCIPLE OF LEAST PRIVILEGE
-
-Least privilege is a standard security principle that advises you to grant only the necessary permissions to do a particular job and nothing more. To implement least privilege for access control, start with the minimum set of permissions in an IAM policy and then grant additional permissions as necessary for a user, group, or role.
-
-## USE IAM APPROPRIATELY
-
-IAM is used to secure access to your AWS account and resources. It simply provides a way to create and manage users, groups, and roles to access resources within a single AWS account. IAM is not used for website authentication and authorization, such as providing users of a website with sign-in and sign-up functionality. IAM also does not support security controls for protecting operating systems and networks.
-
-### USE IAM ROLES WHEN POSSIBLE
-
-Maintaining roles is easier than maintaining users. When you assume a role, IAM dynamically provides temporary credentials that expire after a defined period of time, between 15 minutes and 36 hours. Users, on the other hand, have long-term credentials in the form of user name and password combinations or a set of access keys.User access keys only expire when you or the admin of your account rotates these keys. User login credentials expire if you have applied a password policy to your account that forces users to rotate their passwords.
-
-### CONSIDER USING AN IDENTITY PROVIDER
-
-If you decide to make your cat photo application into a business and begin to have more than a handful of people working on it, consider managing employee identity information through an identity provider (IdP). Using an IdP, whether it be an AWS service such as AWS IAM Identity Center (Successor to AWS Single Sign-On) or a third-party identity provider, provides you a single source of truth for all identities in your organization.You no longer have to create separate IAM users in AWS. You can instead use IAM roles to provide permissions to identities that are federated from your IdP.For example, you have an employee, Martha, that has access to multiple AWS accounts. Instead of creating and managing multiple IAM users named Martha in each of those AWS accounts, you can manage Martha in your company’s IdP. If Martha moves within the company or leaves the company, Martha can be updated in the IdP, rather than in every AWS account you have.
-
-### CONSIDER AWS IAM IDENTITY CENTER
-
-If you have an organization that spans many employees and multiple AWS accounts, you may want your employees to sign in with a single credential.AWS IAM Identity Center is an IdP that lets your users sign in to a user portal with a single set of credentials. It then provides them access to all their assigned accounts and applications in one central location.AWS IAM Identity Center is similar to IAM, in that it offers a directory where you can create users, organize them in groups, and set permissions across those groups, and grant access to AWS resources. However, AWS IAM Identity Center has some advantages over IAM. For example, if you’re using a third-party IdP, you can sync your users and groups to AWS IAM Identity Center.This removes the burden of having to re-create users that already exist elsewhere, and it enables you to manage those users from your IdP. More importantly, AWS IAM Identity Center separates the duties between your IdP and AWS, ensuring that your cloud access management is not inside or dependent on your IdP.
+- **Consider AWS IAM Identity Center**  
+  - Provides single sign-on (SSO) for AWS accounts and apps.  
+  - Lets you create users, groups, and assign permissions centrally.  
+  - Can sync with third-party IdPs, reducing duplication.  
+  - Separates identity management from AWS for added security.  
 
 ---
 
-### 2.3 Summary:
+### 2.3 Summarizing the sections 2.1 and 2.2:
+
+```{mermaid}
+graph TD;
+    A[Security in AWS] --> B[AWS Identity<br> and Access Management<br>IAM]
+    B --> C[What is IAM?]
+    B --> D[Features of IAM]
+    B --> E[IAM User]
+    B --> F[IAM Group]
+    B --> G[IAM Policy]
+    B --> H[Role-Based Accesses<br> for AWS Services]
+    C --> C1[Manage access <br>to AWS resources]
+    C --> C2[Centralized authentication<br> and authorization]
+```
+
+---
+
+```{mermaid}
+graph TD;
+    A[Security in AWS] --> B[AWS Identity<br> and Access Management<br>IAM]
+    B --> C[What is IAM?]
+    B --> D[Features of IAM]
+    B --> E[IAM User]
+    B --> F[IAM Group]
+    B --> G[IAM Policy]
+    B --> H[Role-Based Accesses<br> for AWS Services]
+    D --> D1[Global service]
+    D --> D2[Integrated with AWS services]
+    D --> D3[Password policies]
+    D --> D4[MFA support]
+    D --> D5[Identity federation]
+```
+
+---
+
+```{mermaid}
+graph TD;
+    A[Security in AWS] --> B[AWS Identity<br> and Access Management<br>IAM]
+    B --> D[Features of IAM]
+    B --> E[IAM User]
+    B --> F[IAM Group]
+    B --> G[IAM Policy]
+    B --> H[Role-Based Accesses<br> for AWS Services]
+    E --> E1[Represents a <br>person]
+    E --> E2[User credentials -<br> Console and<br> programmatic access]
+```
+
+---
+
+```{mermaid}
+graph TD;
+    A[Security in AWS] --> B[AWS Identity<br> and Access Management<br>IAM]
+    B --> D[Features of IAM]
+    B --> E[IAM User]
+    B --> F[IAM Group]
+    B --> G[IAM Policy]
+    B --> F[IAM Group]
+    B --> H[Role-Based Accesses<br> for AWS Services]
+    F --> F1[Collection of <br>users inheriting permissions]
+```
+
+---
+
+
+```{mermaid}
+graph TD;
+    A[Security in AWS] --> B[AWS Identity<br> and Access Management<br>IAM]
+    B --> D[Features of IAM]
+    B --> E[IAM User]
+    B --> F[IAM Group]
+    B --> G[IAM Policy]
+    B --> F[IAM Group]
+    B --> H[Role-Based Accesses<br> for AWS Services]
+    G --> G1[JSON documents for access management]
+```
+
+---
+
+```{mermaid}
+graph TD;
+    A[Security in AWS] --> B[AWS Identity<br> and Access Management<br>IAM]
+    B --> D[Features of IAM]
+    B --> E[IAM User]
+    B --> F[IAM Group]
+    B --> G[IAM Policy]
+    B --> F[IAM Group]
+    B --> H[Role-Based Accesses<br> for AWS Services]
+    A --> H[Role-Based Access in AWS]
+    H --> H1[Lock down the AWS root user]
+    H --> H2[Follow the principle of least privilege]
+    H --> H3[Use IAM appropriately]
+    H --> H4[Use IAM roles when possible]
+```
+
+---
+
+
+```{mermaid}
+graph TD;
+    A[Another Security Service <br>in AWS]
+    A --> I[Identity Providers<br> and<br> AWS IAM Identity Center]
+    I --> I1[External <br> Identity Provider IdP]
+    I --> I2[AWS IdP -<br>IAM Identity Center advantages]
+```
+
+---
+
+#### Different types of AWS IAM Users 
+
+- Even a CICD System can be an IAM User (with specific permissions)
 
 ![](./images/iam_user_differences.png)
 Source: AWS Blg
+
+#### The concept of Groups and Roles 
+
+- One user could be in multiple groups
 
 ![](./images/different_groups_different_permissions.png)
 ---
@@ -359,76 +525,102 @@ Source: AWS Blg
 
 ---
 
-# 3. Compute as a Service
+# 3. Compute as a Service  
 
-## 3.1 Introduction to Compute Options in AWS
+## 3.1 Introduction to Compute Options in AWS  
 
-### Understanding Servers
-The first building block you need to host an application is a server. Servers often times can handle Hypertext Transfer Protocol (HTTP) requests and send responses to clients following the client-server model, though any API based communication also falls under this model. A client being a person or computer that sends a request, and a server handling the requests is a computer, or collection of computers, connected to the internet serving websites to internet users. These servers power your application by providing CPU, memory, and networking capacity to process users’ requests and transform them into responses. For context, common HTTP servers include:
+### Understanding Servers  
+The foundation for hosting any application begins with a **server**. In a client-server model, a client (a person or a system) sends a request, and the server processes that request and returns a response.  
 
-Windows options, such as Internet Information Services (IIS).
+Servers power applications by providing the essential resources—**CPU, memory, and networking capacity**—needed to process user requests and deliver responses.  
 
-Linux options, such as Apache HTTP Web Server, Nginx, and Apache Tomcat.
+In most cases, servers handle **Hypertext Transfer Protocol (HTTP)** requests and return responses to clients. However, other **API-based communication models** also follow the same principle.  
 
-To run an HTTP server on AWS, you need to find a service that provides compute power in the AWS Management Console. You can log into the console and view the complete list of AWS compute services.
+For context, common HTTP servers include:  
+- **Windows-based options:** Internet Information Services (IIS)  
+- **Linux-based options:** Apache HTTP Server, Nginx, Apache Tomcat  
+
+When running an HTTP server in AWS, you must choose a compute service that provides the required processing power. These compute options can be explored directly from the **AWS Management Console**, under the list of available **AWS Compute Services**.  
 
 
 ![](./images/different_compute_options_in_AWS.png)
 
 ### Choose the Right Compute Option
-If you’re responsible for setting up servers on AWS to run your infrastructure, you have many compute options. You need to know which service to use for which use case. 
 
-At a fundamental level, there are three types of compute options: 
-- virtual machines
-- container services, and 
-- serverless. 
+- AWS provides **three main compute options**:
+  - Virtual Machines  
+  - Container Services  
+  - Serverless  
 
+- **Virtual Machines (VMs)**:
+  - Easiest option for those with prior infrastructure/server experience.  
+  - Emulates a physical server where you can install applications like an HTTP server.  
+  - Runs on a **hypervisor** that provisions resources to create and run VMs.  
 
-If you’re coming to AWS with prior infrastructure knowledge, a virtual machine can often be the easiest compute option in AWS to understand. This is because a virtual machine emulates a physical server and allows you to install an HTTP server to run your applications. To run these virtual machines, you install a hypervisor on a host machine. This hypervisor provisions the resources to create and run your virtual machines.
+- **Amazon EC2 (Elastic Compute Cloud)**:
+  - AWS’s VM service.  
+  - AWS manages the **host machines**, **hypervisor layer**, and installs the **guest operating system**.  
+  - Forms the foundation for understanding other compute services (containers, serverless).  
 
-In AWS, these virtual machines are called Amazon Elastic Compute Cloud or Amazon EC2. Behind the scenes, AWS operates and manages the host machines and the hypervisor layer. AWS also installs the virtual machine operating system, called the guest operating system.Some AWS compute services use Amazon EC2 or use virtualization concepts under the hood, therefore it is best to understand this service first before moving on to container services and serverless compute. 
-
-A **hypervisor** is software or firmware that creates and manages virtual machines (VMs) by separating a computer's physical hardware from its operating system and applications. It allows multiple OS environments to run on a single physical machine, each with its own resources like CPU, memory, and storage. Hypervisors are fundamental to virtualization, enabling efficient use of hardware and providing flexibility, scalability, and isolation.
-
-> Behind the scenes, AWS operates and manages the host machines and the hypervisor layer. AWS also installs the virtual machine operating system, called the guest operating system.
-
-Some AWS compute services use Amazon EC2 or use virtualization concepts under the hood, therefore it is best to understand this service first before moving on to container services and serverless compute. 
+- **Hypervisor** (key concept in virtualization):  
+  - Software/firmware that separates physical hardware from operating systems and applications.  
+  - Allows multiple OS environments to run on a single machine with dedicated CPU, memory, and storage.  
+  - Provides flexibility, scalability, and isolation.  
 
 ---
 
 ## 3.2 Introduction to Amazon Elastic Compute Cloud (AWS EC2)
 
+- **Amazon EC2**:
+  - Web service that provides secure, resizable compute capacity in the cloud.  
+  - Lets you provision virtual servers called **EC2 instances**.  
+  - Not limited to just web servers—can run various workloads.  
+  - Instances can be created and managed via:
+    - AWS Management Console  
+    - AWS CLI  
+    - AWS SDKs  
+    - Automation/orchestration tools  
 
- Amazon EC2 is a web service that provides secure, resizable compute capacity in the cloud. It allows you to provision virtual servers called EC2 instances. Although AWS uses the phrase “web service” to describe it, it doesn’t mean that you are limited to running just web servers on your EC2 instances. You can create and manage these instances through the AWS Management Console, the AWS Command Line Interface (CLI), AWS Software Development Kits (SDKs), or through automation tools and infrastructure orchestration services.In order to create an EC2 instance, you need to define:
+- **To create an EC2 instance, you define**:
+  - **Hardware**: CPU, memory, storage, network.  
+  - **Logical settings**: Networking location, firewall rules, authentication, OS.  
 
-- **Hardware** specifications, like CPU, memory, network, and storage.
-- **Logical** configurations, like networking location, firewall rules, authentication, and the operating system of your choice.
+- **Amazon Machine Image (AMI)**:
+  - Preconfigured template for launching an EC2 instance.  
+  - Includes:
+    - Operating system (Linux, Windows, etc.)  
+    - Storage mappings  
+    - Architecture type (32-bit, 64-bit, ARM)  
+    - Optional additional software  
+  - Replaces the traditional manual OS installation process.  
 
-When launching an EC2 instance, the first setting you configure is which operating system you want by selecting an Amazon Machine Image (AMI).
-
-### What Is an AMI?
-
-In the traditional infrastructure world, the process of spinning up a server consists of installing an operating system from installation disks, installation drives, or installation wizards over the network. In the AWS Cloud, this operating system installation is no longer your responsibility, and is instead built into the AMI that you choose.Not only does an AMI let you configure which operating system you want, you can also select storage mappings, the architecture type (such as 32-bit, 64-bit, or 64-bit ARM), and additional software installed.
-
-### What Is the Relationship Between AMIs and EC2 Instances?
-
-> A cake is an instantiation of the cake recipe
-> An EC2 instance is an instantiation of the AMI image
-
-EC2 instances are live instantiations of what is defined in an AMI, much like a cake is a live instantiation of a cake recipe. If you are familiar with software development, you can also see this kind of relationship between a Class and an Object.
-
-A Class is something you model and define, while an object is something you interact with. In this case, the AMI is how you model and define your instance, while the EC2 instance is the entity you interact with, where you can install your web server, and serve your content to users.When you launch a new instance, AWS allocates a virtual machine that runs on a hypervisor. Then the AMI you selected is copied to the root device volume, which contains the image used to boot the volume. In the end, you get a server you can connect to and install packages and any additional software. In this case, you install a web server along with the properly configured source code of your employee directory app. 
-
+- **Relationship between AMI and EC2 instance**:
+  - AMI = **recipe** (definition/model).  
+  - EC2 instance = **cake** (live instantiation).  
+  - Comparable to **Class (definition) vs. Object (instantiation)** in programming.  
+  - At launch:
+    - AWS allocates a VM on a hypervisor.  
+    - The AMI is copied to the root device volume for booting.  
+    - Result: a server ready for connection, package installation, and application deployment (e.g., web server + app code).  
 
 ![](./images/ami_ec2_rootvolume.png)
 
-One advantage of using AMIs is that they are reusable. 
+- One advantage of using **Amazon Machine Images (AMIs)** is that they are **reusable**.  
 
-You might choose a Linux-based AMI and configure the HTTP server, application packages, and any additional software you may need to run your application. 
+- For example:  
+  - You might choose a **Linux-based AMI**.  
+  - Configure it with an **HTTP server**, **application packages**, and any additional software your application needs.  
 
-If you wanted to create a second EC2 instance with the same configurations, how can you easily do that? One option is to go through the entire instance creation and configuration process and try to match your settings to the first instance. However, this is time consuming and leaves room for human error. 
+- Now, suppose you want to create a **second EC2 instance** with the exact same configurations:  
+  1. **Option 1 (Not Ideal):**  
+     - Go through the entire instance creation and configuration process again.  
+     - This is **time-consuming** and leaves room for **human error**.  
 
-The second, better option, is to create an AMI from your running instance and use this AMI to start a new instance. This way, your new instance will have all the same configurations as your current instance, because the configurations set in the AMIs are the same.
+  2. **Option 2 (Better):**  
+     - Create an **AMI from your running instance**.  
+     - Use this AMI to launch a **new instance**.  
+     - Since the configurations are stored in the AMI, the new instance will automatically have **all the same settings** as the original one.  
+
 
 ![](./images/create_ami_from_running_instance.png)
 
@@ -725,6 +917,16 @@ This video used a small amount of sample code illustrating a pattern for lazily 
 which is a robust solution to handle image manipulation and can be deployed via an AWS CloudFormation template.
 
 You can find a tutorial on creating the AWS Lambda function as well as the code used in the AWS Lambda demo here: see 
+
+---
+
+## 3.5 Notes from `Computing` Quiz
+
+- EC2 instances are nothing but `Virtual Machines` or resizable compute capacity in the cloud. One can run many docker `containers` in a single virtual machine or EC2 instance
+- EC2 Instance type indicate the following: `instance family` and `instance size`. E.g.: `c5.large` --> c - compute optimized, c5 - th generation, large - indicates instance size 
+- AMI image is to EC2 instance is what a cake recipe is to a cake. A live instantiation of the cake recipe is the cake. An implemented version of the AMI image is the EC2 instance. AMI is the OS in the EC2 instance. AMI is the template that contains the software that is required to launch an instance. 
+- AWS Fargate vs AWS EC2 in ECS: For Fargate, AWS manages the provision, configuration and scale of the clusters. For `EC2 in ECS`, user manages the provisioning, configuration and scale of EC2 instance cluster
+- Serverless services do not require VPC. But can be included in a VPC of your own account. 
 
 ---
 
@@ -1100,7 +1302,97 @@ Below is a list of configurations you should check if you ever have `a public EC
 
 ---
 
+## 4.7 Notes from `Networking` Quiz:
+
+- For creating VPC, you need to choose a region. We can have multiple AZs and multiple subnets inside that VPC
+- Route Table can be attached to subnets and the overall VPC. The route table attached to the VPC is typically called the `main route table`
+- Custom Route Tables are for specific subnets
+- If you have a resource in a public subnet, you need to attach an Internet Gateway to the VPC and create a route in the route table of the subnet to the internet gateway (then only it will be called a public subnet)
+- By default, a `security group` blocks all incoming traffic and allows all outgoing traffic. It is stateful (meaning an result of an incoming traffic is allowed automatically)
+- The `default NACL` is associated with all subnets in the VPC by default, allowing all traffic.
+- `Custom NACLs`: If you create a custom NACL, it denies all traffic by default until you specify rules. You can associate custom NACLs with specific subnets to override the default NACL's behavior.
+- Size of the network is determined by the `CIDR` notation. `/16` is a larger network than `/28` 
+
 [A Github Source for Week 2 Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w2-%20AWS%20Compute%20and%20Networking/Week%202%20Quiz%20_%20Coursera.pdf)
+
+---
+
+## ChatGPT Interactions on NACL and Security Group
+
+```
+Q) Give me aws cli command to add NACL rules and security group rules
+```
+
+Here are AWS CLI commands to add **NACL rules** and **Security Group rules**:
+
+### 1. **Add Rules to a Network ACL (NACL)**:
+To add an inbound or outbound rule to a **Network ACL**, you can use the `aws ec2 create-network-acl-entry` command.
+
+#### Example Command for Adding an Inbound Rule to Allow HTTP Traffic:
+```bash
+aws ec2 create-network-acl-entry \
+  --network-acl-id acl-0123456789abcdef0 \
+  --ingress \
+  --rule-number 100 \
+  --protocol 6 \
+  --port-range From=80,To=80 \
+  --cidr-block 0.0.0.0/0 \
+  --rule-action allow
+```
+
+- **`--network-acl-id`**: The ID of the NACL.
+- **`--ingress`**: Indicates that the rule is for inbound traffic (use `--egress` for outbound).
+- **`--rule-number`**: A unique number for the rule (rules are evaluated in order).
+- **`--protocol`**: Protocol number (`6` for TCP, `-1` for all protocols).
+- **`--port-range`**: The port range (in this case, HTTP traffic on port 80).
+- **`--cidr-block`**: The source CIDR block.
+- **`--rule-action`**: Whether to `allow` or `deny` the traffic.
+
+#### Example Command for Adding an Outbound Rule to Allow All Traffic:
+```bash
+aws ec2 create-network-acl-entry \
+  --network-acl-id acl-0123456789abcdef0 \
+  --egress \
+  --rule-number 101 \
+  --protocol -1 \
+  --port-range From=0,To=65535 \
+  --cidr-block 0.0.0.0/0 \
+  --rule-action allow
+```
+
+### 2. **Add Rules to a Security Group**:
+To add inbound or outbound rules to a **Security Group**, use the `aws ec2 authorize-security-group-ingress` or `authorize-security-group-egress` command.
+
+#### Example Command for Adding an Inbound Rule to Allow SSH (Port 22) from a Specific IP:
+```bash
+aws ec2 authorize-security-group-ingress \
+  --group-id sg-0123456789abcdef0 \
+  --protocol tcp \
+  --port 22 \
+  --cidr 203.0.113.0/32 \
+  --description "Allow SSH from admin IP"
+```
+
+- **`--group-id`**: The ID of the security group.
+- **`--protocol`**: Protocol type (`tcp`, `udp`, `icmp`, etc.).
+- **`--port`**: The port to allow (e.g., `22` for SSH).
+- **`--cidr`**: The CIDR block that is allowed access (a specific IP or range).
+- **`--description`**: Optional, a brief description of the rule.
+
+#### Example Command for Adding an Outbound Rule to Allow HTTPS (Port 443) to All IPs:
+```bash
+aws ec2 authorize-security-group-egress \
+  --group-id sg-0123456789abcdef0 \
+  --protocol tcp \
+  --port 443 \
+  --cidr 0.0.0.0/0 \
+  --description "Allow outbound HTTPS traffic"
+```
+
+### **Tips**:
+- **Remove Rules**: Use `aws ec2 revoke-network-acl-entry` or `aws ec2 revoke-security-group-ingress/egress` to remove existing rules.
+- **List Rules**: Use `aws ec2 describe-network-acls` or `aws ec2 describe-security-groups` to view current rules.
+
 
 ---
 
@@ -1287,7 +1579,8 @@ flowchart TD
   end      
   EBS --> EBS_SSD
   EBS --> EBS_HDD
-
+  style HDD fill:#FFFF00,stroke:#333,stroke-width:2px
+  style SSD fill:#FFFF00,stroke:#333,stroke-width:2px
 ```
 
 Key Point: 
@@ -1455,6 +1748,19 @@ Amazon EBS is meant for data that changes frequently and needs to persist throug
 - Also Serverless
 - No need to provision in advance
 - Pay for what you use
+
+---
+
+## 5.4 Notes from `Storage` Quiz
+
+- The size of an individual object in S3 can be 5 TB. S3 can be really useful for media hosting and storing videos
+- EBS works well as a storage layer for high transaction relational database. 
+- The data on an instance store volume (also informally referred to as local storage of the EC2 instance) persists even if the instance is rebooted. However, the data does not persist if the instance is stopped, hibernated, or terminated.
+- `S3 Standard Infrequent Access` when rarely accessed file need quick retrieval vs `S3 Glacier Deep Archive` (the lowest-cost option) when rarely accessed file needs to be stored only for legal requirements and are ok for longer retrieval times
+- `Block Storage` is the best storage option if only a small portion of the files require change. 
+- `Amazon DynamoDB` allows `flexible schema` - where the `items` in a table can have varying attributes outside of the `primary` and `secondary` key
+ 
+[Storage Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w3-%20AWS%20Storage%20and%20Databases/Week%203%20Quiz%20_%20Coursera.pdf)
 
 ---
 
@@ -1783,6 +2089,11 @@ flowchart TD
   end
   RDS --> C1
   RDS --> C2
+  %% Apply bright yellow background to subgraphs
+  style AZ1 fill:#FFFF00,stroke:#333,stroke-width:2px
+  style AZ2 fill:#FFFF00,stroke:#333,stroke-width:2px
+  style subnetA fill:#FFFF00,stroke:#333,stroke-width:2px
+  style subnetB fill:#FFFF00,stroke:#333,stroke-width:2px
 ```
 
 - Multi AZ deployment ensure `High Availability` and `High Durability`
@@ -1824,6 +2135,12 @@ Source: One of the answers from a Cousera Forum
 
 Like a `primary column` in RDS, a `primary attribute` is needed in Dynamo DB. An item could have any number of attributes
 
+---
+
+## 6.9 Notes from `Database` Quiz
+
+
+[Database Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w3-%20AWS%20Storage%20and%20Databases/Week%203%20Quiz%20_%20Coursera.pdf)
 
 ---
 
@@ -1916,6 +2233,21 @@ Using `boto3` sdk, you can ensure `custom metrics` like the following that refle
 
 ---
 
+## 7.4 Notes from `Monitoring` Quiz
+
+- Amazon CloudWatch Widgets are used to view and analyze metrics in CloudWatch Dashboard
+
+![](https://d2908q01vomqb2.cloudfront.net/972a67c48192728a34979d9a35164c1295401b71/2022/06/21/devops_1335_2.png)
+
+- The 3 states of a metric alarm in CloudWatch: `OK` (metric is within the defined threshold), `Alarm` (metric is outside the defined threshold), `Insufficient_data` (metric does not have enough data to decide on the alarm)
+
+- VPC Network traffic (what network comes in and out of the VPC) can be measured by VPC Flow Logs
+
+- By default, Lambda functions run in a `Lambda-managed VPC that has internet access`. So one need not configure a VPC, Subenets and Security Group unless they want to have their lambda accessed from inside a VPC in their own account. In that case,m you can add a VPC configuration to a lambda function. This restricts the lambda function to resources within that VPC, unless the VPC has internet access
+
+Source: [A github source for Week 4 Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w4-%20Monitoring%20and%20Optimizing%20Solutions%20on%20AWS/Week%204%20Quiz%20_%20Coursera.pdf)
+---
+
 # 8. Optimization in AWS
 
 ## 8.1 Notation in Nines:
@@ -1943,11 +2275,11 @@ flowchart TD
 
 ## 8.3 Types of High Availability Architecture
 
-![alt text](./images/active-active-arch.png)
+![](./images/active-active-arch.png)
 
 > Active-active clusters rely on a dedicated load balancer for routing or distributing traffic across all participating nodes. The manner by which a load balancer distributes traffic depends on the specific load balancing algorithm used. For instance, some load balancers distribute traffic using Round-Robin, Weighted Round Robin or Random algorithm.
 
-![alt text](./images/active-passive-arch.png)
+![](./images/active-passive-arch.png)
 
 > Active-passive setups are common in disaster recovery (DR) strategies. In some DR strategies, the passive node is set up in a separate geographical location and then brought into play once the active node becomes incapacitated
 
@@ -2020,51 +2352,26 @@ In the case of a scale down action that EC2 Auto Scaling needs to take due to a 
 
 ### 8.5 APPLICATION LOAD BALANCER
 
-Here are some primary features of Application Load Balancer (ALB).
+- **Granular routing:** Routes traffic based on HTTP request data (URL path, host, headers, method, source IP).  
+- **Direct responses:** Can send fixed responses (e.g., HTML) or redirects (e.g., HTTP → HTTPS).  
+- **TLS offloading:** Handles HTTPS traffic with SSL certificates from IAM or AWS Certificate Manager (ACM).  
+- **User authentication:** Supports OpenID Connect and integrates with SAML, LDAP, Microsoft AD, etc.  
+- **Traffic security:** Uses security groups to restrict allowed IP ranges.  
+- **Round-robin routing:** Distributes requests evenly across servers.  
+- **Least outstanding requests routing:** Balances load by sending new requests to servers with fewer pending requests.  
+- **Sticky sessions:** Uses HTTP cookies to keep traffic from a client directed to the same backend server.  
+- **Protocol scope:** Supports HTTP and HTTPS only; use **Network Load Balancer (NLB)** for other protocols.  
 
-ALB routes traffic based on request data. It makes routing decisions based on the HTTP protocol like the URL path (/upload) and host, HTTP headers and method, as well as the source IP address of the client. This enables granular routing to the target groups.
-
-Send responses directly to the client. ALB has the ability to reply directly to the client with a fixed response like a custom HTML page. It also has the ability to send a redirect to the client which is useful when you need to redirect to a specific website or to redirect the request from HTTP to HTTPS, removing that work from your backend servers.
-
-ALB supports TLS offloading. Speaking of HTTPS and saving work from backend servers, ALB understands HTTPS traffic. To be able to pass HTTPS traffic through ALB, an SSL certificate is provided by either importing a certificate via Identity and Access Management (IAM) or AWS Certificate Manager (ACM) services, or by creating one for free using ACM. This ensures the traffic between the client and ALB is encrypted.
-
-Authenticate users. On the topic of security, ALB has the ability to authenticate the users before they are allowed to pass through the load balancer. ALB uses the OpenID Connect protocol and integrates with other AWS services to support more protocols like SAML, LDAP, Microsoft AD, and more.
-
-Secure traffic. To prevent traffic from reaching the load balancer, you configure a security group to specify the supported IP address ranges.
-
-ALB uses the round-robin routing algorithm. ALB ensures each server receives the same number of requests in general. This type of routing works for most applications.
-
-ALB uses the least outstanding request routing algorithm. If the requests to the backend vary in complexity where one request may need a lot more CPU time than another, then the least outstanding request algorithm is more appropriate. It’s also the right routing algorithm to use if the targets vary in processing capabilities. An outstanding request is when a request is sent to the backend server and a response hasn’t been received yet.
-
-For example, if the EC2 instances in a target group aren’t the same size, one server’s CPU utilization will be higher than the other if the same number of requests are sent to each server using the round-robin routing algorithm. That same server will have more outstanding requests as well. Using the least outstanding request routing algorithm would ensure an equal usage across targets.
-
-ALB has sticky sessions. In the case where requests need to be sent to the same backend server because the application is stateful, then use the sticky session feature. This feature uses an HTTP cookie to remember across connections which server to send the traffic to.Finally, ALB is specifically for HTTP and HTTPS traffic. If your application uses a different protocol, then consider the Network Load Balancer (NLB).
 
 ### 8.6 NLB
 
-Here are some primary features of Network Load Balancer (NLB).Network Load Balancer supports TCP, UDP, and TLS protocols. HTTPS uses TCP and TLS as protocol. However, NLB operates at the connection layer, so it doesn’t understand what a HTTPS request is. That means all features discussed above that are required to understand the HTTP and HTTPS protocol, like routing rules based on that protocol, authentication, and least outstanding request routing algorithm, are not available with NLB.
-
-NLB uses a flow hash routing algorithm. The algorithm is based on:
-
-The protocol
-
-The source IP address and source port
-
-The destination IP address and destination port
-
-The TCP sequence number
-
-If all of these parameters are the same, then the packets are sent to the exact same target. If any of them are different in the next packets, then the request may be sent to a different target.
-
-**NLB has sticky sessions**. Different from ALB, these sessions are based on the source IP address of the client instead of a cookie.
-
-**NLB supports TLS offloading**. NLB understands the TLS protocol. It can also offload TLS from the backend servers similar to how ALB works.
-
-**NLB handles millions of requests per second**. While ALB can also support this number of requests, it needs to scale to reach that number. This takes time. NLB can instantly handle this amount of requests.
-
-**NLB supports static and elastic IP addresses**. There are some situations where the application client needs to send requests directly to the load balancer IP address instead of using DNS. For example, this is useful if your application can’t use DNS or if the connecting clients require firewall rules based on IP addresses. In this case, NLB is the right type of load balancer to use.
-
-**NLP preserves source IP address**. NLB preserves the source IP address of the client when sending the traffic to the backend. With ALB, if you look at the source IP address of the requests, you will find the IP address of the load balancer. While with NLB, you would see the real IP address of the client, which is required by the backend application in some cases.
+- **Protocol support:** Works with TCP, UDP, and TLS. Operates at the connection layer, so it does not understand HTTP/HTTPS.  
+- **Flow hash routing:** Routes traffic based on protocol, source/destination IP and port, and TCP sequence number.  
+- **Sticky sessions:** Based on the client’s source IP address (not cookies like ALB).  
+- **TLS offloading:** Can terminate TLS to reduce backend server load.  
+- **High performance:** Instantly handles millions of requests per second (no warm-up needed).  
+- **Static and Elastic IPs:** Supports direct client connections via fixed IP addresses—useful for DNS-restricted or firewall-rule scenarios.  
+- **Source IP preservation:** Passes the client’s real IP address to the backend (unlike ALB, which shows the LB’s IP).  
 
 ![](./images/different_ELBs.png)
 
@@ -2075,39 +2382,85 @@ If all of these parameters are the same, then the packets are sent to the exact 
 Availability and reachability is improved by adding one more server. However, the entire system can again become unavailable if there is a capacity issue. Let’s look at that load issue with both types of systems we discussed, active-passive and active-active.
 
 ### 8.7.1 **Vertical Scaling**
-If there are too many requests sent to a single active-passive system, the active server will become unavailable and hopefully failover to the passive server. But this doesn’t solve anything. With active-passive, you need vertical scaling. This means increasing the size of the server. With EC2 instances, you select either a larger type or a different instance type. This can only be done while the instance is in a stopped state. In this scenario, the following steps occur: 
 
-1. Stop the passive instance. This doesn’t impact the application since it’s not taking any traffic.
-2. Change the instance size or type, then start the instance again.
-3. Shift the traffic to the passive instance, turning it active.
-4. The last step is to stop, change the size, and start the previous active instance as both instances should match.
+### Active-Passive vs Active-Active Systems in Scaling
 
-When the amount of requests reduces, the same operation needs to be done. Even though there aren’t that many steps involved, it’s actually a lot of manual work to do. Another disadvantage is that a server can only scale vertically up to a certain limit.
+When too many requests are sent to a **single active-passive system**, the active server becomes unavailable and (hopefully) fails over to the passive server.  
+But this doesn’t really solve the problem.  
 
-Once that limit is reached, the only option is to create another active-passive system and split the requests and functionalities across them. This could require massive application rewriting.This is where the active-active system can help. When there are too many requests, this system can be scaled horizontally by adding more servers.
+#### Why Active-Passive Needs Vertical Scaling
+- Active-Passive systems rely on **vertical scaling** (increasing server size).  
+- With **EC2 instances**, this means:
+  - Choosing a larger instance type
+  - Or switching to a different type  
+- **Limitation:** Scaling can only be done when the instance is **stopped**.
+
+#### Steps for Vertical Scaling in Active-Passive
+1. **Stop** the passive instance (safe, since it’s not receiving traffic).  
+2. **Change** the instance size or type, then **start** it again.  
+3. **Shift traffic** to the passive instance (making it active).  
+4. **Stop, resize, and start** the previous active instance (so both match).  
+
+#### Drawbacks of Active-Passive Scaling
+- Manual and repetitive work each time traffic changes.  
+- A server can only scale **vertically up to a limit**.  
+- Once the limit is reached, the only option is to:
+  - Create **another active-passive system**
+  - Split requests and functionalities across them  
+  - (Often requires **massive application rewriting**)  
+
+#### Active-Active Advantage
+- With **active-active systems**, scaling is **horizontal**.  
+- Instead of making servers bigger, you simply **add more servers**.  
+- This approach is easier, more flexible, and avoids rewriting applications.
+
 
 ### 8.7.2 **Horizontal Scaling**
-As mentioned above, for the application to work in an active-active system, it’s already created as stateless, not storing any client session on the server. This means that having two servers or having four wouldn’t require any application changes. It would only be a matter of creating more instances when required and shutting them down when the traffic decreases.
 
-The Amazon EC2 Auto Scaling service can take care of that task by automatically creating and removing EC2 instances based on metrics from Amazon CloudWatch. 
+- **Active-active system** works well because the application is **stateless** (no client sessions stored on the server).  
+  - Scaling from 2 → 4 servers requires **no code changes**.  
+  - Just add or remove instances as needed.  
 
-You can see that there are many more advantages to using an active-active system in comparison with an active-passive. Modifying your application to become stateless enables scalability.
+- **Amazon EC2 Auto Scaling** handles this automatically:  
+  - Creates new EC2 instances when traffic increases.  
+  - Terminates instances when traffic decreases.  
+
+- **Key advantage:**  
+  - Active-active + stateless apps = **true scalability**.  
+  - Much more efficient compared to active-passive systems.  
+
 
 ### 8.7.3 **Integrate ELB with EC2 Auto Scaling**
-The ELB service integrates seamlessly with EC2 Auto Scaling. As soon as a new EC2 instance is added to or removed from the EC2 Auto Scaling group, ELB is notified. However, before it can send traffic to a new EC2 instance, it needs to validate that the application running on that EC2 instance is available.
 
-This validation is done via the health checks feature of ELB. Monitoring is an important part of load balancers, as it should route traffic to only healthy EC2 instances. That’s why ELB supports two types of health checks. 
+#### ELB and Auto Scaling Integration  
 
-Establishing a connection to a backend EC2 instance using TCP, and marking the instance as available if that connection is successful.
+The **ELB service** integrates seamlessly with **EC2 Auto Scaling**. As soon as a new EC2 instance is added to or removed from the EC2 Auto Scaling group, ELB is notified. However, before it can send traffic to a new EC2 instance, it needs to validate that the application running on that EC2 instance is available.  
 
-Making an HTTP or HTTPS request to a webpage that you specify, and validating that an HTTP response code is returned.
+This validation is done via the **health checks feature of ELB**. Monitoring is an important part of load balancers, as it should route traffic to only healthy EC2 instances. That’s why ELB supports two types of health checks:  
 
-Differentiate Between Traditional Scaling and Auto Scaling
-With a traditional approach to scaling, you buy and provision enough servers to handle traffic at its peak. However, this means that at night time, there is more capacity than traffic. This also means you’re wasting money. Turning off those servers at night or at times where the traffic is lower only saves on electricity. 
+- **TCP Health Check**: Establishing a connection to a backend EC2 instance using TCP, and marking the instance as available if that connection is successful.  
+- **HTTP/HTTPS Health Check**: Making an HTTP or HTTPS request to a webpage that you specify, and validating that an HTTP response code is returned.  
 
-The cloud works differently, with a pay-as-you-go model. It’s important to turn off the unused services, especially EC2 instances that you pay for On-Demand. One could manually add and remove servers at a predicted time. But with unusual spikes in traffic, this solution leads to a waste of resources with over-provisioning or with a loss of customers due to under-provisioning.
+---
 
-The need here is for a tool that automatically adds and removes EC2 instances according to conditions you define—that’s exactly what the EC2 Auto Scaling service does.
+#### Traditional Scaling vs Auto Scaling  
+
+##### Traditional Scaling  
+- With a traditional approach to scaling, you **buy and provision enough servers** to handle traffic at its peak.  
+- At low traffic times (e.g., nighttime), there is **more capacity than traffic**.  
+- This leads to **wasted money**, since turning off servers only saves electricity, not provisioning costs.  
+
+##### Cloud (Auto Scaling) Approach  
+- Cloud uses a **pay-as-you-go** model.  
+- It’s important to **turn off unused services**, especially EC2 instances that run On-Demand.  
+- Manual scaling can work for predictable traffic, but unusual spikes cause:  
+  - **Over-provisioning** → wasted resources.  
+  - **Under-provisioning** → loss of customers.  
+
+##### Solution → **EC2 Auto Scaling**  
+- Automatically adds and removes EC2 instances **based on conditions you define**.  
+- Ensures the right number of EC2 instances are running at any time.  
+
 
 ### 8.7.4 **Using Amazon EC2 Auto Scaling**
 The EC2 Auto Scaling service works to add or remove capacity to keep a steady and predictable performance at the lowest possible cost. By adjusting the capacity to exactly what your application uses, you only pay for what your application needs. And even with applications that have steady usage, EC2 Auto Scaling can help with fleet management. If there is an issue with an EC2 instance, EC2 Auto Scaling can automatically replace that instance. This means that EC2 Auto Scaling helps both to scale your infrastructure and ensure high availability. 
@@ -2115,84 +2468,170 @@ The EC2 Auto Scaling service works to add or remove capacity to keep a steady an
 ## 8.8 **Configure EC2 Auto Scaling Components**
 There are three main components to EC2 Auto Scaling.
 
-> 1. **Launch template or configuration**: *What resource* should be automatically scaled?
-> 2. **EC2 Auto Scaling Group**: *Where* should the resources be deployed?
+> 1. **Launch template or configuration**: 
+  - *What resource* should be automatically scaled?
+  - A configuration of parameters are used to create a EC2 instance
+    - AMI 
+    - Security Group associated with the EC2 Instance
+    - EC2 Instance Type
+    - Additional EBS Volumes 
+    - more
+
+- All of these information are needed by `EC2 Auto Scaling` to create the EC2 instances on our behalf
+
+> 2. **EC2 Auto Scaling Group** (ASG): *Where* should the resources be deployed? and How many should be deployed?
+
+Where do you deploy the EC2 instances created via `EC2 Auto Scaling`
+- VPC
+- Subnets across different Availability Zones
+- Type of EC2 instance purchase: On-demand, Spot ? 
+
+How many EC2 instances should the ASG create?
+- Minimum
+- Maximum
+- Desired
+
 > 3. **Scaling policies**: *When* should the resources be added or removed?
+
+- Scaling policy can be set based on metrics like CPU utilization, measured via a CloudWatch Alarm 
 
 ### 8.8.1 **Learn About Launch Templates**
 
 ![](./images/launch_templates.png)
 
-There are multiple parameters required to create EC2 instances: Amazon Machine Image (AMI) ID, instance type, security group, additional Amazon Elastic Block Store (EBS) volumes, and more. All this information is also required by EC2 Auto Scaling to create the EC2 instance on your behalf when there is a need to scale. This information is stored in a launch template.
+- There are multiple parameters required to create EC2 instances:  
+  - Amazon Machine Image (AMI) ID  
+  - Instance type  
+  - Security group  
+  - Additional Amazon Elastic Block Store (EBS) volumes  
+  - And more...  
 
-You can use a launch template to manually launch an EC2 instance. You can also use it with EC2 Auto Scaling. It also supports versioning, which allows for quickly rolling back if there was an issue or to specify a default version of your launch template. This way, while iterating on a new version, other users can continue launching EC2 instances using the default version until you make the necessary changes. 
+- All this information is also required by **EC2 Auto Scaling** to create the EC2 instance on your behalf when there is a need to scale.  
+- This information is stored in a **launch template**.  
 
+---
 
-You can create a launch template one of three ways. 
+#### Launch Template Usage
+- You can use a **launch template** to manually launch an EC2 instance.  
+- You can also use it with **EC2 Auto Scaling**.  
+- It supports **versioning**, which allows:  
+  - Quickly rolling back if there was an issue.  
+  - Specifying a default version of your launch template.  
+  - Iterating on a new version while other users continue launching EC2 instances with the default version.  
 
-- The fastest way to create a template is to use an existing EC2 instance. All the settings are already defined.
-- Another option is to create one from an already existing template or a previous version of a launch template.
-- The last option is to create a template from scratch. The following options will need to be defined: AMI ID, instance type, key pair, security group, storage, and resource tags.
+---
 
-Note: Another way to define what Amazon EC2 Auto Scaling needs to scale is by using **a launch configuration**. It’s similar to the launch template, but it doesn’t allow for versioning using a previously created launch configuration as a template. Nor does it allow for creating one from an already existing EC2 instance. For these reasons and to ensure that you’re getting the latest features from Amazon EC2, use a launch template instead of launch configuration.
+#### Ways to Create a Launch Template
+1. **Using an existing EC2 instance** (fastest way, since all settings are already defined).  
+2. **From an existing template or a previous version** of a launch template.  
+3. **From scratch**, where you need to define:  
+   - AMI ID  
+   - Instance type  
+   - Key pair  
+   - Security group  
+   - Storage  
+   - Resource tags  
+
+---
+
+#### Note
+- Another way to define what Amazon EC2 Auto Scaling needs to scale is by using **a launch configuration**.  
+- However, a launch configuration:  
+  - Does **not** support versioning.  
+  - Cannot be created from an existing EC2 instance.  
+- For these reasons, and to ensure that you get the latest features, **use a launch template instead of a launch configuration**.  
+
 
 ### 8.8.2 Get to Know EC2 Auto Scaling Groups
-The next component that EC2 Auto Scaling needs is an EC2 Auto Scaling Group (ASG). An ASG enables you to define where EC2 Auto Scaling deploys your resources. This is where you specify the Amazon Virtual Private Cloud (VPC) and subnets the EC2 instance should be launched in. 
 
-EC2 Auto Scaling takes care of creating the EC2 instances across the subnets, so it’s important to select at least two subnets that are across different Availability Zones.
+- The next component that EC2 Auto Scaling needs is an **EC2 Auto Scaling Group (ASG)**.  
+  - An ASG enables you to define where EC2 Auto Scaling deploys your resources.  
+  - This is where you specify the **Amazon Virtual Private Cloud (VPC)** and **subnets** the EC2 instance should be launched in.  
 
-ASGs also allow you to specify the type of purchase for the EC2 instances. You can use On-Demand only, Spot only, or a combination of the two, which allows you to take advantage of Spot instances with minimal administrative overhead.To specify how many instances EC2 Auto Scaling should launch, there are three capacity settings to configure for the group size. 
+- EC2 Auto Scaling takes care of creating the EC2 instances across the subnets.  
+  - It’s important to select **at least two subnets** that are across different **Availability Zones (AZs)**.  
 
-**Minimum**: The minimum number of instances running in your ASG even if the threshold for lowering the amount of instances is reached.
+- ASGs also allow you to specify the **type of purchase** for the EC2 instances:  
+  - **On-Demand only**  
+  - **Spot only**  
+  - **Combination of On-Demand and Spot** (lets you take advantage of Spot instances with minimal admin overhead).  
 
-**Maximum**: The maximum number of instances running in your ASG even if the threshold for adding new instances is reached.
-
-**Desired capacity**: The amount of instances that should be in your ASG. This number can only be within or equal to the minimum or maximum. EC2 Auto Scaling automatically adds or removes instances to match the desired capacity number. 
+- To specify how many instances EC2 Auto Scaling should launch, configure three **capacity settings** for the group size:  
+  - **Minimum**: The minimum number of instances running in your ASG, even if the threshold for lowering the amount of instances is reached.  
+  - **Maximum**: The maximum number of instances running in your ASG, even if the threshold for adding new instances is reached.  
+  - **Desired capacity**: The target number of instances in your ASG.  
+    - This number must be within or equal to the minimum and maximum.  
+    - EC2 Auto Scaling automatically adds or removes instances to match this number.  
 
 ![](./images/mini_desired_max_capacity.png)
 
-When EC2 Auto Scaling removes EC2 instances because the traffic is minimal, it keeps removing EC2 instances until it reaches a minimum capacity. Depending on your application, using a minimum of two is a good idea to ensure high availability, but you know how many EC2 instances at a bare minimum your application requires at all times. When reaching that limit, even if EC2 Auto Scaling is instructed to remove an instance, it does not, to ensure the minimum is kept.
+- **Minimum capacity**  
+  - EC2 Auto Scaling keeps removing EC2 instances until it reaches the minimum capacity.  
+  - Best practice: set at least **two instances** to ensure high availability.  
+  - Even if scaling down is instructed, EC2 Auto Scaling won’t remove instances below the minimum.  
 
-On the other hand, when the traffic keeps growing, EC2 Auto Scaling keeps adding EC2 instances. This means the cost for your application will also keep growing. That’s why it’s important to set a maximum amount to make sure it doesn’t go above your budget.
+- **Maximum capacity**  
+  - When traffic grows, EC2 Auto Scaling keeps adding instances.  
+  - Costs will also increase as more instances are added.  
+  - Setting a **maximum** ensures the number of instances doesn’t exceed your budget.  
 
-The desired capacity is the amount of EC2 instances that EC2 Auto Scaling creates at the time the group is created. If that number decreases, then EC2 Auto Scaling removes the oldest instance by default. If that number increases, then EC2 Auto Scaling creates new instances using the launch template.
+- **Desired capacity**  
+  - This is the number of EC2 instances created when the Auto Scaling group is launched.  
+  - If the desired capacity decreases, Auto Scaling removes the **oldest instance** by default.  
+  - If it increases, Auto Scaling **creates new instances** using the launch template.  
 
-Ensure Availability with EC2 Auto Scaling
-
-Using different numbers for minimum, maximum, and desired capacity is used for dynamically adjusting the capacity. However, if you prefer to use EC2 Auto Scaling for fleet management, you can configure the three settings to the same number, for example four. EC2 Auto Scaling will ensure that if an EC2 instance becomes unhealthy, it replaces it to always ensure that four EC2 instances are available. This ensures high availability for your applications.
+- **Ensure availability with EC2 Auto Scaling**  
+  - Minimum, maximum, and desired capacity can be set to **different values** for dynamic scaling.  
+  - If you want Auto Scaling only for **fleet management**, configure all three to the **same value** (e.g., 4).  
+  - EC2 Auto Scaling will **replace unhealthy instances** to always maintain that count, ensuring high availability.  
 
 ![](./images/mini_desired_max_capacity_2.png)
 
 ### 8.8.3 **Enable Automation with Scaling Policies**
-By default, an ASG will be kept to its initial desired capacity. Although it’s possible to manually change the desired capacity, you can also use scaling policies.
 
-In the AWS Monitoring module, you learned about Amazon CloudWatch metrics and alarms. You use metrics to keep information about different attributes of your EC2 instance like the CPU percentage. You use alarms to specify an action when a threshold is reached. Metrics and alarms are what scaling policies use to know when to act. For example, you set up an alarm that says when the CPU utilization is above 70% across the entire fleet of EC2 instances, trigger a scaling policy to add an EC2 instance.
+- **ASG Desired Capacity**
+  - By default, ASG stays at its initial desired capacity.  
+  - Desired capacity can be **manually changed** or adjusted with **scaling policies**.  
+  - Scaling policies use **CloudWatch metrics & alarms** (e.g., CPU > 70%) to trigger scaling actions.  
 
-There are three types of scaling policies: simple, step, and target tracking scaling.
+- **Types of Scaling Policies**  
 
-**Simple Scaling Policy**
-A simple scaling policy allows you to do exactly what’s described above. You use a CloudWatch alarm and specify what to do when it is triggered. This can be a number of EC2 instances to add or remove, or a specific number to set the desired capacity to. You can specify a percentage of the group instead of using an amount of EC2 instances, which makes the group grow or shrink more quickly. 
+  - **Simple Scaling Policy**  
+    - Uses a **CloudWatch alarm** to add/remove instances or set desired capacity.  
+    - Can use a **fixed number** or a **percentage of group size**.  
+    - Includes a **cooldown period** to avoid premature scaling while new instances boot.  
+    - Limitation: can’t handle multiple thresholds (e.g., 65% vs 85%).  
 
-Once this scaling policy is triggered, it waits a cooldown period before taking any other action. This is important as it takes time for the EC2 instances to start and the CloudWatch alarm may still be triggered while the EC2 instance is booting. For example, you could decide to add an EC2 instance if the CPU utilization across all instances is above 65%. You don’t want to add more instances until that new EC2 instance is accepting traffic. 
+  - **Step Scaling Policy**  
+    - Handles **multiple thresholds** with incremental actions.  
+    - Example:  
+      - +2 instances if CPU ≥ 85%  
+      - +4 instances if CPU ≥ 95%  
+    - Responds to alarms even if scaling activity is still in progress.  
 
-However, what if the CPU utilization was now above 85% across the ASG? Only adding one instance may not be the right move here. Instead, you may want to add another step in your scaling policy. Unfortunately, a simple scaling policy can’t help with that.
-
-**Step Scaling Policy**
-This is where a step scaling policy helps. Step scaling policies respond to additional alarms even while a scaling activity or health check replacement is in progress. Similar to the example above, you decide to add two more instances in case the CPU utilization is at 85%, and four more instances when it’s at 95%.
-
-Deciding when to add and remove instances based on CloudWatch alarms may seem like a difficult task. This is why the third type of scaling policy exists: target tracking.
-
-**Target Tracking Scaling Policy**
-If your application scales based on average CPU utilization, average network utilization (in or out), or based on request count, then this scaling policy type is the one to use. All you need to provide is the target value to track and it automatically creates the required CloudWatch alarms.
+  - **Target Tracking Scaling Policy**  
+    - Simplest and most dynamic option.  
+    - Set a **target value** (e.g., avg CPU %, network in/out, request count).  
+    - Automatically creates and manages the required **CloudWatch alarms**.  
 
 
 ---
 
+## 8.9 `Optimization` Notes from Quiz
 
-# 9. Additional References:
+- 3 Components of `EC2 AutoScaling`: 1) Launch Template 2) `EC2 AutoScaling Group` , 3) `Scaling Policy`
+- A ELB automatically scales to meet incoming demand
+- When a user uses ELB with an Auto Scaling Group, there is no need to manually register the individual EC2 instances scaled with the load balancer
+- If you are routing to targets based on a rule that uses the path of the request, you are using `Application Load Balancer`
+- If you are running low-latency apps, real time games or IoT applications, use `Network Load Balancer` (if routing is NOT based on content-based routing)
+- An application can be scaled `Vertically` by adding more firepower (compute capacity) to the existing machine OR by scaling `horizontally` by adding more EC2 instances of similar compute capacity
 
-> Disclaimer: Beware: Not all information provided by ChatGPT is accurate. They get wrong quite a lot in nuanced sub-topics. 
+Source: [A github source for Week 4 Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w4-%20Monitoring%20and%20Optimizing%20Solutions%20on%20AWS/Week%204%20Quiz%20_%20Coursera.pdf)
 
+---
+
+
+# 9. Additional References
 
 - AWS Coursera Course on `AWS Technical Essentials`
 
@@ -2200,3 +2639,17 @@ If your application scales based on average CPU utilization, average network uti
 - [My ChatGPT Interactions on Computing in AWS](https://chatgpt.com/share/6703b5e9-1154-800f-8c1d-03f16c3ae6e0)
 - [My ChatGPT Interactions on Storage Services in AWS](https://chatgpt.com/share/6728503c-722c-800f-a6fc-f16d4e1888f3)
 - [My ChatGPT Interactions on Database Services in AWS](https://chatgpt.com/share/67285596-cb00-800f-b999-f317d4ae56c4)
+
+> Disclaimer: Beware: Not all information provided by ChatGPT is accurate. They get wrong quite a lot in nuanced sub-topics. 
+
+---
+
+# **Plagiarism Disclosure**: <br>
+> - The below notes contain my own writing like mermaid charts and bullet points combined with copy-paste paragraph notes from Coursera course (not to be misjudged for plagiarism).
+<br>
+> - Most pics are from Coursera course. If a pic is taken from outside, source is cited below it
+<br>
+> - I have plenty of interactions with ChatGPT weaved into appropriate sections for better reading
+<br>
+> - The below notes are purely to refresh my memory when I take up any AWS exam in future. Unlike other articles, the below notes are not meant to be reviewed from the pov of plagiarism.
+
