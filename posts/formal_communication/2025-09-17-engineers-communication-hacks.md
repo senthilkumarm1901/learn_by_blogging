@@ -41,6 +41,7 @@ format:
 > * I started my role as a Market Research Analyst in a Procurement-focused Management Consultancy Firm.
 > * Typically, a Management consultancy has a team of Consultants and an army of Market Research (MR) Analysts. 
 > * My first company combined the role of both Consultant and MR Analysts into one.
+> * As a Consultant and a MR Analyst, I had a ton of opportunities to hone my communications skills
 
 ![](mgmt_consultants_mkt_research.png){width=300}
 
