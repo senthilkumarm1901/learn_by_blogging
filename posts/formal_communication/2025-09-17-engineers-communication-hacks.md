@@ -30,24 +30,39 @@ format:
 ![](communication_hacks_2.png)
 
 
+
 ---
 
 #### Why am I even speaking on this topic?
 
-> * 💼 My Career: If I were an Asset Management Company, I’d have primarily invested in momentum funds 
-> * 🔄 Career Transitions: ***Management Consulting*** → ***Analytics*** → Data Science → Deep Learning → Generative AI
+<div style="font-size: 0.7em;">
 
-> 🥖🧈 Early Roles: My bread and butter in the first two roles ***depended heavily on excellent communication skills***!
+> * Once upon a time, 15 years ago ....
+> * I started my role as a Market Research Analyst in a Procurement-focused Management Consultancy Firm.
+> * Typically, a Management consultancy has a team of Consultants and an army of Market Research (MR) Analysts. 
+> * My first company combined the role of both Consultant and MR Analysts into one.
+
+![](mgmt_consultants_mkt_research.png){width=300}
+
+</div>
+
+---
+
+#### Why am I even speaking on this topic?
+
+<div style="font-size: 0.7em;">
+
+> * 💼 My Career: If I were an Asset Management Company, I’d have primarily invested in ***momentum*** funds. 
+> * 🔄 Career Transitions from one momentum to another: ***Management Consulting*** → ***Analytics*** → Data Science → Deep Learning → Generative AI
+
+> * 🥖🧈 Early Roles: My bread and butter in the first two roles - Management Consultancy and Analytics - ***depended heavily on communication skills***! <br>
+> * I made cold-calls, sent lots of cold emails, prepared tonnes of reports and gave an equally substantial report explanation calls to clients in senior levels
+
+</div>
 
 ---
 
-#### Why Communication was important in my first 2 Roles
 
-> - Once upon a time, 15 years ago ....<br>
-![](mgmt_consultants_mkt_research.png)
-
-
----
 
 ## The Four Pillars
 
@@ -345,13 +360,13 @@ Side effects of running mental subtitles:
 > * Chasing **public speaking perfection** is a wrong goal (for most of us) ❌
 > * Nobody wants a **Sashi Tharoor-style** monologue in every day meeting discussions 😅
 
-> * Instead, let us focus on **effective meeting conversations**
+> * Instead, let us focus on making  everyday **meeting room conversations** effective!
 
 <br>  
 
 ---
 
-### Factors for Effective Meeting Room Conversations
+### How to Improve Meeting Room Conversations
 
 > * Improve your speech following the ***Toastmasters*** metrics
 > * Use the **Speech Styles** to make your thoughts coherent
@@ -359,7 +374,10 @@ Side effects of running mental subtitles:
 
 ---
 
-## `Status Update` Calls — Master the Most Frequent Call 🚀
+## `Status Update` Calls 
+
+> * This is one of the most frequent calls as Software Engineers
+> * Let us look at the steps to master these calls
 
 ---
 
@@ -467,12 +485,12 @@ Side effects of running mental subtitles:
 
 1. Acknowledge but Reframe <br>
 
-> * I hear your concern. I think it’s best we look at the <problem/resolution/data> for resolving
+> * I hear your concern. I think it’s best we look at the <problem/resolution/data> and resolve the issue
 
 
-2. Take the High Ground <br>
+2. Take the High Ground but still Reframe <br>
 
-> * Thanks for the feedback. It is best to keep this discussion constructive
+> * Thanks for the feedback. But I am avoiding explaining my past efforts to keep this discussion constructive. I'd rather want to look at future steps of resolution
 
 ---
 
