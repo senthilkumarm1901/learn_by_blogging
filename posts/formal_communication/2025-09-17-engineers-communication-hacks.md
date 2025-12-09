@@ -9,26 +9,17 @@ description: Practical hacks to listen better, write sharper, and speak smarter
 date: '2025-09-17'
 draft: false
 image: communication_hacks.png
-toc: false
+toc: true
 toc-depth: 2
 title: "An Engineer’s Playbook for Formal Communication in the AI Age"
 output-file: 2025-09-17-engineers-communication-hacks.html
-format:
-  revealjs:
-    title-slide-attributes:
-      style: "font-size: 0.6em;"
-    incremental: true
-    controls: true
-    keyboard: true
-
 
 
 ---
 
 ## 
 
-![](communication_hacks_2.png)
-
+![](the_effective_communication_playbook.png)
 
 
 ---
@@ -67,12 +58,10 @@ format:
 
 ## The Four Pillars
 
-::: {.nonincremental}
 - ***Active*** Listening 👂
 - ***Mindful*** Reading 📖
 - ***Deliberate*** Writing ✍️
 - ***Clear*** Speaking 🗣️
-:::
 
 > - Your mind voice: "Just fancy, empty adjectives 🫙" <br>
 > - But really, it’s about making everything active and intentional <br>
@@ -92,6 +81,9 @@ format:
 
 
 ## 1. Active Listening
+
+![](active_listening.png){width=500}
+
 
 ---
 
@@ -500,7 +492,9 @@ Side effects of running mental subtitles:
 > What does a good communicator need?
 
 <br>
+
 ![](presenter.png){width=200} 
+
 <br>
 
 > * "Active" Everything - Listening, Reading, Writing and eventually it will show up in your speaking
