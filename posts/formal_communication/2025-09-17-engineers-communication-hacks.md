@@ -21,6 +21,8 @@ output-file: 2025-09-17-engineers-communication-hacks.html
 
 ![](the_effective_communication_playbook.png)
 
+> If you prefer reading this in [my Medium Post: How to Ace Formal Communication in the AI Era](https://medium.com/@senthilkumar.m1901/an-engineers-playbook-to-ace-formal-communication-8a46b48ef3ea?source=friends_link&sk=92328566cbd13b9e7b80c374b05f40ee)
+
 
 ---
 
@@ -63,9 +65,9 @@ output-file: 2025-09-17-engineers-communication-hacks.html
 - ***Deliberate*** Writing ✍️
 - ***Clear*** Speaking 🗣️
 
-> - Your mind voice: "Just fancy, empty adjectives 🫙" <br>
-> - But really, it’s about making everything active and intentional <br>
-> - Practical tips and hacks coming up in the next slides 🚀
+- Your mind voice: "Just fancy, empty adjectives 🫙" <br>
+- But really, it’s about making everything active and intentional <br>
+- Practical tips and hacks coming up in the next slides 🚀
 
 ---
 
@@ -82,7 +84,7 @@ output-file: 2025-09-17-engineers-communication-hacks.html
 
 ## 1. Active Listening
 
-![](active_listening.png){width=500}
+![](active_listening.png){width=700}
 
 
 ---
@@ -94,8 +96,8 @@ output-file: 2025-09-17-engineers-communication-hacks.html
 * 👍 Acknowledge (nodding, verbal cues)
 * 🔁 Reflect in your own words
 
-> - Thanks, but no thanks 🙅 <br>
-> - These tips are hard to practice—especially for *boring* topics 😅
+- Thanks, but no thanks 🙅 <br>
+- These tips are hard to practice—especially for *boring* topics 😅
 
 ---
 
@@ -148,7 +150,7 @@ Side effects of running mental subtitles:
 
 #### Listening as Toastmasters — Grammar ✍️
 
-<br> <br> <br>
+
 
 - Common slip-ups: “I can able to…”, “She did not completed this …” ❌ <br>
 - Unless you’re Sachin 🏏 or ARR 🎶, speaking correctly matters in the long run ✅
@@ -159,7 +161,7 @@ Side effects of running mental subtitles:
 
 #### Listening as Toastmasters — Ah Counter 🔢
 
-<br> <br> <br>
+
 
 - My favorite metric: the Ah Counter! 🎯 <br>
 - Filler words like “like”, “you know”, “but umm…” 🙃 <br>
@@ -168,7 +170,7 @@ Side effects of running mental subtitles:
 
 #### Listening as Toastmasters — Crutch Phrases 🪃
 
-<br> <br> <br>
+
 
 - Common fillers: “Actually”, “At the end of the day…”, “Honestly speaking…” 🗨️ <br>
 - Are some of these phrases being overused? 🤔
@@ -177,7 +179,7 @@ Side effects of running mental subtitles:
 
 #### Listening as Toastmasters — Stammering ⏸️
 
-<br> <br> <br>
+
 
 - Examples: “I-I-I think we should…” or “So, so, so the plan is…” 🗣️ <br>
 - Often caused by rushing thoughts or ideas racing ahead of words 🏃💭 <br>
@@ -188,7 +190,7 @@ Side effects of running mental subtitles:
 
 #### Why Toastmasters-like Active Listening? 🎧✨
 
-<br> <br> <br>
+
 
 - It’s not about finding faults 🤦‍♂️💥
 - These hacks help you become less self-critical ❤️‍🔥
@@ -224,7 +226,7 @@ Side effects of running mental subtitles:
 
 ### Speech Style - Inductive: **Bottom-up Approach**
 
-![](inductive_3.png){width=300}
+![](inductive_3.png)
 
 
 > * "The payment module has duplicated logic, poor error handling, and is hard for new developers to understand [details]. <br>That’s why we need to refactor it [main point]."
@@ -247,6 +249,8 @@ Side effects of running mental subtitles:
 ---
 
 ## 2. Second Pillar: Mindful Reading
+
+![](mindful_reading.png)
 
 ---
 
@@ -287,6 +291,8 @@ Side effects of running mental subtitles:
 
 ## 3. Third Pillar: Writing
 
+![](clarity-driven_writing.png)
+
 ---
 
 ### My Motto on Writing ✍️✨
@@ -303,8 +309,8 @@ Side effects of running mental subtitles:
 
 ### Avoid Agenda-less Meeting Invites or Hi!
 
-> - Avoid sending a meeting invite which does not have an agenda <br>
-> - Never, ever send Empty "Hi/Hello" and waiting for others to respond. Always add an one-line context
+- Avoid sending a meeting invite which does not have an agenda <br>
+- Never, ever send Empty "Hi/Hello" and waiting for others to respond. Always add an one-line context
 
 
 <br>
@@ -328,9 +334,12 @@ Side effects of running mental subtitles:
 - At Amazon, problem-solving meetings start with a structured written memo instead of a slide deck 📝
 - The **two-page memo** received over **50 comments** 📑📝 before the call
 - The engineer felt disheartened initially 😓 but soon realized the **writing and thinking** required significant improvement 💡
+
 ---
 
-## Fourth Pillar: Speaking
+## 4. Fourth Pillar: Speaking
+
+![](clear_speaking.png)
 
 ---
 
@@ -493,12 +502,32 @@ Side effects of running mental subtitles:
 
 <br>
 
-![](presenter.png){width=200} 
+![](final_summary.png)
 
 <br>
 
-> * "Active" Everything - Listening, Reading, Writing and eventually it will show up in your speaking
-> * Have a holistic goal on communication
+**Have a holistic goal on communication**
+
+- Great communicators aren’t just good talkers — they’re good processors of information. 
+- That’s why the quieter skills (listening, reading and note-taking) matter just as much as the noticeable one (speaking). Never strive just for public speaking.
+- Keep track of how you communicate and how others do too
+
+<br><hr>
+
+- **From Toastmasters-style metrics to speech-structure frameworks** (deductive, inductive, trunk-feature), you have now seen a set of tools to evaluate communication of yours and others’, more skillfully and more holistically
+- Consistently tackle weak areas
+
+- Most of us exhibit some predictable “error patterns” in communication that erode trust:
+    - stammering at the start of a sentence,
+    - inadequate vocabulary,
+    - same grammar mistakes, or
+    - filler-riddled speech, among many others.
+    - No matter where you are now, never underestimate your long-term potential 🚀.
+
+- Recognize your common errors, and work on them.
+- If machine learning models improve by reducing errors at each training round, so can we.
+
+> Great communicators aren’t born; they’re forged 🔥🛠️, one deliberate step at a time.
 
 
 ---
