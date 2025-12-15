@@ -1,30 +1,48 @@
 ---
-title: A Chatbot LLM Application to Access Arxiv Tool with MCP
+title: A Chatbot LLM Application to Access Tool with MCP
 ---
 
 sequenceDiagram
+    autonumber
     participant U as User
-    participant LA as LLM App
-    participant MC as MCP_Client<br>(part of LLM App)
-    participant LS as LLM_Server
-    participant MS as MCP_Server
-    participant Arxiv as External Tool: Arxiv
+    participant LA as LLM Client App
+    participant MC as MCP Client<br>(part of LLM App)
+    participant MS as MCP Server
+    participant LS as LLM Model Server
+    participant Tool as External Tool
 
-    U->>LA: 1. Prompt
-    LA->>MC: 2A. Activate the Client API 
-    MC->>MS: 2B. Extract Tools List
-    MS->>MC: 2C. Return Tools List
+    Note over LA,MC: Session initialization
+    rect rgb(240,240,255)
+        autonumber 1
+        LA->>MC: 1A. Activate the MCP Client<br>- Discover available tools
+        autonumber 1
+        MC->>MS: 1B. Extract Tools List (list_tools)
+        autonumber 1
+        MS->>MC: 1C. Return Tools List (Tool Schema)
+        MC->>LA: 1D. Share Tool Schema to LLM (part of "context")
+    end
+    U->>LA: 2. User Prompt
 
-    MC->>LS: 3A. Prompt + Right set of Tools List
-    LS->>MC: 3B. LLM decides on the right tool
-    
-    MC->>MS: 4A. Call the Tool/Function `arxiv_search()`
-
-    Arxiv<<->>MS: 4B. Access Arxiv Database and Gets Info
-
-
-    MS->>MC: 4C. Response from Tool/Data
-    MC->>LS: 5A: History of conv + Tool's Response send to LLM 
-    LS->>MC: 5B. LLM's Final Response
-    MC-->>LA: 6. Send the Response to LLM App
-    LA-->>U: 7. User reads the response
+    autonumber 3
+    LA->>LS: 3A. Prompt + Tool Schema
+    autonumber 3
+    LS->>LA: 3B. LLM decides on the right tool(s) and tool arguments
+    rect rgb(240,240,255)
+        autonumber 4
+        LA->>MC: 4A Call for Tool Execution to MCP Client
+        autonumber 4
+        MC->>MS: 4B. Invoke the Tool/Function API with right arguments<br>call_tool(tool, args)
+        autonumber 4
+        MS->>Tool: 4C. From inside the MCP Server, the external tool is accessed
+        autonumber 4
+        Tool->>MS: 4D. Results from external tool to MCP Server
+        autonumber 4
+        MS->>MC: 4E. Tool Result
+        autonumber 4
+        MC->>LA: 4F. Tool Response back to LLM Client/App
+    end
+    autonumber 5
+    LA->>LS: 5A: History of conv + Tool's Response send to LLM 
+    LS->>LA: 5B. LLM's Final Response
+    autonumber 6
+    LA->>U: 6. User reads the response

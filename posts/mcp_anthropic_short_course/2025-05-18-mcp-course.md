@@ -19,7 +19,8 @@ output-file: 2025-05-18-mcp-course.html
 I recently completed a short course from DeepLearning.ai on Model Context Protocol. [link to the course](https://www.deeplearning.ai/short-courses/mcp-build-rich-context-ai-apps-with-anthropic/)
 I got to learn quite a few things in that. I have collated below my notes from the course.
 
-![](./images/mcp_course_certification.png)
+![](./images/mcp-native-llm-tool-calling-architecture.png)
+Source: Author's Personal Understanding
 
 > **Plagiarism Disclosure**: <br>
 > - The headings below match the video titles from the course. <br>
