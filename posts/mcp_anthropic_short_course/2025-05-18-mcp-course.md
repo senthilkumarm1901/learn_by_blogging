@@ -10,13 +10,16 @@ description: This blog post contains my learning notes from DeepLearning.AI's Sh
 
 date: '2025-05-18'
 draft: false
-image: images/mcp_course_certification.png
+image: images/mcp-native-llm-tool-calling-architecture.png
 toc: true
 title: "What I Learned About MCP from DeepLearning.AI's Short Course"
 output-file: 2025-05-18-mcp-course.html
 ---
 
 I recently completed a short course from DeepLearning.ai on Model Context Protocol. [link to the course](https://www.deeplearning.ai/short-courses/mcp-build-rich-context-ai-apps-with-anthropic/)
+
+![](./images/mcp_course_certification.png)
+
 I got to learn quite a few things in that. I have collated below my notes from the course.
 
 ![](./images/mcp-native-llm-tool-calling-architecture.png)
