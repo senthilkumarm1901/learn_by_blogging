@@ -1,0 +1,46 @@
+
+## Part 0
+
+```
+---
+title: Python Concepts <--> FastAPI Features Mapping
+---
+
+flowchart LR
+    subgraph PY[🐍 Core Python Concepts]
+        T["Type Hints<br/>list[str], Optional, Union"]
+        A[async / await<br/>Event Loop]
+        C[Classes & Data Models]
+        F[Functions as First-Class Objects]
+        G[Generators & yield]
+        E[Exceptions]
+        S[Stdlib Types<br/>UUID, datetime, Enum]
+    end
+
+    subgraph FA[⚡ FastAPI Features]
+        V[Request Validation<br/>Response Serialization]
+        O[OpenAPI / Swagger Docs]
+        H[High-Concurrency<br/>Non-blocking I/O]
+        R[Request & Response Models]
+        D["Dependency Injection<br/>Depends()"]
+        L[Resource Lifecycle<br/>DB sessions, cleanup]
+        X[HTTP Error Responses]
+        P[Strong API Contracts]
+    end
+
+    T --> V
+    T --> O
+
+    A --> H
+
+    C --> R
+    T --> R
+
+    F --> D
+    G --> L
+
+    E --> X
+
+    S --> P
+    T --> P
+```

@@ -9,7 +9,7 @@ categories:
 description: Sharing my learning notes on OpenAPI Specs and advanced FastAPI from official documentation
 date: '2025-10-17'
 draft: true
-image: langgraph_logo.png
+image: ./images/python_concepts-fastapi_mapping_2.png
 toc: true
 title: "What I Learned about Advanced FastAPI from the FastAPI Official Docs"
 output-file: 2025-09-17-fastapi-genai-part-2.html
