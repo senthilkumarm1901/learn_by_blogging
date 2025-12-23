@@ -22,7 +22,7 @@ Here are going to uncover them one bye one.
 
 ![](./images/python_concepts-fastapi_mapping_2.png)
 
-- The same Python language features power two different dimensions in FastAPI.
+- The same Python language's features power two different dimensions in FastAPI.
 - On one side, they directly affect runtime behavior — validation, concurrency, and error handling.
 - On the other, they dramatically improve developer experience — auto-generated docs, schemas, and clean dependency injection. 
 

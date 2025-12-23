@@ -53,9 +53,6 @@ The server processes the request and gathers the necessary information.
 The server sends a response back to the client.
 The client displays the response to the user. 
 ```
-
-![](./images/mcp_used_in_application_dl.png)
-Source: Author
  
 ## Flow of the Course
 
