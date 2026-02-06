@@ -5,13 +5,14 @@ title: A Chatbot LLM Application to Access Tool with MCP
 sequenceDiagram
     autonumber
     participant U as User
-    participant LA as LLM Client App
-    participant MC as MCP Client<br>(part of LLM App)
-    participant MS as MCP Server
-    participant LS as LLM Model Server
-    participant Tool as External Tool
+    participant LA as LLM<br>Application
+    participant LS as LLM Model<br>(Azure OpenAI, Bedrock Claude,etc.,)
+    participant MC as MCP Client<br>(part of LLM Application)
+    participant MS as (Keka) MCP Server
 
-    Note over LA,MC: Session initialization
+    participant Tool as External Tool<br>("Keka")
+
+    Note over LA,MS: 1. Tool Discovery
     rect rgb(240,240,255)
         autonumber 1
         LA->>MC: 1A. Activate the MCP Client<br>- Discover available tools
@@ -21,14 +22,16 @@ sequenceDiagram
         MS->>MC: 1C. Return Tools List (Tool Schema)
         MC->>LA: 1D. Share Tool Schema to LLM (part of "context")
     end
-    U->>LA: 2. User Prompt
+    U->>LA: 2. User Prompt<br>("how many leave do I have")
 
     autonumber 3
+    Note over LA,LS: 2. Tool Selection<br>(LLM Model call 1)
     LA->>LS: 3A. Prompt + Tool Schema
     autonumber 3
     LS->>LA: 3B. LLM decides on the right tool(s) and tool arguments
     rect rgb(240,240,255)
         autonumber 4
+        Note over LA,Tool: 3. (Programmatic) Tool Invocation
         LA->>MC: 4A Call for Tool Execution to MCP Client
         autonumber 4
         MC->>MS: 4B. Invoke the Tool/Function API with right arguments<br>call_tool(tool, args)
@@ -37,11 +40,12 @@ sequenceDiagram
         autonumber 4
         Tool->>MS: 4D. Results from external tool to MCP Server
         autonumber 4
-        MS->>MC: 4E. Tool Result
+        MS->>MC: 4E. Tool Result ("20 days")
         autonumber 4
         MC->>LA: 4F. Tool Response back to LLM Client/App
     end
     autonumber 5
+    Note over LA,LS: Final LLM Response with Tool Result as Context<br>(LLM Model call 2)
     LA->>LS: 5A: History of conv + Tool's Response send to LLM 
     LS->>LA: 5B. LLM's Final Response
     autonumber 6
