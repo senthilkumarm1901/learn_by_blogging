@@ -905,7 +905,7 @@ Below is a **drop-in Section IV**, written to match your tone, structure, and te
 
 ---
 
-## IV. Real-world Bedrock Architectures
+## IV. Real-World Bedrock Architectures
 
 With the API landscape clear, the natural next question is:
 
