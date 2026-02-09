@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2026-02-09">
+<meta name="description" content="Sharing my learning notes on AWS Bedrock API Endpoints">
+
+<title>A Ready Reckoner on AWS Bedrock API Endpoints – Learn by Blogging</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-44d439249bacb078cfa464a9d8f3ac0a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">A Ready Reckoner on AWS Bedrock API Endpoints</h1>
+                  <div>
+        <div class="description">
+          Sharing my learning notes on AWS Bedrock API Endpoints
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">AWS Bedrock</div>
+                <div class="quarto-category">GenAI</div>
+                <div class="quarto-category">LLM</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 9, 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#i.-introduction-to-aws-bedrock" id="toc-i.-introduction-to-aws-bedrock" class="nav-link active" data-scroll-target="#i.-introduction-to-aws-bedrock">I. Introduction to AWS Bedrock</a></li>
+  <li><a href="#ii.-control-plane-and-data-plane-endpoints-of-aws-bedrock" id="toc-ii.-control-plane-and-data-plane-endpoints-of-aws-bedrock" class="nav-link" data-scroll-target="#ii.-control-plane-and-data-plane-endpoints-of-aws-bedrock">II. Control Plane and Data Plane Endpoints of AWS Bedrock</a>
+  <ul class="collapse">
+  <li><a href="#bedrock-control-plane-model-management-setup-configuration" id="toc-bedrock-control-plane-model-management-setup-configuration" class="nav-link" data-scroll-target="#bedrock-control-plane-model-management-setup-configuration">1) <code>bedrock</code> — <strong>Control plane</strong> (model management, setup, configuration)</a></li>
+  <li><a href="#bedrock-runtime-data-plane-inference-async-calls-highthroughput" id="toc-bedrock-runtime-data-plane-inference-async-calls-highthroughput" class="nav-link" data-scroll-target="#bedrock-runtime-data-plane-inference-async-calls-highthroughput">2) <code>bedrock-runtime</code> — <strong>Data plane</strong> (inference, async calls, high‑throughput)</a></li>
+  <li><a href="#bedrock-agent-control-plane-agents-knowledge-bases-prompt-templates" id="toc-bedrock-agent-control-plane-agents-knowledge-bases-prompt-templates" class="nav-link" data-scroll-target="#bedrock-agent-control-plane-agents-knowledge-bases-prompt-templates">3) <code>bedrock-agent</code> — <strong>Control plane</strong> (Agents, Knowledge Bases, Prompt templates)</a></li>
+  <li><a href="#bedrock-agent-runtime-data-plane-invoke-agents-query-kbsrag" id="toc-bedrock-agent-runtime-data-plane-invoke-agents-query-kbsrag" class="nav-link" data-scroll-target="#bedrock-agent-runtime-data-plane-invoke-agents-query-kbsrag">4) <code>bedrock-agent-runtime</code> — <strong>Data plane</strong> (Invoke agents, query KBs/RAG)</a></li>
+  </ul></li>
+  <li><a href="#bedrock-agentcore-control-control-plane-for-agentcore" id="toc-bedrock-agentcore-control-control-plane-for-agentcore" class="nav-link" data-scroll-target="#bedrock-agentcore-control-control-plane-for-agentcore">5) <code>bedrock-agentcore-control</code> — <strong>Control plane</strong> for AgentCore</a>
+  <ul class="collapse">
+  <li><a href="#bedrock-agentcore-data-plane-for-agentcore" id="toc-bedrock-agentcore-data-plane-for-agentcore" class="nav-link" data-scroll-target="#bedrock-agentcore-data-plane-for-agentcore">6) <code>bedrock-agentcore</code> — <strong>Data plane</strong> for AgentCore</a></li>
+  </ul></li>
+  <li><a href="#iii.-guardrail" id="toc-iii.-guardrail" class="nav-link" data-scroll-target="#iii.-guardrail">III. Guardrail</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<p>I recently completed a GenAI specialization from AWS: <img src="./images/bedrock_specialization_certificate.png" class="img-fluid"></p>
+<p>I got to learn quite a few things in that. I have collated below my notes from the course.</p>
+<p><img src="./images/Bedrock_api_endpoints_mental_model.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p><strong>Disclaimer</strong>: <br> - The AWS CLI commands are <strong><em>representational</em></strong>. Kindly check “aws <bedrock-api> <command> help” to confirm the workings. - These are notes for learning and I have used LLMs to tweak my messaging or make it crisper/better - Sources are attributed to all pics for clarity</command></bedrock-api></p>
+</blockquote>
+<p><strong>How to read this blog</strong> Amazon Bedrock exposes multiple APIs, but they all fall into two buckets:</p>
+<ul>
+<li>Control Plane → define what exists (models, agents, flows, runtimes)</li>
+<li>Data Plane → execute what runs (inference, chats, sessions)</li>
+</ul>
+<p>Key Takeaways: - Control Plane APIs define what exists: models, agents, flows, runtimes - Data Plane APIs execute what runs: inference, chats, sessions - All actual model execution happens in the data plane - Control plane never handles user prompts or high-throughput traffic</p>
+<blockquote class="blockquote">
+<p>This blog walks <strong>top-down</strong>:</p>
+<ol type="1">
+<li>How to invoke models (Bedrock &amp; Bedrock runtime)</li>
+<li>Agent abstractions (Agents &amp; Flows)</li>
+<li>Custom runtimes (AgentCore)</li>
+<li>Safety enforcement (Guardrails)</li>
+</ol>
+</blockquote>
+<section id="i.-introduction-to-aws-bedrock" class="level2">
+<h2 class="anchored" data-anchor-id="i.-introduction-to-aws-bedrock">I. Introduction to AWS Bedrock</h2>
+<p>Amazon Bedrock is a <strong>fully managed, serverless</strong> AWS service that exposes <strong>foundation models, agent frameworks, and safety controls</strong> through a unified API surface.</p>
+<p>Types of AI Apps one can build: - GenAI Deteministic or Agentic WorkFlows - Conversational AI Applications</p>
+<p>What Bedrock offers = <strong>Infrastructure</strong> (serverless) + <strong>Models</strong> (Foundation Models)</p>
+<p>What Bedrock service allows you to do? - Choose a model - Provide Inference Parameters - temparature - top_p - other model_specific settings - Model specific inputs (including Prompt) - Output config - Guardrails for both query and output</p>
+<p>Other things you can do: - Run batch jobs - Async request calls - fine-tuning - provisioned throughput</p>
+<hr>
+</section>
+<section id="ii.-control-plane-and-data-plane-endpoints-of-aws-bedrock" class="level2">
+<h2 class="anchored" data-anchor-id="ii.-control-plane-and-data-plane-endpoints-of-aws-bedrock">II. Control Plane and Data Plane Endpoints of AWS Bedrock</h2>
+<p>AWS consistently separates services into:</p>
+<ul>
+<li><strong>Control Plane</strong> → configure, create, manage things</li>
+<li><strong>Data Plane</strong> → run the workload, handle high-volume traffic</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 2%">
+<col style="width: 14%">
+<col style="width: 6%">
+<col style="width: 36%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>S No</th>
+<th>Endpoint</th>
+<th>Plane</th>
+<th>Purpose</th>
+<th>Who uses this?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><code>bedrock</code></td>
+<td>Control plane</td>
+<td>Model management, setup, configuration</td>
+<td><strong>Platform / ML / Infra teams</strong> defining models, capacity, and governance</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><code>bedrock-runtime</code></td>
+<td>Data plane</td>
+<td>High-throughput inference calls</td>
+<td><strong>Application developers</strong> building stateless LLM-powered features</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><code>bedrock-agent</code></td>
+<td>Control plane</td>
+<td>Manage agents, KBs, prompt templates &amp; flows</td>
+<td><strong>Platform / ML teams</strong> designing managed agent &amp; RAG architectures</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><code>bedrock-agent-runtime</code></td>
+<td>Data plane</td>
+<td>Invoke agents, query KBs, invoke flows</td>
+<td><strong>App developers</strong> consuming <em>managed</em> agents, RAG, and flows at runtime</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td><code>bedrock-agentcore-control</code></td>
+<td>Control plane</td>
+<td>Manage AgentCore resources (Runtime, Memory, Identity, Gateway, Tools)</td>
+<td><strong>Advanced platform / agent teams</strong> provisioning custom agent runtimes</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td><code>bedrock-agentcore</code></td>
+<td>Data plane</td>
+<td>Run agent sessions, tools (Browser/Code-Interpreter), Memory I/O</td>
+<td><strong>Teams running custom agent runtimes</strong> (LangGraph / custom planners / tools)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<section id="bedrock-control-plane-model-management-setup-configuration" class="level3">
+<h3 class="anchored" data-anchor-id="bedrock-control-plane-model-management-setup-configuration">1) <code>bedrock</code> — <strong>Control plane</strong> (model management, setup, configuration)</h3>
+<p>This is the&nbsp;<strong>control plane</strong>&nbsp;for core model management. It includes APIs used to manage models, start fine-tuning model jobs, and batch inferencing, among others</p>
+<p>1.1 Discover models &amp; metadata:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># List available foundation models</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock list-foundation-models <span class="at">--region</span> us-east-1</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock (control); no model arg needed. </span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect a specific model (schema, modalities, streaming support, etc.)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock get-foundation-model <span class="dt">\</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-identifier</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock; model-identifier=&lt;provider&gt;.&lt;model&gt;:&lt;version&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>[!NOTE] If you are using boto3 sdk in python, you would use something like below</p>
+</blockquote>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> boto3.client(<span class="st">"bedrock"</span>, region_name<span class="op">=</span><span class="st">"us-east-1"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Call the API</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> client.list_foundation_models()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Print full response</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+<p>1.2 Configure account/Region‑level <strong>invocation logging</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Enable model invocation logging to S3 (and/or CloudWatch)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock put-model-invocation-logging-configuration <span class="dt">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--logging-config</span> <span class="st">'{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="st">    "s3Config": { "bucketName": "my-bedrock-logs", "keyPrefix": "invocations/" },</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="st">    "textDataDeliveryEnabled": true,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="st">    "imageDataDeliveryEnabled": true,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="st">    "embeddingDataDeliveryEnabled": true</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="st">  }'</span> <span class="dt">\</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock; applies account/Region-wide (no model-id).</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify logging state</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock get-model-invocation-logging-configuration <span class="at">--region</span> us-east-1</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock; returns loggingConfig.  </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>1.3 <strong>Provisioned Throughput</strong> (dedicated capacity)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Create Provisioned Throughput for a model (1 MU, 1 month)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock create-provisioned-model-throughput <span class="dt">\</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--provisioned-model-name</span> my-pt-sonnet <span class="dt">\</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-units</span> 1 <span class="dt">\</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--commitment-duration</span> OneMonth <span class="dt">\</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock; model-id can be model ID or ARN.</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Check status/details</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock get-provisioned-model-throughput <span class="dt">\</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--provisioned-model-id</span> arn:aws:bedrock:us-east-1:<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:provisioned-model/<span class="op">&lt;</span>PT_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock; provisioned-model-id is name or ARN.  [5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>1.4 <strong>Custom model</strong> (fine‑tuning) jobs</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit a fine-tuning (model-customization) job</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock create-model-customization-job <span class="dt">\</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--job-name</span> ft-haiku-faq <span class="dt">\</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--custom-model-name</span> haiku-faq-v1 <span class="dt">\</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--base-model-identifier</span> anthropic.claude-3-haiku-20240307-v1:0 <span class="dt">\</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--role-arn</span> arn:aws:iam::<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:role/BedrockCustomizationRole <span class="dt">\</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--training-data-config</span> <span class="st">'{"s3Uri":"s3://my-train-bucket/data/"}'</span> <span class="dt">\</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output-data-config</span> <span class="st">'{"s3Uri":"s3://my-train-bucket/output/"}'</span> <span class="dt">\</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock; base-model-identifier selects FM; S3 URIs carry data &amp; outputs.  </span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Track job</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock get-model-customization-job <span class="at">--job-identifier</span> ft-haiku-faq <span class="at">--region</span> us-east-1</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock; job-identifier is job name or ARN.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>1.5 <strong>Batch inference</strong> (multi‑prompt jobs, async to S3)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a batch inference job from JSONL inputs in S3</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock create-model-invocation-job <span class="dt">\</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--job-name</span> faq-batch-jan <span class="dt">\</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--role-arn</span> arn:aws:iam::<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:role/BedrockBatchRole <span class="dt">\</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input-data-config</span> <span class="st">'{"s3InputDataConfig":{"s3InputFormat":"JSONL","s3Uri":"s3://my-batch/input/"}}'</span> <span class="dt">\</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output-data-config</span> <span class="st">'{"s3OutputDataConfig":{"s3Uri":"s3://my-batch/output/"}}'</span> <span class="dt">\</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock; model-id is FM or inference profile; input/output are S3 locations.</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># List &amp; get job status/results</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock list-model-invocation-jobs <span class="at">--region</span> us-east-1</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock get-model-invocation-job <span class="at">--job-identifier</span> faq-batch-jan <span class="at">--region</span> us-east-1</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock; use for status filtering &amp; details.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="bedrock-runtime-data-plane-inference-async-calls-highthroughput" class="level3">
+<h3 class="anchored" data-anchor-id="bedrock-runtime-data-plane-inference-async-calls-highthroughput">2) <code>bedrock-runtime</code> — <strong>Data plane</strong> (inference, async calls, high‑throughput)</h3>
+<p>This is the&nbsp;<strong>data plane</strong>&nbsp;used for <strong>real-time inference</strong>. If calling a model to generate output (e.g., text, images), the requests go through this endpoint.</p>
+<p>2.1 Single‑prompt <strong>InvokeModel</strong> (typical text generation)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare provider-specific body (example: Anthropic Claude 3.x)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> request.json <span class="op">&lt;&lt;'JSON'</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="st">{</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="st">  "anthropic_version":"bedrock-2023-05-31",</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="st">  "max_tokens":512,</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="st">  "messages":[{"role":"user","content":[{"type":"text","text":"Summarize PolicyPal architecture in 5 bullets."}]}]</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="op">JSON</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke model and save response</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime invoke-model <span class="dt">\</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--content-type</span> application/json <span class="dt">\</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--accept</span> application/json <span class="dt">\</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--body</span> fileb://request.json <span class="dt">\</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1 <span class="op">&gt;</span> response.json</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-runtime; model-id selects FM; body schema must match model provider.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>[!NOTE] * <strong>Note on streaming</strong>: The AWS CLI does <strong>not</strong> support streaming responses for <code>invoke-model-with-response-stream</code>; use an SDK (e.g., boto3) for streaming</p>
+</blockquote>
+<p>2.2 <strong>Converse</strong> API (uniform chat interface; supports Prompt Management)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple multi-turn chat using Converse</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime converse <span class="dt">\</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> anthropic.claude-3-haiku-20240307-v1:0 <span class="dt">\</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--messages</span> <span class="st">'[{"role":"user","content":[{"text":"Give me 3 risks of exposing S3 publicly."}]}]'</span> <span class="dt">\</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-runtime; model-id may also be a Prompt ARN from Prompt Management. </span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a managed Prompt (Prompt Management) as the "model" with variables</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime converse <span class="dt">\</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> arn:aws:bedrock:us-east-1:<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:prompt/<span class="op">&lt;</span>PROMPT_ID<span class="op">&gt;</span>:<span class="op">&lt;</span>VERSION<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--prompt-variables</span> <span class="st">'{"input":"Generate a release note for v2.1"}'</span> <span class="dt">\</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-runtime; model-id is Prompt ARN; pass variables via --prompt-variables.  </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>2.3 Embeddings API</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Text embeddings (Titan v2 example)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># same `invoke-model` but since embedding model is used, </span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># it generates embeddings</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime invoke-model <span class="dt">\</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> amazon.titan-embed-text-v2:0 <span class="dt">\</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--content-type</span> application/json <span class="dt">\</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--body</span> <span class="st">'{"inputText":"Bedrock embeddings quick check"}'</span> <span class="dt">\</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-runtime; model-id is embedding model; body uses inputText.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>2.4 <strong>Async inference (data-plane)</strong> to S3 &gt; Use <code>start-async-invoke</code> for long‑running media workloads (e.g., Nova Reel video). Poll status or list jobs:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Start async invoke (output to S3)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime start-async-invoke <span class="dt">\</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> amazon.nova-reel-v1:0 <span class="dt">\</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-input</span> file://reel_request.json <span class="dt">\</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output-data-config</span> <span class="st">'s3OutputDataConfig={"s3Uri":"s3://my-async/outputs/"}'</span> <span class="dt">\</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-runtime; model-id must support async; output written to S3.  [14]</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Check status of a specific async invocation</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime get-async-invoke <span class="at">--async-invoke-id</span> <span class="op">&lt;</span>ASYNC_ID<span class="op">&gt;</span> --region us-east-1</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co"># List recent async invocations</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime list-async-invokes <span class="at">--region</span> us-east-1</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-runtime; manage async lifecycle.  </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="bedrock-agent-control-plane-agents-knowledge-bases-prompt-templates" class="level3">
+<h3 class="anchored" data-anchor-id="bedrock-agent-control-plane-agents-knowledge-bases-prompt-templates">3) <code>bedrock-agent</code> — <strong>Control plane</strong> (Agents, Knowledge Bases, Prompt templates)</h3>
+<blockquote class="blockquote">
+<p>This is a&nbsp;<strong>control plane</strong>&nbsp;endpoint specifically for managing agents, prompt templates, knowledge bases, and prompt flows.</p>
+</blockquote>
+<p>3.1 Create &amp; manage an <strong>Agent</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an agent with instructions and a foundation model</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-agent <span class="dt">\</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-name</span> <span class="st">"ops-assistant"</span> <span class="dt">\</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--instruction</span> <span class="st">"You are an internal Ops assistant. Be concise."</span> <span class="dt">\</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--foundation-model</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-resource-role-arn</span> arn:aws:iam::<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:role/BedrockAgentRole <span class="dt">\</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-agent; foundation-model is FM name/ARN used by the agent.  </span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an alias (e.g., prod)</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-agent-alias <span class="dt">\</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-id</span> <span class="op">&lt;</span>AGENT_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-alias-name</span> prod <span class="dt">\</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-agent; alias helps route runtime traffic.  </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>3.2 Create a <strong>Knowledge Base</strong> and ingest data</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create knowledge base (storage + vector config defined via JSON files)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-knowledge-base <span class="dt">\</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> kb-docs <span class="dt">\</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--role-arn</span> arn:aws:iam::<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:role/BedrockKBRole <span class="dt">\</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--knowledge-base-configuration</span> file://kb-config.json <span class="dt">\</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--storage-configuration</span> file://kb-storage.json <span class="dt">\</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-agent; separate config for embeddings/vector store. </span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a data source and start ingestion</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-data-source <span class="dt">\</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--knowledge-base-id</span> <span class="op">&lt;</span>KB_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> s3-docs <span class="dt">\</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--data-source-configuration</span> file://kb-datasource.json <span class="dt">\</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent start-ingestion-job <span class="dt">\</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">--knowledge-base-id</span> <span class="op">&lt;</span>KB_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">--data-source-id</span> <span class="op">&lt;</span>DS_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-agent; connects S3/Git/etc. to the KB and ingests. </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>3.3 <strong>Prompt Management</strong> (prompt templates &amp; versions)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a prompt with a variant (includes model + template + inference config)</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-prompt <span class="dt">\</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> <span class="st">"cs-faq"</span> <span class="dt">\</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--default-variant</span> <span class="st">"v1"</span> <span class="dt">\</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--variants</span> file://prompt-variant.json <span class="dt">\</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-agent; prompt variants include modelId and templateType. </span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Update a prompt (change default variant or template text)</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent update-prompt <span class="dt">\</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--prompt-identifier</span> <span class="op">&lt;</span>PROMPT_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> <span class="st">"cs-faq"</span> <span class="dt">\</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--default-variant</span> <span class="st">"v2"</span> <span class="dt">\</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--variants</span> file://prompt-variant-v2.json <span class="dt">\</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-agent; prompt-identifier is the prompt ID/ARN.  </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>3.4 <strong>Bedrock Flows</strong> — create/version/alias with <code>bedrock-agent</code> (Control Plane)</p>
+<blockquote class="blockquote">
+<p>Bedrock <strong>Flows</strong> are managed via the <strong><code>bedrock-agent</code></strong> control plane. Typical steps are: create a flow → validate/prepare → version it → create an alias (e.g., <code>latest</code>) for deployment.</p>
+</blockquote>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a Flow (from a JSON definition)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-flow <span class="dt">\</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> <span class="st">"chat-lite"</span> <span class="dt">\</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--description</span> <span class="st">"Cost-aware chat flow with small-talk fast path"</span> <span class="dt">\</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--execution-role-arn</span> arn:aws:iam::<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:role/BedrockFlowsRole <span class="dt">\</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--definition</span> file://flow-definition.json <span class="dt">\</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>An example <strong>flow-definition.json</strong> (Input → Prompt → Output (no KB, no Lambda, no branching)</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"nodes"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Input"</span><span class="fu">,</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"FlowInputNode"</span><span class="fu">,</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"outputs"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span> <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"document"</span><span class="fu">,</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Object"</span> <span class="fu">}</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Prompt"</span><span class="fu">,</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"ChatPrompt"</span><span class="fu">,</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"configuration"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"prompt"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"sourceConfiguration"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"inline"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>              <span class="dt">"modelId"</span><span class="fu">:</span> <span class="st">"anthropic.claude-3-haiku-20240307-v1:0"</span><span class="fu">,</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>              <span class="dt">"templateType"</span><span class="fu">:</span> <span class="st">"TEXT"</span><span class="fu">,</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>              <span class="dt">"templateConfiguration"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>                <span class="dt">"text"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">"text"</span><span class="fu">:</span> <span class="st">"You are a concise assistant. Reply briefly to: {{user_text}}"</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>                <span class="fu">}</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>              <span class="fu">},</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>              <span class="dt">"inferenceConfiguration"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>                <span class="dt">"text"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">"maxTokens"</span><span class="fu">:</span> <span class="dv">128</span><span class="fu">,</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">"temperature"</span><span class="fu">:</span> <span class="fl">0.2</span><span class="fu">,</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">"topP"</span><span class="fu">:</span> <span class="dv">1</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>                <span class="fu">}</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>              <span class="fu">}</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>            <span class="fu">}</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>          <span class="fu">}</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"inputs"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span> <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"user_text"</span><span class="fu">,</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"String"</span><span class="fu">,</span> <span class="dt">"expression"</span><span class="fu">:</span> <span class="st">"$.document"</span> <span class="fu">}</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"outputs"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span> <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"modelCompletion"</span><span class="fu">,</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"String"</span> <span class="fu">}</span></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Output"</span><span class="fu">,</span></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"FlowOutput"</span><span class="fu">,</span></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"inputs"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span> <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"document"</span><span class="fu">,</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Object"</span><span class="fu">,</span> <span class="dt">"expression"</span><span class="fu">:</span> <span class="st">"$.modelCompletion"</span> <span class="fu">}</span></span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"connections"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"in_to_prompt"</span><span class="fu">,</span></span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Data"</span><span class="fu">,</span></span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"source"</span><span class="fu">:</span> <span class="st">"FlowInputNode"</span><span class="fu">,</span></span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"target"</span><span class="fu">:</span> <span class="st">"ChatPrompt"</span><span class="fu">,</span></span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"configuration"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"data"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"sourceOutput"</span><span class="fu">:</span> <span class="st">"document"</span><span class="fu">,</span> <span class="dt">"targetInput"</span><span class="fu">:</span> <span class="st">"user_text"</span> <span class="fu">}</span></span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"prompt_to_out"</span><span class="fu">,</span></span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Data"</span><span class="fu">,</span></span>
+<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"source"</span><span class="fu">:</span> <span class="st">"ChatPrompt"</span><span class="fu">,</span></span>
+<span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"target"</span><span class="fu">:</span> <span class="st">"FlowOutput"</span><span class="fu">,</span></span>
+<span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"configuration"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-66"><a href="#cb15-66" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"data"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"sourceOutput"</span><span class="fu">:</span> <span class="st">"modelCompletion"</span><span class="fu">,</span> <span class="dt">"targetInput"</span><span class="fu">:</span> <span class="st">"document"</span> <span class="fu">}</span></span>
+<span id="cb15-67"><a href="#cb15-67" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb15-68"><a href="#cb15-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb15-69"><a href="#cb15-69" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb15-70"><a href="#cb15-70" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (Optional) Validate/prepare the flow</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent prepare-flow <span class="dt">\</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--flow-identifier</span> <span class="op">&lt;</span>FLOW_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an immutable Flow Version</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-flow-version <span class="dt">\</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--flow-identifier</span> <span class="op">&lt;</span>FLOW_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--description</span> <span class="st">"v1 initial"</span> <span class="dt">\</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an alias (e.g., 'latest') that routes to the version</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-flow-alias <span class="dt">\</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--flow-identifier</span> <span class="op">&lt;</span>FLOW_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> latest <span class="dt">\</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--routing-configuration</span> <span class="st">'[{"flowVersion":"1"}]'</span> <span class="dt">\</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Introspection / lifecycle</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent list-flows <span class="at">--region</span> us-east-1</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent get-flow <span class="at">--flow-identifier</span> <span class="op">&lt;</span>FLOW_ID<span class="op">&gt;</span> --region us-east-1</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent list-flow-versions <span class="at">--flow-identifier</span> <span class="op">&lt;</span>FLOW_ID<span class="op">&gt;</span> --region us-east-1</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent get-flow-alias <span class="at">--flow-identifier</span> <span class="op">&lt;</span>FLOW_ID<span class="op">&gt;</span> --alias-identifier <span class="op">&lt;</span>ALIAS_ID<span class="op">&gt;</span> --region us-east-1</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Cleanup (if needed)</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent delete-flow-alias <span class="at">--flow-identifier</span> <span class="op">&lt;</span>FLOW_ID<span class="op">&gt;</span> --alias-identifier <span class="op">&lt;</span>ALIAS_ID<span class="op">&gt;</span> --region us-east-1</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent delete-flow-version <span class="at">--flow-identifier</span> <span class="op">&lt;</span>FLOW_ID<span class="op">&gt;</span> --flow-version 1 <span class="at">--region</span> us-east-1</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent delete-flow <span class="at">--flow-identifier</span> <span class="op">&lt;</span>FLOW_ID<span class="op">&gt;</span> --region us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="bedrock-agent-runtime-data-plane-invoke-agents-query-kbsrag" class="level3">
+<h3 class="anchored" data-anchor-id="bedrock-agent-runtime-data-plane-invoke-agents-query-kbsrag">4) <code>bedrock-agent-runtime</code> — <strong>Data plane</strong> (Invoke agents, query KBs/RAG)</h3>
+<blockquote class="blockquote">
+<p>This is the&nbsp;<strong>data plane</strong>&nbsp;counterpart for agents. It’s used when you invoke an agent or flow, or when you query a knowledge base in real time.</p>
+</blockquote>
+<p>4.1 Invoke an <strong>Agent</strong> (stateful chat, tools, code‑interpreter, etc.)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke an agent alias with session state</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent-runtime invoke-agent <span class="dt">\</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-id</span> <span class="op">&lt;</span>AGENT_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-alias-id</span> <span class="op">&lt;</span>ALIAS_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--session-id</span> <span class="va">$(</span><span class="fu">uuidgen</span><span class="va">)</span> <span class="dt">\</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input-text</span> <span class="st">"Summarize yesterday's on-call incident timeline."</span> <span class="dt">\</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-agent-runtime; agent-id/alias route to deployed agent; session-id threads convo.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>4.2 Low‑level <strong>retrieve</strong> (vector search only) vs <strong>retrieve‑and‑generate</strong> (managed RAG)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve: semantic search from a KB (no LLM generation)</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent-runtime retrieve <span class="dt">\</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--knowledge-base-id</span> <span class="op">&lt;</span>KB_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--retrieval-query</span> <span class="st">'{"text":"backup policy escalation steps"}'</span> <span class="dt">\</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-agent-runtime; KB vector search results only.  [20](https://tongwing.woon.sg/blog/amazon-bedrock-knowledge-base-part-2-cli/)</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve-and-generate: fetch + generate in one call (supply KB and model ARN)</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent-runtime retrieve-and-generate <span class="dt">\</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input</span> <span class="st">'{"text":"What are our P1 on-call steps?"}'</span> <span class="dt">\</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--retrieve-and-generate-configuration</span> <span class="st">'{</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="st">    "type":"KNOWLEDGE_BASE",</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="st">    "knowledgeBaseConfiguration":{</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="st">      "knowledgeBaseId":"&lt;KB_ID&gt;",</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="st">      "modelArn":"arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet-20240620-v1:0"</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="st">  }'</span> <span class="dt">\</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-agent-runtime; modelArn selects FM; KB id wires the corpus.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>4.3 <strong>Invoke a Flow</strong> with <code>bedrock-agent-runtime</code> (Data Plane)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the flow input (maps to your Flow's Input Node names)</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> flow-input.json <span class="op">&lt;&lt;'JSON'</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="st">{</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="st">  "inputs": [</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="st">    {</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="st">      "content": { "document": "hello" },</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="st">      "nodeName": "FlowInputNode",</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="st">      "nodeOutputName": "document"</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="st">  ]</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="op">JSON</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke a Flow alias</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent-runtime invoke-flow <span class="dt">\</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--flow-identifier</span> <span class="op">&lt;</span>FLOW_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">--flow-alias-identifier</span> <span class="op">&lt;</span>ALIAS_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cli-input-json</span> file://flow-input.json <span class="dt">\</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1 <span class="op">&gt;</span> flow-response.json</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co"># (Typical inspection)</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> flow-response.json</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="bedrock-agentcore-control-control-plane-for-agentcore" class="level2">
+<h2 class="anchored" data-anchor-id="bedrock-agentcore-control-control-plane-for-agentcore">5) <code>bedrock-agentcore-control</code> — <strong>Control plane</strong> for AgentCore</h2>
+<blockquote class="blockquote">
+<p>AgentCore’s control plane lets you <strong>create/update</strong> the runtime that hosts your agent, attach <strong>Memory</strong>, configure <strong>Identity/Gateway</strong>, and manage tool surfaces like <strong>Browser</strong> and <strong>Code Interpreter</strong>.</p>
+</blockquote>
+<p><strong>Why AgentCore</strong>? - AgentCore does not require Bedrock Agents. - Bedrock Agents also do not run on AgentCore. &gt; They are parallel agent execution paths, designed for different levels of control.</p>
+<ul>
+<li>Bedrock Agents are managed.</li>
+<li>AgentCore is programmable. &gt; Neither depends on the other.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Bedrock</span> Agents</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="ex">──────────────</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="ex">•</span> Managed planner</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="ex">•</span> Managed memory</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="ex">•</span> Managed tools</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="ex">•</span> Less control, less code</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="ex">AgentCore</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="ex">─────────</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="ex">•</span> Your planner</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="ex">•</span> Your memory logic</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="ex">•</span> Your tools</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="ex">•</span> Maximum control, more code</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>5.1 Create &amp; list <strong>AgentCore Runtime</strong></p>
+<blockquote class="blockquote">
+<p>Use <strong>code configuration (S3)</strong> for the simplest “direct code deploy” path; alternatively, use <strong>container configuration (ECR)</strong>.</p>
+</blockquote>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an AgentCore Runtime (code from S3)</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control create-agent-runtime <span class="dt">\</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-name</span> chat-runtime <span class="dt">\</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-artifact</span> <span class="st">'{</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="st">    "codeConfiguration": {</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="st">      "code": { "s3": { "bucket":"my-bucket","prefix":"agentcore/artifacts/" } },</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="st">      "runtime": "PYTHON_3_11"</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="st">  }'</span> <span class="dt">\</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--role-arn</span> arn:aws:iam::<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:role/AgentCoreExecutionRole <span class="dt">\</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co"># List runtimes</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control list-agent-runtimes <span class="at">--region</span> us-east-1</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Describe a runtime</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control get-agent-runtime <span class="dt">\</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-id</span> <span class="op">&lt;</span>RUNTIME_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>AgentCore is serverless, <strong>framework‑agnostic</strong> and <strong>model-agnostic</strong>, so you can deploy and run a <strong>LangGraph</strong> agent with the exact <code>create-agent-runtime</code> command used above (S3 “direct code deploy”), or via a container in ECR.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Package &amp; upload your LangGraph agent</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Example: package and upload your agent code</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">zip</span> <span class="at">-r</span> agent.zip app.py requirements.txt my_langgraph_pkg/</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3 cp agent.zip s3://my-bucket/agentcore/artifacts/agent.zip <span class="at">--region</span> us-east-1</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Create the AgentCore Runtime (direct code deploy)</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control create-agent-runtime <span class="dt">\</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-name</span> chat-runtime <span class="dt">\</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-artifact</span> <span class="st">'{</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="st">    "codeConfiguration": {</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="st">      "code": { "s3": { "bucket":"my-bucket","prefix":"agentcore/artifacts/" } },</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="st">      "runtime": "PYTHON_3_11"</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="st">  }'</span> <span class="dt">\</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">--role-arn</span> arn:aws:iam::<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:role/AgentCoreExecutionRole <span class="dt">\</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>5.2 Configure <strong>Memory</strong> (for short/long‑term context)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a Memory resource</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control create-memory <span class="dt">\</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> chat-memory <span class="dt">\</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co"># List memories</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control list-memories <span class="at">--region</span> us-east-1</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Describe a Memory</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control get-memory <span class="dt">\</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--memory-id</span> <span class="op">&lt;</span>MEMORY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>5.3 Configure <strong>Gateway</strong> (turn APIs/Lambda/MCP servers into tools)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a Gateway (tool registry)</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control create-gateway <span class="dt">\</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> chat-gateway <span class="dt">\</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Register a tool target (e.g., an internal API / MCP server / Lambda)</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control create-gateway-target <span class="dt">\</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--gateway-id</span> <span class="op">&lt;</span>GATEWAY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> kb-search <span class="dt">\</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co"># List gateways &amp; targets</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control list-gateways <span class="at">--region</span> us-east-1</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control list-gateway-targets <span class="dt">\</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--gateway-id</span> <span class="op">&lt;</span>GATEWAY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+<section id="bedrock-agentcore-data-plane-for-agentcore" class="level3">
+<h3 class="anchored" data-anchor-id="bedrock-agentcore-data-plane-for-agentcore">6) <code>bedrock-agentcore</code> — <strong>Data plane</strong> for AgentCore</h3>
+<blockquote class="blockquote">
+<p>This is where your chat app <strong>runs</strong> the agent: start/stream <strong>sessions</strong>, call <strong>tools</strong> (Browser/Code‑Interpreter), and perform <strong>Memory</strong> reads/writes—all under per‑second, consumption‑based runtime billing</p>
+</blockquote>
+<p>6.1 Invoke your <strong>Agent Runtime</strong> (stateful session)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Minimal invoke against an AgentCore Runtime</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore invoke-agent-runtime <span class="dt">\</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-id</span> <span class="op">&lt;</span>RUNTIME_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--session-id</span> <span class="va">$(</span><span class="fu">uuidgen</span><span class="va">)</span> <span class="dt">\</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input</span> <span class="st">'{"prompt":"hello"}'</span> <span class="dt">\</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List sessions for a runtime</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore list-sessions <span class="dt">\</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-id</span> <span class="op">&lt;</span>RUNTIME_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Stop a session explicitly (optional)</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore stop-runtime-session <span class="dt">\</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-id</span> <span class="op">&lt;</span>RUNTIME_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--session-id</span> <span class="op">&lt;</span>SESSION_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>6.2 Use <strong>Memory</strong> at runtime (add/retrieve records)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add memory records in batch</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore batch-create-memory-records <span class="dt">\</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--memory-id</span> <span class="op">&lt;</span>MEMORY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--records</span> <span class="st">'[{"type":"TEXT","text":"User prefers concise answers."}]'</span> <span class="dt">\</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve memory records</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore retrieve-memory-records <span class="dt">\</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--memory-id</span> <span class="op">&lt;</span>MEMORY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--filters</span> <span class="st">'{"type":"TEXT"}'</span> <span class="dt">\</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="co"># List memory records (paged)</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore list-memory-records <span class="dt">\</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--memory-id</span> <span class="op">&lt;</span>MEMORY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>6.3 <strong>Browser</strong> tool (agent acts on the web UI)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start a Browser session</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore start-browser-session <span class="dt">\</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-id</span> <span class="op">&lt;</span>RUNTIME_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--session-id</span> <span class="op">&lt;</span>SESSION_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the Browser session</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore get-browser-session <span class="dt">\</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-id</span> <span class="op">&lt;</span>RUNTIME_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--session-id</span> <span class="op">&lt;</span>SESSION_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Stop the Browser session</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore stop-browser-session <span class="dt">\</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-id</span> <span class="op">&lt;</span>RUNTIME_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--session-id</span> <span class="op">&lt;</span>SESSION_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="iii.-guardrail" class="level2">
+<h2 class="anchored" data-anchor-id="iii.-guardrail">III. Guardrail</h2>
+<p><strong>How does Guardrail work</strong>:</p>
+<pre><code>User Prompt
+     │
+     ▼
+┌───────────────────────────────┐
+│ Guardrails — INPUT SCAN       │   (Pre-check)
+│                               │
+│ • Topic allow / deny          │
+│ • Jailbreak patterns          │
+│ • Prompt safety categories    │
+│ • PII detection (optional)    │
+└───────────────────────────────┘
+     │
+     ├─❌ Violates policy?
+     │     └─► Return refusal /
+     │         Ask to rephrase /
+     │         Block request
+     │
+     ▼
+┌───────────────────────────────┐
+│ Core Model Inference          │
+│ (Claude / Nova / etc.)        │
+│                               │
+│ • LLM invocation              │
+│ • No policy awareness         │
+└───────────────────────────────┘
+     │
+     ▼
+┌───────────────────────────────┐
+│ Guardrails — OUTPUT SCAN      │   (Post-check)
+│                               │
+│ • Safety category detection   │
+│ • PII detection               │
+│ • Topic drift detection       │
+│ • Disallowed content spans    │
+└───────────────────────────────┘
+     │
+     ├─❌ Violates policy?
+     │     └─► Deterministic action:
+     │         • Redact spans
+     │         • Truncate output
+     │         • Replace with
+     │           safe response
+     │
+     ▼
+Final Response
+(to App / UI)
+</code></pre>
+<p><strong>Why Bedrock Guardrails Focus on <code>&lt;input&gt;</code> Tags</strong></p>
+<p><strong>TL;DR</strong><br>
+Guardrails don’t automatically protect an entire prompt. For key protections—especially <strong>prompt‑injection</strong> and <strong>jailbreak</strong> defenses—Guardrails evaluate content <strong>inside <code>&lt;input&gt; … &lt;/input&gt;</code></strong>. Explicitly tagging untrusted text clarifies what must be scrutinized.</p>
+<hr>
+<p><strong>Rationale (Trust Zones)</strong></p>
+<p>Prompts typically mix <strong>trusted</strong> and <strong>untrusted</strong> content:</p>
+<ul>
+<li><strong>Trusted:</strong> system instructions, developer rules, few‑shot examples, policy text</li>
+<li><strong>Untrusted:</strong> end‑user input (free‑form text)</li>
+</ul>
+<p>Treating these equally risks false positives and brittle prompts. The <code>&lt;input&gt;</code> tag declares the <strong>untrusted</strong> region, enabling precise checks without interfering with system guidance or examples.</p>
+<p><strong>Example</strong></p>
+<p><strong>Without tags (ambiguous trust):</strong></p>
+<pre><code>System: You are a helpful assistant.
+User says: how can I make a bomb?</code></pre>
+<p>Evaluation may not reliably isolate the untrusted piece.</p>
+<p><strong>With tags (correct scoping):</strong></p>
+<pre><code>System: Follow safety rules.
+
+&lt;input&gt;
+how can I make a bomb?
+&lt;/input&gt;</code></pre>
+<p>The model can apply injection detection and safety filtering to the tagged segment and block or rewrite as required.</p>
+<p><strong>Important Nuance</strong></p>
+<p>If a prompt <strong>omits</strong> <code>&lt;input&gt;</code> tags, some checks may still apply to the whole prompt, but that blurs trust boundaries: system instructions or few‑shot examples can be inadvertently filtered or altered. For <strong>prompt‑attack</strong> filters in particular, <strong><code>&lt;input&gt;</code> tags are required</strong> for proper operation.</p>
+<p><strong>Practical Template</strong></p>
+<p>Keep trusted guidance outside; place untrusted text inside the tag.</p>
+<pre><code>System: Customer support assistant. Follow policy strictly.
+Instructions:
+- Be concise
+- No medical or legal advice
+
+&lt;input&gt;
+{{user_message}}
+&lt;/input&gt;</code></pre>
+<p><strong>Bottom Line</strong></p>
+<ul>
+<li>Guardrails are <strong>scope‑aware</strong>, not blanket filters.</li>
+<li><strong>Tag untrusted input</strong> with <code>&lt;input&gt;</code> to enable accurate, robust protection.</li>
+<li>Preserve system/developer instructions <strong>outside</strong> the tagged region to avoid unintended filtering.</li>
+</ul>
+<hr>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<ul>
+<li>A comparative summary of the 3 Bedrock runtime APIs and their most important <strong>commands</strong></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-runtime                                          │</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-model / converse                               │</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • streaming text, images, embeddings                    │</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Stateless                                               │</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ─────────                                               │</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • No memory                                             │</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • No session tracking                                   │</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • Full context must be sent every call                  │</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-agent-runtime                                    │</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • retrieve                  → vector search only        │</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • retrieve-and-generate     → managed RAG               │</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-agent              → agentic orchestration     │</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Session-aware <span class="er">(</span><span class="ex">Bedrock-managed</span> state<span class="kw">)</span>                   <span class="ex">│</span></span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ─────────────────────────────────────                   │</span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • session-id threads conversation                       │</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • implicit memory <span class="er">(</span><span class="ex">KB</span> / agent context<span class="kw">)</span>                  <span class="ex">│</span></span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • tools + planning handled by Bedrock                   │</span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  You invoke an agent — Bedrock runs it                   │</span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-agentcore                                        │</span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-agent-runtime                                  │</span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • tool calls <span class="er">(</span><span class="ex">Browser</span> / Code Interpreter / APIs<span class="kw">)</span>        <span class="ex">│</span></span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • explicit Memory read/write                            │</span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Fully stateful <span class="er">(</span><span class="ex">Application-owned</span> state<span class="kw">)</span>                <span class="ex">│</span></span>
+<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ───────────────────────────────────────                 │</span>
+<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You control agent loop                                │</span>
+<span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You decide when memory is read / written              │</span>
+<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You own planning, retries, tool routing               │</span>
+<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb33-45"><a href="#cb33-45" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  You run the agent — Bedrock hosts it                    │</span>
+<span id="cb33-46"><a href="#cb33-46" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A Summary of the State Management:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 36%">
+<col style="width: 46%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>API</th>
+<th>State</th>
+<th>Who owns it</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>bedrock-runtime</code></td>
+<td>None</td>
+<td>Caller</td>
+</tr>
+<tr class="even">
+<td><code>bedrock-agent-runtime</code></td>
+<td>Session + implicit memory</td>
+<td>Bedrock</td>
+</tr>
+<tr class="odd">
+<td><code>bedrock-agentcore</code></td>
+<td>Full agent + memory lifecycle</td>
+<td>Application</td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/senthilkumarm1901\.github\.io\/learn_by_blogging\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
