@@ -9,7 +9,7 @@ categories:
 
 description: Sharing my learning notes on AWS Bedrock API Endpoints
 date: '2026-02-09'
-draft: true
+draft: false
 image: ./images/Bedrock_api_endpoints_mental_model.png
 toc: true
 title: "A Ready Reckoner on AWS Bedrock API Endpoints"
