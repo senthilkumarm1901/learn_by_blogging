@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2026-02-09">
 <meta name="description" content="Sharing my learning notes on AWS Bedrock API Endpoints">
 
-<title>A Ready Reckoner on AWS Bedrock API Endpoints – Learn by Blogging</title>
+<title>A Ready Reckoner to AWS Bedrock’s Control and Data Plane APIs – Learn by Blogging</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -153,7 +153,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">A Ready Reckoner on AWS Bedrock API Endpoints</h1>
+      <h1 class="title">A Ready Reckoner to AWS Bedrock’s Control and Data Plane APIs</h1>
                   <div>
         <div class="description">
           Sharing my learning notes on AWS Bedrock API Endpoints
@@ -209,6 +209,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#bedrock-agentcore-data-plane-for-agentcore" id="toc-bedrock-agentcore-data-plane-for-agentcore" class="nav-link" data-scroll-target="#bedrock-agentcore-data-plane-for-agentcore">6) <code>bedrock-agentcore</code> — <strong>Data plane</strong> for AgentCore</a></li>
   </ul></li>
   <li><a href="#iii.-guardrail" id="toc-iii.-guardrail" class="nav-link" data-scroll-target="#iii.-guardrail">III. Guardrail</a></li>
+  <li><a href="#iv.-real-world-bedrock-architectures" id="toc-iv.-real-world-bedrock-architectures" class="nav-link" data-scroll-target="#iv.-real-world-bedrock-architectures">IV. Real-world Bedrock Architectures</a>
+  <ul class="collapse">
+  <li><a href="#a-stateless-batch-llm-calls-offline-async-workloads" id="toc-a-stateless-batch-llm-calls-offline-async-workloads" class="nav-link" data-scroll-target="#a-stateless-batch-llm-calls-offline-async-workloads">a) Stateless Batch LLM Calls (Offline / Async workloads)</a></li>
+  <li><a href="#b-stateless-online-llm-calls-synchronous-inference" id="toc-b-stateless-online-llm-calls-synchronous-inference" class="nav-link" data-scroll-target="#b-stateless-online-llm-calls-synchronous-inference">b) Stateless Online LLM Calls (Synchronous inference)</a></li>
+  <li><a href="#c-managed-rag-retrieve-and-generate-single-shot-no-agent" id="toc-c-managed-rag-retrieve-and-generate-single-shot-no-agent" class="nav-link" data-scroll-target="#c-managed-rag-retrieve-and-generate-single-shot-no-agent">c) Managed RAG — <code>retrieve-and-generate</code> (Single-shot, no agent)</a></li>
+  <li><a href="#d-self-orchestrated-rag-application-managed" id="toc-d-self-orchestrated-rag-application-managed" class="nav-link" data-scroll-target="#d-self-orchestrated-rag-application-managed">d) Self-orchestrated RAG (Application-managed)</a></li>
+  <li><a href="#e-managed-agentic-rag-bedrock-orchestrated" id="toc-e-managed-agentic-rag-bedrock-orchestrated" class="nav-link" data-scroll-target="#e-managed-agentic-rag-bedrock-orchestrated">e) Managed Agentic RAG (Bedrock-orchestrated)</a></li>
+  <li><a href="#f-fully-custom-agent-systems-agentcore" id="toc-f-fully-custom-agent-systems-agentcore" class="nav-link" data-scroll-target="#f-fully-custom-agent-systems-agentcore">f) Fully Custom Agent Systems (AgentCore)</a></li>
+  <li><a href="#choosing-the-right-pattern" id="toc-choosing-the-right-pattern" class="nav-link" data-scroll-target="#choosing-the-right-pattern">Choosing the Right Pattern</a></li>
+  <li><a href="#mental-model-recap" id="toc-mental-model-recap" class="nav-link" data-scroll-target="#mental-model-recap">Mental Model Recap</a></li>
+  </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
@@ -221,17 +232,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>I recently completed a GenAI specialization from AWS: <img src="./images/bedrock_specialization_certificate.png" class="img-fluid"></p>
+<hr>
 <p>I got to learn quite a few things in that. I have collated below my notes from the course.</p>
 <p><img src="./images/Bedrock_api_endpoints_mental_model.png" class="img-fluid"></p>
 <blockquote class="blockquote">
-<p><strong>Disclaimer</strong>: <br> - The AWS CLI commands are <strong><em>representational</em></strong>. Kindly check “aws <bedrock-api> <command> help” to confirm the workings. - These are notes for learning and I have used LLMs to tweak my messaging or make it crisper/better - Sources are attributed to all pics for clarity</command></bedrock-api></p>
+<p><strong>Disclaimer</strong>: <br> * The AWS CLI commands are <strong><em>representational</em></strong>. Kindly check “aws <bedrock-api> <command> help” to confirm the workings. * These are notes for learning and I have used LLMs to tweak my messaging or make it crisper/better * Sources are attributed to all pics for clarity</command></bedrock-api></p>
 </blockquote>
 <p><strong>How to read this blog</strong> Amazon Bedrock exposes multiple APIs, but they all fall into two buckets:</p>
 <ul>
-<li>Control Plane → define what exists (models, agents, flows, runtimes)</li>
-<li>Data Plane → execute what runs (inference, chats, sessions)</li>
+<li>Control Plane → provide the administrative APIs/ define what exists (define/create models, agents, flows)</li>
+<li>Data Plane → provide the primary function of the service (invoking the model/agent/flow)</li>
 </ul>
-<p>Key Takeaways: - Control Plane APIs define what exists: models, agents, flows, runtimes - Data Plane APIs execute what runs: inference, chats, sessions - All actual model execution happens in the data plane - Control plane never handles user prompts or high-throughput traffic</p>
+<p><a href="https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/control-planes-and-data-planes.html">AWS explains what is Control Plane and Data Plane here</a></p>
 <blockquote class="blockquote">
 <p>This blog walks <strong>top-down</strong>:</p>
 <ol type="1">
@@ -963,58 +975,351 @@ Instructions:
 <li>Preserve system/developer instructions <strong>outside</strong> the tagged region to avoid unintended filtering.</li>
 </ul>
 <hr>
+<p>This is a great place to add the section — your blog already built the <strong>API mental model</strong>, and now this ties it back to <strong>how people actually wire things in production</strong>.</p>
+<p>Below is a <strong>drop-in Section IV</strong>, written to match your tone, structure, and technical depth. I’ve kept it opinionated but grounded, and aligned it tightly to the APIs you already explained.</p>
+<hr>
+</section>
+<section id="iv.-real-world-bedrock-architectures" class="level2">
+<h2 class="anchored" data-anchor-id="iv.-real-world-bedrock-architectures">IV. Real-world Bedrock Architectures</h2>
+<p>With the API landscape clear, the natural next question is:</p>
+<blockquote class="blockquote">
+<p><em>“How do these pieces come together in real applications?”</em></p>
+</blockquote>
+<p>In practice, most Bedrock-based systems fall into a small number of <strong>repeatable architectural patterns</strong>, depending on:</p>
+<ul>
+<li>whether state is required</li>
+<li>who owns orchestration</li>
+<li>how much control vs convenience is desired</li>
+<li>latency and cost sensitivity</li>
+</ul>
+<p>Below are the most common patterns seen in production.</p>
+<hr>
+<section id="a-stateless-batch-llm-calls-offline-async-workloads" class="level3">
+<h3 class="anchored" data-anchor-id="a-stateless-batch-llm-calls-offline-async-workloads">a) Stateless Batch LLM Calls (Offline / Async workloads)</h3>
+<p><strong>When to use</strong></p>
+<ul>
+<li>Large volumes of independent prompts</li>
+<li>No conversational state</li>
+<li>Cost-optimized, throughput-first processing</li>
+<li>Reports, summarization, tagging, enrichment jobs</li>
+</ul>
+<p><strong>Typical use cases</strong></p>
+<ul>
+<li>Log summarization</li>
+<li>Document classification</li>
+<li>Backfilling embeddings</li>
+<li>Media generation (images/video)</li>
+</ul>
+<p><strong>Architecture</strong></p>
+<pre><code>S3 (JSONL inputs)
+   │
+   ▼
+bedrock.create-model-invocation-job
+   │
+   ▼
+S3 (JSONL outputs)</code></pre>
+<p><strong>Key characteristics</strong></p>
+<ul>
+<li>Uses <strong><code>bedrock</code> (control plane)</strong> to submit jobs</li>
+<li>Execution happens asynchronously</li>
+<li>No sessions, no memory, no retries at runtime</li>
+<li>Failures are inspected post-facto</li>
+</ul>
+<p><strong>Why this pattern exists</strong> This is the <strong>lowest-cost, highest-throughput</strong> way to use Bedrock when interactivity is not required.</p>
+<hr>
+</section>
+<section id="b-stateless-online-llm-calls-synchronous-inference" class="level3">
+<h3 class="anchored" data-anchor-id="b-stateless-online-llm-calls-synchronous-inference">b) Stateless Online LLM Calls (Synchronous inference)</h3>
+<p><strong>When to use</strong></p>
+<ul>
+<li>Simple request → response flows</li>
+<li>No memory or tool use</li>
+<li>Tight latency budgets</li>
+<li>You fully control prompt construction</li>
+</ul>
+<p><strong>Typical use cases</strong></p>
+<ul>
+<li>Chatbots without memory</li>
+<li>Text transformations</li>
+<li>Inline validation / enrichment</li>
+<li>Feature-level AI calls inside apps</li>
+</ul>
+<p><strong>Architecture</strong></p>
+<pre><code>User / App
+   │
+   ▼
+bedrock-runtime.invoke-model
+or
+bedrock-runtime.converse
+   │
+   ▼
+Response</code></pre>
+<p><strong>Key characteristics</strong></p>
+<ul>
+<li>Uses <strong><code>bedrock-runtime</code></strong></li>
+<li>Fully stateless</li>
+<li>Entire context must be sent every call</li>
+<li>Streaming supported via SDKs</li>
+</ul>
+<p><strong>Trade-off</strong> You get <strong>maximum predictability and control</strong>, but <strong>all orchestration and memory management is your responsibility</strong>.</p>
+<hr>
+</section>
+<section id="c-managed-rag-retrieve-and-generate-single-shot-no-agent" class="level3">
+<h3 class="anchored" data-anchor-id="c-managed-rag-retrieve-and-generate-single-shot-no-agent">c) Managed RAG — <code>retrieve-and-generate</code> (Single-shot, no agent)</h3>
+<p>This is the <strong>simplest possible RAG</strong> that Bedrock offers.</p>
+<p><strong>When to use</strong></p>
+<ul>
+<li>You want RAG but <strong>do not want to manage orchestration</strong></li>
+<li>You don’t need conversational memory</li>
+<li>One retrieval pass is sufficient</li>
+<li>You want fewer moving parts than agents</li>
+</ul>
+<p><strong>Typical use cases</strong></p>
+<ul>
+<li>FAQ answering</li>
+<li>Policy lookup</li>
+<li>Internal doc Q&amp;A</li>
+<li>Low-latency RAG endpoints</li>
+</ul>
+<p><strong>Architecture</strong></p>
+<pre><code>User
+  → bedrock-agent-runtime.retrieve-and-generate
+       ├─ Vector search (once)
+       ├─ Prompt assembly (managed)
+       └─ LLM generation (non-streaming)
+  → Response</code></pre>
+<p><strong>Key characteristics</strong></p>
+<ul>
+<li>Uses <strong><code>bedrock-agent-runtime</code></strong></li>
+<li>Retrieval + generation happen in <strong>one API call</strong></li>
+<li>No session or memory</li>
+<li>No streaming</li>
+<li>No tool invocation</li>
+</ul>
+<p><strong>Trade-off</strong></p>
+<ul>
+<li><p>Very easy to use</p></li>
+<li><p>Minimal configuration</p></li>
+<li><p><strong>Limited control</strong> over:</p>
+<ul>
+<li>prompt structure</li>
+<li>chunk filtering</li>
+<li>retrieval iteration</li>
+</ul></li>
+</ul>
+<blockquote class="blockquote">
+<p>Think of this as <strong>“RAG without orchestration”</strong> — powerful, but intentionally constrained.</p>
+</blockquote>
+<hr>
+</section>
+<section id="d-self-orchestrated-rag-application-managed" class="level3">
+<h3 class="anchored" data-anchor-id="d-self-orchestrated-rag-application-managed">d) Self-orchestrated RAG (Application-managed)</h3>
+<p>This is the most common <strong>“serious production”</strong> pattern today.</p>
+<p><strong>When to use</strong></p>
+<ul>
+<li><p>You want RAG, but not a managed agent</p></li>
+<li><p>You want full control over:</p>
+<ul>
+<li>retrieval strategy</li>
+<li>filtering / ranking</li>
+<li>prompt construction</li>
+</ul></li>
+<li><p>You don’t want Bedrock planning your steps</p></li>
+</ul>
+<p><strong>Architecture</strong></p>
+<pre><code>User
+  → bedrock-agent-runtime.retrieve      (KB search, once)
+  → App-side trimming / filtering
+  → bedrock-runtime.ConverseStream      (LLM + streaming)
+  → Token stream → UI</code></pre>
+<p><strong>Key characteristics</strong></p>
+<ul>
+<li><p>Uses <strong>two data planes</strong>:</p>
+<ul>
+<li><code>bedrock-agent-runtime.retrieve</code> → vector search only</li>
+<li><code>bedrock-runtime</code> → LLM inference</li>
+</ul></li>
+<li><p>Retrieval and generation are <strong>decoupled</strong></p></li>
+<li><p>App decides:</p>
+<ul>
+<li>how many chunks to include</li>
+<li>ordering</li>
+<li>prompt structure</li>
+<li>retry logic</li>
+</ul></li>
+</ul>
+<p><strong>Why teams prefer this</strong></p>
+<ul>
+<li>Deterministic behavior</li>
+<li>Easier debugging</li>
+<li>Clear separation of concerns</li>
+<li>No hidden planning loops</li>
+</ul>
+<blockquote class="blockquote">
+<p>This is <strong>RAG without agents</strong> — simple, explicit, and production-friendly.</p>
+</blockquote>
+<hr>
+</section>
+<section id="e-managed-agentic-rag-bedrock-orchestrated" class="level3">
+<h3 class="anchored" data-anchor-id="e-managed-agentic-rag-bedrock-orchestrated">e) Managed Agentic RAG (Bedrock-orchestrated)</h3>
+<p>This is the <strong>highest-level abstraction</strong> Bedrock offers.</p>
+<p><strong>When to use</strong></p>
+<ul>
+<li>You want reasoning + tools + KB</li>
+<li>You don’t want to write orchestration logic</li>
+<li>You are okay with less deterministic flows</li>
+<li>Faster time-to-value matters more than control</li>
+</ul>
+<p><strong>Architecture</strong></p>
+<pre><code>User
+  → bedrock-agent-runtime.invoke-agent
+       ├─ Agent orchestrates KB + tools
+       ├─ May retrieve multiple times
+       └─ Event stream (answer + trace)
+  → UI</code></pre>
+<p><strong>Key characteristics</strong></p>
+<ul>
+<li><p>Uses <strong><code>bedrock-agent-runtime.invoke-agent</code></strong></p></li>
+<li><p>Bedrock owns:</p>
+<ul>
+<li>planning</li>
+<li>retrieval count</li>
+<li>tool invocation</li>
+<li>conversational state</li>
+</ul></li>
+<li><p>You receive:</p>
+<ul>
+<li>final answer</li>
+<li>optional reasoning / trace events</li>
+</ul></li>
+</ul>
+<p><strong>Important nuance</strong></p>
+<ul>
+<li>You <strong>cannot control</strong> how many retrievals happen</li>
+<li>Latency can vary per request</li>
+<li>Debugging requires reading traces, not logs</li>
+</ul>
+<p>This is ideal when you want <strong>capabilities</strong>, not plumbing.</p>
+<hr>
+</section>
+<section id="f-fully-custom-agent-systems-agentcore" class="level3">
+<h3 class="anchored" data-anchor-id="f-fully-custom-agent-systems-agentcore">f) Fully Custom Agent Systems (AgentCore)</h3>
+<p>For completeness, it’s worth positioning where <strong>AgentCore</strong> fits relative to the above.</p>
+<p><strong>When to use</strong></p>
+<ul>
+<li>You need a custom planner (LangGraph, ReAct, custom FSM)</li>
+<li>You want explicit memory control</li>
+<li>You want non-Bedrock tools, browsers, code execution</li>
+<li>You want to own retries, loops, and stopping conditions</li>
+</ul>
+<p><strong>Architecture (conceptual)</strong></p>
+<pre><code>User
+  → bedrock-agentcore.invoke-agent-runtime
+       ├─ Your planner loop (using LangGraph or others)
+       ├─ Explicit memory read/write
+       ├─ Tool calls (Browser / APIs / Code)
+       └─ Streaming output
+  → UI</code></pre>
+<p>This is <strong>maximum control</strong>, at the cost of <strong>maximum responsibility</strong>.</p>
+<hr>
+</section>
+<section id="choosing-the-right-pattern" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-the-right-pattern">Choosing the Right Pattern</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Requirement</th>
+<th>Recommended Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Lowest cost, high volume</td>
+<td>Stateless batch</td>
+</tr>
+<tr class="even">
+<td>Simple online inference</td>
+<td>Stateless runtime</td>
+</tr>
+<tr class="odd">
+<td>Deterministic RAG</td>
+<td>Self-orchestrated RAG</td>
+</tr>
+<tr class="even">
+<td>Tool-using conversational AI</td>
+<td>Managed Agentic RAG</td>
+</tr>
+<tr class="odd">
+<td>Full autonomy &amp; custom planning</td>
+<td>AgentCore</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="mental-model-recap" class="level3">
+<h3 class="anchored" data-anchor-id="mental-model-recap">Mental Model Recap</h3>
+<ul>
+<li><strong>Stateless</strong> → <code>bedrock-runtime</code></li>
+<li><strong>RAG without agents</strong> → <code>retrieve</code> + <code>bedrock-runtime</code></li>
+<li><strong>Managed agents</strong> → <code>bedrock-agent-runtime</code></li>
+<li><strong>Custom agents</strong> → <code>bedrock-agentcore</code></li>
+</ul>
+<p>Each layer trades <strong>control for convenience</strong> — not capability.</p>
+<hr>
+</section>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 <ul>
 <li>A comparative summary of the 3 Bedrock runtime APIs and their most important <strong>commands</strong></li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-runtime                                          │</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-model / converse                               │</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • streaming text, images, embeddings                    │</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Stateless                                               │</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ─────────                                               │</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • No memory                                             │</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • No session tracking                                   │</span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • Full context must be sent every call                  │</span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span>
-<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
-<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-agent-runtime                                    │</span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • retrieve                  → vector search only        │</span>
-<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • retrieve-and-generate     → managed RAG               │</span>
-<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-agent              → agentic orchestration     │</span>
-<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Session-aware <span class="er">(</span><span class="ex">Bedrock-managed</span> state<span class="kw">)</span>                   <span class="ex">│</span></span>
-<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ─────────────────────────────────────                   │</span>
-<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • session-id threads conversation                       │</span>
-<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • implicit memory <span class="er">(</span><span class="ex">KB</span> / agent context<span class="kw">)</span>                  <span class="ex">│</span></span>
-<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • tools + planning handled by Bedrock                   │</span>
-<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  You invoke an agent — Bedrock runs it                   │</span>
-<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span>
-<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
-<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-agentcore                                        │</span>
-<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-agent-runtime                                  │</span>
-<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • tool calls <span class="er">(</span><span class="ex">Browser</span> / Code Interpreter / APIs<span class="kw">)</span>        <span class="ex">│</span></span>
-<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • explicit Memory read/write                            │</span>
-<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Fully stateful <span class="er">(</span><span class="ex">Application-owned</span> state<span class="kw">)</span>                <span class="ex">│</span></span>
-<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ───────────────────────────────────────                 │</span>
-<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You control agent loop                                │</span>
-<span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You decide when memory is read / written              │</span>
-<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You own planning, retries, tool routing               │</span>
-<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb33-45"><a href="#cb33-45" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  You run the agent — Bedrock hosts it                    │</span>
-<span id="cb33-46"><a href="#cb33-46" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-runtime                                          │</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-model / converse                               │</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • streaming text, images, embeddings                    │</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Stateless                                               │</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ─────────                                               │</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • No memory                                             │</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • No session tracking                                   │</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • Full context must be sent every call                  │</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-agent-runtime                                    │</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • retrieve                  → vector search only        │</span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • retrieve-and-generate     → managed RAG               │</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-agent              → agentic orchestration     │</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Session-aware <span class="er">(</span><span class="ex">Bedrock-managed</span> state<span class="kw">)</span>                   <span class="ex">│</span></span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ─────────────────────────────────────                   │</span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • session-id threads conversation                       │</span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • implicit memory <span class="er">(</span><span class="ex">KB</span> / agent context<span class="kw">)</span>                  <span class="ex">│</span></span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • tools + planning handled by Bedrock                   │</span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  You invoke an agent — Bedrock runs it                   │</span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
+<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-agentcore                                        │</span>
+<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-agent-runtime                                  │</span>
+<span id="cb39-36"><a href="#cb39-36" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • tool calls <span class="er">(</span><span class="ex">Browser</span> / Code Interpreter / APIs<span class="kw">)</span>        <span class="ex">│</span></span>
+<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • explicit Memory read/write                            │</span>
+<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb39-39"><a href="#cb39-39" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Fully stateful <span class="er">(</span><span class="ex">Application-owned</span> state<span class="kw">)</span>                <span class="ex">│</span></span>
+<span id="cb39-40"><a href="#cb39-40" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ───────────────────────────────────────                 │</span>
+<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You control agent loop                                │</span>
+<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You decide when memory is read / written              │</span>
+<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You own planning, retries, tool routing               │</span>
+<span id="cb39-44"><a href="#cb39-44" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb39-45"><a href="#cb39-45" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  You run the agent — Bedrock hosts it                    │</span>
+<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A Summary of the State Management:</p>
 <table class="caption-top table">
 <colgroup>
