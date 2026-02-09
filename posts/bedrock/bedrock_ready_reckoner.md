@@ -26,8 +26,8 @@ I got to learn quite a few things in that. I have collated below my notes from t
 ![](./images/Bedrock_api_endpoints_mental_model.png)
 
 > **Disclaimer**: <br>
-> * The AWS CLI commands are ***representational***. Kindly check "aws <bedrock-api> <command> help" to confirm the workings. 
-> * These are notes for learning and I have used LLMs to tweak my messaging or make it crisper/better
+> * The AWS CLI commands are ***representational***. Kindly check "aws <bedrock-api> <command> help" to confirm the workings.<br>  
+> * These are notes for learning and I have used LLMs to tweak my messaging or make it crisper/better<br>
 > * Sources are attributed to all pics for clarity
 
 **How to read this blog**
@@ -92,6 +92,8 @@ AWS consistently separates services into:
 | 5    | `bedrock-agentcore-control` | Control plane | Manage AgentCore resources (Runtime, Memory, Identity, Gateway, Tools) | **Advanced platform / agent teams** provisioning custom agent runtimes        |
 | 6    | `bedrock-agentcore`         | Data plane    | Run agent sessions, tools (Browser/Code-Interpreter), Memory I/O       | **Teams running custom agent runtimes** (LangGraph / custom planners / tools) |
 
+<br>
+
 ---
 
 ### 1) `bedrock` — **Control plane** (model management, setup, configuration)
@@ -112,7 +114,6 @@ aws bedrock get-foundation-model \
 # path=bedrock; model-identifier=<provider>.<model>:<version>
 
 ```
-
 > [!NOTE]
 > If you are using boto3 sdk in python, you would use something like below
 
@@ -125,6 +126,9 @@ response = client.list_foundation_models()
 # Print full response
 print(response)
 ```
+
+> In this blog, we are sticking with `aws cli` commands for easier understanding of the core API endpoints
+
 ---
 
 1.2 Configure account/Region‑level **invocation logging**
@@ -777,7 +781,7 @@ aws bedrock-agentcore stop-browser-session \
 
 **How does Guardrail work**:
 
-```
+```bash
 User Prompt
      │
      ▼
@@ -847,7 +851,7 @@ Treating these equally risks false positives and brittle prompts. The `<input>` 
 
 **Without tags (ambiguous trust):**
 
-```
+```bash
 System: You are a helpful assistant.
 User says: how can I make a bomb?
 ```
@@ -856,7 +860,7 @@ Evaluation may not reliably isolate the untrusted piece.
 
 **With tags (correct scoping):**
 
-```
+```bash
 System: Follow safety rules.
 
 <input>
@@ -875,7 +879,7 @@ If a prompt **omits** `<input>` tags, some checks may still apply to the whole p
 
 Keep trusted guidance outside; place untrusted text inside the tag.
 
-```
+```bash
 System: Customer support assistant. Follow policy strictly.
 Instructions:
 - Be concise
@@ -936,7 +940,7 @@ Below are the most common patterns seen in production.
 
 **Architecture**
 
-```
+```bash
 S3 (JSONL inputs)
    │
    ▼
@@ -976,7 +980,7 @@ This is the **lowest-cost, highest-throughput** way to use Bedrock when interact
 
 **Architecture**
 
-```
+```bash
 User / App
    │
    ▼
@@ -1020,7 +1024,7 @@ This is the **simplest possible RAG** that Bedrock offers.
 
 **Architecture**
 
-```
+```bash
 User
   → bedrock-agent-runtime.retrieve-and-generate
        ├─ Vector search (once)
@@ -1068,7 +1072,7 @@ This is the most common **“serious production”** pattern today.
 
 **Architecture**
 
-```
+```bash
 User
   → bedrock-agent-runtime.retrieve      (KB search, once)
   → App-side trimming / filtering
@@ -1114,7 +1118,7 @@ This is the **highest-level abstraction** Bedrock offers.
 
 **Architecture**
 
-```
+```bash
 User
   → bedrock-agent-runtime.invoke-agent
        ├─ Agent orchestrates KB + tools
@@ -1160,7 +1164,7 @@ For completeness, it’s worth positioning where **AgentCore** fits relative to 
 
 **Architecture (conceptual)**
 
-```
+```bash
 User
   → bedrock-agentcore.invoke-agent-runtime
        ├─ Your planner loop (using LangGraph or others)
