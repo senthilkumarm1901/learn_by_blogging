@@ -203,13 +203,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#bedrock-runtime-data-plane-inference-async-calls-highthroughput" id="toc-bedrock-runtime-data-plane-inference-async-calls-highthroughput" class="nav-link" data-scroll-target="#bedrock-runtime-data-plane-inference-async-calls-highthroughput">2) <code>bedrock-runtime</code> — <strong>Data plane</strong> (inference, async calls, high‑throughput)</a></li>
   <li><a href="#bedrock-agent-control-plane-agents-knowledge-bases-prompt-templates" id="toc-bedrock-agent-control-plane-agents-knowledge-bases-prompt-templates" class="nav-link" data-scroll-target="#bedrock-agent-control-plane-agents-knowledge-bases-prompt-templates">3) <code>bedrock-agent</code> — <strong>Control plane</strong> (Agents, Knowledge Bases, Prompt templates)</a></li>
   <li><a href="#bedrock-agent-runtime-data-plane-invoke-agents-query-kbsrag" id="toc-bedrock-agent-runtime-data-plane-invoke-agents-query-kbsrag" class="nav-link" data-scroll-target="#bedrock-agent-runtime-data-plane-invoke-agents-query-kbsrag">4) <code>bedrock-agent-runtime</code> — <strong>Data plane</strong> (Invoke agents, query KBs/RAG)</a></li>
-  </ul></li>
-  <li><a href="#bedrock-agentcore-control-control-plane-for-agentcore" id="toc-bedrock-agentcore-control-control-plane-for-agentcore" class="nav-link" data-scroll-target="#bedrock-agentcore-control-control-plane-for-agentcore">5) <code>bedrock-agentcore-control</code> — <strong>Control plane</strong> for AgentCore</a>
-  <ul class="collapse">
+  <li><a href="#bedrock-agentcore-control-control-plane-for-agentcore" id="toc-bedrock-agentcore-control-control-plane-for-agentcore" class="nav-link" data-scroll-target="#bedrock-agentcore-control-control-plane-for-agentcore">5) <code>bedrock-agentcore-control</code> — <strong>Control plane</strong> for AgentCore</a></li>
   <li><a href="#bedrock-agentcore-data-plane-for-agentcore" id="toc-bedrock-agentcore-data-plane-for-agentcore" class="nav-link" data-scroll-target="#bedrock-agentcore-data-plane-for-agentcore">6) <code>bedrock-agentcore</code> — <strong>Data plane</strong> for AgentCore</a></li>
   </ul></li>
   <li><a href="#iii.-guardrail" id="toc-iii.-guardrail" class="nav-link" data-scroll-target="#iii.-guardrail">III. Guardrail</a></li>
-  <li><a href="#iv.-real-world-bedrock-architectures" id="toc-iv.-real-world-bedrock-architectures" class="nav-link" data-scroll-target="#iv.-real-world-bedrock-architectures">IV. Real-world Bedrock Architectures</a>
+  <li><a href="#iv.-real-world-bedrock-architectures" id="toc-iv.-real-world-bedrock-architectures" class="nav-link" data-scroll-target="#iv.-real-world-bedrock-architectures">IV. Real-World Bedrock Architectures</a>
   <ul class="collapse">
   <li><a href="#a-stateless-batch-llm-calls-offline-async-workloads" id="toc-a-stateless-batch-llm-calls-offline-async-workloads" class="nav-link" data-scroll-target="#a-stateless-batch-llm-calls-offline-async-workloads">a) Stateless Batch LLM Calls (Offline / Async workloads)</a></li>
   <li><a href="#b-stateless-online-llm-calls-synchronous-inference" id="toc-b-stateless-online-llm-calls-synchronous-inference" class="nav-link" data-scroll-target="#b-stateless-online-llm-calls-synchronous-inference">b) Stateless Online LLM Calls (Synchronous inference)</a></li>
@@ -236,7 +234,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>I got to learn quite a few things in that. I have collated below my notes from the course.</p>
 <p><img src="./images/Bedrock_api_endpoints_mental_model.png" class="img-fluid"></p>
 <blockquote class="blockquote">
-<p><strong>Disclaimer</strong>: <br> * The AWS CLI commands are <strong><em>representational</em></strong>. Kindly check “aws <bedrock-api> <command> help” to confirm the workings. * These are notes for learning and I have used LLMs to tweak my messaging or make it crisper/better * Sources are attributed to all pics for clarity</command></bedrock-api></p>
+<p><strong>Disclaimer</strong>: <br> * The AWS CLI commands are <strong><em>representational</em></strong>. Kindly check “aws <bedrock-api> <command> help” to confirm the workings.<br><br>
+* These are notes for learning and I have used LLMs to tweak my messaging or make it crisper/better<br> * Sources are attributed to all pics for clarity</command></bedrock-api></p>
 </blockquote>
 <p><strong>How to read this blog</strong> Amazon Bedrock exposes multiple APIs, but they all fall into two buckets:</p>
 <ul>
@@ -331,6 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+<p><br></p>
 <hr>
 <section id="bedrock-control-plane-model-management-setup-configuration" class="level3">
 <h3 class="anchored" data-anchor-id="bedrock-control-plane-model-management-setup-configuration">1) <code>bedrock</code> — <strong>Control plane</strong> (model management, setup, configuration)</h3>
@@ -356,6 +356,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Print full response</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>In this blog, we are sticking with <code>aws cli</code> commands for easier understanding of the core API endpoints</p>
+</blockquote>
 <hr>
 <p>1.2 Configure account/Region‑level <strong>invocation logging</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Enable model invocation logging to S3 (and/or CloudWatch)</span></span>
@@ -723,9 +726,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co"># (Typical inspection)</span></span>
 <span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> flow-response.json</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-</section>
-<section id="bedrock-agentcore-control-control-plane-for-agentcore" class="level2">
-<h2 class="anchored" data-anchor-id="bedrock-agentcore-control-control-plane-for-agentcore">5) <code>bedrock-agentcore-control</code> — <strong>Control plane</strong> for AgentCore</h2>
+<section id="bedrock-agentcore-control-control-plane-for-agentcore" class="level3">
+<h3 class="anchored" data-anchor-id="bedrock-agentcore-control-control-plane-for-agentcore">5) <code>bedrock-agentcore-control</code> — <strong>Control plane</strong> for AgentCore</h3>
 <blockquote class="blockquote">
 <p>AgentCore’s control plane lets you <strong>create/update</strong> the runtime that hosts your agent, attach <strong>Memory</strong>, configure <strong>Identity/Gateway</strong>, and manage tool surfaces like <strong>Browser</strong> and <strong>Code Interpreter</strong>.</p>
 </blockquote>
@@ -823,6 +825,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--gateway-id</span> <span class="op">&lt;</span>GATEWAY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
 <span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
+</section>
 <section id="bedrock-agentcore-data-plane-for-agentcore" class="level3">
 <h3 class="anchored" data-anchor-id="bedrock-agentcore-data-plane-for-agentcore">6) <code>bedrock-agentcore</code> — <strong>Data plane</strong> for AgentCore</h3>
 <blockquote class="blockquote">
@@ -886,53 +889,52 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="iii.-guardrail" class="level2">
 <h2 class="anchored" data-anchor-id="iii.-guardrail">III. Guardrail</h2>
 <p><strong>How does Guardrail work</strong>:</p>
-<pre><code>User Prompt
-     │
-     ▼
-┌───────────────────────────────┐
-│ Guardrails — INPUT SCAN       │   (Pre-check)
-│                               │
-│ • Topic allow / deny          │
-│ • Jailbreak patterns          │
-│ • Prompt safety categories    │
-│ • PII detection (optional)    │
-└───────────────────────────────┘
-     │
-     ├─❌ Violates policy?
-     │     └─► Return refusal /
-     │         Ask to rephrase /
-     │         Block request
-     │
-     ▼
-┌───────────────────────────────┐
-│ Core Model Inference          │
-│ (Claude / Nova / etc.)        │
-│                               │
-│ • LLM invocation              │
-│ • No policy awareness         │
-└───────────────────────────────┘
-     │
-     ▼
-┌───────────────────────────────┐
-│ Guardrails — OUTPUT SCAN      │   (Post-check)
-│                               │
-│ • Safety category detection   │
-│ • PII detection               │
-│ • Topic drift detection       │
-│ • Disallowed content spans    │
-└───────────────────────────────┘
-     │
-     ├─❌ Violates policy?
-     │     └─► Deterministic action:
-     │         • Redact spans
-     │         • Truncate output
-     │         • Replace with
-     │           safe response
-     │
-     ▼
-Final Response
-(to App / UI)
-</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span> Prompt</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>     <span class="ex">▼</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="ex">┌───────────────────────────────┐</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> Guardrails — INPUT SCAN       │   <span class="er">(</span><span class="ex">Pre-check</span><span class="kw">)</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                               │</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> • Topic allow / deny          │</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> • Jailbreak patterns          │</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> • Prompt safety categories    │</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> • PII detection <span class="er">(</span><span class="ex">optional</span><span class="kw">)</span>    <span class="ex">│</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="ex">└───────────────────────────────┘</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>     <span class="ex">├─❌</span> Violates policy<span class="pp">?</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span>     └─► Return refusal /</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span>         Ask to rephrase /</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span>         Block request</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>     <span class="ex">▼</span></span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a><span class="ex">┌───────────────────────────────┐</span></span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> Core Model Inference          │</span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> <span class="er">(</span><span class="ex">Claude</span> / Nova / etc.<span class="kw">)</span>        <span class="ex">│</span></span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                               │</span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> • LLM invocation              │</span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> • No policy awareness         │</span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a><span class="ex">└───────────────────────────────┘</span></span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span></span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>     <span class="ex">▼</span></span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a><span class="ex">┌───────────────────────────────┐</span></span>
+<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> Guardrails — OUTPUT SCAN      │   <span class="er">(</span><span class="ex">Post-check</span><span class="kw">)</span></span>
+<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                               │</span>
+<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> • Safety category detection   │</span>
+<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> • PII detection               │</span>
+<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> • Topic drift detection       │</span>
+<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> • Disallowed content spans    │</span>
+<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a><span class="ex">└───────────────────────────────┘</span></span>
+<span id="cb29-36"><a href="#cb29-36" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span></span>
+<span id="cb29-37"><a href="#cb29-37" aria-hidden="true" tabindex="-1"></a>     <span class="ex">├─❌</span> Violates policy<span class="pp">?</span></span>
+<span id="cb29-38"><a href="#cb29-38" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span>     └─► Deterministic action:</span>
+<span id="cb29-39"><a href="#cb29-39" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span>         • Redact spans</span>
+<span id="cb29-40"><a href="#cb29-40" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span>         • Truncate output</span>
+<span id="cb29-41"><a href="#cb29-41" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span>         • Replace with</span>
+<span id="cb29-42"><a href="#cb29-42" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span>           safe response</span>
+<span id="cb29-43"><a href="#cb29-43" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span></span>
+<span id="cb29-44"><a href="#cb29-44" aria-hidden="true" tabindex="-1"></a>     <span class="ex">▼</span></span>
+<span id="cb29-45"><a href="#cb29-45" aria-hidden="true" tabindex="-1"></a><span class="ex">Final</span> Response</span>
+<span id="cb29-46"><a href="#cb29-46" aria-hidden="true" tabindex="-1"></a><span class="kw">(</span><span class="ex">to</span> App / UI<span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Why Bedrock Guardrails Focus on <code>&lt;input&gt;</code> Tags</strong></p>
 <p><strong>TL;DR</strong><br>
 Guardrails don’t automatically protect an entire prompt. For key protections—especially <strong>prompt‑injection</strong> and <strong>jailbreak</strong> defenses—Guardrails evaluate content <strong>inside <code>&lt;input&gt; … &lt;/input&gt;</code></strong>. Explicitly tagging untrusted text clarifies what must be scrutinized.</p>
@@ -946,28 +948,28 @@ Guardrails don’t automatically protect an entire prompt. For key protections�
 <p>Treating these equally risks false positives and brittle prompts. The <code>&lt;input&gt;</code> tag declares the <strong>untrusted</strong> region, enabling precise checks without interfering with system guidance or examples.</p>
 <p><strong>Example</strong></p>
 <p><strong>Without tags (ambiguous trust):</strong></p>
-<pre><code>System: You are a helpful assistant.
-User says: how can I make a bomb?</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">System:</span> You are a helpful assistant.</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span> says: how can I make a bomb<span class="pp">?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Evaluation may not reliably isolate the untrusted piece.</p>
 <p><strong>With tags (correct scoping):</strong></p>
-<pre><code>System: Follow safety rules.
-
-&lt;input&gt;
-how can I make a bomb?
-&lt;/input&gt;</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">System:</span> Follow safety rules.</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>input<span class="op">&gt;</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="ex">how</span> can I make a bomb<span class="pp">?</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>/input<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The model can apply injection detection and safety filtering to the tagged segment and block or rewrite as required.</p>
 <p><strong>Important Nuance</strong></p>
 <p>If a prompt <strong>omits</strong> <code>&lt;input&gt;</code> tags, some checks may still apply to the whole prompt, but that blurs trust boundaries: system instructions or few‑shot examples can be inadvertently filtered or altered. For <strong>prompt‑attack</strong> filters in particular, <strong><code>&lt;input&gt;</code> tags are required</strong> for proper operation.</p>
 <p><strong>Practical Template</strong></p>
 <p>Keep trusted guidance outside; place untrusted text inside the tag.</p>
-<pre><code>System: Customer support assistant. Follow policy strictly.
-Instructions:
-- Be concise
-- No medical or legal advice
-
-&lt;input&gt;
-{{user_message}}
-&lt;/input&gt;</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">System:</span> Customer support assistant. Follow policy strictly.</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Instructions:</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> Be concise</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> No medical or legal advice</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>input<span class="op">&gt;</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="ex">{{user_message}}</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>/input<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Bottom Line</strong></p>
 <ul>
 <li>Guardrails are <strong>scope‑aware</strong>, not blanket filters.</li>
@@ -980,7 +982,7 @@ Instructions:
 <hr>
 </section>
 <section id="iv.-real-world-bedrock-architectures" class="level2">
-<h2 class="anchored" data-anchor-id="iv.-real-world-bedrock-architectures">IV. Real-world Bedrock Architectures</h2>
+<h2 class="anchored" data-anchor-id="iv.-real-world-bedrock-architectures">IV. Real-World Bedrock Architectures</h2>
 <p>With the API landscape clear, the natural next question is:</p>
 <blockquote class="blockquote">
 <p><em>“How do these pieces come together in real applications?”</em></p>
@@ -1011,13 +1013,13 @@ Instructions:
 <li>Media generation (images/video)</li>
 </ul>
 <p><strong>Architecture</strong></p>
-<pre><code>S3 (JSONL inputs)
-   │
-   ▼
-bedrock.create-model-invocation-job
-   │
-   ▼
-S3 (JSONL outputs)</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">S3</span> <span class="er">(</span><span class="ex">JSONL</span> inputs<span class="kw">)</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>   <span class="ex">│</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>   <span class="ex">▼</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="ex">bedrock.create-model-invocation-job</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>   <span class="ex">│</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>   <span class="ex">▼</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="ex">S3</span> <span class="er">(</span><span class="ex">JSONL</span> outputs<span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Key characteristics</strong></p>
 <ul>
 <li>Uses <strong><code>bedrock</code> (control plane)</strong> to submit jobs</li>
@@ -1045,15 +1047,15 @@ S3 (JSONL outputs)</code></pre>
 <li>Feature-level AI calls inside apps</li>
 </ul>
 <p><strong>Architecture</strong></p>
-<pre><code>User / App
-   │
-   ▼
-bedrock-runtime.invoke-model
-or
-bedrock-runtime.converse
-   │
-   ▼
-Response</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span> / App</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>   <span class="ex">│</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>   <span class="ex">▼</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="ex">bedrock-runtime.invoke-model</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="ex">or</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="ex">bedrock-runtime.converse</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>   <span class="ex">│</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>   <span class="ex">▼</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Response</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Key characteristics</strong></p>
 <ul>
 <li>Uses <strong><code>bedrock-runtime</code></strong></li>
@@ -1082,12 +1084,12 @@ Response</code></pre>
 <li>Low-latency RAG endpoints</li>
 </ul>
 <p><strong>Architecture</strong></p>
-<pre><code>User
-  → bedrock-agent-runtime.retrieve-and-generate
-       ├─ Vector search (once)
-       ├─ Prompt assembly (managed)
-       └─ LLM generation (non-streaming)
-  → Response</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> bedrock-agent-runtime.retrieve-and-generate</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Vector search <span class="er">(</span><span class="ex">once</span><span class="kw">)</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Prompt assembly <span class="er">(</span><span class="ex">managed</span><span class="kw">)</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">└─</span> LLM generation <span class="er">(</span><span class="ex">non-streaming</span><span class="kw">)</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> Response</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Key characteristics</strong></p>
 <ul>
 <li>Uses <strong><code>bedrock-agent-runtime</code></strong></li>
@@ -1127,11 +1129,11 @@ Response</code></pre>
 <li><p>You don’t want Bedrock planning your steps</p></li>
 </ul>
 <p><strong>Architecture</strong></p>
-<pre><code>User
-  → bedrock-agent-runtime.retrieve      (KB search, once)
-  → App-side trimming / filtering
-  → bedrock-runtime.ConverseStream      (LLM + streaming)
-  → Token stream → UI</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> bedrock-agent-runtime.retrieve      <span class="er">(</span><span class="ex">KB</span> search, once<span class="kw">)</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> App-side trimming / filtering</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> bedrock-runtime.ConverseStream      <span class="er">(</span><span class="ex">LLM</span> + streaming<span class="kw">)</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> Token stream → UI</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Key characteristics</strong></p>
 <ul>
 <li><p>Uses <strong>two data planes</strong>:</p>
@@ -1171,12 +1173,12 @@ Response</code></pre>
 <li>Faster time-to-value matters more than control</li>
 </ul>
 <p><strong>Architecture</strong></p>
-<pre><code>User
-  → bedrock-agent-runtime.invoke-agent
-       ├─ Agent orchestrates KB + tools
-       ├─ May retrieve multiple times
-       └─ Event stream (answer + trace)
-  → UI</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> bedrock-agent-runtime.invoke-agent</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Agent orchestrates KB + tools</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> May retrieve multiple times</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">└─</span> Event stream <span class="er">(</span><span class="ex">answer</span> + trace<span class="kw">)</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> UI</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Key characteristics</strong></p>
 <ul>
 <li><p>Uses <strong><code>bedrock-agent-runtime.invoke-agent</code></strong></p></li>
@@ -1213,13 +1215,13 @@ Response</code></pre>
 <li>You want to own retries, loops, and stopping conditions</li>
 </ul>
 <p><strong>Architecture (conceptual)</strong></p>
-<pre><code>User
-  → bedrock-agentcore.invoke-agent-runtime
-       ├─ Your planner loop (using LangGraph or others)
-       ├─ Explicit memory read/write
-       ├─ Tool calls (Browser / APIs / Code)
-       └─ Streaming output
-  → UI</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> bedrock-agentcore.invoke-agent-runtime</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Your planner loop <span class="er">(</span><span class="ex">using</span> LangGraph or others<span class="kw">)</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Explicit memory read/write</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Tool calls <span class="er">(</span><span class="ex">Browser</span> / APIs / Code<span class="kw">)</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>       <span class="ex">└─</span> Streaming output</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> UI</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This is <strong>maximum control</strong>, at the cost of <strong>maximum responsibility</strong>.</p>
 <hr>
 </section>
