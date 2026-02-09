@@ -12,34 +12,31 @@ date: '2026-02-09'
 draft: false
 image: ./images/Bedrock_api_endpoints_mental_model.png
 toc: true
-title: "A Ready Reckoner on AWS Bedrock API Endpoints"
+title: "A Ready Reckoner to AWS Bedrock’s Control and Data Plane APIs"
 output-file: bedrock_ready_reckoner.html
 ---
 
 I recently completed a GenAI specialization from AWS:
 ![](./images/bedrock_specialization_certificate.png)
 
+---
+
 I got to learn quite a few things in that. I have collated below my notes from the course.
 
 ![](./images/Bedrock_api_endpoints_mental_model.png)
 
 > **Disclaimer**: <br>
-> - The AWS CLI commands are ***representational***. Kindly check "aws <bedrock-api> <command> help" to confirm the workings. 
-> - These are notes for learning and I have used LLMs to tweak my messaging or make it crisper/better
-> - Sources are attributed to all pics for clarity
+> * The AWS CLI commands are ***representational***. Kindly check "aws <bedrock-api> <command> help" to confirm the workings. 
+> * These are notes for learning and I have used LLMs to tweak my messaging or make it crisper/better
+> * Sources are attributed to all pics for clarity
 
 **How to read this blog**
 Amazon Bedrock exposes multiple APIs, but they all fall into two buckets:
 
-- Control Plane → define what exists (models, agents, flows, runtimes)
-- Data Plane → execute what runs (inference, chats, sessions)
+- Control Plane → provide the administrative APIs/ define what exists (define/create models, agents, flows)
+- Data Plane → provide the primary function of the service (invoking the model/agent/flow)
 
-
-Key Takeaways:
-- Control Plane APIs define what exists: models, agents, flows, runtimes
-- Data Plane APIs execute what runs: inference, chats, sessions
-- All actual model execution happens in the data plane
-- Control plane never handles user prompts or high-throughput traffic
+[AWS explains what is Control Plane and Data Plane here](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/control-planes-and-data-planes.html)
 
 > This blog walks **top-down**:
 > 
@@ -894,6 +891,309 @@ Instructions:
 - Guardrails are **scope‑aware**, not blanket filters.
 - **Tag untrusted input** with `<input>` to enable accurate, robust protection.
 - Preserve system/developer instructions **outside** the tagged region to avoid unintended filtering.
+
+
+---
+
+This is a great place to add the section — your blog already built the **API mental model**, and now this ties it back to **how people actually wire things in production**.
+
+Below is a **drop-in Section IV**, written to match your tone, structure, and technical depth. I’ve kept it opinionated but grounded, and aligned it tightly to the APIs you already explained.
+
+---
+
+## IV. Real-world Bedrock Architectures
+
+With the API landscape clear, the natural next question is:
+
+> *“How do these pieces come together in real applications?”*
+
+In practice, most Bedrock-based systems fall into a small number of **repeatable architectural patterns**, depending on:
+
+* whether state is required
+* who owns orchestration
+* how much control vs convenience is desired
+* latency and cost sensitivity
+
+Below are the most common patterns seen in production.
+
+---
+
+### a) Stateless Batch LLM Calls (Offline / Async workloads)
+
+**When to use**
+
+* Large volumes of independent prompts
+* No conversational state
+* Cost-optimized, throughput-first processing
+* Reports, summarization, tagging, enrichment jobs
+
+**Typical use cases**
+
+* Log summarization
+* Document classification
+* Backfilling embeddings
+* Media generation (images/video)
+
+**Architecture**
+
+```
+S3 (JSONL inputs)
+   │
+   ▼
+bedrock.create-model-invocation-job
+   │
+   ▼
+S3 (JSONL outputs)
+```
+
+**Key characteristics**
+
+* Uses **`bedrock` (control plane)** to submit jobs
+* Execution happens asynchronously
+* No sessions, no memory, no retries at runtime
+* Failures are inspected post-facto
+
+**Why this pattern exists**
+This is the **lowest-cost, highest-throughput** way to use Bedrock when interactivity is not required.
+
+---
+
+### b) Stateless Online LLM Calls (Synchronous inference)
+
+**When to use**
+
+* Simple request → response flows
+* No memory or tool use
+* Tight latency budgets
+* You fully control prompt construction
+
+**Typical use cases**
+
+* Chatbots without memory
+* Text transformations
+* Inline validation / enrichment
+* Feature-level AI calls inside apps
+
+**Architecture**
+
+```
+User / App
+   │
+   ▼
+bedrock-runtime.invoke-model
+or
+bedrock-runtime.converse
+   │
+   ▼
+Response
+```
+
+**Key characteristics**
+
+* Uses **`bedrock-runtime`**
+* Fully stateless
+* Entire context must be sent every call
+* Streaming supported via SDKs
+
+**Trade-off**
+You get **maximum predictability and control**, but **all orchestration and memory management is your responsibility**.
+
+---
+
+### c) Managed RAG — `retrieve-and-generate` (Single-shot, no agent)
+
+This is the **simplest possible RAG** that Bedrock offers.
+
+**When to use**
+
+* You want RAG but **do not want to manage orchestration**
+* You don’t need conversational memory
+* One retrieval pass is sufficient
+* You want fewer moving parts than agents
+
+**Typical use cases**
+
+* FAQ answering
+* Policy lookup
+* Internal doc Q&A
+* Low-latency RAG endpoints
+
+**Architecture**
+
+```
+User
+  → bedrock-agent-runtime.retrieve-and-generate
+       ├─ Vector search (once)
+       ├─ Prompt assembly (managed)
+       └─ LLM generation (non-streaming)
+  → Response
+```
+
+**Key characteristics**
+
+* Uses **`bedrock-agent-runtime`**
+* Retrieval + generation happen in **one API call**
+* No session or memory
+* No streaming
+* No tool invocation
+
+**Trade-off**
+
+* Very easy to use
+* Minimal configuration
+* **Limited control** over:
+
+  * prompt structure
+  * chunk filtering
+  * retrieval iteration
+
+> Think of this as **“RAG without orchestration”** — powerful, but intentionally constrained.
+
+
+---
+
+### d) Self-orchestrated RAG (Application-managed)
+
+This is the most common **“serious production”** pattern today.
+
+**When to use**
+
+* You want RAG, but not a managed agent
+* You want full control over:
+
+  * retrieval strategy
+  * filtering / ranking
+  * prompt construction
+* You don’t want Bedrock planning your steps
+
+**Architecture**
+
+```
+User
+  → bedrock-agent-runtime.retrieve      (KB search, once)
+  → App-side trimming / filtering
+  → bedrock-runtime.ConverseStream      (LLM + streaming)
+  → Token stream → UI
+```
+
+**Key characteristics**
+
+* Uses **two data planes**:
+
+  * `bedrock-agent-runtime.retrieve` → vector search only
+  * `bedrock-runtime` → LLM inference
+* Retrieval and generation are **decoupled**
+* App decides:
+
+  * how many chunks to include
+  * ordering
+  * prompt structure
+  * retry logic
+
+**Why teams prefer this**
+
+* Deterministic behavior
+* Easier debugging
+* Clear separation of concerns
+* No hidden planning loops
+
+> This is **RAG without agents** — simple, explicit, and production-friendly.
+
+---
+
+### e) Managed Agentic RAG (Bedrock-orchestrated)
+
+This is the **highest-level abstraction** Bedrock offers.
+
+**When to use**
+
+* You want reasoning + tools + KB
+* You don’t want to write orchestration logic
+* You are okay with less deterministic flows
+* Faster time-to-value matters more than control
+
+**Architecture**
+
+```
+User
+  → bedrock-agent-runtime.invoke-agent
+       ├─ Agent orchestrates KB + tools
+       ├─ May retrieve multiple times
+       └─ Event stream (answer + trace)
+  → UI
+```
+
+**Key characteristics**
+
+* Uses **`bedrock-agent-runtime.invoke-agent`**
+* Bedrock owns:
+
+  * planning
+  * retrieval count
+  * tool invocation
+  * conversational state
+* You receive:
+
+  * final answer
+  * optional reasoning / trace events
+
+**Important nuance**
+
+* You **cannot control** how many retrievals happen
+* Latency can vary per request
+* Debugging requires reading traces, not logs
+
+This is ideal when you want **capabilities**, not plumbing.
+
+---
+
+### f) Fully Custom Agent Systems (AgentCore)
+
+For completeness, it’s worth positioning where **AgentCore** fits relative to the above.
+
+**When to use**
+
+* You need a custom planner (LangGraph, ReAct, custom FSM)
+* You want explicit memory control
+* You want non-Bedrock tools, browsers, code execution
+* You want to own retries, loops, and stopping conditions
+
+**Architecture (conceptual)**
+
+```
+User
+  → bedrock-agentcore.invoke-agent-runtime
+       ├─ Your planner loop (using LangGraph or others)
+       ├─ Explicit memory read/write
+       ├─ Tool calls (Browser / APIs / Code)
+       └─ Streaming output
+  → UI
+```
+
+This is **maximum control**, at the cost of **maximum responsibility**.
+
+---
+
+### Choosing the Right Pattern
+
+| Requirement                     | Recommended Pattern   |
+| ------------------------------- | --------------------- |
+| Lowest cost, high volume        | Stateless batch       |
+| Simple online inference         | Stateless runtime     |
+| Deterministic RAG               | Self-orchestrated RAG |
+| Tool-using conversational AI    | Managed Agentic RAG   |
+| Full autonomy & custom planning | AgentCore             |
+
+---
+
+### Mental Model Recap
+
+* **Stateless** → `bedrock-runtime`
+* **RAG without agents** → `retrieve` + `bedrock-runtime`
+* **Managed agents** → `bedrock-agent-runtime`
+* **Custom agents** → `bedrock-agentcore`
+
+Each layer trades **control for convenience** — not capability.
 
 
 ---
