@@ -573,7 +573,7 @@ aws bedrock-agent-runtime invoke-flow \
 cat flow-response.json
 ```
 
-## 5) `bedrock-agentcore-control` — **Control plane** for AgentCore
+### 5) `bedrock-agentcore-control` — **Control plane** for AgentCore
 
 > AgentCore’s control plane lets you **create/update** the runtime that hosts your agent, attach **Memory**, configure **Identity/Gateway**, and manage tool surfaces like **Browser** and **Code Interpreter**.
 
