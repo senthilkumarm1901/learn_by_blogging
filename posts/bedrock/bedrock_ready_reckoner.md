@@ -924,19 +924,8 @@ Below are the most common patterns seen in production.
 
 ### a) Stateless Batch LLM Calls (Offline / Async workloads)
 
-**When to use**
-
-* Large volumes of independent prompts
-* No conversational state
-* Cost-optimized, throughput-first processing
-* Reports, summarization, tagging, enrichment jobs
-
-**Typical use cases**
-
-* Log summarization
-* Document classification
-* Backfilling embeddings
-* Media generation (images/video)
+**When to use**: 
+* High-volume, independent prompts; throughput/cost optimized; results can land later
 
 **Architecture**
 
@@ -950,33 +939,16 @@ bedrock.create-model-invocation-job
 S3 (JSONL outputs)
 ```
 
-**Key characteristics**
-
-* Uses **`bedrock` (control plane)** to submit jobs
-* Execution happens asynchronously
-* No sessions, no memory, no retries at runtime
-* Failures are inspected post-facto
-
-**Why this pattern exists**
-This is the **lowest-cost, highest-throughput** way to use Bedrock when interactivity is not required.
+**State lives in**
+* S3 input/output + job metadata (jobArn/status). No conversational/session state
 
 ---
 
 ### b) Stateless Online LLM Calls (Synchronous inference)
 
-**When to use**
+**When to use**: 
+* Single-turn transformations, classification, summarization, simple chat without tools/memory.
 
-* Simple request → response flows
-* No memory or tool use
-* Tight latency budgets
-* You fully control prompt construction
-
-**Typical use cases**
-
-* Chatbots without memory
-* Text transformations
-* Inline validation / enrichment
-* Feature-level AI calls inside apps
 
 **Architecture**
 
@@ -992,15 +964,8 @@ bedrock-runtime.converse
 Response
 ```
 
-**Key characteristics**
-
-* Uses **`bedrock-runtime`**
-* Fully stateless
-* Entire context must be sent every call
-* Streaming supported via SDKs
-
-**Trade-off**
-You get **maximum predictability and control**, but **all orchestration and memory management is your responsibility**.
+**State lives in**
+* Fully stateless. All context must be sent each call.
 
 ---
 
@@ -1009,18 +974,8 @@ You get **maximum predictability and control**, but **all orchestration and memo
 This is the **simplest possible RAG** that Bedrock offers.
 
 **When to use**
+* Fast “KB Q&A” with minimal plumbing; a single managed retrieval + answer step is sufficient.
 
-* You want RAG but **do not want to manage orchestration**
-* You don’t need conversational memory
-* One retrieval pass is sufficient
-* You want fewer moving parts than agents
-
-**Typical use cases**
-
-* FAQ answering
-* Policy lookup
-* Internal doc Q&A
-* Low-latency RAG endpoints
 
 **Architecture**
 
@@ -1028,30 +983,16 @@ This is the **simplest possible RAG** that Bedrock offers.
 User
   → bedrock-agent-runtime.retrieve-and-generate
        ├─ Vector search (once)
-       ├─ Prompt assembly (managed)
+       ├─ Prompt assembly (retrieved result added to user prompt - bedrock-managed)
        └─ LLM generation (non-streaming)
   → Response
 ```
 
-**Key characteristics**
+**State lives in**:
 
-* Uses **`bedrock-agent-runtime`**
-* Retrieval + generation happen in **one API call**
-* No session or memory
-* No streaming
-* No tool invocation
+* Primary knowledge in the Knowledge Base (managed by Bedrock KB service).
+* One can use "sessionId" to simulate conversational continuity (where messages are appended)
 
-**Trade-off**
-
-* Very easy to use
-* Minimal configuration
-* **Limited control** over:
-
-  * prompt structure
-  * chunk filtering
-  * retrieval iteration
-
-> Think of this as **“RAG without orchestration”** — powerful, but intentionally constrained.
 
 
 ---
@@ -1062,13 +1003,7 @@ This is the most common **“serious production”** pattern today.
 
 **When to use**
 
-* You want RAG, but not a managed agent
-* You want full control over:
-
-  * retrieval strategy
-  * filtering / ranking
-  * prompt construction
-* You don’t want Bedrock planning your steps
+* Need deterministic control over chunking, filtering, ordering, prompt construction, retries.
 
 **Architecture**
 
@@ -1087,19 +1022,9 @@ User
   * `bedrock-agent-runtime.retrieve` → vector search only
   * `bedrock-runtime` → LLM inference
 * Retrieval and generation are **decoupled**
-* App decides:
 
-  * how many chunks to include
-  * ordering
-  * prompt structure
-  * retry logic
-
-**Why teams prefer this**
-
-* Deterministic behavior
-* Easier debugging
-* Clear separation of concerns
-* No hidden planning loops
+**State lives in**:
+* Application-managed (retrieval results, prompt assembly, chat history, caching).
 
 > This is **RAG without agents** — simple, explicit, and production-friendly.
 
@@ -1107,14 +1032,10 @@ User
 
 ### e) Managed Agentic RAG (Bedrock-orchestrated)
 
-This is the **highest-level abstraction** Bedrock offers.
+
 
 **When to use**
-
-* You want reasoning + tools + KB
-* You don’t want to write orchestration logic
-* You are okay with less deterministic flows
-* Faster time-to-value matters more than control
+* Need built-in planning + tool use + KB integration + traceability with fastest time-to-value.
 
 **Architecture**
 
@@ -1126,6 +1047,12 @@ User
        └─ Event stream (answer + trace)
   → UI
 ```
+
+* Control: bedrock-agent → configure agent (instructions, action groups, KBs)
+* Run: bedrock-agent-runtime (data) → invoke-agent (answer + optional trace)
+
+**State lives in**:
+* Agent session context is tied to sessionId and can be shaped via SessionState (session attributes, conversation history, etc.).
 
 **Key characteristics**
 
@@ -1151,18 +1078,15 @@ This is ideal when you want **capabilities**, not plumbing.
 
 ---
 
-### f) Fully Custom Agent Systems (AgentCore)
+### f) AgentCore (custom agent runtime; application-managed planner)
 
 For completeness, it’s worth positioning where **AgentCore** fits relative to the above.
 
 **When to use**
 
-* You need a custom planner (LangGraph, ReAct, custom FSM)
-* You want explicit memory control
-* You want non-Bedrock tools, browsers, code execution
-* You want to own retries, loops, and stopping conditions
+* Need custom agent planners (LangGraph/Strands/custom loops), long-running sessions, strict isolation, custom toolchains.
 
-**Architecture (conceptual)**
+**Architecture**
 
 ```bash
 User
@@ -1174,28 +1098,85 @@ User
   → UI
 ```
 
+* Control: bedrock-agentcore-control → deploy runtime/memory/gateway
+* Run: bedrock-agentcore (data) → invoke-agent-runtime (session-based)
+
 This is **maximum control**, at the cost of **maximum responsibility**.
 
 ---
 
-### Choosing the Right Pattern
+### g) Bedrock Agents + MCP-backed tools (hybrid)
 
-| Requirement                     | Recommended Pattern   |
-| ------------------------------- | --------------------- |
-| Lowest cost, high volume        | Stateless batch       |
-| Simple online inference         | Stateless runtime     |
-| Deterministic RAG               | Self-orchestrated RAG |
-| Tool-using conversational AI    | Managed Agentic RAG   |
-| Full autonomy & custom planning | AgentCore             |
+**Architecture**:
+
+```bash
+User
+  → bedrock-agent-runtime.invoke-agent
+       ├─ Agent reasoning + orchestration (stateful)
+       ├─ Optional KB retrieval
+       ├─ Tool selection
+       └─ Tool invocation using Action Group OpenAPI schema
+            → Tool Adapter Lambda
+                 - Implements a Bedrock-compatible tool interface
+                 - Acts as an MCP client (protocol translation layer)
+                 - Translates: Bedrock  tool call ↔ MCP request/response  | from NL to tools+Args; from tool results back to LLM
+                      → MCP Server (service / container / process
+                           - Implements MCP protocol
+                           - Exposes standardized tools/resources
+                           - Invokes underlying systems (DBs, APIs, services)
+                      ← MCP response (structured tool result)
+                 ← Tool result returned to the agent via the Adapter
+       ← Agent continues reasoning with tool result 
+  ← Final response (streaming)
+```
+
+**When to use**
+- When you need your existing Bedrock Agent to connect to MCP compatible servers
+- When you are ok doing some custom plumbing activities
+
+**State lives in**:
+* Reasoning/session context in Bedrock Agent via sessionId/SessionState.
+* Tool-side state in external MCP services 
+
+
+---
+
+### h) Bedrock Flows (deterministic workflow orchestration)
+
+> * Declarative, managed orchestration for predictable GenAI workflows
+
+
+**Architecture**:
+
+```bash
+User / App
+  → bedrock-flow-runtime.invoke-flow
+       ├─ Step 1: Prompt / Model call
+       ├─ Step 2: Conditional logic
+       ├─ Step 3: Retrieval or transform
+       ├─ Step 4: Another model call
+       └─ Step N: Final response
+```
+
+**When to use**
+* Need a governed, versioned, deterministic pipeline (branching/conditions/iterations) without writing orchestration code.
+
+**State Lives In**
+* Flow execution state is tracked by executionId (provided or generated) and traces can be enabled per run.
+
 
 ---
 
 ### Mental Model Recap
 
-* **Stateless** → `bedrock-runtime`
-* **RAG without agents** → `retrieve` + `bedrock-runtime`
-* **Managed agents** → `bedrock-agent-runtime`
-* **Custom agents** → `bedrock-agentcore`
+*   **Stateless Batch (offline)** → `bedrock.create-model-invocation-job`
+*   **Stateless Online LLM calls** → `bedrock-runtime.invoke-model` / `bedrock-runtime.converse`
+*   **Managed RAG (single primitive)** → `bedrock-agent-runtime.retrieve-and-generate`
+*   **Self-orchestrated RAG** → `bedrock-agent-runtime.retrieve` + `bedrock-runtime.converse` *(or bedrock-runtime.converse-stream for streaming)*
+*   **Deterministic workflows (Flows)** → `bedrock-agent-runtime.invoke-flow`
+*   **Managed agentic orchestration (Agents)** → `bedrock-agent-runtime.invoke-agent`
+*   **Custom agent runtime (AgentCore)** → `bedrock-agentcore.invoke-agent-runtime`
+*   **Agents + MCP-backed tools (Hybrid)** → `bedrock-agent-runtime.invoke-agent` + external MCP tool runtime
 
 Each layer trades **control for convenience** — not capability.
 
