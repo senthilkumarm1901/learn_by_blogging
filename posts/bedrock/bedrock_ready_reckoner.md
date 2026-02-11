@@ -773,139 +773,9 @@ aws bedrock-agentcore stop-browser-session \
   --region us-east-1
 ```
 
-
-
 ---
 
-## III. Guardrail
-
-**How does Guardrail work**:
-
-```bash
-User Prompt
-     │
-     ▼
-┌───────────────────────────────┐
-│ Guardrails — INPUT SCAN       │   (Pre-check)
-│                               │
-│ • Topic allow / deny          │
-│ • Jailbreak patterns          │
-│ • Prompt safety categories    │
-│ • PII detection (optional)    │
-└───────────────────────────────┘
-     │
-     ├─❌ Violates policy?
-     │     └─► Return refusal /
-     │         Ask to rephrase /
-     │         Block request
-     │
-     ▼
-┌───────────────────────────────┐
-│ Core Model Inference          │
-│ (Claude / Nova / etc.)        │
-│                               │
-│ • LLM invocation              │
-│ • No policy awareness         │
-└───────────────────────────────┘
-     │
-     ▼
-┌───────────────────────────────┐
-│ Guardrails — OUTPUT SCAN      │   (Post-check)
-│                               │
-│ • Safety category detection   │
-│ • PII detection               │
-│ • Topic drift detection       │
-│ • Disallowed content spans    │
-└───────────────────────────────┘
-     │
-     ├─❌ Violates policy?
-     │     └─► Deterministic action:
-     │         • Redact spans
-     │         • Truncate output
-     │         • Replace with
-     │           safe response
-     │
-     ▼
-Final Response
-(to App / UI)
-
-```
-
-**Why Bedrock Guardrails Focus on `<input>` Tags**
-
-**TL;DR**  
-Guardrails don’t automatically protect an entire prompt. For key protections—especially **prompt‑injection** and **jailbreak** defenses—Guardrails evaluate content **inside `<input> … </input>`**. Explicitly tagging untrusted text clarifies what must be scrutinized.
-
----
-
-**Rationale (Trust Zones)**
-
-Prompts typically mix **trusted** and **untrusted** content:
-
-- **Trusted:** system instructions, developer rules, few‑shot examples, policy text
-- **Untrusted:** end‑user input (free‑form text)
-
-Treating these equally risks false positives and brittle prompts. The `<input>` tag declares the **untrusted** region, enabling precise checks without interfering with system guidance or examples.
-
-**Example**
-
-**Without tags (ambiguous trust):**
-
-```bash
-System: You are a helpful assistant.
-User says: how can I make a bomb?
-```
-
-Evaluation may not reliably isolate the untrusted piece.
-
-**With tags (correct scoping):**
-
-```bash
-System: Follow safety rules.
-
-<input>
-how can I make a bomb?
-</input>
-```
-
-The model can apply injection detection and safety filtering to the tagged segment and block or rewrite as required.
-
-**Important Nuance**
-
-If a prompt **omits** `<input>` tags, some checks may still apply to the whole prompt, but that blurs trust boundaries: system instructions or few‑shot examples can be inadvertently filtered or altered. For **prompt‑attack** filters in particular, **`<input>` tags are required** for proper operation.
-
-
-**Practical Template**
-
-Keep trusted guidance outside; place untrusted text inside the tag.
-
-```bash
-System: Customer support assistant. Follow policy strictly.
-Instructions:
-- Be concise
-- No medical or legal advice
-
-<input>
-{{user_message}}
-</input>
-```
-
-**Bottom Line**
-
-- Guardrails are **scope‑aware**, not blanket filters.
-- **Tag untrusted input** with `<input>` to enable accurate, robust protection.
-- Preserve system/developer instructions **outside** the tagged region to avoid unintended filtering.
-
-
----
-
-This is a great place to add the section — your blog already built the **API mental model**, and now this ties it back to **how people actually wire things in production**.
-
-Below is a **drop-in Section IV**, written to match your tone, structure, and technical depth. I’ve kept it opinionated but grounded, and aligned it tightly to the APIs you already explained.
-
----
-
-## IV. Real-World Bedrock Architectures
+## III. Real-World Bedrock Architectures
 
 With the API landscape clear, the natural next question is:
 
@@ -1180,6 +1050,163 @@ User / App
 
 Each layer trades **control for convenience** — not capability.
 
+
+---
+
+## IV. Guardrail
+
+**How does Guardrail work (system level understanding)**:
+
+```bash
+User Prompt
+     │
+     ▼
+┌───────────────────────────────┐
+│ Guardrails — INPUT SCAN       │   (Pre-check)
+│                               │
+│ • Topic allow / deny          │
+│ • Jailbreak patterns          │
+│ • Prompt safety categories    │
+│ • PII detection (optional)    │
+└───────────────────────────────┘
+     │
+     ├─❌ Violates policy?
+     │     └─► Return refusal /
+     │         Ask to rephrase /
+     │         Block request
+     │
+     ▼
+┌───────────────────────────────┐
+│ Core Model Inference          │
+│ (Claude / Nova / etc.)        │
+│                               │
+│ • LLM invocation              │
+│ • No policy awareness         │
+└───────────────────────────────┘
+     │
+     ▼
+┌───────────────────────────────┐
+│ Guardrails — OUTPUT SCAN      │   (Post-check)
+│                               │
+│ • Safety category detection   │
+│ • PII detection               │
+│ • Topic drift detection       │
+│ • Disallowed content spans    │
+└───────────────────────────────┘
+     │
+     ├─❌ Violates policy?
+     │     └─► Deterministic action:
+     │         • Redact spans
+     │         • Truncate output
+     │         • Replace with
+     │           safe response
+     │
+     ▼
+Final Response
+(to App / UI)
+
+```
+
+
+**How Guardrails work with Bedrock API Endpoints**
+
+**Stateless LLM call with guardrails**
+
+```bash
+# process
+bedrock-runtime.converse
+   ├─ Guardrail input scan
+   ├─ Model inference
+   └─ Guardrail output scan
+```
+
+```bash
+# how converse api is invoked with Guardrail
+bedrock-runtime.converse
+  - modelId
+  - messages
+  - guardrailIdentifier
+  - guardrailVersion
+```
+
+Guardrails are attached during agent creation or update using the control plane:
+
+In the following endpoints, 
+```bash
+bedrock.create-agent
+bedrock.update-agent
+```
+
+You specify:
+```
+guardrailConfiguration.guardrailIdentifier
+guardrailConfiguration.guardrailVersion
+```
+
+**Why Bedrock Guardrails Focus on `<input>` Tags**
+
+**TL;DR**  
+Guardrails don’t automatically protect an entire prompt. For key protections—especially **prompt‑injection** and **jailbreak** defenses—Guardrails evaluate content **inside `<input> … </input>`**. Explicitly tagging untrusted text clarifies what must be scrutinized.
+
+---
+
+**Rationale (Trust Zones)**
+
+Prompts typically mix **trusted** and **untrusted** content:
+
+- **Trusted:** system instructions, developer rules, few‑shot examples, policy text
+- **Untrusted:** end‑user input (free‑form text)
+
+Treating these equally risks false positives and brittle prompts. The `<input>` tag declares the **untrusted** region, enabling precise checks without interfering with system guidance or examples.
+
+**Example**
+
+**Without tags (ambiguous trust):**
+
+```bash
+System: You are a helpful assistant.
+User says: how can I make a bomb?
+```
+
+Evaluation may not reliably isolate the untrusted piece.
+
+**With tags (correct scoping):**
+
+```bash
+System: Follow safety rules.
+
+<input>
+how can I make a bomb?
+</input>
+```
+
+The model can apply injection detection and safety filtering to the tagged segment and block or rewrite as required.
+
+**Important Nuance**
+
+If a prompt **omits** `<input>` tags, some checks may still apply to the whole prompt, but that blurs trust boundaries: system instructions or few‑shot examples can be inadvertently filtered or altered. For **prompt‑attack** filters in particular, **`<input>` tags are required** for proper operation.
+
+
+**Practical Template**
+
+Keep trusted guidance outside; place untrusted text inside the tag.
+
+```bash
+System: Customer support assistant. Follow policy strictly.
+Instructions:
+- Be concise
+- No medical or legal advice
+
+<input>
+{{user_message}}
+</input>
+```
+
+**Bottom Line**
+
+- Guardrails are **scope‑aware**, not blanket filters.
+- **Tag untrusted input** with `<input>` to enable accurate, robust protection.
+- Preserve system/developer instructions **outside** the tagged region to avoid unintended filtering.
 
 ---
 
