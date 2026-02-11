@@ -1,0 +1,39 @@
+flowchart LR
+    %% ====== CLIENT ======
+    App["Client App / UI<br>(Web, API, Chatbot)"]
+
+    %% ====== CONTROL PLANE ======
+    subgraph CP[Control Plane]
+        direction TB
+
+        CP1[bedrock<br>• Models<br>• Fine-tuning<br>• Batch jobs<br>• Provisioned Throughput]
+        CP2[bedrock-agent<br>• Agents<br>• Knowledge Bases<br>• Prompts<br>• Flows]
+        CP3[bedrock-agentcore-control<br>• Agent Runtimes<br>• Memory<br>• Gateways<br>• Tools]
+    end
+
+    %% ====== DATA PLANE ======
+    subgraph DP[Data Plane]
+        direction TB
+
+        DP1[bedrock-runtime<br>• InvokeModel<br>• Converse<br>• Streaming<br>• Async inference]
+        DP2[bedrock-agent-runtime<br>• invoke-agent<br>• retrieve<br>• retrieve-and-generate<br>• invoke-flow]
+        DP3[bedrock-agentcore<br>• Agent sessions<br>• Memory I/O<br>• Browser / Code tools]
+    end
+
+    %% ====== MODELS ======
+    Models["Foundation Models<br>(Claude, Titan, Nova, etc.)"]
+
+    %% ====== FLOWS ======
+    App -->|Inference| DP1
+    App -->|Agent Chat / RAG| DP2
+    App -->|Custom Agent Runtime| DP3
+
+    %% Control → Data relationships
+    CP1 -. configures .-> DP1
+    CP2 -. deploys .-> DP2
+    CP3 -. provisions .-> DP3
+
+    %% Runtime → Models
+    DP1 --> Models
+    DP2 --> Models
+    DP3 --> Models

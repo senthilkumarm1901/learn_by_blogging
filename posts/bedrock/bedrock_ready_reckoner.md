@@ -1183,9 +1183,9 @@ Each layer trades **control for convenience** — not capability.
 
 ---
 
-## Conclusion
+## V. Conclusion
 
-- A comparative summary of the 3 Bedrock runtime APIs and their most important **commands**
+### Summary of 3 Bedrock runtime APIs and their most important **commands**
 
 ```bash
 ┌──────────────────────────────────────────────────────────┐
@@ -1236,10 +1236,30 @@ Each layer trades **control for convenience** — not capability.
 └──────────────────────────────────────────────────────────┘
 ```
 
-A Summary of the State Management:
 
-| API                   | State                         | Who owns it |
-| ----------------------- | ----------------------------- | ----------- |
-| `bedrock-runtime`       | None                          | Caller      |
-| `bedrock-agent-runtime` | Session + implicit memory     | Bedrock     |
-| `bedrock-agentcore`     | Full agent + memory lifecycle | Application |
+### 🧠 **Core Takeaways of the Bedrock APIs**
+
+**📌 AWS Bedrock Basics**
+
+* AWS Bedrock is a fully managed, serverless service for building generative AI apps using foundation models (FMs) without managing infrastructure. 
+
+**⚙️ API Plane Separation**
+
+* Bedrock APIs are classified into **Control Plane** (defining, configuring resources) and **Data Plane** (running workloads or inference). 
+
+**📍 Key Control Plane Endpoints**
+
+* `bedrock`: model management (list models, configure logging, fine-tuning, batch jobs). 
+* `bedrock-agent`: manage agents, knowledge bases (KBs), prompts, and flows. 
+* `bedrock-agentcore-control`: advanced agent core resources (tools, memory, runtimes). 
+
+**📍 Key Data Plane Endpoints**
+
+* `bedrock-runtime`: real-time model inference (single prompts, chat, embeddings, async jobs). 
+* `bedrock-agent-runtime`: invoke managed agents, query KBs/RAG, run flows. 
+* `bedrock-agentcore`: run custom agent sessions and tools. 
+
+Author's Personal Opinion and End Note: 
+> *With plethora of frameworks It seems Bedrock is veering towards `bedrock-agentcore` where the agent can be built anywhere and can be scaled using AWS* 
+
+
