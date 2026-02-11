@@ -214,8 +214,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#c-managed-rag-retrieve-and-generate-single-shot-no-agent" id="toc-c-managed-rag-retrieve-and-generate-single-shot-no-agent" class="nav-link" data-scroll-target="#c-managed-rag-retrieve-and-generate-single-shot-no-agent">c) Managed RAG — <code>retrieve-and-generate</code> (Single-shot, no agent)</a></li>
   <li><a href="#d-self-orchestrated-rag-application-managed" id="toc-d-self-orchestrated-rag-application-managed" class="nav-link" data-scroll-target="#d-self-orchestrated-rag-application-managed">d) Self-orchestrated RAG (Application-managed)</a></li>
   <li><a href="#e-managed-agentic-rag-bedrock-orchestrated" id="toc-e-managed-agentic-rag-bedrock-orchestrated" class="nav-link" data-scroll-target="#e-managed-agentic-rag-bedrock-orchestrated">e) Managed Agentic RAG (Bedrock-orchestrated)</a></li>
-  <li><a href="#f-fully-custom-agent-systems-agentcore" id="toc-f-fully-custom-agent-systems-agentcore" class="nav-link" data-scroll-target="#f-fully-custom-agent-systems-agentcore">f) Fully Custom Agent Systems (AgentCore)</a></li>
-  <li><a href="#choosing-the-right-pattern" id="toc-choosing-the-right-pattern" class="nav-link" data-scroll-target="#choosing-the-right-pattern">Choosing the Right Pattern</a></li>
+  <li><a href="#f-agentcore-custom-agent-runtime-application-managed-planner" id="toc-f-agentcore-custom-agent-runtime-application-managed-planner" class="nav-link" data-scroll-target="#f-agentcore-custom-agent-runtime-application-managed-planner">f) AgentCore (custom agent runtime; application-managed planner)</a></li>
+  <li><a href="#g-bedrock-agents-mcp-backed-tools-hybrid" id="toc-g-bedrock-agents-mcp-backed-tools-hybrid" class="nav-link" data-scroll-target="#g-bedrock-agents-mcp-backed-tools-hybrid">g) Bedrock Agents + MCP-backed tools (hybrid)</a></li>
+  <li><a href="#h-bedrock-flows-deterministic-workflow-orchestration" id="toc-h-bedrock-flows-deterministic-workflow-orchestration" class="nav-link" data-scroll-target="#h-bedrock-flows-deterministic-workflow-orchestration">h) Bedrock Flows (deterministic workflow orchestration)</a></li>
   <li><a href="#mental-model-recap" id="toc-mental-model-recap" class="nav-link" data-scroll-target="#mental-model-recap">Mental Model Recap</a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
@@ -998,20 +999,7 @@ Guardrails don’t automatically protect an entire prompt. For key protections�
 <hr>
 <section id="a-stateless-batch-llm-calls-offline-async-workloads" class="level3">
 <h3 class="anchored" data-anchor-id="a-stateless-batch-llm-calls-offline-async-workloads">a) Stateless Batch LLM Calls (Offline / Async workloads)</h3>
-<p><strong>When to use</strong></p>
-<ul>
-<li>Large volumes of independent prompts</li>
-<li>No conversational state</li>
-<li>Cost-optimized, throughput-first processing</li>
-<li>Reports, summarization, tagging, enrichment jobs</li>
-</ul>
-<p><strong>Typical use cases</strong></p>
-<ul>
-<li>Log summarization</li>
-<li>Document classification</li>
-<li>Backfilling embeddings</li>
-<li>Media generation (images/video)</li>
-</ul>
+<p><strong>When to use</strong>: * High-volume, independent prompts; throughput/cost optimized; results can land later</p>
 <p><strong>Architecture</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">S3</span> <span class="er">(</span><span class="ex">JSONL</span> inputs<span class="kw">)</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>   <span class="ex">│</span></span>
@@ -1020,32 +1008,12 @@ Guardrails don’t automatically protect an entire prompt. For key protections�
 <span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>   <span class="ex">│</span></span>
 <span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>   <span class="ex">▼</span></span>
 <span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="ex">S3</span> <span class="er">(</span><span class="ex">JSONL</span> outputs<span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Key characteristics</strong></p>
-<ul>
-<li>Uses <strong><code>bedrock</code> (control plane)</strong> to submit jobs</li>
-<li>Execution happens asynchronously</li>
-<li>No sessions, no memory, no retries at runtime</li>
-<li>Failures are inspected post-facto</li>
-</ul>
-<p><strong>Why this pattern exists</strong> This is the <strong>lowest-cost, highest-throughput</strong> way to use Bedrock when interactivity is not required.</p>
+<p><strong>State lives in</strong> * S3 input/output + job metadata (jobArn/status). No conversational/session state</p>
 <hr>
 </section>
 <section id="b-stateless-online-llm-calls-synchronous-inference" class="level3">
 <h3 class="anchored" data-anchor-id="b-stateless-online-llm-calls-synchronous-inference">b) Stateless Online LLM Calls (Synchronous inference)</h3>
-<p><strong>When to use</strong></p>
-<ul>
-<li>Simple request → response flows</li>
-<li>No memory or tool use</li>
-<li>Tight latency budgets</li>
-<li>You fully control prompt construction</li>
-</ul>
-<p><strong>Typical use cases</strong></p>
-<ul>
-<li>Chatbots without memory</li>
-<li>Text transformations</li>
-<li>Inline validation / enrichment</li>
-<li>Feature-level AI calls inside apps</li>
-</ul>
+<p><strong>When to use</strong>: * Single-turn transformations, classification, summarization, simple chat without tools/memory.</p>
 <p><strong>Architecture</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span> / App</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>   <span class="ex">│</span></span>
@@ -1056,62 +1024,25 @@ Guardrails don’t automatically protect an entire prompt. For key protections�
 <span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>   <span class="ex">│</span></span>
 <span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>   <span class="ex">▼</span></span>
 <span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Response</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Key characteristics</strong></p>
-<ul>
-<li>Uses <strong><code>bedrock-runtime</code></strong></li>
-<li>Fully stateless</li>
-<li>Entire context must be sent every call</li>
-<li>Streaming supported via SDKs</li>
-</ul>
-<p><strong>Trade-off</strong> You get <strong>maximum predictability and control</strong>, but <strong>all orchestration and memory management is your responsibility</strong>.</p>
+<p><strong>State lives in</strong> * Fully stateless. All context must be sent each call.</p>
 <hr>
 </section>
 <section id="c-managed-rag-retrieve-and-generate-single-shot-no-agent" class="level3">
 <h3 class="anchored" data-anchor-id="c-managed-rag-retrieve-and-generate-single-shot-no-agent">c) Managed RAG — <code>retrieve-and-generate</code> (Single-shot, no agent)</h3>
 <p>This is the <strong>simplest possible RAG</strong> that Bedrock offers.</p>
-<p><strong>When to use</strong></p>
-<ul>
-<li>You want RAG but <strong>do not want to manage orchestration</strong></li>
-<li>You don’t need conversational memory</li>
-<li>One retrieval pass is sufficient</li>
-<li>You want fewer moving parts than agents</li>
-</ul>
-<p><strong>Typical use cases</strong></p>
-<ul>
-<li>FAQ answering</li>
-<li>Policy lookup</li>
-<li>Internal doc Q&amp;A</li>
-<li>Low-latency RAG endpoints</li>
-</ul>
+<p><strong>When to use</strong> * Fast “KB Q&amp;A” with minimal plumbing; a single managed retrieval + answer step is sufficient.</p>
 <p><strong>Architecture</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> bedrock-agent-runtime.retrieve-and-generate</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Vector search <span class="er">(</span><span class="ex">once</span><span class="kw">)</span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Prompt assembly <span class="er">(</span><span class="ex">managed</span><span class="kw">)</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Prompt assembly <span class="er">(</span><span class="ex">retrieved</span> result added to user prompt <span class="at">-</span> bedrock-managed<span class="kw">)</span></span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">└─</span> LLM generation <span class="er">(</span><span class="ex">non-streaming</span><span class="kw">)</span></span>
 <span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> Response</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Key characteristics</strong></p>
+<p><strong>State lives in</strong>:</p>
 <ul>
-<li>Uses <strong><code>bedrock-agent-runtime</code></strong></li>
-<li>Retrieval + generation happen in <strong>one API call</strong></li>
-<li>No session or memory</li>
-<li>No streaming</li>
-<li>No tool invocation</li>
+<li>Primary knowledge in the Knowledge Base (managed by Bedrock KB service).</li>
+<li>One can use “sessionId” to simulate conversational continuity (where messages are appended)</li>
 </ul>
-<p><strong>Trade-off</strong></p>
-<ul>
-<li><p>Very easy to use</p></li>
-<li><p>Minimal configuration</p></li>
-<li><p><strong>Limited control</strong> over:</p>
-<ul>
-<li>prompt structure</li>
-<li>chunk filtering</li>
-<li>retrieval iteration</li>
-</ul></li>
-</ul>
-<blockquote class="blockquote">
-<p>Think of this as <strong>“RAG without orchestration”</strong> — powerful, but intentionally constrained.</p>
-</blockquote>
 <hr>
 </section>
 <section id="d-self-orchestrated-rag-application-managed" class="level3">
@@ -1119,14 +1050,7 @@ Guardrails don’t automatically protect an entire prompt. For key protections�
 <p>This is the most common <strong>“serious production”</strong> pattern today.</p>
 <p><strong>When to use</strong></p>
 <ul>
-<li><p>You want RAG, but not a managed agent</p></li>
-<li><p>You want full control over:</p>
-<ul>
-<li>retrieval strategy</li>
-<li>filtering / ranking</li>
-<li>prompt construction</li>
-</ul></li>
-<li><p>You don’t want Bedrock planning your steps</p></li>
+<li>Need deterministic control over chunking, filtering, ordering, prompt construction, retries.</li>
 </ul>
 <p><strong>Architecture</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span></span>
@@ -1142,21 +1066,8 @@ Guardrails don’t automatically protect an entire prompt. For key protections�
 <li><code>bedrock-runtime</code> → LLM inference</li>
 </ul></li>
 <li><p>Retrieval and generation are <strong>decoupled</strong></p></li>
-<li><p>App decides:</p>
-<ul>
-<li>how many chunks to include</li>
-<li>ordering</li>
-<li>prompt structure</li>
-<li>retry logic</li>
-</ul></li>
 </ul>
-<p><strong>Why teams prefer this</strong></p>
-<ul>
-<li>Deterministic behavior</li>
-<li>Easier debugging</li>
-<li>Clear separation of concerns</li>
-<li>No hidden planning loops</li>
-</ul>
+<p><strong>State lives in</strong>: * Application-managed (retrieval results, prompt assembly, chat history, caching).</p>
 <blockquote class="blockquote">
 <p>This is <strong>RAG without agents</strong> — simple, explicit, and production-friendly.</p>
 </blockquote>
@@ -1164,14 +1075,7 @@ Guardrails don’t automatically protect an entire prompt. For key protections�
 </section>
 <section id="e-managed-agentic-rag-bedrock-orchestrated" class="level3">
 <h3 class="anchored" data-anchor-id="e-managed-agentic-rag-bedrock-orchestrated">e) Managed Agentic RAG (Bedrock-orchestrated)</h3>
-<p>This is the <strong>highest-level abstraction</strong> Bedrock offers.</p>
-<p><strong>When to use</strong></p>
-<ul>
-<li>You want reasoning + tools + KB</li>
-<li>You don’t want to write orchestration logic</li>
-<li>You are okay with less deterministic flows</li>
-<li>Faster time-to-value matters more than control</li>
-</ul>
+<p><strong>When to use</strong> * Need built-in planning + tool use + KB integration + traceability with fastest time-to-value.</p>
 <p><strong>Architecture</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> bedrock-agent-runtime.invoke-agent</span>
@@ -1179,6 +1083,11 @@ Guardrails don’t automatically protect an entire prompt. For key protections�
 <span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> May retrieve multiple times</span>
 <span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">└─</span> Event stream <span class="er">(</span><span class="ex">answer</span> + trace<span class="kw">)</span></span>
 <span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> UI</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Control: bedrock-agent → configure agent (instructions, action groups, KBs)</li>
+<li>Run: bedrock-agent-runtime (data) → invoke-agent (answer + optional trace)</li>
+</ul>
+<p><strong>State lives in</strong>: * Agent session context is tied to sessionId and can be shaped via SessionState (session attributes, conversation history, etc.).</p>
 <p><strong>Key characteristics</strong></p>
 <ul>
 <li><p>Uses <strong><code>bedrock-agent-runtime.invoke-agent</code></strong></p></li>
@@ -1204,17 +1113,14 @@ Guardrails don’t automatically protect an entire prompt. For key protections�
 <p>This is ideal when you want <strong>capabilities</strong>, not plumbing.</p>
 <hr>
 </section>
-<section id="f-fully-custom-agent-systems-agentcore" class="level3">
-<h3 class="anchored" data-anchor-id="f-fully-custom-agent-systems-agentcore">f) Fully Custom Agent Systems (AgentCore)</h3>
+<section id="f-agentcore-custom-agent-runtime-application-managed-planner" class="level3">
+<h3 class="anchored" data-anchor-id="f-agentcore-custom-agent-runtime-application-managed-planner">f) AgentCore (custom agent runtime; application-managed planner)</h3>
 <p>For completeness, it’s worth positioning where <strong>AgentCore</strong> fits relative to the above.</p>
 <p><strong>When to use</strong></p>
 <ul>
-<li>You need a custom planner (LangGraph, ReAct, custom FSM)</li>
-<li>You want explicit memory control</li>
-<li>You want non-Bedrock tools, browsers, code execution</li>
-<li>You want to own retries, loops, and stopping conditions</li>
+<li>Need custom agent planners (LangGraph/Strands/custom loops), long-running sessions, strict isolation, custom toolchains.</li>
 </ul>
-<p><strong>Architecture (conceptual)</strong></p>
+<p><strong>Architecture</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> bedrock-agentcore.invoke-agent-runtime</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Your planner loop <span class="er">(</span><span class="ex">using</span> LangGraph or others<span class="kw">)</span></span>
@@ -1222,50 +1128,68 @@ Guardrails don’t automatically protect an entire prompt. For key protections�
 <span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Tool calls <span class="er">(</span><span class="ex">Browser</span> / APIs / Code<span class="kw">)</span></span>
 <span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>       <span class="ex">└─</span> Streaming output</span>
 <span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> UI</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Control: bedrock-agentcore-control → deploy runtime/memory/gateway</li>
+<li>Run: bedrock-agentcore (data) → invoke-agent-runtime (session-based)</li>
+</ul>
 <p>This is <strong>maximum control</strong>, at the cost of <strong>maximum responsibility</strong>.</p>
 <hr>
 </section>
-<section id="choosing-the-right-pattern" class="level3">
-<h3 class="anchored" data-anchor-id="choosing-the-right-pattern">Choosing the Right Pattern</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Requirement</th>
-<th>Recommended Pattern</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Lowest cost, high volume</td>
-<td>Stateless batch</td>
-</tr>
-<tr class="even">
-<td>Simple online inference</td>
-<td>Stateless runtime</td>
-</tr>
-<tr class="odd">
-<td>Deterministic RAG</td>
-<td>Self-orchestrated RAG</td>
-</tr>
-<tr class="even">
-<td>Tool-using conversational AI</td>
-<td>Managed Agentic RAG</td>
-</tr>
-<tr class="odd">
-<td>Full autonomy &amp; custom planning</td>
-<td>AgentCore</td>
-</tr>
-</tbody>
-</table>
+<section id="g-bedrock-agents-mcp-backed-tools-hybrid" class="level3">
+<h3 class="anchored" data-anchor-id="g-bedrock-agents-mcp-backed-tools-hybrid">g) Bedrock Agents + MCP-backed tools (hybrid)</h3>
+<p><strong>Architecture</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> bedrock-agent-runtime.invoke-agent</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Agent reasoning + orchestration <span class="er">(</span><span class="ex">stateful</span><span class="kw">)</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Optional KB retrieval</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Tool selection</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>       <span class="ex">└─</span> Tool invocation using Action Group OpenAPI schema</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>            <span class="ex">→</span> Tool Adapter Lambda</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>                 <span class="ex">-</span> Implements a Bedrock-compatible tool interface</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>                 <span class="ex">-</span> Acts as an MCP client <span class="er">(</span><span class="ex">protocol</span> translation layer<span class="kw">)</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>                 <span class="ex">-</span> Translates: Bedrock  tool call ↔ MCP request/response  <span class="kw">|</span> <span class="ex">from</span> NL to tools+Args<span class="kw">;</span> <span class="ex">from</span> tool results back to LLM</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>                      <span class="ex">→</span> MCP Server <span class="er">(</span><span class="ex">service</span> / container / process</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>                           <span class="ex">-</span> Implements MCP protocol</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>                           <span class="ex">-</span> Exposes standardized tools/resources</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>                           <span class="ex">-</span> Invokes underlying systems <span class="er">(</span><span class="ex">DBs,</span> APIs, services<span class="kw">)</span></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>                      <span class="ex">←</span> MCP response <span class="er">(</span><span class="ex">structured</span> tool result<span class="kw">)</span></span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>                 <span class="ex">←</span> Tool result returned to the agent via the Adapter</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>       <span class="ex">←</span> Agent continues reasoning with tool result </span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>  <span class="ex">←</span> Final response <span class="er">(</span><span class="ex">streaming</span><span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>When to use</strong> - When you need your existing Bedrock Agent to connect to MCP compatible servers - When you are ok doing some custom plumbing activities</p>
+<p><strong>State lives in</strong>: * Reasoning/session context in Bedrock Agent via sessionId/SessionState. * Tool-side state in external MCP services</p>
+<hr>
+</section>
+<section id="h-bedrock-flows-deterministic-workflow-orchestration" class="level3">
+<h3 class="anchored" data-anchor-id="h-bedrock-flows-deterministic-workflow-orchestration">h) Bedrock Flows (deterministic workflow orchestration)</h3>
+<blockquote class="blockquote">
+<ul>
+<li>Declarative, managed orchestration for predictable GenAI workflows</li>
+</ul>
+</blockquote>
+<p><strong>Architecture</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span> / App</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> bedrock-flow-runtime.invoke-flow</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Step 1: Prompt / Model call</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Step 2: Conditional logic</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Step 3: Retrieval or transform</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Step 4: Another model call</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>       <span class="ex">└─</span> Step N: Final response</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>When to use</strong> * Need a governed, versioned, deterministic pipeline (branching/conditions/iterations) without writing orchestration code.</p>
+<p><strong>State Lives In</strong> * Flow execution state is tracked by executionId (provided or generated) and traces can be enabled per run.</p>
 <hr>
 </section>
 <section id="mental-model-recap" class="level3">
 <h3 class="anchored" data-anchor-id="mental-model-recap">Mental Model Recap</h3>
 <ul>
-<li><strong>Stateless</strong> → <code>bedrock-runtime</code></li>
-<li><strong>RAG without agents</strong> → <code>retrieve</code> + <code>bedrock-runtime</code></li>
-<li><strong>Managed agents</strong> → <code>bedrock-agent-runtime</code></li>
-<li><strong>Custom agents</strong> → <code>bedrock-agentcore</code></li>
+<li><strong>Stateless Batch (offline)</strong> → <code>bedrock.create-model-invocation-job</code></li>
+<li><strong>Stateless Online LLM calls</strong> → <code>bedrock-runtime.invoke-model</code> / <code>bedrock-runtime.converse</code></li>
+<li><strong>Managed RAG (single primitive)</strong> → <code>bedrock-agent-runtime.retrieve-and-generate</code></li>
+<li><strong>Self-orchestrated RAG</strong> → <code>bedrock-agent-runtime.retrieve</code> + <code>bedrock-runtime.converse</code> <em>(or bedrock-runtime.converse-stream for streaming)</em></li>
+<li><strong>Deterministic workflows (Flows)</strong> → <code>bedrock-agent-runtime.invoke-flow</code></li>
+<li><strong>Managed agentic orchestration (Agents)</strong> → <code>bedrock-agent-runtime.invoke-agent</code></li>
+<li><strong>Custom agent runtime (AgentCore)</strong> → <code>bedrock-agentcore.invoke-agent-runtime</code></li>
+<li><strong>Agents + MCP-backed tools (Hybrid)</strong> → <code>bedrock-agent-runtime.invoke-agent</code> + external MCP tool runtime</li>
 </ul>
 <p>Each layer trades <strong>control for convenience</strong> — not capability.</p>
 <hr>
@@ -1276,52 +1200,52 @@ Guardrails don’t automatically protect an entire prompt. For key protections�
 <ul>
 <li>A comparative summary of the 3 Bedrock runtime APIs and their most important <strong>commands</strong></li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-runtime                                          │</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-model / converse                               │</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • streaming text, images, embeddings                    │</span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Stateless                                               │</span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ─────────                                               │</span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • No memory                                             │</span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • No session tracking                                   │</span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • Full context must be sent every call                  │</span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
-<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-agent-runtime                                    │</span>
-<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • retrieve                  → vector search only        │</span>
-<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • retrieve-and-generate     → managed RAG               │</span>
-<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-agent              → agentic orchestration     │</span>
-<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Session-aware <span class="er">(</span><span class="ex">Bedrock-managed</span> state<span class="kw">)</span>                   <span class="ex">│</span></span>
-<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ─────────────────────────────────────                   │</span>
-<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • session-id threads conversation                       │</span>
-<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • implicit memory <span class="er">(</span><span class="ex">KB</span> / agent context<span class="kw">)</span>                  <span class="ex">│</span></span>
-<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • tools + planning handled by Bedrock                   │</span>
-<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  You invoke an agent — Bedrock runs it                   │</span>
-<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span>
-<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
-<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-agentcore                                        │</span>
-<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-agent-runtime                                  │</span>
-<span id="cb39-36"><a href="#cb39-36" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • tool calls <span class="er">(</span><span class="ex">Browser</span> / Code Interpreter / APIs<span class="kw">)</span>        <span class="ex">│</span></span>
-<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • explicit Memory read/write                            │</span>
-<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb39-39"><a href="#cb39-39" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Fully stateful <span class="er">(</span><span class="ex">Application-owned</span> state<span class="kw">)</span>                <span class="ex">│</span></span>
-<span id="cb39-40"><a href="#cb39-40" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ───────────────────────────────────────                 │</span>
-<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You control agent loop                                │</span>
-<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You decide when memory is read / written              │</span>
-<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You own planning, retries, tool routing               │</span>
-<span id="cb39-44"><a href="#cb39-44" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
-<span id="cb39-45"><a href="#cb39-45" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  You run the agent — Bedrock hosts it                    │</span>
-<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-runtime                                          │</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-model / converse                               │</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • streaming text, images, embeddings                    │</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Stateless                                               │</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ─────────                                               │</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • No memory                                             │</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • No session tracking                                   │</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • Full context must be sent every call                  │</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-agent-runtime                                    │</span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • retrieve                  → vector search only        │</span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • retrieve-and-generate     → managed RAG               │</span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-agent              → agentic orchestration     │</span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Session-aware <span class="er">(</span><span class="ex">Bedrock-managed</span> state<span class="kw">)</span>                   <span class="ex">│</span></span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ─────────────────────────────────────                   │</span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • session-id threads conversation                       │</span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • implicit memory <span class="er">(</span><span class="ex">KB</span> / agent context<span class="kw">)</span>                  <span class="ex">│</span></span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • tools + planning handled by Bedrock                   │</span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  You invoke an agent — Bedrock runs it                   │</span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a><span class="ex">┌──────────────────────────────────────────────────────────┐</span></span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span> bedrock-agentcore                                        │</span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • invoke-agent-runtime                                  │</span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • tool calls <span class="er">(</span><span class="ex">Browser</span> / Code Interpreter / APIs<span class="kw">)</span>        <span class="ex">│</span></span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • explicit Memory read/write                            │</span>
+<span id="cb41-38"><a href="#cb41-38" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb41-39"><a href="#cb41-39" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  Fully stateful <span class="er">(</span><span class="ex">Application-owned</span> state<span class="kw">)</span>                <span class="ex">│</span></span>
+<span id="cb41-40"><a href="#cb41-40" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  ───────────────────────────────────────                 │</span>
+<span id="cb41-41"><a href="#cb41-41" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You control agent loop                                │</span>
+<span id="cb41-42"><a href="#cb41-42" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You decide when memory is read / written              │</span>
+<span id="cb41-43"><a href="#cb41-43" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  • You own planning, retries, tool routing               │</span>
+<span id="cb41-44"><a href="#cb41-44" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>                                                          │</span>
+<span id="cb41-45"><a href="#cb41-45" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>  You run the agent — Bedrock hosts it                    │</span>
+<span id="cb41-46"><a href="#cb41-46" aria-hidden="true" tabindex="-1"></a><span class="ex">└──────────────────────────────────────────────────────────┘</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A Summary of the State Management:</p>
 <table class="caption-top table">
 <colgroup>
