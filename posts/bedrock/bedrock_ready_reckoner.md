@@ -1058,7 +1058,7 @@ Each layer trades **control for convenience** — not capability.
 
 ## IV. Guardrail
 
-**How does Guardrail work (system level understanding)**:
+### a) How does Guardrail work (system level understanding):
 
 ```bash
 User Prompt
@@ -1110,8 +1110,9 @@ Final Response
 
 ```
 
+---
 
-**How Guardrails work with Bedrock API Endpoints**
+b) How Guardrails work with Bedrock API Endpoints
 
 **Stateless LLM call with guardrails**
 
@@ -1146,7 +1147,7 @@ guardrailConfiguration.guardrailIdentifier
 guardrailConfiguration.guardrailVersion
 ```
 
-**Why Bedrock Guardrails Focus on `<input>` Tags**
+### c) Why Bedrock Guardrails Focus on `<input>` Tags
 
 **TL;DR**  
 Guardrails don’t automatically protect an entire prompt. For key protections—especially **prompt‑injection** and **jailbreak** defenses—Guardrails evaluate content **inside `<input> … </input>`**. Explicitly tagging untrusted text clarifies what must be scrutinized.

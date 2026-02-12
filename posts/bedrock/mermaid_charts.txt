@@ -1,3 +1,5 @@
+
+```mermaid
 flowchart LR
     %% ====== CLIENT ======
     App["Client App / UI<br>(Web, API, Chatbot)"]
@@ -37,3 +39,58 @@ flowchart LR
     DP1 --> Models
     DP2 --> Models
     DP3 --> Models
+```
+
+---
+
+## More Detailed View
+
+```mermaid
+flowchart LR
+    %% ====== CLIENT ======
+    App["Client App / UI<br>(Web, API, Chatbot)"]
+
+    AppBackend["App Backend / Orchestration<br>(Auth, routing, state, policies)<br><i>Application-managed</i>"]
+
+    App --> AppBackend
+
+    %% ====== CONTROL PLANE ======
+    subgraph CP["Control Plane (Configure & Deploy)"]
+        direction TB
+
+        CP1[bedrock<br>• Models<br>• Fine-tuning<br>• Batch jobs<br>• Provisioned Throughput<br><i>Bedrock-managed</i>]
+
+        CP2[bedrock-agent<br>• Agents<br>• Knowledge Bases<br>• Prompts<br>• Flows<br><i>Bedrock-managed</i>]
+
+        CP3[bedrock-agentcore-control<br>• Agent runtimes<br>• Memory strategies<br>• Gateways & tools<br><i>Bedrock-managed</i>]
+    end
+
+    %% ====== DATA PLANE ======
+    subgraph DP["Data Plane (Runtime Execution)"]
+        direction TB
+
+        DP1[bedrock-runtime<br>• InvokeModel / Converse<br>• Streaming / Async<br><i>Stateless inference</i>]
+
+        DP2[bedrock-agent-runtime<br>• invoke-agent<br>• retrieve / RAG<br>• invoke-flow<br><i>Managed agent execution</i>]
+
+        DP3[bedrock-agentcore<br>• Agent sessions<br>• Long & short-term memory I/O<br>• Tool / browser / code exec<br><i>Stateful agent runtime</i>]
+    end
+
+    %% ====== MODELS ======
+    Models["Foundation Models<br>(Claude, Titan, Nova, etc.)"]
+
+    %% ====== FLOWS ======
+    AppBackend -->|"Direct model calls<br>(app-managed prompting)"| DP1
+    AppBackend -->|"Agent chat / RAG<br>(Bedrock-managed agents)"| DP2
+    AppBackend -->|"Custom agent runtime<br>(state + memory)"| DP3
+
+    %% Control → Data relationships
+    CP1 -. configures models & capacity .-> DP1
+    CP2 -. deploys agents & flows .-> DP2
+    CP3 -. provisions runtimes, memory & tools .-> DP3
+
+    %% Runtime → Models
+    DP1 -->|Tokens in / tokens out| Models
+    DP2 -->|Agent-planned inference| Models
+    DP3 -->|Tool-augmented inference| Models
+```
