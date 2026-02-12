@@ -218,7 +218,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#h-bedrock-flows-deterministic-workflow-orchestration" id="toc-h-bedrock-flows-deterministic-workflow-orchestration" class="nav-link" data-scroll-target="#h-bedrock-flows-deterministic-workflow-orchestration">h) Bedrock Flows (deterministic workflow orchestration)</a></li>
   <li><a href="#mental-model-recap" id="toc-mental-model-recap" class="nav-link" data-scroll-target="#mental-model-recap">Mental Model Recap</a></li>
   </ul></li>
-  <li><a href="#iv.-guardrail" id="toc-iv.-guardrail" class="nav-link" data-scroll-target="#iv.-guardrail">IV. Guardrail</a></li>
+  <li><a href="#iv.-guardrail" id="toc-iv.-guardrail" class="nav-link" data-scroll-target="#iv.-guardrail">IV. Guardrail</a>
+  <ul class="collapse">
+  <li><a href="#a-how-does-guardrail-work-system-level-understanding" id="toc-a-how-does-guardrail-work-system-level-understanding" class="nav-link" data-scroll-target="#a-how-does-guardrail-work-system-level-understanding">a) How does Guardrail work (system level understanding):</a></li>
+  <li><a href="#c-why-bedrock-guardrails-focus-on-input-tags" id="toc-c-why-bedrock-guardrails-focus-on-input-tags" class="nav-link" data-scroll-target="#c-why-bedrock-guardrails-focus-on-input-tags">c) Why Bedrock Guardrails Focus on <code>&lt;input&gt;</code> Tags</a></li>
+  </ul></li>
   <li><a href="#v.-conclusion" id="toc-v.-conclusion" class="nav-link" data-scroll-target="#v.-conclusion">V. Conclusion</a>
   <ul class="collapse">
   <li><a href="#summary-of-3-bedrock-runtime-apis-and-their-most-important-commands" id="toc-summary-of-3-bedrock-runtime-apis-and-their-most-important-commands" class="nav-link" data-scroll-target="#summary-of-3-bedrock-runtime-apis-and-their-most-important-commands">Summary of 3 Bedrock runtime APIs and their most important <strong>commands</strong></a></li>
@@ -1127,7 +1131,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="iv.-guardrail" class="level2">
 <h2 class="anchored" data-anchor-id="iv.-guardrail">IV. Guardrail</h2>
-<p><strong>How does Guardrail work (system level understanding)</strong>:</p>
+<section id="a-how-does-guardrail-work-system-level-understanding" class="level3">
+<h3 class="anchored" data-anchor-id="a-how-does-guardrail-work-system-level-understanding">a) How does Guardrail work (system level understanding):</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span> Prompt</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>     <span class="ex">│</span></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>     <span class="ex">▼</span></span>
@@ -1174,7 +1179,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb37-44"><a href="#cb37-44" aria-hidden="true" tabindex="-1"></a>     <span class="ex">▼</span></span>
 <span id="cb37-45"><a href="#cb37-45" aria-hidden="true" tabindex="-1"></a><span class="ex">Final</span> Response</span>
 <span id="cb37-46"><a href="#cb37-46" aria-hidden="true" tabindex="-1"></a><span class="kw">(</span><span class="ex">to</span> App / UI<span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>How Guardrails work with Bedrock API Endpoints</strong></p>
+<hr>
+<ol start="2" type="a">
+<li>How Guardrails work with Bedrock API Endpoints</li>
+</ol>
 <p><strong>Stateless LLM call with guardrails</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># process</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bedrock-runtime.converse</span></span>
@@ -1194,7 +1202,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>You specify:</p>
 <pre><code>guardrailConfiguration.guardrailIdentifier
 guardrailConfiguration.guardrailVersion</code></pre>
-<p><strong>Why Bedrock Guardrails Focus on <code>&lt;input&gt;</code> Tags</strong></p>
+</section>
+<section id="c-why-bedrock-guardrails-focus-on-input-tags" class="level3">
+<h3 class="anchored" data-anchor-id="c-why-bedrock-guardrails-focus-on-input-tags">c) Why Bedrock Guardrails Focus on <code>&lt;input&gt;</code> Tags</h3>
 <p><strong>TL;DR</strong><br>
 Guardrails don’t automatically protect an entire prompt. For key protections—especially <strong>prompt‑injection</strong> and <strong>jailbreak</strong> defenses—Guardrails evaluate content <strong>inside <code>&lt;input&gt; … &lt;/input&gt;</code></strong>. Explicitly tagging untrusted text clarifies what must be scrutinized.</p>
 <hr>
@@ -1236,6 +1246,7 @@ Guardrails don’t automatically protect an entire prompt. For key protections�
 <li>Preserve system/developer instructions <strong>outside</strong> the tagged region to avoid unintended filtering.</li>
 </ul>
 <hr>
+</section>
 </section>
 <section id="v.-conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="v.-conclusion">V. Conclusion</h2>
