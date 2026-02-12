@@ -26,7 +26,7 @@ I got to learn quite a few things in that. I have collated below my notes from t
 ![](./images/Bedrock_api_endpoints_mental_model.png)
 
 > **Disclaimer**: <br>
-> * The AWS CLI commands are ***representational***. Kindly check "aws <bedrock-api> <command> help" to confirm the workings.<br>  
+> * The AWS CLI commands are ***representational***. Kindly check `aws <bedrock-api> <command> help` to confirm the workings.<br> 
 > * These are notes for learning and I have used LLMs to tweak my messaging or make it crisper/better<br>
 > * Sources are attributed to all pics for clarity
 
@@ -52,12 +52,14 @@ Amazon Bedrock exposes multiple APIs, but they all fall into two buckets:
 Amazon Bedrock is a **fully managed, serverless** AWS service that exposes **foundation models, agent frameworks, and safety controls** through a unified API surface.
 
 Types of AI Apps one can build:
+
 - GenAI Deteministic or Agentic WorkFlows
 - Conversational AI Applications
 
 What Bedrock offers = **Infrastructure** (serverless) + **Models** (Foundation Models)
 
 What Bedrock service allows you to do?
+
 - Choose a model
 - Provide Inference Parameters
 	- temparature
@@ -68,6 +70,7 @@ What Bedrock service allows you to do?
 - Guardrails for both query and output
 
 Other things you can do:
+
 - Run batch jobs
 - Async request calls
 - fine-tuning
