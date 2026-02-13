@@ -1073,23 +1073,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="g-bedrock-agents-mcp-backed-tools-hybrid">g) Bedrock Agents + MCP-backed tools (hybrid)</h3>
 <p><strong>Architecture</strong>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> bedrock-agent-runtime.invoke-agent</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Agent reasoning + orchestration <span class="er">(</span><span class="ex">stateful</span><span class="kw">)</span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Optional KB retrieval</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> Tool selection</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>       <span class="ex">└─</span> Tool invocation using Action Group OpenAPI schema</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>            <span class="ex">→</span> Tool Adapter Lambda</span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>                 <span class="ex">-</span> Implements a Bedrock-compatible tool interface</span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>                 <span class="ex">-</span> Acts as an MCP client <span class="er">(</span><span class="ex">protocol</span> translation layer<span class="kw">)</span></span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>                 <span class="ex">-</span> Translates: Bedrock  tool call ↔ MCP request/response  <span class="kw">|</span> <span class="ex">from</span> NL to tools+Args<span class="kw">;</span> <span class="ex">from</span> tool results back to LLM</span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>                      <span class="ex">→</span> MCP Server <span class="er">(</span><span class="ex">service</span> / container / process</span>
-<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>                           <span class="ex">-</span> Implements MCP protocol</span>
-<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>                           <span class="ex">-</span> Exposes standardized tools/resources</span>
-<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>                           <span class="ex">-</span> Invokes underlying systems <span class="er">(</span><span class="ex">DBs,</span> APIs, services<span class="kw">)</span></span>
-<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>                      <span class="ex">←</span> MCP response <span class="er">(</span><span class="ex">structured</span> tool result<span class="kw">)</span></span>
-<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>                 <span class="ex">←</span> Tool result returned to the agent via the Adapter</span>
-<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>       <span class="ex">←</span> Agent continues reasoning with tool result </span>
-<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>  <span class="ex">←</span> Final response <span class="er">(</span><span class="ex">streaming</span><span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> 1. bedrock-agent-runtime.invoke-agent <span class="kw">&amp;</span> <span class="ex">its</span> 3 Roles</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> <span class="er">(</span><span class="ex">1</span><span class="kw">)</span> <span class="ex">Agent</span> reasoning + orchestration</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> <span class="er">(</span><span class="ex">2</span><span class="kw">)</span> <span class="ex">KB</span> retrieval</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> <span class="er">(</span><span class="ex">3</span><span class="kw">)</span> <span class="ex">Tool</span> selection <span class="er">(</span><span class="ex">and</span> infer the args for the tools<span class="kw">)</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>       <span class="ex">→</span> 2. OpenAPI Tool Schema gives tools context to Agent</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>            <span class="ex">→</span> 3. Tool Adapter Lambda <span class="er">(</span><span class="ex">MCP</span> Client<span class="kw">)</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>                 <span class="ex">-</span> Converts <span class="kw">`</span><span class="ex">Bedrock</span> Action Group Event<span class="kw">`</span> to tool selected + args</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>                 <span class="ex">→</span> 4. Hits the MCP Server URL <span class="er">(</span><span class="ex">tool</span><span class="kw">)</span> <span class="ex">with</span> the args</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>                    <span class="ex">-</span> Invokes the tool <span class="er">(</span><span class="ex">such</span> as a DB<span class="kw">)</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>                    <span class="ex">-</span> Tool Result sent back to MCP Client                        </span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>              <span class="ex">←</span> 5. MCP Client receives response <span class="er">(</span><span class="ex">structured</span> tool result<span class="kw">)</span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>        <span class="ex">←</span> 6. Tool result returned to the agent via the MCP Client</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>   <span class="ex">←</span> 7. Agent continues reasoning with tool result </span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>  <span class="ex">←</span> 8. Final response <span class="er">(</span><span class="ex">streamed</span> to user chunk-by-chunk<span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="./images/bedrock_agent_mcp_tools_seq_diag.png" class="img-fluid"></p>
 <p><strong>When to use</strong> - When you need your existing Bedrock Agent to connect to MCP compatible servers - When you are ok doing some custom plumbing activities</p>
 <p><strong>State lives in</strong>: * Reasoning/session context in Bedrock Agent via sessionId/SessionState. * Tool-side state in external MCP services</p>
 <hr>
