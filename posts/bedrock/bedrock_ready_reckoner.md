@@ -984,24 +984,23 @@ This is **maximum control**, at the cost of **maximum responsibility**.
 
 ```bash
 User
-  → bedrock-agent-runtime.invoke-agent
-       ├─ Agent reasoning + orchestration (stateful)
-       ├─ Optional KB retrieval
-       ├─ Tool selection
-       └─ Tool invocation using Action Group OpenAPI schema
-            → Tool Adapter Lambda
-                 - Implements a Bedrock-compatible tool interface
-                 - Acts as an MCP client (protocol translation layer)
-                 - Translates: Bedrock  tool call ↔ MCP request/response  | from NL to tools+Args; from tool results back to LLM
-                      → MCP Server (service / container / process
-                           - Implements MCP protocol
-                           - Exposes standardized tools/resources
-                           - Invokes underlying systems (DBs, APIs, services)
-                      ← MCP response (structured tool result)
-                 ← Tool result returned to the agent via the Adapter
-       ← Agent continues reasoning with tool result 
-  ← Final response (streaming)
+  → 1. bedrock-agent-runtime.invoke-agent & its 3 Roles
+       ├─ (1) Agent reasoning + orchestration
+       ├─ (2) KB retrieval
+       ├─ (3) Tool selection (and infer the args for the tools)
+       → 2. OpenAPI Tool Schema gives tools context to Agent
+            → 3. Tool Adapter Lambda (MCP Client)
+                 - Converts `Bedrock Action Group Event` to tool selected + args
+                 → 4. Hits the MCP Server URL (tool) with the args
+	                - Invokes the tool (such as a DB)
+					- Tool Result sent back to MCP Client                        
+			  ← 5. MCP Client receives response (structured tool result)
+        ← 6. Tool result returned to the agent via the MCP Client
+   ← 7. Agent continues reasoning with tool result 
+  ← 8. Final response (streamed to user chunk-by-chunk)
 ```
+
+![](./images/bedrock_agent_mcp_tools_seq_diag.png)
 
 **When to use**
 - When you need your existing Bedrock Agent to connect to MCP compatible servers
