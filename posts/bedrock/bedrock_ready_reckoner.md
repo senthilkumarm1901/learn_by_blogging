@@ -1255,7 +1255,7 @@ Instructions:
 │                                                          │
 │  Fully stateful (Application-owned state)                │
 │  ───────────────────────────────────────                 │
-│  • You control agent loop                                │
+│  • Any Agent Framework, Any Model                        │
 │  • You decide when memory is read / written              │
 │  • You own planning, retries, tool routing               │
 │                                                          │
@@ -1287,6 +1287,12 @@ Instructions:
 * `bedrock-agentcore`: run custom agent sessions and tools. 
 
 Author's Personal Opinion and End Note: 
-> *With plethora of frameworks It seems Bedrock is veering towards `bedrock-agentcore` where the agent can be built anywhere and can be scaled using AWS* 
+> *With plethora of Agentic AI frameworks, it seems Bedrock is also veering towards `bedrock-agentcore` which allows developers to use any framework and any model*
+
+---
 
 
+If you are thinking to formally learn Bedrock, this GenAI specialization from AWS in Coursera is a decent 4 star:
+![](./images/bedrock_specialization_certificate.png)
+
+---
