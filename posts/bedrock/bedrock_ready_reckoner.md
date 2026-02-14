@@ -17,12 +17,8 @@ title: "A Ready Reckoner to AWS Bedrock’s Control and Data Plane APIs"
 output-file: bedrock_ready_reckoner.html
 ---
 
-I recently completed a GenAI specialization from AWS:
-![](./images/bedrock_specialization_certificate.png)
-
----
-
-I got to learn quite a few things in that. I have collated below my notes from the course.
+I got to learn quite a few things from a GenAI Specialization from AWS in coursera. 
+Combining the course learnings with my experience at work, I have compiled my notes below.
 
 ![](./images/Bedrock_api_endpoints_mental_model.png)
 
