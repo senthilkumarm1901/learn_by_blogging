@@ -3,8 +3,7 @@ author: Senthil Kumar
 badges: true
 branch: master
 categories:
-- Business Communication
-- 🌟 Featured in Medium.com
+- Writing & Communication
 
 description: Practical hacks to listen better, write sharper, and speak smarter
 date: '2025-09-17'

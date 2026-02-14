@@ -3,9 +3,7 @@ author: Senthil Kumar
 badges: true
 branch: master
 categories:
-- Git
-- Advanced Git
-- 🌟 Featured in Medium.com
+- Tools/Git
 description: Armed with essential Git weaponry, this blog weaves Git teachings into a real-world scenario, helping readers navigate different Git timelines like pros.
 
 date: '2025-01-22'

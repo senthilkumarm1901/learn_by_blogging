@@ -3,8 +3,9 @@ author: Senthil Kumar
 badges: true
 branch: master
 categories:
-- MCP
-- Agentic AI
+- AI/Agents
+- AI/Foundations
+- AI/MCP
 
 description: This blog post contains my learning notes from DeepLearning.AI's Short Course on MCP
 

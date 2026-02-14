@@ -3,9 +3,9 @@ author: Senthil Kumar
 badges: true
 branch: master
 categories:
-- Agentic AI
-- LLMs
-- LangGraph
+- AI/Agents
+- AI/LLM
+- Tools/LangGraph
 
 description: Sharing my learning notes on the best practices of Agentic AI Development
 

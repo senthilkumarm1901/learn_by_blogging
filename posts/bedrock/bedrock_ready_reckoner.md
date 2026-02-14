@@ -3,9 +3,10 @@ author: Senthil Kumar
 badges: true
 branch: master
 categories:
-- AWS Bedrock
-- GenAI
-- LLM
+- Cloud/AWS
+- Cloud/AWS/Serverless
+- AI/LLM
+- AI/Foundations
 
 description: Sharing my learning notes on AWS Bedrock API Endpoints
 date: '2026-02-09'

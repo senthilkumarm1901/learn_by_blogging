@@ -3,8 +3,7 @@ author: Senthil Kumar
 badges: true
 branch: master
 categories:
-- Git
-- Advanced Git
+- Tools/Git
 description: In this blog, I explain how to use advanced git commands in a practical, easy-to-understand  manner.
 date: '2024-12-15'
 draft: false
