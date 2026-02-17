@@ -1117,6 +1117,164 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="section" class="level2">
 <h2 class="anchored" data-anchor-id="section"><img src="./images/different_groups_different_permissions.png" class="img-fluid"></h2>
+<section id="how-to-enables-employees-access-aws-account-via-idp" class="level4">
+<h4 class="anchored" data-anchor-id="how-to-enables-employees-access-aws-account-via-idp">How to enables employees access AWS Account (via IdP)</h4>
+<pre class="{mermaid}"><code>
+---
+title: How to access AWS Account via IdP
+---
+
+flowchart LR
+
+%% ================= USER =================
+User[Corporate User]
+
+%% ================= PATH A =================
+subgraph "Path A: IAM Identity Center based Access"
+    
+    IIC["AWS IAM Identity Center&lt;br&gt;(AWS IdP)"]
+
+    subgraph AWS_Organization
+        subgraph "Member Account A"
+            RoleA[IAM Role - Account A]
+        end
+        subgraph "Member Account B"
+            RoleB[IAM Role - Account B]
+        end
+        STS1[AWS STS]
+    end
+
+    User --&gt; IIC
+    IIC --&gt;|Permission Set Mapping| RoleA
+    IIC --&gt;|Permission Set Mapping| RoleB
+    RoleA --&gt; STS1
+    RoleB --&gt; STS1
+end
+
+
+%% ================= PATH B =================
+subgraph "Path B: Federation Access"
+    
+    AAD["Azure AD&lt;br&gt;(or Okta &lt;br&gt;or any non-AWS IdP)"]
+
+    subgraph AWS_Accounts
+        RoleA2[IAM Role - Account A]
+        RoleB2[IAM Role - Account B]
+        STS2[AWS STS]
+    end
+
+    User --&gt; AAD
+    AAD --&gt;|SAML Assertion| RoleA2
+    AAD --&gt;|SAML Assertion| RoleB2
+    RoleA2 --&gt; STS2
+    RoleB2 --&gt; STS2
+end
+
+
+%% ================= CREDENTIALS =================
+STS1 --&gt; TempCreds1["Temporary Credentials&lt;br&gt;(access_key, secret_key, token)"]
+STS2 --&gt; TempCreds2["Temporary Credentials&lt;br&gt;(access_key, secret_key, token)"]
+
+TempCreds1 --&gt; Console1[AWS Console / CLI/ SDK]
+TempCreds2 --&gt; Console2[AWS Console / CLI/ SDK]
+
+Legend1[["A SAML assertion is: &lt;br&gt;
+A signed authentication statement from an Identity Provider saying
+“This user is authenticated and has these attributes.”"]]
+Legend2[["Permission Set Mapping:&lt;br&gt;
+A template that defines what permissions a user/role gets in a specific AWS account."]]</code></pre>
+<hr>
+</section>
+<section id="how-to-enable-customers-access-to-application-deployed-in-aws-account" class="level4">
+<h4 class="anchored" data-anchor-id="how-to-enable-customers-access-to-application-deployed-in-aws-account">How to enable customers access to Application deployed in AWS Account</h4>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">---
+title: How to enable access to Application deployed in AWS Account
+---
+
+flowchart LR
+
+%% ========== END USER ==========
+AppUser[Application User]
+
+%% ========== COGNITO LAYER ==========
+Cognito[Amazon Cognito&lt;br&gt;User Pool / Identity Pool]
+
+%% ========== APPLICATION ==========
+App[Web / Mobile App]
+
+%% ========== AWS ACCOUNT ==========
+subgraph AWS_Account
+    AppRole[IAM Role for App]
+    STS[AWS STS]
+    S3[S3 / DynamoDB / APIs]
+end
+
+AppUser --&gt; App
+App --&gt; |share credentials|Cognito
+Cognito --&gt;|JWT Token| App
+
+App --&gt;|Exchange Token| STS
+STS --&gt;|Temporary Credentials| AppRole
+AppRole --&gt; S3
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 34%">
+<col style="width: 29%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>AWS IAM Identity Center</th>
+<th>AWS Cognito</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Used by</td>
+<td>Employees</td>
+<td>App users</td>
+</tr>
+<tr class="even">
+<td>Purpose</td>
+<td>Access AWS accounts</td>
+<td>Access your application</td>
+</tr>
+<tr class="odd">
+<td>Grants console access?</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>Grants CLI access?</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Issues AWS creds?</td>
+<td>Yes</td>
+<td>Yes (via Identity Pool)</td>
+</tr>
+<tr class="even">
+<td>Scope</td>
+<td>Organization-wide</td>
+<td>Application-level</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
 <section id="week-1s-quiz" class="level3">
 <h3 class="anchored" data-anchor-id="week-1s-quiz">2.4 Week 1’s Quiz:</h3>
 <p><a href="https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w1-%20Amazon%20Web%20Services%20(AWS)/Week%201%20Quiz%20_%20Coursera.pdf">A GitHub Source for Week 1 Quiz</a></p>
@@ -1283,18 +1441,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="amazon-linux-2023-user-data-script" class="level3">
 <h3 class="anchored" data-anchor-id="amazon-linux-2023-user-data-script">Amazon Linux 2023 user data script:</h3>
 <p>When using the user data scripts, remember to replace the <insert region="" here=""> with whatever AWS region you are operating in, and ensure you remove both brackets as well.</insert></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>          <span class="co">#!/bin/bash -ex</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>          <span class="fu">wget</span> </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/DEV-AWS-MO-GCNv2/FlaskApp.zip</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>          <span class="fu">unzip</span> FlaskApp.zip</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>          <span class="bu">cd</span> FlaskApp/</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>          <span class="ex">yum</span> <span class="at">-y</span> install python3-pip</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>          <span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>          <span class="ex">yum</span> <span class="at">-y</span> install stress</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>          <span class="bu">export</span> <span class="va">PHOTOS_BUCKET</span><span class="op">=</span><span class="va">${SUB_PHOTOS_BUCKET}</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>          <span class="bu">export</span> <span class="va">AWS_DEFAULT_REGION</span><span class="op">=&lt;</span>INSERT REGION HERE<span class="op">&gt;</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>          <span class="bu">export</span> <span class="va">DYNAMO_MODE</span><span class="op">=</span>on</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>          <span class="va">FLASK_APP</span><span class="op">=</span>application.py <span class="ex">/usr/local/bin/flask</span> run <span class="at">--host</span><span class="op">=</span>0.0.0.0 <span class="at">--port</span><span class="op">=</span>80 </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>          <span class="co">#!/bin/bash -ex</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>          <span class="fu">wget</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/DEV-AWS-MO-GCNv2/FlaskApp.zip</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>          <span class="fu">unzip</span> FlaskApp.zip</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>          <span class="bu">cd</span> FlaskApp/</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>          <span class="ex">yum</span> <span class="at">-y</span> install python3-pip</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>          <span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>          <span class="ex">yum</span> <span class="at">-y</span> install stress</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>          <span class="bu">export</span> <span class="va">PHOTOS_BUCKET</span><span class="op">=</span><span class="va">${SUB_PHOTOS_BUCKET}</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>          <span class="bu">export</span> <span class="va">AWS_DEFAULT_REGION</span><span class="op">=&lt;</span>INSERT REGION HERE<span class="op">&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>          <span class="bu">export</span> <span class="va">DYNAMO_MODE</span><span class="op">=</span>on</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>          <span class="va">FLASK_APP</span><span class="op">=</span>application.py <span class="ex">/usr/local/bin/flask</span> run <span class="at">--host</span><span class="op">=</span>0.0.0.0 <span class="at">--port</span><span class="op">=</span>80 </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 <section id="types-of-ec2-instances" class="level2">
@@ -1374,31 +1532,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="task-definition" class="level3">
 <h3 class="anchored" data-anchor-id="task-definition">Task definition</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span>    </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"family"</span><span class="fu">:</span> <span class="st">"webserver"</span><span class="fu">,</span>    </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"containerDefinitions"</span><span class="fu">:</span> <span class="ot">[</span> <span class="fu">{</span>        </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"web"</span><span class="fu">,</span>        </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"image"</span><span class="fu">:</span> <span class="st">"nginx"</span><span class="fu">,</span>        </span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"memory"</span><span class="fu">:</span> <span class="st">"100"</span><span class="fu">,</span>        </span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"cpu"</span><span class="fu">:</span> <span class="st">"99"</span>    </span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>     <span class="fu">}</span> <span class="ot">]</span><span class="fu">,</span>    </span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"requiresCompatibilities"</span><span class="fu">:</span> <span class="ot">[</span> <span class="st">"FARGATE"</span> <span class="ot">]</span><span class="fu">,</span>    </span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"networkMode"</span><span class="fu">:</span> <span class="st">"awsvpc"</span><span class="fu">,</span>    </span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"memory"</span><span class="fu">:</span> <span class="st">"512"</span><span class="fu">,</span>    </span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"cpu"</span><span class="fu">:</span> <span class="st">"256"</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span>    </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"family"</span><span class="fu">:</span> <span class="st">"webserver"</span><span class="fu">,</span>    </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"containerDefinitions"</span><span class="fu">:</span> <span class="ot">[</span> <span class="fu">{</span>        </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"web"</span><span class="fu">,</span>        </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"image"</span><span class="fu">:</span> <span class="st">"nginx"</span><span class="fu">,</span>        </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"memory"</span><span class="fu">:</span> <span class="st">"100"</span><span class="fu">,</span>        </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"cpu"</span><span class="fu">:</span> <span class="st">"99"</span>    </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>     <span class="fu">}</span> <span class="ot">]</span><span class="fu">,</span>    </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"requiresCompatibilities"</span><span class="fu">:</span> <span class="ot">[</span> <span class="st">"FARGATE"</span> <span class="ot">]</span><span class="fu">,</span>    </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"networkMode"</span><span class="fu">:</span> <span class="st">"awsvpc"</span><span class="fu">,</span>    </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"memory"</span><span class="fu">:</span> <span class="st">"512"</span><span class="fu">,</span>    </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"cpu"</span><span class="fu">:</span> <span class="st">"256"</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="summary-ecs" class="level3">
 <h3 class="anchored" data-anchor-id="summary-ecs">Summary: ECS</h3>
@@ -1520,9 +1678,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>In the next unit, you apply all the information you’ve learned about Amazon EC2, Amazon ECS and Amazon EKS, and AWS Fargate and learn the use cases for each service.</p>
 <p>AWS Lambda function handler</p>
 <p>The AWS Lambda function handler is the method in your function code that processes events. When your function is invoked, Lambda runs the handler method. When the handler exits or returns a response, it becomes available to handle another event.You can use the following general syntax when creating a function handler in Python:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> handler_name(event, context):  </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  ...</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> some_value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> handler_name(event, context):  </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> some_value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>NAMING</p>
 <p>The Lambda function handler name specified at the time you create a Lambda function is derived from the following:the name of the file in which the Lambda handler function is locatedthe name of the Python handler functionA function handler can be any name; however, the default on the Lambda console is lambda_function.lambda_handler. This name reflects the function name as lambda_handler, and the file where the handler code is stored in lambda_function.py.If you choose a different name for your function handler on the Lambda console, you must update the name on the Runtime settings pane.</p>
 <p>BILLING GRANULARITY</p>
@@ -1887,14 +2045,14 @@ E.g.: `https://` websites</code></pre>
 <p>To add an inbound or outbound rule to a <strong>Network ACL</strong>, you can use the <code>aws ec2 create-network-acl-entry</code> command.</p>
 <section id="example-command-for-adding-an-inbound-rule-to-allow-http-traffic" class="level4">
 <h4 class="anchored" data-anchor-id="example-command-for-adding-an-inbound-rule-to-allow-http-traffic">Example Command for Adding an Inbound Rule to Allow HTTP Traffic:</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-network-acl-entry <span class="dt">\</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--network-acl-id</span> acl-0123456789abcdef0 <span class="dt">\</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ingress</span> <span class="dt">\</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rule-number</span> 100 <span class="dt">\</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> 6 <span class="dt">\</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port-range</span> From=80,To=80 <span class="dt">\</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr-block</span> 0.0.0.0/0 <span class="dt">\</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rule-action</span> allow</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-network-acl-entry <span class="dt">\</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--network-acl-id</span> acl-0123456789abcdef0 <span class="dt">\</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ingress</span> <span class="dt">\</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rule-number</span> 100 <span class="dt">\</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> 6 <span class="dt">\</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port-range</span> From=80,To=80 <span class="dt">\</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr-block</span> 0.0.0.0/0 <span class="dt">\</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rule-action</span> allow</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><strong><code>--network-acl-id</code></strong>: The ID of the NACL.</li>
 <li><strong><code>--ingress</code></strong>: Indicates that the rule is for inbound traffic (use <code>--egress</code> for outbound).</li>
@@ -1907,14 +2065,14 @@ E.g.: `https://` websites</code></pre>
 </section>
 <section id="example-command-for-adding-an-outbound-rule-to-allow-all-traffic" class="level4">
 <h4 class="anchored" data-anchor-id="example-command-for-adding-an-outbound-rule-to-allow-all-traffic">Example Command for Adding an Outbound Rule to Allow All Traffic:</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-network-acl-entry <span class="dt">\</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--network-acl-id</span> acl-0123456789abcdef0 <span class="dt">\</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--egress</span> <span class="dt">\</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rule-number</span> 101 <span class="dt">\</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> <span class="at">-1</span> <span class="dt">\</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port-range</span> From=0,To=65535 <span class="dt">\</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr-block</span> 0.0.0.0/0 <span class="dt">\</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rule-action</span> allow</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-network-acl-entry <span class="dt">\</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--network-acl-id</span> acl-0123456789abcdef0 <span class="dt">\</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--egress</span> <span class="dt">\</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rule-number</span> 101 <span class="dt">\</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> <span class="at">-1</span> <span class="dt">\</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port-range</span> From=0,To=65535 <span class="dt">\</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr-block</span> 0.0.0.0/0 <span class="dt">\</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rule-action</span> allow</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 <section id="add-rules-to-a-security-group" class="level3">
@@ -1922,12 +2080,12 @@ E.g.: `https://` websites</code></pre>
 <p>To add inbound or outbound rules to a <strong>Security Group</strong>, use the <code>aws ec2 authorize-security-group-ingress</code> or <code>authorize-security-group-egress</code> command.</p>
 <section id="example-command-for-adding-an-inbound-rule-to-allow-ssh-port-22-from-a-specific-ip" class="level4">
 <h4 class="anchored" data-anchor-id="example-command-for-adding-an-inbound-rule-to-allow-ssh-port-22-from-a-specific-ip">Example Command for Adding an Inbound Rule to Allow SSH (Port 22) from a Specific IP:</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 authorize-security-group-ingress <span class="dt">\</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--group-id</span> sg-0123456789abcdef0 <span class="dt">\</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> tcp <span class="dt">\</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port</span> 22 <span class="dt">\</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr</span> 203.0.113.0/32 <span class="dt">\</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--description</span> <span class="st">"Allow SSH from admin IP"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 authorize-security-group-ingress <span class="dt">\</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--group-id</span> sg-0123456789abcdef0 <span class="dt">\</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> tcp <span class="dt">\</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port</span> 22 <span class="dt">\</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr</span> 203.0.113.0/32 <span class="dt">\</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--description</span> <span class="st">"Allow SSH from admin IP"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><strong><code>--group-id</code></strong>: The ID of the security group.</li>
 <li><strong><code>--protocol</code></strong>: Protocol type (<code>tcp</code>, <code>udp</code>, <code>icmp</code>, etc.).</li>
@@ -1938,12 +2096,12 @@ E.g.: `https://` websites</code></pre>
 </section>
 <section id="example-command-for-adding-an-outbound-rule-to-allow-https-port-443-to-all-ips" class="level4">
 <h4 class="anchored" data-anchor-id="example-command-for-adding-an-outbound-rule-to-allow-https-port-443-to-all-ips">Example Command for Adding an Outbound Rule to Allow HTTPS (Port 443) to All IPs:</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 authorize-security-group-egress <span class="dt">\</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--group-id</span> sg-0123456789abcdef0 <span class="dt">\</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> tcp <span class="dt">\</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port</span> 443 <span class="dt">\</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr</span> 0.0.0.0/0 <span class="dt">\</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--description</span> <span class="st">"Allow outbound HTTPS traffic"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 authorize-security-group-egress <span class="dt">\</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--group-id</span> sg-0123456789abcdef0 <span class="dt">\</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> tcp <span class="dt">\</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port</span> 443 <span class="dt">\</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr</span> 0.0.0.0/0 <span class="dt">\</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--description</span> <span class="st">"Allow outbound HTTPS traffic"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 <section id="tips" class="level3">
