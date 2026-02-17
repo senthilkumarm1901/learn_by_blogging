@@ -519,6 +519,123 @@ Source: AWS Blg
 ![](./images/different_groups_different_permissions.png)
 ---
 
+#### How to enables employees access AWS Account (via IdP)
+
+```{mermaid}
+
+---
+title: How to access AWS Account via IdP
+---
+
+flowchart LR
+
+%% ================= USER =================
+User[Corporate User]
+
+%% ================= PATH A =================
+subgraph "Path A: IAM Identity Center based Access"
+    
+    IIC["AWS IAM Identity Center<br>(AWS IdP)"]
+
+    subgraph AWS_Organization
+        subgraph "Member Account A"
+            RoleA[IAM Role - Account A]
+        end
+        subgraph "Member Account B"
+            RoleB[IAM Role - Account B]
+        end
+        STS1[AWS STS]
+    end
+
+    User --> IIC
+    IIC -->|Permission Set Mapping| RoleA
+    IIC -->|Permission Set Mapping| RoleB
+    RoleA --> STS1
+    RoleB --> STS1
+end
+
+
+%% ================= PATH B =================
+subgraph "Path B: Federation Access"
+    
+    AAD["Azure AD<br>(or Okta <br>or any non-AWS IdP)"]
+
+    subgraph AWS_Accounts
+        RoleA2[IAM Role - Account A]
+        RoleB2[IAM Role - Account B]
+        STS2[AWS STS]
+    end
+
+    User --> AAD
+    AAD -->|SAML Assertion| RoleA2
+    AAD -->|SAML Assertion| RoleB2
+    RoleA2 --> STS2
+    RoleB2 --> STS2
+end
+
+
+%% ================= CREDENTIALS =================
+STS1 --> TempCreds1["Temporary Credentials<br>(access_key, secret_key, token)"]
+STS2 --> TempCreds2["Temporary Credentials<br>(access_key, secret_key, token)"]
+
+TempCreds1 --> Console1[AWS Console / CLI/ SDK]
+TempCreds2 --> Console2[AWS Console / CLI/ SDK]
+
+Legend1[["A SAML assertion is: <br>
+A signed authentication statement from an Identity Provider saying
+“This user is authenticated and has these attributes.”"]]
+Legend2[["Permission Set Mapping:<br>
+A template that defines what permissions a user/role gets in a specific AWS account."]]
+```
+
+---
+
+#### How to enable customers access to Application deployed in AWS Account
+
+```{mermaid}
+---
+title: How to enable access to Application deployed in AWS Account
+---
+
+flowchart LR
+
+%% ========== END USER ==========
+AppUser[Application User]
+
+%% ========== COGNITO LAYER ==========
+Cognito[Amazon Cognito<br>User Pool / Identity Pool]
+
+%% ========== APPLICATION ==========
+App[Web / Mobile App]
+
+%% ========== AWS ACCOUNT ==========
+subgraph AWS_Account
+    AppRole[IAM Role for App]
+    STS[AWS STS]
+    S3[S3 / DynamoDB / APIs]
+end
+
+AppUser --> App
+App --> |share credentials|Cognito
+Cognito -->|JWT Token| App
+
+App -->|Exchange Token| STS
+STS -->|Temporary Credentials| AppRole
+AppRole --> S3
+```
+
+| Feature                | AWS IAM Identity Center | AWS Cognito                 |
+| ---------------------- | ------------------- | ----------------------- |
+| Used by                | Employees           | App users               |
+| Purpose                | Access AWS accounts | Access your application |
+| Grants console access? | Yes                 | No                      |
+| Grants CLI access?     | Yes                 | No                      |
+| Issues AWS creds?      | Yes                 | Yes (via Identity Pool) |
+| Scope                  | Organization-wide   | Application-level       |
+
+
+---
+
 ### 2.4 Week 1's Quiz: 
 
 [A GitHub Source for Week 1 Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w1-%20Amazon%20Web%20Services%20(AWS)/Week%201%20Quiz%20_%20Coursera.pdf)
