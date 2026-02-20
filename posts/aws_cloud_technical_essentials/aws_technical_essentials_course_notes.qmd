@@ -197,6 +197,37 @@ Choose Region in this order:
 
 ---
 
+## Control Plane APIs and Data Plane APIs in AWS
+
+* AWS describes control plane as administrative APIs (CRUDL) like “creating an S3 bucket”, while data plane includes “getting and putting objects in an S3 bucket
+
+- Source: [Control Planes and Data Planes in AWS](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/control-planes-and-data-planes.html)
+
+S3 **Control plane** APIs (AWS CLI examples)
+
+✅ Create a bucket (control plane)
+
+```bash
+aws s3api create-bucket \
+  --bucket my-example-bucket-123 \
+  --region ap-south-1 \
+  --create-bucket-configuration LocationConstraint=ap-south-1
+```
+
+`create-bucket` “Creates a new S3 bucket.”
+
+> * Rule of thumb: Anything *Bucket* (create bucket, put bucket encryption, put bucket policy, lifecycle, versioning…) is typically “control plane” style because you’re configuring the container and its behavior.
+
+```bash
+aws s3api delete-object \
+  --bucket my-example-bucket-123 \
+  --key docs/readme.txt
+```
+
+> * Rule of thumb: Anything *Object* (PutObject/GetObject/ListObjects/DeleteObject/HeadObject) is “data plane” because you’re interacting with the stored data.
+
+---
+
 ## Summary: Every AWS Activity Is an API Call
 
 ![](./images/every_aws_service_use_is_an_api_call.png)
@@ -213,6 +244,8 @@ Choose Region in this order:
     - Security boundaries
 
 > **By understanding APIs, IAM, Regions, AZs, and responsibility boundaries — one understands AWS.**
+
+
 
 ---
 
