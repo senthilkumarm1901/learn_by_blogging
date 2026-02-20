@@ -199,26 +199,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#introduction-to-aws" id="toc-introduction-to-aws" class="nav-link active" data-scroll-target="#introduction-to-aws">1. Introduction to AWS</a>
   <ul class="collapse">
-  <li><a href="#architectue-that-was-used-in-the-course" id="toc-architectue-that-was-used-in-the-course" class="nav-link" data-scroll-target="#architectue-that-was-used-in-the-course">1.1 Architectue that was used in the Course</a></li>
-  <li><a href="#course-roadmap" id="toc-course-roadmap" class="nav-link" data-scroll-target="#course-roadmap">1.2 Course Roadmap</a></li>
-  <li><a href="#aws-global-infrastructure" id="toc-aws-global-infrastructure" class="nav-link" data-scroll-target="#aws-global-infrastructure">1.3 AWS Global Infrastructure</a>
+  <li><a href="#introduction-to-aws---the-critical-elements" id="toc-introduction-to-aws---the-critical-elements" class="nav-link" data-scroll-target="#introduction-to-aws---the-critical-elements">1. Introduction to AWS - The Critical Elements</a>
   <ul class="collapse">
-  <li><a href="#choose-the-right-aws-region" id="toc-choose-the-right-aws-region" class="nav-link" data-scroll-target="#choose-the-right-aws-region">1.3.1 CHOOSE THE RIGHT AWS REGION</a></li>
-  <li><a href="#availability-zones" id="toc-availability-zones" class="nav-link" data-scroll-target="#availability-zones">1.3.1 AVAILABILITY ZONES</a></li>
-  <li><a href="#scope-aws-services" id="toc-scope-aws-services" class="nav-link" data-scroll-target="#scope-aws-services">1.3.2 SCOPE AWS SERVICES</a></li>
-  <li><a href="#maintain-resiliency" id="toc-maintain-resiliency" class="nav-link" data-scroll-target="#maintain-resiliency">1.3.3 MAINTAIN RESILIENCY</a></li>
+  <li><a href="#choose-the-right-aws-region" id="toc-choose-the-right-aws-region" class="nav-link" data-scroll-target="#choose-the-right-aws-region">Choose the Right AWS Region</a></li>
+  <li><a href="#availability-zones" id="toc-availability-zones" class="nav-link" data-scroll-target="#availability-zones">Availability Zones</a></li>
+  <li><a href="#scope-of-aws-services" id="toc-scope-of-aws-services" class="nav-link" data-scroll-target="#scope-of-aws-services">Scope of AWS Services</a></li>
+  <li><a href="#maintain-resiliency" id="toc-maintain-resiliency" class="nav-link" data-scroll-target="#maintain-resiliency">1.3.3 Maintain Resiliency</a></li>
   <li><a href="#security-and-the-aws-shared-responsibility-model" id="toc-security-and-the-aws-shared-responsibility-model" class="nav-link" data-scroll-target="#security-and-the-aws-shared-responsibility-model">1.3.4 Security and the AWS Shared Responsibility Model</a></li>
   </ul></li>
   <li><a href="#protect-the-aws-root-user" id="toc-protect-the-aws-root-user" class="nav-link" data-scroll-target="#protect-the-aws-root-user">1.4 Protect the AWS Root User</a>
   <ul class="collapse">
-  <li><a href="#whats-the-big-deal-about-auth" id="toc-whats-the-big-deal-about-auth" class="nav-link" data-scroll-target="#whats-the-big-deal-about-auth">What’s the Big Deal About Auth?</a></li>
-  <li><a href="#understand-authentication" id="toc-understand-authentication" class="nav-link" data-scroll-target="#understand-authentication">Understand Authentication</a></li>
-  <li><a href="#understand-authorization" id="toc-understand-authorization" class="nav-link" data-scroll-target="#understand-authorization">Understand Authorization</a></li>
-  <li><a href="#what-is-the-aws-root-user" id="toc-what-is-the-aws-root-user" class="nav-link" data-scroll-target="#what-is-the-aws-root-user">What Is the AWS Root User?</a></li>
-  <li><a href="#understand-the-aws-root-user-credentials" id="toc-understand-the-aws-root-user-credentials" class="nav-link" data-scroll-target="#understand-the-aws-root-user-credentials">Understand the AWS Root User Credentials</a></li>
-  <li><a href="#follow-best-practices-when-working-with-the-aws-root-user" id="toc-follow-best-practices-when-working-with-the-aws-root-user" class="nav-link" data-scroll-target="#follow-best-practices-when-working-with-the-aws-root-user">Follow Best Practices When Working with the AWS Root User</a></li>
-  <li><a href="#the-case-for-multi-factor-authentication" id="toc-the-case-for-multi-factor-authentication" class="nav-link" data-scroll-target="#the-case-for-multi-factor-authentication">The Case for Multi-Factor Authentication</a></li>
+  <li><a href="#authentication-vs-authorization" id="toc-authentication-vs-authorization" class="nav-link" data-scroll-target="#authentication-vs-authorization">Authentication vs Authorization</a></li>
+  <li><a href="#aws-root-user" id="toc-aws-root-user" class="nav-link" data-scroll-target="#aws-root-user">AWS Root User</a></li>
+  <li><a href="#root-user-best-practices" id="toc-root-user-best-practices" class="nav-link" data-scroll-target="#root-user-best-practices">Root User Best Practices</a></li>
+  <li><a href="#why-mfa-matters" id="toc-why-mfa-matters" class="nav-link" data-scroll-target="#why-mfa-matters">Why MFA Matters</a></li>
   </ul></li>
+  <li><a href="#summary-every-aws-activity-is-an-api-call" id="toc-summary-every-aws-activity-is-an-api-call" class="nav-link" data-scroll-target="#summary-every-aws-activity-is-an-api-call">Summary: Every AWS Activity Is an API Call</a></li>
   </ul></li>
   <li><a href="#security" id="toc-security" class="nav-link" data-scroll-target="#security">2. Security</a>
   <ul class="collapse">
@@ -434,282 +430,228 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </blockquote>
 <section id="introduction-to-aws" class="level1">
 <h1>1. Introduction to AWS</h1>
-<section id="architectue-that-was-used-in-the-course" class="level2">
-<h2 class="anchored" data-anchor-id="architectue-that-was-used-in-the-course">1.1 Architectue that was used in the Course</h2>
-<p><img src="./images/main_architecture.png" class="img-fluid"></p>
-</section>
-<section id="course-roadmap" class="level2">
-<h2 class="anchored" data-anchor-id="course-roadmap">1.2 Course Roadmap</h2>
-<p><img src="./images/course_roadmap.png" class="img-fluid"></p>
+<section id="introduction-to-aws---the-critical-elements" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-aws---the-critical-elements">1. Introduction to AWS - The Critical Elements</h2>
+<ul>
+<li><p><strong>Regions → AZs → Data Centers</strong></p>
+<ul>
+<li>AWS Regions consist of <strong>Availability Zones (AZs)</strong>.</li>
+<li>AZs consist of <strong>one or more physical data centers</strong>.</li>
+</ul></li>
+<li><p><strong>Root account first steps (non‑negotiable)</strong></p>
+<ol type="1">
+<li>Enable <strong>MFA</strong> on the root user immediately</li>
+<li>Create an <strong>IAM Administrator role</strong>
+<ul>
+<li>Full service creation permissions</li>
+<li>No account‑level or billing changes</li>
+</ul></li>
+<li>Lock away root credentials</li>
+</ol></li>
+<li><p><strong>IAM policies cannot restrict the root user</strong></p>
+<ul>
+<li>Root user always has unrestricted access, regardless of IAM policies.</li>
+</ul></li>
+<li><p><strong>Shared Responsibility Model</strong></p>
+<ul>
+<li>AWS = <strong>security <em>of</em> the cloud</strong></li>
+<li>Customer = <strong>security <em>in</em> the cloud</strong></li>
+</ul></li>
+<li><p>Summary: <strong>Every activity in AWS is an API call</strong></p>
+<ul>
+<li>Console clicks, CLI commands, SDK calls → all become <strong>authenticated &amp; authorized AWS API requests</strong>.</li>
+</ul></li>
+</ul>
+<hr>
+<section id="choose-the-right-aws-region" class="level3">
+<h3 class="anchored" data-anchor-id="choose-the-right-aws-region">Choose the Right AWS Region</h3>
+<p><strong>Essential takeaway:</strong><br>
+Choose Region in this order:</p>
+<ol type="1">
+<li><strong>Compliance / data residency</strong></li>
+<li><strong>Latency</strong></li>
+<li><strong>Service availability</strong></li>
+<li><strong>Cost</strong></li>
+<li><strong>Availability &amp; DR needs</strong></li>
+</ol>
+<p><img src="./images/how_to_choose_aws_region.png" class="img-fluid"></p>
 <hr>
 </section>
-<section id="aws-global-infrastructure" class="level2">
-<h2 class="anchored" data-anchor-id="aws-global-infrastructure">1.3 AWS Global Infrastructure</h2>
-<section id="choose-the-right-aws-region" class="level3">
-<h3 class="anchored" data-anchor-id="choose-the-right-aws-region">1.3.1 CHOOSE THE RIGHT AWS REGION</h3>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph TD;
-    A[Choose the Right AWS Region] --&gt; B[Considerations]
-    B --&gt; C[Latency]
-    B --&gt; D[Price]
-    B --&gt; E[Service Availability]
-    B --&gt; F[Data Compliance]
-
-    C --&gt; C1{Sensitive to Latency?}
-    C1 --&gt;|Yes| C2[Choose a nearby Region]
-    C1 --&gt;|No| C3[Evaluate other factors]
-
-    D --&gt; D1{Price Variation Factors}
-    D1 --&gt;|Local Economy| D2[Impact on pricing]
-
-    E --&gt; E1{Service Availability Check}
-    E1 --&gt; E2[AWS Documentation for Services]
-
-    F --&gt; F1{Compliance Requirements}
-    F1 --&gt;|Yes| F2[Select compliant Region]
-    F1 --&gt;|No| F3[Proceed with other factors]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-</section>
 <section id="availability-zones" class="level3">
-<h3 class="anchored" data-anchor-id="availability-zones">1.3.1 AVAILABILITY ZONES</h3>
-<p><img src="./images/availability_zones.png" class="img-fluid"></p>
+<h3 class="anchored" data-anchor-id="availability-zones">Availability Zones</h3>
+<p><img src="./images/regioin-az-datacenters.png" class="img-fluid"></p>
 <ul>
-<li>Each <strong>AWS Region</strong> contains multiple <strong>Availability Zones (AZs)</strong>.</li>
-<li>An <strong>AZ</strong> consists of one or more <strong>data centers</strong> with:
+<li>Each <strong>Region contains multiple AZs</strong></li>
+<li>Each <strong>AZ = one or more data centers</strong></li>
+<li>Data centers are:
 <ul>
-<li>Redundant power</li>
-<li>Networking</li>
-<li>Connectivity</li>
+<li>Physically separate</li>
+<li>Redundantly powered and networked</li>
 </ul></li>
-<li>Data centers operate in <strong>separate, undisclosed facilities</strong>.</li>
-<li>AZs are connected with <strong>redundant, high-speed, low-latency links</strong>.</li>
-<li>Each AZ has a <strong>code name</strong>, formed by appending a <strong>letter</strong> to the Region code:
+<li>AZs are connected by <strong>low‑latency, high‑bandwidth links</strong></li>
+<li>AZ names:
 <ul>
-<li>Example: <code>us-east-1a</code> → AZ “a” in <code>us-east-1</code> (Northern Virginia Region)</li>
-<li>Example: <code>sa-east-1b</code> → AZ “b” in <code>sa-east-1</code> (São Paulo Region)</li>
+<li><code>&lt;region&gt;&lt;letter&gt;</code> (example: <code>us-east-1a</code>)</li>
+<li>Letter mappings differ per account</li>
 </ul></li>
-<li>If a resource is in <code>us-east-1c</code>, it means it resides in <strong>AZ “c” of the us-east-1 Region</strong>.</li>
+<li>Resource location example:
+<ul>
+<li><code>us-east-1c</code> → AZ “c” inside <code>us-east-1</code></li>
+</ul></li>
 </ul>
+<hr>
 </section>
-<section id="scope-aws-services" class="level3">
-<h3 class="anchored" data-anchor-id="scope-aws-services">1.3.2 SCOPE AWS SERVICES</h3>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph TD;
-    A[AWS Services Scope] --&gt; B[Region-Scoped Services]
-    A --&gt; C[AZ-Scoped Services]
-    D[AWS Handles Durability &amp;&lt;br&gt; Availability]
-    A --&gt; E[Global Services]
-
-    B --&gt; D
-    D --&gt; B1[[Amazon S3]]
-    D --&gt; B2[[Amazon RDS Multi-AZ]]
-    D --&gt; B3[[Amazon DynamoDB]]
-    
-    C --&gt; D3[Customer responsible&lt;br&gt;for durability &amp;&lt;br&gt;availability]
-    D3 --&gt; C1[[Amazon EC2]]
-    D3 --&gt; C2[[Amazon RDS Single-AZ]]
-    D3 --&gt; C3[[Amazon EBS]]
-    
-    E --&gt; D2[AWS Handles Durability &amp;&lt;br&gt; Availability]
-    D2 --&gt; E1[[AWS IAM]]
-    D2 --&gt; E2[[AWS Route 53]]
-    D2 --&gt; E3[[AWS CloudFront]]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<section id="scope-of-aws-services" class="level3">
+<h3 class="anchored" data-anchor-id="scope-of-aws-services">Scope of AWS Services</h3>
+<p><img src="./images/aws_scope_and_responsibility_of_services.png" class="img-fluid"></p>
+<p><strong>Scope summary:</strong></p>
+<ul>
+<li><p><strong>Global services</strong></p>
+<ul>
+<li>Single logical control plane across AWS</li>
+<li>Example: IAM, Route 53, CloudFront</li>
+</ul></li>
+<li><p><strong>Regional services</strong></p>
+<ul>
+<li>Live within a Region, usually span multiple AZs</li>
+<li>Example: S3, DynamoDB, VPC, RDS Multi‑AZ</li>
+</ul></li>
+<li><p><strong>Zonal services</strong></p>
+<ul>
+<li>Bound to a single AZ</li>
+<li>Example: EC2, EBS, RDS Single‑AZ</li>
+</ul></li>
+</ul>
+<p><strong>Availability &amp; durability:</strong></p>
+<ul>
+<li>Some services are <strong>AWS‑managed</strong></li>
+<li>Others require <strong>customer‑designed HA/DR</strong></li>
+</ul>
+<hr>
 </section>
 <section id="maintain-resiliency" class="level3">
-<h3 class="anchored" data-anchor-id="maintain-resiliency">1.3.3 MAINTAIN RESILIENCY</h3>
+<h3 class="anchored" data-anchor-id="maintain-resiliency">1.3.3 Maintain Resiliency</h3>
 <ul>
-<li>To ensure application availability, design for <strong>high availability</strong> and <strong>resiliency</strong>.<br>
-</li>
-<li>Best practice: use <strong>Region-scoped managed services</strong> (they have availability and resiliency built-in).<br>
-</li>
-<li>When Region-scoped services are not possible:
+<li>Prefer <strong>Region‑scoped managed services</strong></li>
+<li>Otherwise:
 <ul>
-<li>Replicate workloads across <strong>multiple AZs</strong>.<br>
-</li>
-<li>Use at least <strong>two AZs</strong>.<br>
-</li>
+<li>Deploy across <strong>multiple AZs</strong></li>
+<li>Minimum <strong>two AZs</strong></li>
 </ul></li>
-<li>If one AZ fails, the application can still run in the <strong>second AZ</strong>, ensuring traffic is handled.</li>
+<li>AZ failure ≠ application outage when designed correctly</li>
 </ul>
-<p><img src="./images/application_in_2_AZs.png" class="img-fluid"></p>
 <hr>
 </section>
 <section id="security-and-the-aws-shared-responsibility-model" class="level3">
 <h3 class="anchored" data-anchor-id="security-and-the-aws-shared-responsibility-model">1.3.4 Security and the AWS Shared Responsibility Model</h3>
-<p><code>security of the cloud</code> (aws responsbility) versus <code>security in the cloud</code> (customer responsbility).</p>
-<p><img src="./images/shared_responsibility_model.png" class="img-fluid"></p>
-<section id="what-is-aws-responsible-for" class="level4">
-<h4 class="anchored" data-anchor-id="what-is-aws-responsible-for">WHAT IS AWS RESPONSIBLE FOR?</h4>
-<p><img src="./images/aws_responsibilities.png" class="img-fluid"></p>
+<section id="core-distinction" class="level4">
+<h4 class="anchored" data-anchor-id="core-distinction">Core distinction</h4>
 <ul>
-<li><strong>Container services</strong> in AWS ≠ Docker container services.<br>
-</li>
-<li>AWS abstracts and manages application containers <strong>behind the scenes</strong>.<br>
-</li>
-<li>Responsibility for managing the container platform is <strong>shifted from customers to AWS</strong>.</li>
+<li><p><strong>AWS responsibility (security of the cloud):</strong></p>
+<ul>
+<li>Physical data centers</li>
+<li>Hardware, networking</li>
+<li>Host OS and virtualization layer</li>
+</ul></li>
+<li><p><strong>Customer responsibility (security in the cloud):</strong></p>
+<ul>
+<li>IAM, access control</li>
+<li>Data protection &amp; encryption</li>
+<li>Network security (SGs, NACLs)</li>
+<li>Backups and recovery</li>
+</ul></li>
 </ul>
-</section>
-<section id="what-is-the-customer-responsible-for" class="level4">
-<h4 class="anchored" data-anchor-id="what-is-the-customer-responsible-for">WHAT IS THE CUSTOMER RESPONSIBLE FOR?</h4>
-<p><img src="./images/customer_responsbilities.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>AWS manages the infrastructure.<br>
+You secure what you build on top of it.</p>
+</blockquote>
 <hr>
 </section>
 </section>
 </section>
 <section id="protect-the-aws-root-user" class="level2">
 <h2 class="anchored" data-anchor-id="protect-the-aws-root-user">1.4 Protect the AWS Root User</h2>
-<section id="whats-the-big-deal-about-auth" class="level3">
-<h3 class="anchored" data-anchor-id="whats-the-big-deal-about-auth">What’s the Big Deal About Auth?</h3>
+<section id="authentication-vs-authorization" class="level3">
+<h3 class="anchored" data-anchor-id="authentication-vs-authorization">Authentication vs Authorization</h3>
 <ul>
-<li>When configuring account access, two key terms appear often: <strong>authentication</strong> and <strong>authorization</strong>.<br>
-</li>
-<li>Though basic, they are essential for proper <strong>AWS access management</strong>.</li>
+<li><p><strong>Authentication:</strong><br>
+“Who are you?” (passwords, MFA, tokens)</p></li>
+<li><p><strong>Authorization:</strong><br>
+“What are you allowed to do?” (IAM policies)</p></li>
 </ul>
-</section>
-<section id="understand-authentication" class="level3">
-<h3 class="anchored" data-anchor-id="understand-authentication">Understand Authentication</h3>
-<ul>
-<li>When creating an AWS account, you log in with <strong>email + password</strong> to verify your identity.<br>
-</li>
-<li>If credentials are correct, the system <strong>grants access</strong> → this is <strong>authentication</strong>.<br>
-</li>
-<li><strong>Authentication</strong> ensures the user is who they claim to be.<br>
-</li>
-<li>Common methods:
-<ul>
-<li><strong>Username + password</strong><br>
-</li>
-<li><strong>Token-based authentication</strong><br>
-</li>
-<li><strong>Biometric data</strong> (e.g., fingerprint)<br>
-</li>
-</ul></li>
-<li>Authentication answers the question: <strong>“Are you who you say you are?”</strong></li>
-</ul>
-</section>
-<section id="understand-authorization" class="level3">
-<h3 class="anchored" data-anchor-id="understand-authorization">Understand Authorization</h3>
-<ul>
-<li>Once inside your AWS account, <strong>authorization</strong> determines what actions you can take.<br>
-</li>
-<li><strong>Authorization</strong> = granting users permission to access AWS resources and services.<br>
-</li>
-<li>It decides whether a user can:
-<ul>
-<li><strong>Read</strong> resources<br>
-</li>
-<li><strong>Edit</strong> resources<br>
-</li>
-<li><strong>Delete</strong> resources<br>
-</li>
-<li><strong>Create</strong> resources<br>
-</li>
-</ul></li>
-<li>Authorization answers the question: <strong>“What actions can you perform?”</strong></li>
-</ul>
-</section>
-<section id="what-is-the-aws-root-user" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-the-aws-root-user">What Is the AWS Root User?</h3>
-<ul>
-<li>When you create an AWS account, you start with a <strong>single sign-in identity</strong>.<br>
-</li>
-<li>This identity has <strong>full access</strong> to all AWS services and resources.<br>
-</li>
-<li>It is called the <strong>AWS root user</strong>.<br>
-</li>
-<li>You access the root user by signing in with the <strong>email + password</strong> used to create the account.</li>
-</ul>
-</section>
-<section id="understand-the-aws-root-user-credentials" class="level3">
-<h3 class="anchored" data-anchor-id="understand-the-aws-root-user-credentials">Understand the AWS Root User Credentials</h3>
-<ul>
-<li>The <strong>AWS root user</strong> has two sets of credentials:
-<ol type="1">
-<li><strong>Email + password</strong> → used to sign in to the <strong>AWS Management Console</strong>.<br>
-</li>
-<li><strong>Access keys</strong> → used for <strong>programmatic access</strong> via AWS CLI or AWS API.</li>
-</ol></li>
-<li><strong>Access keys</strong> consist of two parts:
-<ul>
-<li><strong>Access key ID</strong> (e.g., <code>A2lAl5EXAMPLE</code>)<br>
-</li>
-<li><strong>Secret access key</strong> (e.g., <code>wJalrFE/KbEKxE</code>)</li>
-</ul></li>
-<li>Both parts are required, similar to a <strong>username + password</strong> combination.<br>
-</li>
-<li>Access keys should be treated with the <strong>same level of security</strong> as your email and password.</li>
-</ul>
-</section>
-<section id="follow-best-practices-when-working-with-the-aws-root-user" class="level3">
-<h3 class="anchored" data-anchor-id="follow-best-practices-when-working-with-the-aws-root-user">Follow Best Practices When Working with the AWS Root User</h3>
-<ul>
-<li>The <strong>root user</strong> has complete access to:
-<ul>
-<li>All AWS services and resources<br>
-</li>
-<li>Billing information<br>
-</li>
-<li>Personal account information</li>
-</ul></li>
-<li>Because of this, <strong>do not use the root user for everyday tasks</strong>.<br>
-</li>
-<li>Instead, securely lock away the <strong>root user credentials</strong>.<br>
-</li>
-<li>To ensure root user safety:
-<ul>
-<li>Enable <strong>multi-factor authentication (MFA)</strong><br>
-</li>
-<li>Use the root user only for <strong>account setup and rare administrative tasks</strong></li>
-</ul></li>
-<li>Choose a strong password for the root user.</li>
-<li>Never share your root user password or access keys with anyone.</li>
-<li>Disable or delete the access keys associated with the root user.</li>
-<li>Do not use the root user for administrative tasks or everyday tasks.</li>
-</ul>
-<p><strong>When is it OK to use the AWS root user?</strong> <br> There are some tasks where it makes sense to use the AWS root user. Check out the links at the end of this section to read about them. Link: <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#root-user-tasks">aws_tasks-that-require-root</a></p>
-</section>
-<section id="the-case-for-multi-factor-authentication" class="level3">
-<h3 class="anchored" data-anchor-id="the-case-for-multi-factor-authentication">The Case for Multi-Factor Authentication</h3>
-<ul>
-<li>When you first log in to AWS, you use <strong>single-factor authentication (SFA)</strong> → usually <strong>username + password</strong>.<br>
-</li>
-<li>SFA is vulnerable (passwords can be guessed, cracked, or stolen).<br>
-</li>
-<li><strong>Multi-factor authentication (MFA)</strong> adds an extra layer of security by requiring two or more methods from different categories:
-<ul>
-<li><strong>Something you know</strong> → password, PIN<br>
-</li>
-<li><strong>Something you have</strong> → one-time code from device/app<br>
-</li>
-<li><strong>Something you are</strong> → biometric (fingerprint, face scan)<br>
-</li>
-</ul></li>
-<li>Even if a password is compromised, MFA makes it <strong>highly unlikely</strong> an attacker can bypass the second factor.<br>
-</li>
-<li><strong>Best practice:</strong> Always enable MFA on the <strong>AWS root user</strong>.</li>
-</ul>
-<p><img src="./images/mfa_devices_supported.png" class="img-fluid"></p>
 <hr>
 </section>
+<section id="aws-root-user" class="level3">
+<h3 class="anchored" data-anchor-id="aws-root-user">AWS Root User</h3>
+<ul>
+<li>Created with the AWS account</li>
+<li>Has <strong>full, unrestricted access</strong></li>
+<li>Credentials:
+<ul>
+<li>Email + password (console)</li>
+<li>Access keys (programmatic)</li>
+</ul></li>
+</ul>
+<p><strong>Critical facts:</strong></p>
+<ul>
+<li>IAM policies <strong>cannot limit root</strong></li>
+<li>Root should never be used for daily work</li>
+</ul>
+<hr>
+</section>
+<section id="root-user-best-practices" class="level3">
+<h3 class="anchored" data-anchor-id="root-user-best-practices">Root User Best Practices</h3>
+<ul>
+<li>Enable <strong>MFA</strong></li>
+<li>Strong, unique password</li>
+<li><strong>Delete root access keys</strong></li>
+<li>Use root <strong>only</strong> for:
+<ul>
+<li>Account setup</li>
+<li>Billing</li>
+<li>Rare account‑level tasks</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="why-mfa-matters" class="level3">
+<h3 class="anchored" data-anchor-id="why-mfa-matters">Why MFA Matters</h3>
+<ul>
+<li>Passwords alone are weak</li>
+<li>MFA adds a second factor:
+<ul>
+<li>Something you know</li>
+<li>Something you have</li>
+<li>Something you are</li>
+</ul></li>
+<li><strong>Always enable MFA on root</strong></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="summary-every-aws-activity-is-an-api-call" class="level2">
+<h2 class="anchored" data-anchor-id="summary-every-aws-activity-is-an-api-call">Summary: Every AWS Activity Is an API Call</h2>
+<p><img src="./images/every_aws_service_use_is_an_api_call.png" class="img-fluid"></p>
+<ul>
+<li>Console, CLI, SDK → <strong>AWS API</strong></li>
+<li>API calls are:
+<ul>
+<li>Authenticated</li>
+<li>Authorized</li>
+<li>Evaluated by IAM</li>
+</ul></li>
+<li>Understanding this explains:
+<ul>
+<li>IAM behavior</li>
+<li>Auditing (CloudTrail)</li>
+<li>Automation (IaC, CI/CD)</li>
+<li>Security boundaries</li>
+</ul></li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>By understanding APIs, IAM, Regions, AZs, and responsibility boundaries — one understands AWS.</strong></p>
+</blockquote>
+<hr>
 </section>
 </section>
 <section id="security" class="level1">
