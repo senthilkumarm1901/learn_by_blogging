@@ -538,107 +538,13 @@ Source: AWS Blg
 
 #### How to enables employees access AWS Account (via IdP)
 
-```{mermaid}
----
-title: How to access AWS Account via IdP
----
-
-flowchart LR
-
-%% ================= USER =================
-User[Corporate User]
-
-%% ================= PATH A =================
-subgraph "Path A: IAM Identity Center based Access"
-    
-    IIC["AWS IAM Identity Center<br>(AWS IdP)"]
-
-    subgraph AWS_Organization
-        subgraph "Member Account A"
-            RoleA[IAM Role - Account A]
-        end
-        subgraph "Member Account B"
-            RoleB[IAM Role - Account B]
-        end
-        STS1[AWS STS]
-    end
-
-    User --> IIC
-    IIC -->|Permission Set Mapping| RoleA
-    IIC -->|Permission Set Mapping| RoleB
-    RoleA --> STS1
-    RoleB --> STS1
-end
-
-
-%% ================= PATH B =================
-subgraph "Path B: Federation Access"
-    
-    AAD["Azure AD<br>(or Okta <br>or any non-AWS IdP)"]
-
-    subgraph AWS_Accounts
-        RoleA2[IAM Role - Account A]
-        RoleB2[IAM Role - Account B]
-        STS2[AWS STS]
-    end
-
-    User --> AAD
-    AAD -->|SAML Assertion| RoleA2
-    AAD -->|SAML Assertion| RoleB2
-    RoleA2 --> STS2
-    RoleB2 --> STS2
-end
-
-
-%% ================= CREDENTIALS =================
-STS1 --> TempCreds1["Temporary Credentials<br>(access_key, secret_key, token)"]
-STS2 --> TempCreds2["Temporary Credentials<br>(access_key, secret_key, token)"]
-
-TempCreds1 --> Console1[AWS Console / CLI/ SDK]
-TempCreds2 --> Console2[AWS Console / CLI/ SDK]
-
-Legend1[["A SAML assertion is: <br>
-A signed authentication statement from an Identity Provider saying
-“This user is authenticated and has these attributes.”"]]
-Legend2[["Permission Set Mapping:<br>
-A template that defines what permissions a user/role gets in a specific AWS account."]]
-```
+![](./images/how_to_access_aws_account_via_IDP.png)
 
 ---
 
 #### How to enable customers access to Application deployed in AWS Account
 
-```{mermaid}
----
-title: How to enable access to Application deployed in AWS Account
----
-
-flowchart LR
-
-%% ========== END USER ==========
-AppUser[Application User]
-
-%% ========== COGNITO LAYER ==========
-Cognito[Amazon Cognito<br>User Pool / Identity Pool]
-
-%% ========== APPLICATION ==========
-App[Web / Mobile App]
-
-%% ========== AWS ACCOUNT ==========
-subgraph AWS_Account
-    AppRole[IAM Role for App]
-    STS[AWS STS]
-    S3[S3 / DynamoDB / APIs]
-end
-
-AppUser --> App
-App --> |share credentials|Cognito
-Cognito -->|JWT Token| App
-
-App -->|Exchange Token| STS
-STS -->|Temporary Credentials| AppRole
-AppRole --> S3
-```
+![](./images/how_to_enable_acesss_to_apps_in_aws_account_2.png)
 
 | Feature                | AWS IAM Identity Center | AWS Cognito                 |
 | ---------------------- | ------------------- | ----------------------- |
@@ -658,136 +564,92 @@ AppRole --> S3
 
 ---
 
-# 3. Compute as a Service  
-
-## 3.1 Introduction to Compute Options in AWS  
-
-### Understanding Servers  
-The foundation for hosting any application begins with a **server**. In a client-server model, a client (a person or a system) sends a request, and the server processes that request and returns a response.  
-
-Servers power applications by providing the essential resources—**CPU, memory, and networking capacity**—needed to process user requests and deliver responses.  
-
-In most cases, servers handle **Hypertext Transfer Protocol (HTTP)** requests and return responses to clients. However, other **API-based communication models** also follow the same principle.  
-
-For context, common HTTP servers include:  
-- **Windows-based options:** Internet Information Services (IIS)  
-- **Linux-based options:** Apache HTTP Server, Nginx, Apache Tomcat  
-
-When running an HTTP server in AWS, you must choose a compute service that provides the required processing power. These compute options can be explored directly from the **AWS Management Console**, under the list of available **AWS Compute Services**.  
 
 
-![](./images/different_compute_options_in_AWS.png)
+# 3. Compute as a Service
 
-### Choose the Right Compute Option
+## 3.1 Introduction to Compute Options in AWS
 
-- AWS provides **three main compute options**:
-  - Virtual Machines  
-  - Container Services  
-  - Serverless  
+### Understanding Servers
 
-- **Virtual Machines (VMs)**:
-  - Easiest option for those with prior infrastructure/server experience.  
-  - Emulates a physical server where you can install applications like an HTTP server.  
-  - Runs on a **hypervisor** that provisions resources to create and run VMs.  
-
-- **Amazon EC2 (Elastic Compute Cloud)**:
-  - AWS’s VM service.  
-  - AWS manages the **host machines**, **hypervisor layer**, and installs the **guest operating system**.  
-  - Forms the foundation for understanding other compute services (containers, serverless).  
-
-- **Hypervisor** (key concept in virtualization):  
-  - Software/firmware that separates physical hardware from operating systems and applications.  
-  - Allows multiple OS environments to run on a single machine with dedicated CPU, memory, and storage.  
-  - Provides flexibility, scalability, and isolation.  
+- A **server** processes requests from clients and returns responses.
+- Servers provide **CPU, memory, and networking** for applications.
+- Most applications serve **HTTP/API requests** (web servers like IIS, Apache, Nginx).
+- In AWS, you choose a **compute service** to run these servers.
 
 ---
 
-## 3.2 Introduction to Amazon Elastic Compute Cloud (AWS EC2)
+### Choose the Right Compute Option
 
-- **Amazon EC2**:
-  - Web service that provides secure, resizable compute capacity in the cloud.  
-  - Lets you provision virtual servers called **EC2 instances**.  
-  - Not limited to just web servers—can run various workloads.  
-  - Instances can be created and managed via:
-    - AWS Management Console  
-    - AWS CLI  
-    - AWS SDKs  
-    - Automation/orchestration tools  
+AWS compute falls into **three categories**:
 
-- **To create an EC2 instance, you define**:
-  - **Hardware**: CPU, memory, storage, network.  
-  - **Logical settings**: Networking location, firewall rules, authentication, OS.  
+- **Virtual Machines**
+- **Containers**
+- **Serverless**
 
-- **Amazon Machine Image (AMI)**:
-  - Preconfigured template for launching an EC2 instance.  
-  - Includes:
-    - Operating system (Linux, Windows, etc.)  
-    - Storage mappings  
-    - Architecture type (32-bit, 64-bit, ARM)  
-    - Optional additional software  
-  - Replaces the traditional manual OS installation process.  
+**Virtual Machines (VMs)**
 
-- **Relationship between AMI and EC2 instance**:
-  - AMI = **recipe** (definition/model).  
-  - EC2 instance = **cake** (live instantiation).  
-  - Comparable to **Class (definition) vs. Object (instantiation)** in programming.  
-  - At launch:
-    - AWS allocates a VM on a hypervisor.  
-    - The AMI is copied to the root device volume for booting.  
-    - Result: a server ready for connection, package installation, and application deployment (e.g., web server + app code).  
+- Closest to traditional servers
+- Full OS control
+- Run on a **hypervisor**
+
+**Amazon EC2**
+
+- AWS VM service
+- AWS manages hardware + hypervisor
+- You manage OS and applications
+
+**Hypervisor**
+
+- Enables multiple OSs on one physical machine
+- Provides isolation, scalability, and flexibility
+
+---
+
+## 3.2 Amazon Elastic Compute Cloud (EC2)
+
+- EC2 provides **resizable virtual servers** called instances
+- Instances are created via Console, CLI, SDK, or automation
+- You define:
+    - Hardware (CPU, memory, storage, networking)
+    - OS, security, networking, access
+
+### Amazon Machine Image (AMI)
+
+- Template used to launch EC2 instances
+- Contains:
+    - OS
+    - Architecture
+    - Storage mappings
+    - Optional software
+
 
 ![](./images/ami_ec2_rootvolume.png)
 
-- One advantage of using **Amazon Machine Images (AMIs)** is that they are **reusable**.  
+**AMI vs EC2**
 
-- For example:  
-  - You might choose a **Linux-based AMI**.  
-  - Configure it with an **HTTP server**, **application packages**, and any additional software your application needs.  
+- AMI = template / recipe
+- EC2 instance = running server / instantiation of the recipe
+- Equivalent to **Class vs Object**
 
-- Now, suppose you want to create a **second EC2 instance** with the exact same configurations:  
-  1. **Option 1 (Not Ideal):**  
-     - Go through the entire instance creation and configuration process again.  
-     - This is **time-consuming** and leaves room for **human error**.  
+**AMI Reuse**
 
-  2. **Option 2 (Better):**  
-     - Create an **AMI from your running instance**.  
-     - Use this AMI to launch a **new instance**.  
-     - Since the configurations are stored in the AMI, the new instance will automatically have **all the same settings** as the original one.  
-
+- Create once, launch many identical instances
+- Avoids manual reconfiguration and errors
 
 ![](./images/create_ami_from_running_instance.png)
 
+---
+
 ### Where Can You Find AMIs?
-You can select an AMI from the following categories.
 
-- Quick Start AMIs that are premade by AWS and allow you to get started quickly.
-- AWS Marketplace AMIs that provide popular open source and commercial software from third-party vendors.
-- My AMIs that are created from your EC2 instances.
-- Community AMIs that are provided by the AWS user community.
-- Build your own custom image with EC2 Image Builder.
+- AWS Quick Start AMIs
+- AWS Marketplace
+- My AMIs
+- Community AMIs
+- EC2 Image Builder
 
-
-
-### Amazon Linux 2023 user data script: 
-
-When using the user data scripts, remember to replace the <INSERT REGION HERE> with whatever AWS region you are operating in, and ensure you remove both brackets as well.
-
-
-```bash
-          #!/bin/bash -ex
-          wget 
-https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/DEV-AWS-MO-GCNv2/FlaskApp.zip
-          unzip FlaskApp.zip
-          cd FlaskApp/
-          yum -y install python3-pip
-          pip install -r requirements.txt
-          yum -y install stress
-          export PHOTOS_BUCKET=${SUB_PHOTOS_BUCKET}
-          export AWS_DEFAULT_REGION=<INSERT REGION HERE>
-          export DYNAMO_MODE=on
-          FLASK_APP=application.py /usr/local/bin/flask run --host=0.0.0.0 --port=80 
-```
-
+---
 
 ## 3.3 Types of EC2 Instances
 
@@ -819,247 +681,195 @@ flowchart TD
   E5 --> U5
 ```
 
+---
 
+## 3.3 Container Services on AWS
+
+- Containers package **code + dependencies**
+- Portable across environments (dev → prod → cloud)
+- Solve “works on my machine” problems
+
+### Docker
+
+- Most common container runtime
+- Simplifies container build and execution
+
+**Containers vs VMs**
+
+- Containers share host OS → lightweight, fast startup
+- VMs include full OS → heavier, more isolation
 
 ---
 
-## 3.3: Container Services on AWS
+### Orchestrate Containers
 
-AWS offers a broad spectrum of compute offerings that give you the flexibility to choose the right tool for the right job. The three main categories of compute are virtual machines, containers, and serverless. There is no one-size-fits-all service because it depends on your needs.The key is to understand what each option has to offer in order to build a more appropriate cloud architecture for your use case. In this unit, you learn about containers and how to run them on AWS.Containers can host a variety of different workloads, including web applications, lift and shift migrations, distributed applications, and streamlining of development, test, and production environments.
+At scale, you need orchestration to handle:
 
-### WHAT IS A CONTAINER?
+- Placement
+- Failures
+- Scaling
+- Monitoring
 
-While containers are often referred to as a new technology, the idea started in the 1970s with certain Linux kernels having the ability to separate their processes through isolation. At the time, this was configured manually, making operations complex.With the evolution of the open source software community, containers evolved. Today, containers are used as a solution to problems of traditional compute, including the issue of getting software to run reliably when it moves from one compute environment to another.
+AWS orchestration services:
 
+- **Amazon ECS**
+- **Amazon EKS**
 
-A container is a standardized unit that packages up your code and all of its dependencies. This package is designed to run reliably on any platform, because the container creates its own independent environment. This makes it easy to carry workloads from one place to another, such as from development to production or from on-premises to the cloud.
+---
 
-### WHAT IS DOCKER?
+## Amazon Elastic Container Service (ECS)
 
-When you hear the word container, you may associate it with Docker. **Docker is a popular container runtime** that simplifies the management of the entire operating system stack needed for container isolation, including networking and storage. Docker makes it easy to create, package, deploy, and run containers.
-
-![](./images/containers_and_virtual_machines.png)
-
-
-Containers share the same operating system and kernel as the host they exist on, whereas virtual machines contain their operating system. Since each virtual machine has to maintain a copy of an operating system, there’s a degree of wasted space.A container is more lightweight. They spin up quicker, almost instantly. This difference in startup time becomes instrumental when designing applications that need to scale quickly during input/output (I/O) bursts.While containers can provide speed, virtual machines offer you the full strength of an operating system and offer more resources, like package installation, a dedicated kernel, and more.
-
-### ORCHESTRATE CONTAINERS
-
-In AWS, containers run on EC2 instances. For example, you may have a large instance and run a few containers on that instance.While running one instance is easy to manage, it lacks high availability and scalability. Most companies and organizations run many containers on many EC2 instances across several Availability Zones.If you’re trying to manage your compute at a large scale, you need to know:
-
-- How to place your containers on your instances.
-- What happens if your container fails.
-- What happens if your instance fails.
-- How to monitor deployments of your containers.
-
-
-This coordination is handled by a container orchestration service. AWS offers two container orchestration services: Amazon Elastic Container Service (ECS) and Amazon Elastic Kubernetes Service (EKS).
-
-### MANAGE CONTAINERS WITH AMAZON ELASTIC CONTAINER SERVICE (AMAZON ECS)
-
-Amazon ECS is an end-to-end container orchestration service that allows you to quickly spin up new containers and manage them across a cluster of EC2 instances.
+- AWS‑native container orchestration
+- Runs containers on EC2 or **AWS Fargate**
 
 ![](./images/one_ec2_multiple_containers.png)
 
 
-To run and manage your containers, you need to install the Amazon ECS Container Agent on your EC2 instances. This agent is open source and responsible for communicating back to the Amazon ECS service about cluster management details. You can run this agent on both Linux and Windows AMIs. An instance with the container agent installed is often called a container instance.
+
+### ECS Agent
+
+- Installed on EC2 instances
+- EC2 + agent = **container instance**
+
+
 
 ![](./images/ecs_agent_to_orchestrate_containers.png)
 
+### Task Definition
 
-Once the Amazon ECS container instances are up and running, you can perform actions that include, but are not limited to, launching and stopping containers, getting cluster state, scaling in and out, scheduling the placement of containers across your cluster, assigning permissions, and meeting availability requirements.
+- JSON blueprint describing containers and resources
 
-To prepare your application to run on Amazon ECS, you create a task definition. The task definition is a text file, in JSON format, that describes one or more containers. A task definition is similar to a blueprint that describes the resources you need to run that container, such as CPU, memory, ports, images, storage, and networking information.
-
-Here is a simple task definition that you can use for your corporate director application. In this example, the runs on the Nginx web server.
-
-
-### Task definition
 ```json
-{    
+{
 
-     "family": "webserver",    
+  "family": "webserver",
+  "containerDefinitions": [
+    {
 
-     "containerDefinitions": [ {        
+      "name": "web",
+      "image": "nginx",
+      "memory": "100",
+      "cpu": "99"
+    }
 
-          "name": "web",        
+  ],
 
-          "image": "nginx",        
-
-          "memory": "100",        
-
-          "cpu": "99"    
-
-     } ],    
-
-     "requiresCompatibilities": [ "FARGATE" ],    
-
-     "networkMode": "awsvpc",    
-
-     "memory": "512",    
-
-     "cpu": "256"
-
+  "requiresCompatibilities": ["FARGATE"],
+  "networkMode": "awsvpc",
+  "memory": "512",
+  "cpu": "256"
 }
 ```
 
-### Summary: ECS 
-```
-## Amazon ECS (Elastic Container Service):
-- What it is: A fully managed container orchestration service provided by AWS.
-- Technology: ECS is an AWS-native service and does not use Kubernetes. Instead, it uses its own orchestration technology.
-- Docker integration: ECS works directly with Docker containers, so if you're familiar with Docker, it's relatively straightforward to use ECS. AWS handles a lot of the complex setup, such as networking and container placement, for you.
+---
 
-## How ECS Works:
-- Container Instances (EC2 instances): In ECS, when you launch a cluster of EC2 instances, each instance runs the ECS agent. This agent is responsible for running and managing the containers on that instance. These EC2 instances are called container instances.
-- Tasks: A task is an instantiation of a container or group of containers. It’s how ECS defines a running containerized application. For example, if you launch an application with multiple containers, ECS defines it as a task.
-- Fargate: ECS can also use Fargate, which is a serverless compute engine. With Fargate, you don't even need to manage EC2 instances; AWS runs the containers for you in a completely managed environment.
+### ECS Summary
 
-## Key Points:
-- Native to AWS: ECS is built directly on AWS, and AWS takes care of much of the complexity (like networking, scaling, and load balancing) for you.
-- No Kubernetes: ECS uses AWS-native orchestration, not Kubernetes.
-- Terminology: Containers running on ECS are called tasks.
-```
+- AWS‑native orchestration
+- No Kubernetes
+- Containers = **tasks**
+- Can run on EC2 or Fargate
 
-### Summary: EKS
-```
-## Amazon EKS (Elastic Kubernetes Service):
-- What it is: A fully managed service that runs Kubernetes clusters on AWS.
-- Technology: EKS uses Kubernetes, an open-source container orchestration tool originally developed by Google. While ECS is AWS-native, EKS leverages Kubernetes' widespread adoption and flexibility.
-- Docker integration: EKS runs Docker containers, but it uses Kubernetes to manage and orchestrate them, instead of AWS-native orchestration technology.
+---
 
-## How EKS Works:
-- Worker Nodes (EC2 instances): In EKS, the EC2 instances are called worker nodes, and they run your containers. These worker nodes are part of a Kubernetes cluster.
-- Pods: In Kubernetes (and therefore in EKS), a pod is the smallest deployable unit. A pod can contain one or more containers that are tightly coupled. Think of a pod as the Kubernetes equivalent of a task in ECS.
-- Control Plane: EKS manages the Kubernetes control plane for you. The control plane is responsible for making scheduling decisions, scaling, and managing the state of the Kubernetes cluster (worker nodes, pods, etc.).
+## Amazon Elastic Kubernetes Service (EKS)
 
-## Key Points:
-- Kubernetes-based: EKS runs on Kubernetes, which means you get access to the full set of Kubernetes features, such as advanced scheduling, load balancing, service discovery, and much more.
-- More Complex but Flexible: Since Kubernetes is a flexible and powerful orchestration tool, you get more control over how your containers run, but it also comes with more complexity compared to ECS.
-- Terminology: Containers running in EKS are part of a pod, not a task.
-```
+- Managed **Kubernetes** on AWS
+- AWS manages control plane
+- EC2 instances = **worker nodes**
+- Containers run inside **pods**
+
+---
+
+### ECS vs EKS Terminology
 
 
-### USE KUBERNETES WITH AMAZON ELASTIC KUBERNETES SERVICE (AMAZON EKS)
-
-Kubernetes is a portable, extensible, open source platform for managing containerized workloads and services. By bringing software development and operations together by design, Kubernetes created a rapidly growing ecosystem that is very popular and well established in the market.If you already use Kubernetes, you can use Amazon EKS to orchestrate these workloads in the AWS Cloud.Amazon EKS is conceptually similar to Amazon ECS, but there are some differences.
-
-An EC2 instance with the ECS Agent installed and configured is called a container instance. In Amazon EKS, it is called a worker node.
-
-An ECS Container is called a task. In the Amazon EKS ecosystem, it is called a pod.
-
-While Amazon ECS runs on AWS native technology, Amazon EKS runs on top of Kubernetes.
-
-If you have containers running on Kubernetes and want an advanced orchestration solution that can provide simplicity, high availability, and fine-grained control over your infrastructure, Amazon EKS is the tool for you.
-
-
-### Terminology Comparison - ECS vs EKS
-
-| ECS | EKS |
-|---|---|
-| EC2 Instances where containers are run `EC2 Container Instances` | EC2 Instances where containers run `Worker Nodes` |
-| A `task` refers to a set of one or more containers that are scheduled together | A `pod` - the smallest deployable unit and equivalent of `task` in ECS - consists of one or more containers that share resources |
+| ECS                                                                                                                                                | EKS                                                                                                                                                                                                   |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EC2 Instances where containers are run `EC2 Container Instances`                                                                                   | EC2 Instances where containers run `Worker Nodes`                                                                                                                                                     |
+| A `task` refers to a set of one or more containers that are scheduled together                                                                     | A `pod` - the smallest deployable unit and equivalent of `task` in ECS - consists of one or more containers that share resources                                                                      |
 | Summary: In ECS, the EC2 instances where containers run are called container instances because they have the ECS agent installed to manage `tasks` | Summary: In EKS (Kubernetes), the EC2 instances are called worker nodes, and they are part of the broader Kubernetes cluster. Kubernetes distributes containers (in the form of pods) to these nodes. |
 
 ![](./images/a_EKS_worker_node.png)
+
+|ECS|EKS|
+|---|---|
+|Container Instance|Worker Node|
+|Task|Pod|
+|AWS-native|Kubernetes|
 
 ---
 
 ## 3.4 Serverless and AWS Lambda
 
-### REMOVE THE UNDIFFERENTIATED HEAVY LIFTING
+### Remove Undifferentiated Heavy Lifting
 
-If you run your code on Amazon EC2, AWS is responsible for the physical hardware and you are responsible for the logical controls, such as guest operating system, security and patching, networking, security, and scaling.
+- EC2 → you manage OS, patching, scaling
+- Containers → AWS helps, but EC2 still exists
+- **Serverless → no servers to manage**
 
-If you run your code in containers on Amazon ECS and Amazon EKS, AWS is responsible for more of the container management, such as deploying containers across EC2 instances and managing the container cluster. 
+### Serverless Characteristics
 
-However, when running ECS and EKS on EC2, you are still responsible for maintaining the underlying EC2 instances.
+- No infrastructure management
+- Auto scaling
+- Pay per use
+- Built‑in availability
 
-If you want to deploy your workloads and applications without having to manage any EC2 instances, you can do that on AWS with serverless compute.
+---
 
+## AWS Fargate
 
-### GO SERVERLESS
+- Serverless compute for containers
+- Works with ECS and EKS
+- No EC2 management
+- Native IAM and VPC integration
 
-Every definition of serverless mentions four aspects.
+---
 
-- No servers to provision or manage.
-- Scales with usage.
-- You never pay for idle resources.
-- Availability and fault tolerance are built-in.
+## AWS Lambda
 
-With serverless, spend time on the things that differentiate your application, rather than spending time on ensuring availability, scaling, and managing servers.AWS has several serverless compute options, including AWS Fargate and AWS Lambda.
+- Run code without servers or containers
+- Event‑driven execution
+- Automatic scaling
+- Millisecond‑level billing
 
-### EXPLORE SERVERLESS CONTAINERS WITH AWS FARGATE
-
-Amazon ECS and Amazon EKS enable you to run your containers in two modes.
-
-- Amazon EC2 mode
-- AWS Fargate mode
-
-
-AWS Fargate is a purpose-built serverless compute engine for containers. Fargate scales and manages the infrastructure, allowing developers to work on what they do best: application development.It achieves this by allocating the right amount of compute, eliminating the need to choose and handle EC2 Instances and cluster capacity and scaling. Fargate supports both Amazon ECS and Amazon EKS architecture and provides workload isolation and improved security by design.
-
-AWS Fargate abstracts the EC2 instance so you’re not required to manage it. However, with AWS Fargate, you can use all the same ECS primitives, APIs, and AWS integrations. It natively integrates with AWS Identity and Access Management (IAM) and Amazon Virtual Private Cloud (VPC). Having native integration with Amazon VPC allows you to launch Fargate containers inside your network and control connectivity to your applications.
-
-### RUN YOUR CODE ON AWS LAMBDA
-
-If you want to deploy your workloads and applications without having to manage any EC2 instances or containers, you can use AWS Lambda.AWS Lambda lets you run code without provisioning or managing servers or containers. You can run code for virtually any type of application or backend service, including data processing, real-time stream processing, machine learning, WebSockets, IoT backends, mobile backends, and web apps, like your corporate directory app!
-
-AWS Lambda requires zero administration from the user. You upload your source code and Lambda takes care of everything required to run and scale your code with high availability. There are no servers to manage, bringing you continuous scaling with subsecond metering and consistent performance.
-
-### HOW LAMBDA WORKS
-
-There are three primary components of a Lambda function: the trigger, code, and configuration.The code is source code, that describes what the Lambda function should run. This code can be authored in three ways.
-
-You create the code from scratch.
-
-You use a blueprint that AWS provides.
-
-You use same code from the AWS Serverless Application Repository, a resource that contains sample applications, such as “hello world” code, Amazon Alexa Skill sample code, image resizing code, video encoding, and more.
-
-When you create your Lambda function, you specify the runtime you want your code to run in. There are built-in runtimes such as Python, Node.js, Ruby, Go, Java, .NET Core, or you can implement your Lambda functions to run on a custom runtime.The configuration of a Lambda function consists of information that describes how the function should run. In the configuration, you specify network placement, environment variables, memory, invocation type, permission sets, and other configurations. To dive deeper into these configurations, check out the resources section of this unit.Triggers describe when the Lambda function should run. 
-
-A trigger integrates your Lambda function with other AWS services, enabling you to run your Lambda function in response to certain API calls that occur in your AWS account. This makes you quicker to respond to events in your console without having to perform manual actions.All you need is the what, how, and when of a Lambda function to have functional compute capacity that runs only when you need it to.Amazon’s CTO, Werner Vogels, says, “No server is easier to manage than no server.” This quote summarizes the convenience you can have when running serverless solutions, like AWS Fargate and AWS Lambda. 
-
-In the next unit, you apply all the information you’ve learned about Amazon EC2, Amazon ECS and Amazon EKS, and AWS Fargate and learn the use cases for each service.
-
-AWS Lambda function handler
-
-The AWS Lambda function handler is the method in your function code that processes events. When your function is invoked, Lambda runs the handler method. When the handler exits or returns a response, it becomes available to handle another event.You can use the following general syntax when creating a function handler in Python:
+### Lambda Function Structure
 
 ```python
-def handler_name(event, context):  
-  ...
-  return some_value
+def handler_name(event, context): 
+
+  ...
+
+  return some_value
 ```
 
-NAMING
 
-The Lambda function handler name specified at the time you create a Lambda function is derived from the following:the name of the file in which the Lambda handler function is locatedthe name of the Python handler functionA function handler can be any name; however, the default on the Lambda console is lambda_function.lambda_handler. This name reflects the function name as lambda_handler, and the file where the handler code is stored in lambda_function.py.If you choose a different name for your function handler on the Lambda console, you must update the name on the Runtime settings pane.
+- **Handler** = entry point
+- **Trigger** = when it runs
+- **Configuration** = memory, timeout, IAM, networking
 
-BILLING GRANULARITY
+### Billing
 
-AWS Lambda lets you run code without provisioning or managing servers, and you pay only for what you use. You are charged for the number of times your code is triggered (requests) and for the time your code executes, rounded up to the nearest 1ms (duration). AWS rounds up duration to the nearest millisecond with no minimum execution time. With this pricing, it can be very cost effective to run functions whose execution time is very low, such as functions with durations under 100ms or low latency APIs. For more information, see 
-AWS News Blog
-. 
-
-SOURCE CODE
-
-This video used a small amount of sample code illustrating a pattern for lazily generating assets using AWS Lambda and Amazon S3. If you’re looking to deploy a service to resize images to production, consider using the new release  
- Serverless Image Handler 
-which is a robust solution to handle image manipulation and can be deployed via an AWS CloudFormation template.
-
-You can find a tutorial on creating the AWS Lambda function as well as the code used in the AWS Lambda demo here: see 
+- Charged per request
+- Charged per execution time (ms)
+- No cost when idle
 
 ---
 
 ## 3.5 Notes from `Computing` Quiz
 
-- EC2 instances are nothing but `Virtual Machines` or resizable compute capacity in the cloud. One can run many docker `containers` in a single virtual machine or EC2 instance
-- EC2 Instance type indicate the following: `instance family` and `instance size`. E.g.: `c5.large` --> c - compute optimized, c5 - th generation, large - indicates instance size 
-- AMI image is to EC2 instance is what a cake recipe is to a cake. A live instantiation of the cake recipe is the cake. An implemented version of the AMI image is the EC2 instance. AMI is the OS in the EC2 instance. AMI is the template that contains the software that is required to launch an instance. 
-- AWS Fargate vs AWS EC2 in ECS: For Fargate, AWS manages the provision, configuration and scale of the clusters. For `EC2 in ECS`, user manages the provisioning, configuration and scale of EC2 instance cluster
-- Serverless services do not require VPC. But can be included in a VPC of your own account. 
+- EC2 = Virtual Machines
+- Multiple containers can run on one EC2
+- Instance type = family + generation + size
+	- EC2 Instance type indicate the following: `instance family` and `instance size`. E.g.: `c5.large` –> c - compute optimized, c5 - 5th generation, large - indicates instance size
+> AMI = template for EC2
+
+- AWS Fargate vs AWS EC2 in ECS: For Fargate, AWS manages the provision, configuration and scale of the clusters. For `EC2 in ECS`, user manages the provisioning, configuration and scale of EC2 instance cluster
+- Serverless services do not require VPC. But can be included in a VPC of your own account.
+
+- ECS + EC2 → user manages instances
+- ECS + Fargate → AWS manages infrastructure
+- Serverless does not require VPC but can run inside one
 
 ---
 

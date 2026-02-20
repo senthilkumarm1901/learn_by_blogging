@@ -135,3 +135,139 @@ flowchart LR
   CP -.-> NOTE1["AWS describes Control Plane as administrative APIs (CRUDL)<br/>e.g., launch EC2, create S3 bucket, describe SQS queue"]
   DP -.-> NOTE2["AWS describes Data Plane as primary service function<br/>e.g., put/get S3 objects, read/write EBS, Route 53 DNS answers"]
 ```
+
+---
+
+```
+---
+title: How to access AWS Account via IdP
+---
+
+flowchart LR
+
+%% ================= USER =================
+User[Corporate User]
+
+%% ================= PATH A =================
+subgraph "Path A: IAM Identity Center based Access"
+    
+    IIC["AWS IAM Identity Center(AWS IdP)"]
+
+    subgraph AWS_Organization
+        subgraph "Member Account A"
+            RoleA[IAM Role - Account A]
+        end
+        subgraph "Member Account B"
+            RoleB[IAM Role - Account B]
+        end
+        STS1[AWS STS]
+    end
+
+    User --> IIC
+    IIC -->|Permission Set Mapping| RoleA
+    IIC -->|Permission Set Mapping| RoleB
+    RoleA --> STS1
+    RoleB --> STS1
+end
+
+
+%% ================= PATH B =================
+subgraph "Path B: Federation Access"
+    
+    AAD["Azure AD(or Okta or any non-AWS IdP)"]
+
+    subgraph AWS_Accounts
+        RoleA2[IAM Role - Account A]
+        RoleB2[IAM Role - Account B]
+        STS2[AWS STS]
+    end
+
+    User --> AAD
+    AAD -->|SAML Assertion| RoleA2
+    AAD -->|SAML Assertion| RoleB2
+    RoleA2 --> STS2
+    RoleB2 --> STS2
+end
+
+
+%% ================= CREDENTIALS =================
+STS1 --> TempCreds1["Temporary Credentials(access_key, secret_key, token)"]
+STS2 --> TempCreds2["Temporary Credentials(access_key, secret_key, token)"]
+
+TempCreds1 --> Console1[AWS Console / CLI/ SDK]
+TempCreds2 --> Console2[AWS Console / CLI/ SDK]
+
+Legend1[["A SAML assertion is: 
+A signed authentication statement from an Identity Provider saying
+“This user is authenticated and has these attributes.”"]]
+Legend2[["Permission Set Mapping:
+A template that defines what permissions a user/role gets in a specific AWS account."]]
+```
+
+---
+
+```
+---
+title: How to enable access to Application deployed in AWS Account
+---
+
+flowchart LR
+
+%% ========== END USER ==========
+AppUser[Application User]
+
+%% ========== COGNITO LAYER ==========
+Cognito[Amazon Cognito<br>User Pool / Identity Pool]
+
+%% ========== APPLICATION ==========
+App[Web / Mobile App]
+
+%% ========== AWS ACCOUNT ==========
+subgraph AWS_Account
+    AppRole[IAM Role for App]
+    STS[AWS STS]
+    S3[S3 / DynamoDB / APIs]
+end
+
+AppUser --> App
+App --> |share credentials|Cognito
+Cognito -->|JWT Token| App
+
+App -->|Exchange Token| STS
+STS -->|Temporary Credentials| AppRole
+AppRole --> S3
+```
+
+
+```
+---
+title: How to enable access to Application deployed in AWS Account
+---
+
+flowchart LR
+    AppUser[Application User]
+    App["Web / Mobile App"]
+
+    UserPool["Amazon Cognito<br>User Pool"]
+    IdentityPool["Amazon Cognito<br>Identity Pool"]
+
+    subgraph AWS_Account
+    AppRole[IAM Role for App]
+    STS[AWS STS]
+    S3["S3 / DynamoDB / APIs"]
+    end
+
+    AppUser --> App
+
+    App -->|"1. Sign-in"| UserPool
+    UserPool -->|"2. JWT (ID token)"| App
+
+    App -->|"3. Present JWT"| IdentityPool
+    IdentityPool -->|"4. AssumeRoleWithWebIdentity"| STS
+    STS -->|"5. Temporary AWS Credentials"| IdentityPool
+    IdentityPool -->|"6 Temporary AWS Credentials"| App
+
+    App -->|"7. Signed requests"| S3
+    AppRole -.->|"8. Permissions"| S3
+
+```
