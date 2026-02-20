@@ -1,0 +1,137 @@
+## Decision to choose an AWS Region
+
+```
+
+flowchart TD
+  A[[Choose the Right AWS Region]] --> B{"1) Compliance / Data Residency?"}
+  B -->|Yes| B1["Pick Region(s) that satisfy residency & regulatory needs"]
+  B -->|No| C{"2) Latency-sensitive workload?"}
+
+  C -->|Yes| C1[Shortlist Regions closest to users / systems]
+  C -->|No| D{"3) Required AWS services & features available in Region?"}
+
+  C1 --> D
+  D -->|No| D1[Check AWS Regional Services list<br>and adjust shortlist]
+  D -->|Yes| E{"4) Cost a key driver?"}
+
+  E -->|Yes| E1[Estimate in AWS Pricing Calculator<br>compare Regions]
+  E -->|No| F{"5) Availability / Disaster Recovery<br>(DR) requirements?"}
+
+  E1 --> F
+  F -->|Single Region OK| F1[Use Multi-AZ inside chosen Region]
+  F -->|Needs regional DR / global users| F2[Design Multi-Region:<br>active/active or active/passive]
+
+  F1 --> G[[Finalize Region choice + deploy]]
+  F2 --> G
+
+  %% Optional notes
+  D1 -.-> N1[Note: New services/features roll out gradually<br>and may not be in every Region]
+  E1 -.-> N2[Note: Pricing varies by Region due to<br>local market factors like power/land/taxes]
+```
+
+---
+
+## AWS Scope of Services and Responsibilities
+
+```
+
+flowchart TB
+  A[AWS Services: Scope & Responsibility]
+  %% Scope buckets
+  %% =========================
+  A --> G[Global Scope]
+  A --> R["Regional Scope (within a Region)"]
+  A --> Z["Zonal / AZ Scope (tied to 1 Availability Zone)"]
+
+  %% =========================
+  %% GLOBAL
+  %% =========================
+  subgraph G1[Global Scope<br/>One logical control plane across AWS]
+    G --> IAM["[AWS IAM]"]
+    G --> R53["[Amazon Route 53]"]
+    G --> CF["[Amazon CloudFront]"]
+  end
+
+  %% =========================
+  %% REGIONAL
+  %% =========================
+  subgraph R1[Regional Scope<br/>Resources live in a Region and commonly span multiple AZs]
+    R --> S3["[Amazon S3 (Regional endpoint)]"]
+    R --> DDB["[Amazon DynamoDB]"]
+    R --> RDSMA["[Amazon RDS (Multi-AZ deployment)]"]
+    R --> VPC["[Amazon VPC (Regional)]"]
+  end
+
+  %% =========================
+  %% ZONAL / AZ
+  %% =========================
+  subgraph Z1[Zonal / AZ Scope<br/>Resources are created in ONE specific AZ]
+    Z --> EC2["[Amazon EC2 instance]"]
+    Z --> EBS["[Amazon EBS volume]"]
+    Z --> RDSSA["[Amazon RDS (Single-AZ instance)]"]
+  end
+
+  %% =========================
+  %% Responsibility overlay
+  %% =========================
+  A --> H{Who provides<br/>Availability & Durability?}
+
+  H -->|Service-managed by AWS| AWSM[AWS manages durability/availability<br/>based on the service design]
+  H -->|Customer-designed| CUST["Customer must architect HA/DR<br/>(multi-AZ, backups, replication, autoscaling)"]
+
+  AWSM -.-> S3
+  AWSM -.-> DDB
+  AWSM -.-> RDSMA
+  AWSM -.-> IAM
+  AWSM -.-> R53
+  AWSM -.-> CF
+
+  CUST -.-> EC2
+  CUST -.-> EBS
+  CUST -.-> RDSSA
+
+  %% =========================
+  %% Footnotes / concepts
+  %% =========================
+  R -.-> N1[Regional resource = tied to a Region]
+  Z -.-> N2[Zonal resource = tied to a specific AZ]
+```
+
+---
+
+## Every AWS Activity is an API Call
+
+```mermaid
+flowchart LR
+  U[You / App] --> I{How do you interact with AWS?}
+
+  I --> C["AWS Management Console<br/>(click, create, update)"]
+  I --> L["AWS CLI<br/>(aws ec2..., aws s3...)"]
+  I --> S["AWS SDKs<br/>(Boto3 / Java / JS / .NET)"]
+
+  C --> RQ[Signed AWS API Request]
+  L --> RQ
+  S --> RQ
+
+  RQ --> IAM{AuthN + AuthZ<br/>IAM policy evaluation}
+
+  IAM -->|Allowed| API[AWS Service API Endpoint]
+  IAM -->|Denied| DENY[AccessDenied]
+
+  API --> CP[Control Plane APIs<br/>Create/Describe/Update/Delete/List]
+  API --> DP[Data Plane APIs<br/>Use the provisioned resource]
+
+  %% Examples: control plane
+  CP --> EC2CP[EC2: RunInstances / DescribeInstances]
+  CP --> S3CP[S3: CreateBucket]
+  CP --> SQScp[SQS: CreateQueue / GetQueueAttributes]
+
+  %% Examples: data plane
+  DP --> S3DP[S3: PutObject / GetObject]
+  DP --> EBSDP[EBS: Read/Write volume blocks]
+  DP --> R53DP[Route 53: Answer DNS queries + Health checks]
+
+  %% Key takeaway
+  CP -.-> NOTE1["AWS describes Control Plane as administrative APIs (CRUDL)<br/>e.g., launch EC2, create S3 bucket, describe SQS queue"]
+  DP -.-> NOTE2["AWS describes Data Plane as primary service function<br/>e.g., put/get S3 objects, read/write EBS, Route 53 DNS answers"]
+```

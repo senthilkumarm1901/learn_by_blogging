@@ -22,213 +22,197 @@ I’ve also included my ChatGPT interactions, where I explored specific doubts a
 
 # 1. Introduction to AWS
 
-## 1.1 Architectue that was used in the Course
+## 1.  Introduction to AWS - The Critical Elements
 
-![](./images/main_architecture.png)
+- **Regions → AZs → Data Centers**
+    
+    - AWS Regions consist of **Availability Zones (AZs)**.
+    - AZs consist of **one or more physical data centers**.
 
-## 1.2 Course Roadmap
 
-![](./images/course_roadmap.png)
+- **Root account first steps (non‑negotiable)**
+    
+    1. Enable **MFA** on the root user immediately
+    2. Create an **IAM Administrator role**
+        - Full service creation permissions
+        - No account‑level or billing changes
+    3. Lock away root credentials
+
+- **IAM policies cannot restrict the root user**
+    
+    - Root user always has unrestricted access, regardless of IAM policies.
+
+- **Shared Responsibility Model**
+    
+    - AWS = **security _of_ the cloud**
+    - Customer = **security _in_ the cloud**
+
+- Summary: **Every activity in AWS is an API call**
+    
+    - Console clicks, CLI commands, SDK calls → all become **authenticated & authorized AWS API requests**.
+
+
 
 ---
 
-## 1.3 AWS Global Infrastructure
 
-### 1.3.1 CHOOSE THE RIGHT AWS REGION
+### Choose the Right AWS Region
 
-```{mermaid}
-graph TD;
-    A[Choose the Right AWS Region] --> B[Considerations]
-    B --> C[Latency]
-    B --> D[Price]
-    B --> E[Service Availability]
-    B --> F[Data Compliance]
+**Essential takeaway:**  
+Choose Region in this order:
 
-    C --> C1{Sensitive to Latency?}
-    C1 -->|Yes| C2[Choose a nearby Region]
-    C1 -->|No| C3[Evaluate other factors]
+1. **Compliance / data residency**
+2. **Latency**
+3. **Service availability**
+4. **Cost**
+5. **Availability & DR needs**
 
-    D --> D1{Price Variation Factors}
-    D1 -->|Local Economy| D2[Impact on pricing]
-
-    E --> E1{Service Availability Check}
-    E1 --> E2[AWS Documentation for Services]
-
-    F --> F1{Compliance Requirements}
-    F1 -->|Yes| F2[Select compliant Region]
-    F1 -->|No| F3[Proceed with other factors]
-```
-
-### 1.3.1 AVAILABILITY ZONES
-
-![](./images/availability_zones.png)
-
-- Each **AWS Region** contains multiple **Availability Zones (AZs)**.
-- An **AZ** consists of one or more **data centers** with:
-  - Redundant power
-  - Networking
-  - Connectivity
-- Data centers operate in **separate, undisclosed facilities**.
-- AZs are connected with **redundant, high-speed, low-latency links**.
-- Each AZ has a **code name**, formed by appending a **letter** to the Region code:
-  - Example: `us-east-1a` → AZ "a" in `us-east-1` (Northern Virginia Region)
-  - Example: `sa-east-1b` → AZ "b" in `sa-east-1` (São Paulo Region)
-- If a resource is in `us-east-1c`, it means it resides in **AZ "c" of the us-east-1 Region**.
-
-
-
-### 1.3.2 SCOPE AWS SERVICES
-
-```{mermaid}
-graph TD;
-    A[AWS Services Scope] --> B[Region-Scoped Services]
-    A --> C[AZ-Scoped Services]
-    D[AWS Handles Durability &<br> Availability]
-    A --> E[Global Services]
-
-    B --> D
-    D --> B1[[Amazon S3]]
-    D --> B2[[Amazon RDS Multi-AZ]]
-    D --> B3[[Amazon DynamoDB]]
-    
-    C --> D3[Customer responsible<br>for durability &<br>availability]
-    D3 --> C1[[Amazon EC2]]
-    D3 --> C2[[Amazon RDS Single-AZ]]
-    D3 --> C3[[Amazon EBS]]
-    
-    E --> D2[AWS Handles Durability &<br> Availability]
-    D2 --> E1[[AWS IAM]]
-    D2 --> E2[[AWS Route 53]]
-    D2 --> E3[[AWS CloudFront]]
-```
-
-
-### 1.3.3 MAINTAIN RESILIENCY
-
-- To ensure application availability, design for **high availability** and **resiliency**.  
-- Best practice: use **Region-scoped managed services** (they have availability and resiliency built-in).  
-- When Region-scoped services are not possible:  
-  - Replicate workloads across **multiple AZs**.  
-  - Use at least **two AZs**.  
-- If one AZ fails, the application can still run in the **second AZ**, ensuring traffic is handled.  
-
-![](./images/application_in_2_AZs.png)
+![](./images/how_to_choose_aws_region.png)
 
 ---
 
+### Availability Zones
+
+![](./images/regioin-az-datacenters.png)
+
+- Each **Region contains multiple AZs**
+- Each **AZ = one or more data centers**
+- Data centers are:
+    - Physically separate
+    - Redundantly powered and networked
+- AZs are connected by **low‑latency, high‑bandwidth links**
+- AZ names:
+    - `<region><letter>` (example: `us-east-1a`)
+    - Letter mappings differ per account
+- Resource location example:
+    - `us-east-1c` → AZ “c” inside `us-east-1`
+
+---
+
+### Scope of AWS Services
+
+![](./images/aws_scope_and_responsibility_of_services.png)
+
+**Scope summary:**
+
+- **Global services**
+
+    - Single logical control plane across AWS
+    - Example: IAM, Route 53, CloudFront
+- **Regional services**
+    
+    - Live within a Region, usually span multiple AZs
+    - Example: S3, DynamoDB, VPC, RDS Multi‑AZ
+- **Zonal services**
+    
+    - Bound to a single AZ
+    - Example: EC2, EBS, RDS Single‑AZ
+
+**Availability & durability:**
+
+- Some services are **AWS‑managed**
+- Others require **customer‑designed HA/DR**
+
+---
+
+### 1.3.3 Maintain Resiliency
+
+- Prefer **Region‑scoped managed services**
+- Otherwise:
+    - Deploy across **multiple AZs**
+    - Minimum **two AZs**
+- AZ failure ≠ application outage when designed correctly
+
+---
 
 ### 1.3.4 Security and the AWS Shared Responsibility Model
 
-`security of the cloud` (aws responsbility) versus `security in the cloud` (customer responsbility).
+#### Core distinction
 
-![](./images/shared_responsibility_model.png)
+- **AWS responsibility (security of the cloud):**
+    
+    - Physical data centers
+    - Hardware, networking
+    - Host OS and virtualization layer
+- **Customer responsibility (security in the cloud):**
+    
+    - IAM, access control
+    - Data protection & encryption
+    - Network security (SGs, NACLs)
+    - Backups and recovery
 
-#### WHAT IS AWS RESPONSIBLE FOR?
-
-![](./images/aws_responsibilities.png)
-
-- **Container services** in AWS ≠ Docker container services.  
-- AWS abstracts and manages application containers **behind the scenes**.  
-- Responsibility for managing the container platform is **shifted from customers to AWS**.  
-
-
-#### WHAT IS THE CUSTOMER RESPONSIBLE FOR?
-
-
-![](./images/customer_responsbilities.png)
-
+> AWS manages the infrastructure.  
+> You secure what you build on top of it.
 
 ---
 
 ## 1.4 Protect the AWS Root User
 
-### What’s the Big Deal About Auth?
+### Authentication vs Authorization
 
-- When configuring account access, two key terms appear often: **authentication** and **authorization**.  
-- Though basic, they are essential for proper **AWS access management**.
+- **Authentication:**  
+    “Who are you?” (passwords, MFA, tokens)
+    
+- **Authorization:**  
+    “What are you allowed to do?” (IAM policies)
+    
 
-### Understand Authentication
+---
 
-- When creating an AWS account, you log in with **email + password** to verify your identity.  
-- If credentials are correct, the system **grants access** → this is **authentication**.  
-- **Authentication** ensures the user is who they claim to be.  
-- Common methods:  
-  - **Username + password**  
-  - **Token-based authentication**  
-  - **Biometric data** (e.g., fingerprint)  
-- Authentication answers the question: **“Are you who you say you are?”**  
+### AWS Root User
 
+- Created with the AWS account
+- Has **full, unrestricted access**
+- Credentials:
+    - Email + password (console)
+    - Access keys (programmatic)
 
-### Understand Authorization
+**Critical facts:**
 
-- Once inside your AWS account, **authorization** determines what actions you can take.  
-- **Authorization** = granting users permission to access AWS resources and services.  
-- It decides whether a user can:  
-  - **Read** resources  
-  - **Edit** resources  
-  - **Delete** resources  
-  - **Create** resources  
-- Authorization answers the question: **“What actions can you perform?”**  
+- IAM policies **cannot limit root**
+- Root should never be used for daily work
 
-### What Is the AWS Root User?
+---
 
-- When you create an AWS account, you start with a **single sign-in identity**.  
-- This identity has **full access** to all AWS services and resources.  
-- It is called the **AWS root user**.  
-- You access the root user by signing in with the **email + password** used to create the account.  
+### Root User Best Practices
 
+- Enable **MFA**
+- Strong, unique password
+- **Delete root access keys**
+- Use root **only** for:
+    - Account setup
+    - Billing
+    - Rare account‑level tasks
 
-### Understand the AWS Root User Credentials
+---
 
-- The **AWS root user** has two sets of credentials:  
-  1. **Email + password** → used to sign in to the **AWS Management Console**.  
-  2. **Access keys** → used for **programmatic access** via AWS CLI or AWS API.  
+### Why MFA Matters
 
-- **Access keys** consist of two parts:  
-  - **Access key ID** (e.g., `A2lAl5EXAMPLE`)  
-  - **Secret access key** (e.g., `wJalrFE/KbEKxE`)  
+- Passwords alone are weak
+- MFA adds a second factor:
+    - Something you know
+    - Something you have
+    - Something you are
+- **Always enable MFA on root**
 
-- Both parts are required, similar to a **username + password** combination.  
-- Access keys should be treated with the **same level of security** as your email and password.  
+---
 
+## Summary: Every AWS Activity Is an API Call
 
-### Follow Best Practices When Working with the AWS Root User
+![](./images/every_aws_service_use_is_an_api_call.png)
 
-- The **root user** has complete access to:  
-  - All AWS services and resources  
-  - Billing information  
-  - Personal account information  
+- Console, CLI, SDK → **AWS API**
+- API calls are:
+    - Authenticated
+    - Authorized
+    - Evaluated by IAM
+- Understanding this explains:
+    - IAM behavior
+    - Auditing (CloudTrail)
+    - Automation (IaC, CI/CD)
+    - Security boundaries
 
-- Because of this, **do not use the root user for everyday tasks**.  
-- Instead, securely lock away the **root user credentials**.  
-- To ensure root user safety:  
-  - Enable **multi-factor authentication (MFA)**  
-  - Use the root user only for **account setup and rare administrative tasks**  
-
-
-- Choose a strong password for the root user.
-- Never share your root user password or access keys with anyone.
-- Disable or delete the access keys associated with the root user.
-- Do not use the root user for administrative tasks or everyday tasks.
-
-**When is it OK to use the AWS root user?** <br>
-There are some tasks where it makes sense to use the AWS root user. Check out the links at the end of this section to read about them.
-Link: [aws_tasks-that-require-root](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#root-user-tasks)
-
-
-### The Case for Multi-Factor Authentication
-
-- When you first log in to AWS, you use **single-factor authentication (SFA)** → usually **username + password**.  
-- SFA is vulnerable (passwords can be guessed, cracked, or stolen).  
-- **Multi-factor authentication (MFA)** adds an extra layer of security by requiring two or more methods from different categories:  
-  - **Something you know** → password, PIN  
-  - **Something you have** → one-time code from device/app  
-  - **Something you are** → biometric (fingerprint, face scan)  
-- Even if a password is compromised, MFA makes it **highly unlikely** an attacker can bypass the second factor.  
-- **Best practice:** Always enable MFA on the **AWS root user**.  
-
-
-![](./images/mfa_devices_supported.png)
+> **By understanding APIs, IAM, Regions, AZs, and responsibility boundaries — one understands AWS.**
 
 ---
 
