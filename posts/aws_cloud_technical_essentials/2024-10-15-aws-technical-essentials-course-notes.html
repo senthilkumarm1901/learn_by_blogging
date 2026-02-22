@@ -219,24 +219,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#security" id="toc-security" class="nav-link" data-scroll-target="#security">2. Security</a>
   <ul class="collapse">
-  <li><a href="#introduction-to-aws-identity-and-access-management" id="toc-introduction-to-aws-identity-and-access-management" class="nav-link" data-scroll-target="#introduction-to-aws-identity-and-access-management">2.1 Introduction to AWS Identity and Access Management</a>
+  <li><a href="#aws-security---quick-notes" id="toc-aws-security---quick-notes" class="nav-link" data-scroll-target="#aws-security---quick-notes">AWS Security - Quick Notes</a>
   <ul class="collapse">
-  <li><a href="#what-is-iam" id="toc-what-is-iam" class="nav-link" data-scroll-target="#what-is-iam">WHAT IS IAM?</a></li>
-  <li><a href="#get-to-know-the-iam-features" id="toc-get-to-know-the-iam-features" class="nav-link" data-scroll-target="#get-to-know-the-iam-features">GET TO KNOW THE IAM FEATURES</a></li>
-  <li><a href="#what-is-an-iam-user" id="toc-what-is-an-iam-user" class="nav-link" data-scroll-target="#what-is-an-iam-user">WHAT IS AN IAM USER?</a></li>
-  <li><a href="#iam-user-credentials" id="toc-iam-user-credentials" class="nav-link" data-scroll-target="#iam-user-credentials">IAM USER CREDENTIALS</a></li>
-  <li><a href="#what-is-an-iam-group" id="toc-what-is-an-iam-group" class="nav-link" data-scroll-target="#what-is-an-iam-group">WHAT IS AN IAM GROUP?</a></li>
-  <li><a href="#what-is-an-iam-policy" id="toc-what-is-an-iam-policy" class="nav-link" data-scroll-target="#what-is-an-iam-policy">WHAT IS AN IAM POLICY?</a></li>
+  <li><a href="#aws-identity-and-access-management-iam" id="toc-aws-identity-and-access-management-iam" class="nav-link" data-scroll-target="#aws-identity-and-access-management-iam">1. AWS Identity and Access Management (IAM)</a></li>
+  <li><a href="#iam-identities" id="toc-iam-identities" class="nav-link" data-scroll-target="#iam-identities">2. IAM Identities</a></li>
+  <li><a href="#iam-policies" id="toc-iam-policies" class="nav-link" data-scroll-target="#iam-policies">3. IAM Policies</a></li>
+  <li><a href="#security-best-practices" id="toc-security-best-practices" class="nav-link" data-scroll-target="#security-best-practices">4. Security Best Practices</a></li>
+  <li><a href="#federation-centralized-identity" id="toc-federation-centralized-identity" class="nav-link" data-scroll-target="#federation-centralized-identity">5. Federation &amp; Centralized Identity</a></li>
+  <li><a href="#oneline-mental-model" id="toc-oneline-mental-model" class="nav-link" data-scroll-target="#oneline-mental-model">One‑Line Mental Model</a></li>
+  </ul></li>
+  <li><a href="#deep-dive-into-iam-policy" id="toc-deep-dive-into-iam-policy" class="nav-link" data-scroll-target="#deep-dive-into-iam-policy">Deep Dive into IAM Policy</a>
+  <ul class="collapse">
   <li><a href="#iam-policy-examples" id="toc-iam-policy-examples" class="nav-link" data-scroll-target="#iam-policy-examples">IAM POLICY EXAMPLES</a></li>
   <li><a href="#understand-policy-structure" id="toc-understand-policy-structure" class="nav-link" data-scroll-target="#understand-policy-structure">UNDERSTAND POLICY STRUCTURE</a></li>
-  </ul></li>
-  <li><a href="#role-based-access-in-aws" id="toc-role-based-access-in-aws" class="nav-link" data-scroll-target="#role-based-access-in-aws">2.2 Role Based Access in AWS</a>
-  <ul class="collapse">
-  <li><a href="#summarizing-the-sections-2.1-and-2.2" id="toc-summarizing-the-sections-2.1-and-2.2" class="nav-link" data-scroll-target="#summarizing-the-sections-2.1-and-2.2">2.3 Summarizing the sections 2.1 and 2.2:</a></li>
+  <li><a href="#summarizing-security" id="toc-summarizing-security" class="nav-link" data-scroll-target="#summarizing-security">Summarizing Security</a></li>
   </ul></li>
   <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><img src="./images/different_groups_different_permissions.png" class="img-fluid"></a>
   <ul class="collapse">
-  <li><a href="#week-1s-quiz" id="toc-week-1s-quiz" class="nav-link" data-scroll-target="#week-1s-quiz">2.4 Week 1’s Quiz:</a></li>
+  <li><a href="#week-1s-quiz" id="toc-week-1s-quiz" class="nav-link" data-scroll-target="#week-1s-quiz">Week 1’s Quiz:</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#compute-as-a-service" id="toc-compute-as-a-service" class="nav-link" data-scroll-target="#compute-as-a-service">3. Compute as a Service</a>
@@ -486,7 +486,7 @@ Choose Region in this order:</p>
 </section>
 <section id="availability-zones" class="level3">
 <h3 class="anchored" data-anchor-id="availability-zones">Availability Zones</h3>
-<p><img src="./images/regioin-az-datacenters.png" class="img-fluid"></p>
+<p><img src="./images/regioin-az-datacenters.png" class="img-fluid" style="width:100.0%"></p>
 <ul>
 <li>Each <strong>Region contains multiple AZs</strong></li>
 <li>Each <strong>AZ = one or more data centers</strong></li>
@@ -691,108 +691,114 @@ You secure what you build on top of it.</p>
 </section>
 <section id="security" class="level1">
 <h1>2. Security</h1>
-<section id="introduction-to-aws-identity-and-access-management" class="level2">
-<h2 class="anchored" data-anchor-id="introduction-to-aws-identity-and-access-management">2.1 Introduction to AWS Identity and Access Management</h2>
-<section id="what-is-iam" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-iam">WHAT IS IAM?</h3>
-<ul>
-<li><strong>IAM (Identity and Access Management)</strong> is a web service for managing access to AWS accounts and resources.<br>
-</li>
-<li>Provides centralized control of:
-<ul>
-<li><strong>Authentication</strong> → who/what can enter the account<br>
-</li>
-<li><strong>Authorization</strong> → who/what can use specific resources<br>
-</li>
-</ul></li>
-<li>Benefits of IAM:
-<ul>
-<li>Share access without exposing <strong>root credentials</strong> (email/password or access keys)<br>
-</li>
-<li>Grant <strong>granular permissions</strong> so users/services only access what they need<br>
-</li>
-<li>Example: give a user <strong>read-only access</strong> to specific actions/resources in one service</li>
-</ul></li>
-</ul>
-</section>
-<section id="get-to-know-the-iam-features" class="level3">
-<h3 class="anchored" data-anchor-id="get-to-know-the-iam-features">GET TO KNOW THE IAM FEATURES</h3>
-<ul>
-<li><strong>IAM is global</strong> → not tied to a specific Region (accessible from any Region).<br>
-</li>
-<li><strong>Integrated by default</strong> with many AWS services.<br>
-</li>
-<li>Supports <strong>password policies</strong> (complexity rules, rotation).<br>
-</li>
-<li>Supports <strong>MFA</strong> for stronger security.<br>
-</li>
-<li>Supports <strong>identity federation</strong> → users can access AWS with existing credentials (e.g., corporate network, identity provider).<br>
-</li>
-<li><strong>Free to use</strong> → no additional charge for IAM.</li>
-</ul>
 <p><img src="./images/aws_iam_user_role_groups_policies.jpg" class="img-fluid"> Source: AWS Builder</p>
-</section>
-<section id="what-is-an-iam-user" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-an-iam-user">WHAT IS AN IAM USER?</h3>
+<p>Below is a <strong>bare‑minimum, distilled version</strong> of your AWS Security notes — keeping only the concepts that actually matter long‑term and removing all repetition and teaching detail.</p>
+<hr>
+<section id="aws-security---quick-notes" class="level2">
+<h2 class="anchored" data-anchor-id="aws-security---quick-notes">AWS Security - Quick Notes</h2>
+<section id="aws-identity-and-access-management-iam" class="level3">
+<h3 class="anchored" data-anchor-id="aws-identity-and-access-management-iam">1. AWS Identity and Access Management (IAM)</h3>
 <ul>
-<li>An <strong>IAM user</strong> represents a person or service that interacts with AWS.<br>
-</li>
-<li>Defined within your AWS account → all activity is <strong>billed to your account</strong>.<br>
-</li>
-<li>IAM users can <strong>sign in</strong> to access AWS resources.<br>
-</li>
-<li>You can create <strong>multiple users</strong> as needed (e.g., team members on a project).<br>
-</li>
-<li>Each user should have their <strong>own login credentials</strong> → prevents credential sharing.</li>
+<li><strong>IAM controls authentication and authorization</strong> for AWS accounts and resources.</li>
+<li>Lets you <strong>share access without using root credentials</strong>.</li>
+<li>Provides <strong>fine‑grained, explicit permissions</strong>.</li>
+<li><strong>IAM is global</strong> (not Region‑specific).</li>
+<li>Supports <strong>MFA, password policies, and identity federation</strong>.</li>
+<li>IAM itself is <strong>free</strong>.</li>
 </ul>
+<hr>
 </section>
-<section id="iam-user-credentials" class="level3">
-<h3 class="anchored" data-anchor-id="iam-user-credentials">IAM USER CREDENTIALS</h3>
+<section id="iam-identities" class="level3">
+<h3 class="anchored" data-anchor-id="iam-identities">2. IAM Identities</h3>
 <ul>
-<li>An <strong>IAM user</strong> has a name and a set of credentials.<br>
-</li>
-<li>When creating a user, you can provide:
+<li><strong>IAM User</strong>
 <ul>
-<li><strong>Console access</strong> → username + password<br>
-</li>
-<li><strong>Programmatic access</strong> → access keys for AWS CLI or AWS API<br>
-</li>
+<li>Represents a person or service.</li>
+<li>Has permanent credentials (console and/or programmatic).</li>
+<li>Should <strong>not share credentials</strong>.</li>
 </ul></li>
-<li><strong>IAM user credentials</strong> are permanent until rotated by admins.<br>
-</li>
-<li>Permissions can be granted directly to users, but:
+<li><strong>IAM Group</strong>
 <ul>
-<li>Works only for a few users<br>
-</li>
-<li>Becomes hard to manage at scale (e.g., thousands of users)<br>
-</li>
+<li>Collection of users.</li>
+<li>Permissions are assigned <strong>to groups, not individuals</strong>.</li>
+<li>Users can belong to multiple groups.</li>
 </ul></li>
-<li><strong>Best practice:</strong> Group IAM users and assign permissions at the <strong>group level</strong>.</li>
-</ul>
-</section>
-<section id="what-is-an-iam-group" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-an-iam-group">WHAT IS AN IAM GROUP?</h3>
+<li><strong>IAM Role</strong>
 <ul>
-<li>An <strong>IAM group</strong> is a collection of IAM users.<br>
-</li>
-<li>All users in a group <strong>inherit the group’s permissions</strong> → easier, scalable permission management.<br>
-</li>
-<li><strong>Best practice:</strong> Organize groups by job function (e.g., developers, security, admins).</li>
+<li>No long‑term credentials.</li>
+<li>Uses <strong>temporary credentials</strong>.</li>
+<li>Preferred for:
+<ul>
+<li>AWS services</li>
+<li>Federated users</li>
+<li>Cross‑account access</li>
+</ul></li>
+</ul></li>
 </ul>
-<p>Examples:<br>
-- New developer joins → add to <strong>developer group</strong> (no need to assign permissions individually).<br>
-- User changes role → move from one group to another (permissions updated automatically).</p>
-<p>Key features of groups:<br>
-- A group can have <strong>many users</strong>.<br>
-- A user can belong to <strong>multiple groups</strong>.<br>
-- Groups <strong>cannot belong</strong> to other groups.</p>
-<p>⚡ Contrast with root user:<br>
-- <strong>Root user</strong> = full access to all resources by default.<br>
-- <strong>New IAM users/groups/roles</strong> = <strong>no permissions by default</strong> until explicitly granted.<br>
-- Permissions in IAM are granted through <strong>IAM policies</strong>.</p>
+<hr>
 </section>
-<section id="what-is-an-iam-policy" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-an-iam-policy">WHAT IS AN IAM POLICY?</h3>
+<section id="iam-policies" class="level3">
+<h3 class="anchored" data-anchor-id="iam-policies">3. IAM Policies</h3>
+<ul>
+<li><strong>Policies define permissions</strong> (allow/deny).</li>
+<li>Attached to <strong>users, groups, or roles</strong>.</li>
+<li>Evaluated on <strong>every AWS API call</strong>.</li>
+<li>Core elements:
+<ul>
+<li><code>Effect</code> (Allow / Deny)</li>
+<li><code>Action</code></li>
+<li><code>Resource</code></li>
+</ul></li>
+<li><code>*</code> on action and resource = <strong>full access</strong>.</li>
+<li><strong>Explicit deny always wins</strong>.</li>
+</ul>
+<hr>
+</section>
+<section id="security-best-practices" class="level3">
+<h3 class="anchored" data-anchor-id="security-best-practices">4. Security Best Practices</h3>
+<ul>
+<li><strong>Lock down the root user</strong>
+<ul>
+<li>Enable MFA</li>
+<li>Delete root access keys</li>
+<li>Never use root for daily work</li>
+</ul></li>
+<li><strong>Least privilege</strong>
+<ul>
+<li>Start with minimal access</li>
+<li>Grant only what is required</li>
+</ul></li>
+<li><strong>Prefer roles over users</strong>
+<ul>
+<li>Avoid long‑lived access keys</li>
+<li>Reduce blast radius of credential leaks</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="federation-centralized-identity" class="level3">
+<h3 class="anchored" data-anchor-id="federation-centralized-identity">5. Federation &amp; Centralized Identity</h3>
+<ul>
+<li>Use an <strong>Identity Provider (IdP)</strong> when possible.</li>
+<li>Grant access via <strong>IAM roles</strong>, not IAM users.</li>
+<li><strong>AWS IAM Identity Center (SSO)</strong>:
+<ul>
+<li>Central user &amp; permission management</li>
+<li>Works across multiple AWS accounts</li>
+<li>Integrates with external IdPs</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="oneline-mental-model" class="level3">
+<h3 class="anchored" data-anchor-id="oneline-mental-model">One‑Line Mental Model</h3>
+<blockquote class="blockquote">
+<p><strong>IAM decides <em>who</em> can call <em>which AWS APIs</em> on <em>which resources</em>.</strong></p>
+</blockquote>
+</section>
+</section>
+<section id="deep-dive-into-iam-policy" class="level2">
+<h2 class="anchored" data-anchor-id="deep-dive-into-iam-policy">Deep Dive into IAM Policy</h2>
 <ul>
 <li><strong>IAM policies</strong> manage access and permissions to AWS services/resources.<br>
 </li>
@@ -807,7 +813,6 @@ You secure what you build on top of it.</p>
 </ul></li>
 <li>Example: A developer in the <strong>developers group</strong> → AWS checks both the <strong>group policies</strong> and the <strong>user’s policies</strong> to decide allow/deny.</li>
 </ul>
-</section>
 <section id="iam-policy-examples" class="level3">
 <h3 class="anchored" data-anchor-id="iam-policy-examples">IAM POLICY EXAMPLES</h3>
 <p>Most policies are stored in AWS as JSON documents with several policy elements. Take a look at the following example of what providing admin access through an IAM identity-based policy looks like.</p>
@@ -870,213 +875,10 @@ You secure what you build on top of it.</p>
 <h3 class="anchored" data-anchor-id="understand-policy-structure">UNDERSTAND POLICY STRUCTURE</h3>
 <p>When creating a policy, it is required to have each of the following elements inside a policy statement.</p>
 <p><img src="./images/iam_policy_3_essential_elements.png" class="img-fluid"></p>
-<hr>
 </section>
-</section>
-<section id="role-based-access-in-aws" class="level2">
-<h2 class="anchored" data-anchor-id="role-based-access-in-aws">2.2 Role Based Access in AWS</h2>
-<ul>
-<li><strong>Lock down the root user</strong>
-<ul>
-<li>Don’t share root credentials.<br>
-</li>
-<li>Delete root access keys if possible.<br>
-</li>
-<li>Enable MFA on the root account.</li>
-</ul></li>
-<li><strong>Follow the principle of least privilege</strong>
-<ul>
-<li>Grant only the permissions required to perform a specific job.<br>
-</li>
-<li>Start with minimum access, then add permissions as needed.</li>
-</ul></li>
-<li><strong>Use IAM appropriately</strong>
-<ul>
-<li>IAM secures access within a single AWS account (users, groups, roles).<br>
-</li>
-<li>Not for website sign-in/sign-up or OS/network security.</li>
-</ul></li>
-<li><strong>Use IAM roles when possible</strong>
-<ul>
-<li>Roles provide temporary credentials (15 min – 36 hrs).<br>
-</li>
-<li>Easier to manage than long-term IAM user credentials.<br>
-</li>
-<li>Reduces risk from leaked/stale access keys.</li>
-</ul></li>
-<li><strong>Consider using an Identity Provider (IdP)</strong>
-<ul>
-<li>Centralizes identity management across multiple AWS accounts.<br>
-</li>
-<li>Use IAM roles to grant permissions to federated identities.<br>
-</li>
-<li>Example: manage an employee once in the IdP instead of duplicating IAM users across accounts.</li>
-</ul></li>
-<li><strong>Consider AWS IAM Identity Center</strong>
-<ul>
-<li>Provides single sign-on (SSO) for AWS accounts and apps.<br>
-</li>
-<li>Lets you create users, groups, and assign permissions centrally.<br>
-</li>
-<li>Can sync with third-party IdPs, reducing duplication.<br>
-</li>
-<li>Separates identity management from AWS for added security.</li>
-</ul></li>
-</ul>
-<hr>
-<section id="summarizing-the-sections-2.1-and-2.2" class="level3">
-<h3 class="anchored" data-anchor-id="summarizing-the-sections-2.1-and-2.2">2.3 Summarizing the sections 2.1 and 2.2:</h3>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph TD;
-    A[Security in AWS] --&gt; B[AWS Identity&lt;br&gt; and Access Management&lt;br&gt;IAM]
-    B --&gt; C[What is IAM?]
-    B --&gt; D[Features of IAM]
-    B --&gt; E[IAM User]
-    B --&gt; F[IAM Group]
-    B --&gt; G[IAM Policy]
-    B --&gt; H[Role-Based Accesses&lt;br&gt; for AWS Services]
-    C --&gt; C1[Manage access &lt;br&gt;to AWS resources]
-    C --&gt; C2[Centralized authentication&lt;br&gt; and authorization]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<hr>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph TD;
-    A[Security in AWS] --&gt; B[AWS Identity&lt;br&gt; and Access Management&lt;br&gt;IAM]
-    B --&gt; C[What is IAM?]
-    B --&gt; D[Features of IAM]
-    B --&gt; E[IAM User]
-    B --&gt; F[IAM Group]
-    B --&gt; G[IAM Policy]
-    B --&gt; H[Role-Based Accesses&lt;br&gt; for AWS Services]
-    D --&gt; D1[Global service]
-    D --&gt; D2[Integrated with AWS services]
-    D --&gt; D3[Password policies]
-    D --&gt; D4[MFA support]
-    D --&gt; D5[Identity federation]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<hr>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph TD;
-    A[Security in AWS] --&gt; B[AWS Identity&lt;br&gt; and Access Management&lt;br&gt;IAM]
-    B --&gt; D[Features of IAM]
-    B --&gt; E[IAM User]
-    B --&gt; F[IAM Group]
-    B --&gt; G[IAM Policy]
-    B --&gt; H[Role-Based Accesses&lt;br&gt; for AWS Services]
-    E --&gt; E1[Represents a &lt;br&gt;person]
-    E --&gt; E2[User credentials -&lt;br&gt; Console and&lt;br&gt; programmatic access]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<hr>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph TD;
-    A[Security in AWS] --&gt; B[AWS Identity&lt;br&gt; and Access Management&lt;br&gt;IAM]
-    B --&gt; D[Features of IAM]
-    B --&gt; E[IAM User]
-    B --&gt; F[IAM Group]
-    B --&gt; G[IAM Policy]
-    B --&gt; F[IAM Group]
-    B --&gt; H[Role-Based Accesses&lt;br&gt; for AWS Services]
-    F --&gt; F1[Collection of &lt;br&gt;users inheriting permissions]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<hr>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph TD;
-    A[Security in AWS] --&gt; B[AWS Identity&lt;br&gt; and Access Management&lt;br&gt;IAM]
-    B --&gt; D[Features of IAM]
-    B --&gt; E[IAM User]
-    B --&gt; F[IAM Group]
-    B --&gt; G[IAM Policy]
-    B --&gt; F[IAM Group]
-    B --&gt; H[Role-Based Accesses&lt;br&gt; for AWS Services]
-    G --&gt; G1[JSON documents for access management]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<hr>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph TD;
-    A[Security in AWS] --&gt; B[AWS Identity&lt;br&gt; and Access Management&lt;br&gt;IAM]
-    B --&gt; D[Features of IAM]
-    B --&gt; E[IAM User]
-    B --&gt; F[IAM Group]
-    B --&gt; G[IAM Policy]
-    B --&gt; F[IAM Group]
-    B --&gt; H[Role-Based Accesses&lt;br&gt; for AWS Services]
-    A --&gt; H[Role-Based Access in AWS]
-    H --&gt; H1[Lock down the AWS root user]
-    H --&gt; H2[Follow the principle of least privilege]
-    H --&gt; H3[Use IAM appropriately]
-    H --&gt; H4[Use IAM roles when possible]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<hr>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph TD;
-    A[Another Security Service &lt;br&gt;in AWS]
-    A --&gt; I[Identity Providers&lt;br&gt; and&lt;br&gt; AWS IAM Identity Center]
-    I --&gt; I1[External &lt;br&gt; Identity Provider IdP]
-    I --&gt; I2[AWS IdP -&lt;br&gt;IAM Identity Center advantages]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<section id="summarizing-security" class="level3">
+<h3 class="anchored" data-anchor-id="summarizing-security">Summarizing Security</h3>
+<p><img src="./images/security_summary.png" class="img-fluid"></p>
 <hr>
 <section id="different-types-of-aws-iam-users" class="level4">
 <h4 class="anchored" data-anchor-id="different-types-of-aws-iam-users">Different types of AWS IAM Users</h4>
@@ -1152,7 +954,7 @@ You secure what you build on top of it.</p>
 <hr>
 </section>
 <section id="week-1s-quiz" class="level3">
-<h3 class="anchored" data-anchor-id="week-1s-quiz">2.4 Week 1’s Quiz:</h3>
+<h3 class="anchored" data-anchor-id="week-1s-quiz">Week 1’s Quiz:</h3>
 <p><a href="https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w1-%20Amazon%20Web%20Services%20(AWS)/Week%201%20Quiz%20_%20Coursera.pdf">A GitHub Source for Week 1 Quiz</a></p>
 <hr>
 </section>
