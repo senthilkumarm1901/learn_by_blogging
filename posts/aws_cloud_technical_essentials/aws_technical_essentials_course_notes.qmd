@@ -1246,10 +1246,10 @@ Resource link (as provided): [Storage_quiz](https://github.com/salimt/Courses-/b
 
 # 6. Databases in AWS
 
-## 6.1 My ChatGPT Interactions on Databases in AWS
 
-### 6.1.1 Q) What is the difference between database, data warehouse and data lake. Explain with examples from AWS. 
+## Databases in AWS
 
+### Database vs Data Warehouse vs Data Lake
 
 ```{mermaid}
 flowchart TD
@@ -1273,128 +1273,37 @@ flowchart TD
   A1 --> P1 --> E1
   A2 --> P2 --> E2
   A3 --> P3 --> E3   
+
 ```
 
-The terms **database**, **data warehouse**, and **data lake** all refer to systems for managing and storing data, but they serve different purposes and are optimized for different types of data and use cases. Here’s a breakdown, along with AWS examples:
+A quick way to choose the right “data home” in AWS:
 
-#### 1. **Database**  
-- **Purpose:** A **database** is designed to store structured data that can be easily queried and updated. It's typically used for transactional processing (OLTP: Online Transaction Processing) where you need to manage day-to-day operations like inserts, updates, and deletes efficiently.
-  
-- **Data Type:** Structured data (e.g., relational data with tables, rows, and columns).
-  
-- **Use Cases:** Applications like inventory management, customer management, e-commerce websites, or any app that involves a lot of concurrent, real-time transactions.
+- A **database** is optimized for application transactions and frequent reads/writes (OLTP). Common AWS picks are **Amazon RDS** (relational) and **Amazon DynamoDB** (NoSQL).
+- A **data warehouse** is optimized for analytics across large, structured datasets (OLAP). In AWS, this is commonly **Amazon Redshift**.
+- A **data lake** is a flexible storage layer for raw structured, semi-structured, and unstructured data. In AWS, this is typically **Amazon S3**, queried/processed later with services like Athena/Glue/EMR.
 
-- **AWS Example:** 
-  - **Amazon RDS (Relational Database Service):** Supports databases like MySQL, PostgreSQL, SQL Server, and Oracle. It's managed, which means AWS takes care of backups, patching, and scaling.
-  - **Amazon DynamoDB:** A NoSQL database for high-speed, low-latency performance, often used for large-scale applications that require flexible data models.
+| Feature         | Database (RDS/DynamoDB)          | Data Warehouse (Redshift)      | Data Lake (S3)                            |
+| --------------- | -------------------------------- | ------------------------------ | ----------------------------------------- |
+| **Primary Use** | Transactional (OLTP)             | Analytical (OLAP)              | Store raw data, Big Data                  |
+| **Data Type**   | Structured                       | Structured, Semi-structured    | Structured, Semi-structured, Unstructured |
+| **Processing**  | Real-time transactions           | Aggregated, Complex queries    | Data exploration, batch processing        |
+| **AWS Service** | Amazon RDS, DynamoDB             | Amazon Redshift                | Amazon S3                                 |
+| **Example**     | E-commerce apps, customer orders | Business analytics, dashboards | Raw data for analytics, ML                |
 
-**Example Use Case:** An e-commerce website storing customer orders and product information in **Amazon RDS** for efficient querying and real-time updates.
+### Are AWS databases always on EC2? What’s with `db.xxx`?
 
----
+- Many AWS databases are **managed services**, where you don’t manage servers directly.
+- Some managed services still use underlying compute, but you interact through the service layer, not the EC2 instances.
+- The `db.` prefix commonly shows up as an **RDS/Aurora instance class naming convention** (example style: `db.t3.medium`), not as a universal AWS database naming rule.
 
-#### 2. **Data Warehouse**  
-- **Purpose:** A **data warehouse** is optimized for **analytical processing** (OLAP: Online Analytical Processing) where large volumes of structured data are aggregated and analyzed. It is ideal for complex queries, reporting, and business intelligence (BI) tasks.
+### PostgreSQL on AWS: self-managed vs managed
 
-- **Data Type:** Primarily structured data, although it may support semi-structured data (e.g., JSON or Parquet formats). Data is typically cleaned and organized before loading into a data warehouse.
+- **Self-managed on EC2** gives full control (install/patch/backup/tune yourself), useful for highly custom setups.
+- **Managed PostgreSQL** (Amazon RDS for PostgreSQL or Aurora PostgreSQL-compatible) reduces operational overhead with built-in management features, at the cost of some constraints on customization.
 
-- **Use Cases:** Business analytics, trend analysis, data mining, generating reports or dashboards across large data sets (e.g., sales trends across regions or customer segments).
-
-- **AWS Example:** 
-  - **Amazon Redshift:** A fully managed, petabyte-scale data warehouse designed for fast query execution across large datasets. Redshift is built for complex queries and analytics, and it integrates well with BI tools like Amazon QuickSight.
-
-**Example Use Case:** A retail company uses **Amazon Redshift** to analyze sales data across regions to understand seasonal buying trends and forecast future demand.
-
----
-
-#### 3. **Data Lake**  
-- **Purpose:** A **data lake** is a centralized repository that allows you to store **structured, semi-structured, and unstructured** data at any scale. It’s highly flexible and is often used to store raw data until it’s needed for analysis. It supports various formats (e.g., JSON, CSV, images, video, text logs) and allows for big data analytics and machine learning.
-
-- **Data Type:** Structured, semi-structured, and unstructured data (e.g., documents, audio, videos, logs, sensor data).
-
-- **Use Cases:** Data exploration, machine learning, big data analytics, and situations where you want to store a vast array of data types before deciding what analysis or processing you need.
-
-- **AWS Example:**
-  - **Amazon S3 (Simple Storage Service):** Typically used to build a data lake in AWS. You can store any type of data in its native format and then later analyze it using other AWS services like AWS Glue (for data transformation), Amazon Athena (for querying), or Amazon EMR (for big data processing).
-
-**Example Use Case:** A healthcare company uses **Amazon S3** to store vast amounts of raw patient data, including medical images, doctor notes, and sensor data from wearables. They later process this data for machine learning models and analytics.
-
----
-
-#### Key Differences:
-| Feature         | Database (RDS/DynamoDB)         | Data Warehouse (Redshift)         | Data Lake (S3)                |
-|-----------------|---------------------------------|-----------------------------------|-------------------------------|
-| **Primary Use**  | Transactional (OLTP)            | Analytical (OLAP)                 | Store raw data, Big Data       |
-| **Data Type**    | Structured                      | Structured, Semi-structured       | Structured, Semi-structured, Unstructured |
-| **Processing**   | Real-time transactions          | Aggregated, Complex queries       | Data exploration, batch processing |
-| **AWS Service**  | Amazon RDS, DynamoDB            | Amazon Redshift                   | Amazon S3                      |
-| **Example**      | E-commerce apps, customer orders| Business analytics, dashboards    | Raw data for analytics, ML     |
-
-#### Summary of AWS Services:
-- **Database** → **Amazon RDS** for relational databases or **DynamoDB** for NoSQL databases.
-- **Data Warehouse** → **Amazon Redshift** for OLAP and analytical workloads.
-- **Data Lake** → **Amazon S3** to store large datasets in various formats for big data analytics.
-
-
-
-
-### 6.1.2 Q) Are all AWS Databases in EC2 instances? Are they named as db.xxx ?
-
-
-No, **not all AWS databases run on EC2 instances**, and they are **not named as `db.xxx` by default**. While some database services in AWS may use EC2 instances under the hood, many of them are fully managed services, meaning you don't need to worry about the underlying EC2 infrastructure. Let me explain further:
-
-#### 1. **Managed Databases** (Not necessarily tied to EC2 instances)
-AWS provides **fully managed databases**, which abstract away the underlying infrastructure, including EC2 instances, networking, and scaling. With these services, AWS handles most operational tasks like backups, patching, scaling, and failover.
-
-Here are some examples of **fully managed AWS database services**:
-- **Amazon RDS (Relational Database Service):** A managed service for relational databases like MySQL, PostgreSQL, Oracle, SQL Server, and MariaDB. It is designed to handle the operational management of these databases, though the actual database may run on EC2 instances in the background. As a user, you don’t have direct access to the underlying EC2 instances.
-  
-- **Amazon Aurora:** A high-performance, MySQL- and PostgreSQL-compatible relational database built for the cloud. Like RDS, Aurora abstracts away the EC2 instances, providing a managed environment.
-
-- **Amazon DynamoDB:** A fully managed NoSQL database that scales horizontally. It doesn’t require EC2 instances, and you don’t need to manage the underlying servers or instances.
-
-- **Amazon Redshift:** A managed data warehouse that allows you to run analytics on structured data. While Redshift clusters are backed by EC2 instances, you manage them at a higher level through the Redshift interface.
-
-- **Amazon DocumentDB:** A fully managed MongoDB-compatible database that abstracts away the underlying EC2 instances.
-
-In these fully managed services, the database instances are **not explicitly named as `db.xxx`**; instead, you interact with these services through their respective APIs or consoles without seeing the underlying infrastructure. However, you may define instance identifiers or cluster names like "db1" when provisioning databases, but this is customizable.
-
-#### 2. **Self-Managed Databases on EC2** (Named as `db.t3.medium`, etc.)
-If you **self-manage** a database on an EC2 instance, then you directly control the EC2 infrastructure. In this case, you would need to handle database installation, patching, backups, scaling, and networking yourself. You could launch a database server (e.g., MySQL, PostgreSQL) on an EC2 instance, and here you would see the EC2 instance types named in the `t3`, `m5`, `db.m6g`, or similar families.
-
-Some instance types in RDS do use naming patterns like `db.m6g.large`, but this is specific to Amazon RDS and Aurora, which provide a **managed environment on top of EC2**. For example:
-- `db.t3.medium` (RDS instance) → This is an instance class used for databases in Amazon RDS, where `t3.medium` is an EC2 instance type optimized for general-purpose workloads, but **the naming convention** here indicates that it's used for a database (`db.` prefix).
-
-### **Summary**:
-- **Not all AWS databases** run on EC2 instances. Services like DynamoDB and Aurora abstract the infrastructure so you don't manage EC2s directly.
-- In **Amazon RDS**, the underlying instances may be named as `db.xxx` (e.g., `db.t3.medium`), but this is specific to the RDS service.
-- If you're running a database **directly on EC2**, you choose standard EC2 instance types like `t3.medium`, and you’re responsible for managing the database yourself.
-
----
-
-### 6.1.3 Q) So a PostgreSQL DB can be either Self-Managed Databases on EC2 or AWS Managed ?
-
-Yes, in AWS, a PostgreSQL database can be deployed in two primary ways:
-
-1. **Self-Managed on EC2**:
-   - **Description**: You launch a PostgreSQL database on an EC2 instance, essentially creating a self-managed environment where you control the entire database stack.
-   - **Responsibilities**: You handle **installation, configuration, patching, backup, scaling,** and **security management**.
-   - **Flexibility**: Full control over the PostgreSQL settings, customizations, and extensions.
-   - **Use Case**: Ideal if you need custom configurations or PostgreSQL plugins that aren’t supported in managed services, or if you want to control the environment entirely.
-
-2. **AWS Managed PostgreSQL (Amazon RDS or Amazon Aurora)**:
-   - **Description**: Amazon RDS for PostgreSQL and Amazon Aurora (PostgreSQL-compatible) are fully managed database services that AWS operates.
-   - **Responsibilities**: AWS handles **provisioning, patching, backup, scaling,** and **automatic failover**. You only need to manage data, schema, and performance tuning.
-   - **Flexibility**: Limited to configurations and extensions that AWS supports.
-   - **Use Case**: Best for users who prefer a managed, highly available, and scalable PostgreSQL solution without the administrative overhead.
-
-So, **self-managed on EC2** gives you complete control and flexibility, whereas **AWS-managed services** offer ease of use and reduced operational burden at the cost of some customization flexibility.
-
----
-
-## 6.2. Managed Databases in Amazon
+## Managed databases in AWS
 
 ```{mermaid}
-
 flowchart TD
   DB((Databases))
   ADB[Databases in AWS]   
@@ -1461,7 +1370,9 @@ flowchart TD
   MAAP2 --> BOTH3
 ```
 
-## 6.3 Decisions to make when choosing a DB
+> * In AWS one would generally choose AWS managed options like **RDS/Aurora/DynamoDB/Redshift** than installing and operating databases yourself on **EC2**.
+
+## Decisions to make when choosing a DB
 
 ```{mermaid}
 flowchart TB
@@ -1510,21 +1421,50 @@ flowchart TB
   COMPUTE1 --> TYPE3
 ```
 
-## 6.4 Where are Database Instances placed?
+Practical selection checklist:
+
+- Pick the **engine** based on compatibility, licensing, and operational preference (commercial vs open-source vs AWS-native).
+- Pick the **storage** and **compute class** based on workload shape:
+    - “Standard” for balanced workloads
+    - “Memory optimized” for heavy caching/large working sets
+    - “Burstable” for spiky, low-to-moderate average usage
+- Align storage media (SSD/HDD) with latency and throughput needs.
+
+## Where database instances sit in AWS networking
 
 ### RDS lies inside VPC Private Subnet
+
 ![](./images/dbs_inside_private_subnet.png)
 
+Amazon RDS is **deployed into your VPC** (into subnets you choose via a DB subnet group), so it behaves like a **VPC resource**: it gets private IPs and is governed by **VPC routing + security groups**. 
+
+- The primary control plane for “who can connect” is the **VPC security group** attached to the DB instance. You typically allow inbound DB ports only from your app tier’s security group (or a tight CIDR), not from the open internet. 
+- If the DB is **not publicly accessible**, clients from outside the VPC need a private connectivity path (VPN/Direct Connect/Client VPN, or other private network patterns). 
+### Dynamo DB lies outside VPC 
 
 
-### Dynamo DB lies outside VPC
+- **DynamoDB is a regional AWS service, not placed “inside” your VPC** like RDS. Your app talks to DynamoDB’s regional endpoint over HTTPS.
+  
+- A **VPC endpoint is not required** if your compute already has a path to reach AWS public service endpoints (for example: Lambda not in a VPC, or instances in a public subnet, or private subnets with NAT/egress). In those cases, calls to DynamoDB work without you creating an endpoint.
+- A **VPC endpoint becomes important when your compute runs inside a VPC private subnet and you want private connectivity without NAT/Internet egress**. AWS explicitly documents that a **gateway VPC endpoint** lets you access DynamoDB from your VPC “without requiring an internet gateway or NAT device” and that you add it as a route-table target. 
+- AWS guidance for Lambda-in-VPC patterns similarly calls out creating a **gateway endpoint for DynamoDB** and updating the private subnet route table to use it. 
+- From a security best-practice angle, your internal security notes also recommend **using VPC endpoints to access DynamoDB**. 
+
+
+- DynamoDB doesn’t live in your VPC.
+- If you need **private subnet → DynamoDB** access _without_ NAT/internet egress (and often to reduce NAT cost / keep traffic on AWS network), use a **DynamoDB VPC endpoint** (gateway endpoint is the common choice for in-VPC access). 
 
 ![](./images/dynamo_DB_lies_outside_vpc.png)
 
 
-Source: [AWS rePost](https://repost.aws/questions/QUsOBNlERPQZejZsyo3rtxGg/lambda-in-private-subnet-cannot-reach-dynamodb)
+- Use **no endpoint** when your runtime already has outbound access to AWS public endpoints.
+- Use a **gateway VPC endpoint** when your runtime is in **private subnets** and you want **no NAT/IGW dependency** for DynamoDB traffic.
 
-## 6.5 Backups in RDS
+High-level intuition:
+
+- **RDS** is deployed into your VPC (commonly private subnets).
+- **DynamoDB** is a regional managed service that’s not “inside” your VPC like an EC2 instance; private access patterns typically rely on networking constructs 
+## Backups in RDS
 
 ```{mermaid}
 flowchart TD
@@ -1551,7 +1491,14 @@ flowchart TD
   B --> Q --> ANS
 ```
 
-## 6.6 Redundancy in RDS via Multiple Avalaibility Zones
+
+Essentials:
+
+- **Automated backups** support point-in-time recovery within the configured retention window.
+- **Manual snapshots** are useful for keeping backups longer than the automated retention period.
+- A practical approach is using **both**: automated backups for operational recovery, snapshots for long-term retention or milestones.
+
+## Redundancy in RDS via Multiple Availability Zones
 
 ```{mermaid}
 flowchart TD
@@ -1576,14 +1523,12 @@ flowchart TD
   style subnetB fill:#FFFF00,stroke:#333,stroke-width:2px
 ```
 
+- Multi-AZ deployments aim at improved resilience through cross-AZ redundancy.
 - Multi AZ deployment ensure `High Availability` and `High Durability`
 
----
+## Encrypting EBS volumes used by EC2 workloads
 
-## 6.7 Encryption of EBS Volumes
-
-
-> Consider this scenario: You are a cloud engineer who works at a company that uses Amazon Elastic Compute Cloud (Amazon EC2) instances and Amazon Elastic Block Store (Amazon EBS) volumes. The company is currently using unencrypted EBS volumes. You are tasked with migrating the data on these unencrypted EBS volumes to encrypted EBS volumes. What steps can you take to migrate the data to encrypted EBS volumes? 
+> Consider this scenario: You are a cloud engineer who works at a company that uses Amazon Elastic Compute Cloud (Amazon EC2) instances and Amazon Elastic Block Store (Amazon EBS) volumes. The company is currently using unencrypted EBS volumes. You are tasked with migrating the data on these unencrypted EBS volumes to encrypted EBS volumes. What steps can you take to migrate the data to encrypted EBS volumes?
 
 ```
 To migrate data from unencrypted to encrypted Amazon EBS volumes, follow these steps:
@@ -1596,33 +1541,31 @@ To migrate data from unencrypted to encrypted Amazon EBS volumes, follow these s
 
 This ensures seamless migration of data from unencrypted to encrypted EBS volumes without downtime.
 ```
-Source: One of the answers from a Cousera Forum 
 
----
+Source: One of the answers from a Cousera Forum
 
-## 6.8 DynamoDB
+## DynamoDB essentials
 
-- Amazon DynamoDB is a fully managed NoSQL database service
-- With DynamoDB, you can create database tables that can store and retrieve any amount of data and serve any level of request traffic.
-- Data in DynamoDB stored in Key-Value pair format
+- Amazon DynamoDB is a fully managed NoSQL database service.
+- It scales to handle large request volumes and large datasets.
+- Data is stored as key-value style items with flexible attributes.
 
-
-| RDS | NoSQL DB |
+|RDS|NoSQL DB|
 |---|---|
-| Table | Table |
-| Row/Record | Item |
-| Column| Attribute|
+|Table|Table|
+|Row/Record|Item|
+|Column|Attribute|
 
 Like a `primary column` in RDS, a `primary attribute` is needed in Dynamo DB. An item could have any number of attributes
 
----
+## Quiz reference
 
-## 6.9 Notes from `Database` Quiz
 
 
 [Database Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w3-%20AWS%20Storage%20and%20Databases/Week%203%20Quiz%20_%20Coursera.pdf)
 
 ---
+
 
 # 7. Monitoring in AWS
 
