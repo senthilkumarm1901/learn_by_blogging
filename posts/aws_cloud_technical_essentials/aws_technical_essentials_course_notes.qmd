@@ -1460,10 +1460,12 @@ Amazon RDS is **deployed into your VPC** (into subnets you choose via a DB subne
 - Use **no endpoint** when your runtime already has outbound access to AWS public endpoints.
 - Use a **gateway VPC endpoint** when your runtime is in **private subnets** and you want **no NAT/IGW dependency** for DynamoDB traffic.
 
+
 High-level intuition:
 
 - **RDS** is deployed into your VPC (commonly private subnets).
 - **DynamoDB** is a regional managed service that’s not “inside” your VPC like an EC2 instance; private access patterns typically rely on networking constructs 
+
 ## Backups in RDS
 
 ```{mermaid}
@@ -1570,6 +1572,7 @@ Like a `primary column` in RDS, a `primary attribute` is needed in Dynamo DB. An
 # 7. Monitoring in AWS
 
 **Why Monitoring?**
+
 - Ensuring reliable performance
 - Are we using resources in a cost-effective way?
 - Preventive Healthcheck: Prevent outage by scaling infra or fixing issues automated
@@ -1578,6 +1581,7 @@ Like a `primary column` in RDS, a `primary attribute` is needed in Dynamo DB. An
 ## 7.1 Intro to AWS CloudWatch
 
 ### 7.1.1 **Services in CloudWatch**:
+
 - Metrics
 - Alarms (when a metric goes above a threshold)
 - Logs
@@ -1633,7 +1637,6 @@ Using `boto3` sdk, you can ensure `custom metrics` like the following that refle
 - Web page Load Time
 - Amount of tasks handled 
 
-
 ## 7.2 Other Services in CloudWatch
 ### 7.2.1 Understand the CloudWatch Dashboards
 
@@ -1662,11 +1665,18 @@ Using `boto3` sdk, you can ensure `custom metrics` like the following that refle
 
 ![](https://d2908q01vomqb2.cloudfront.net/972a67c48192728a34979d9a35164c1295401b71/2022/06/21/devops_1335_2.png)
 
-- The 3 states of a metric alarm in CloudWatch: `OK` (metric is within the defined threshold), `Alarm` (metric is outside the defined threshold), `Insufficient_data` (metric does not have enough data to decide on the alarm)
+- The 3 states of a metric alarm in CloudWatch: 
+  - `OK` (metric is within the defined threshold), 
+  - `Alarm` (metric is outside the defined threshold), 
+  - `Insufficient_data` (metric does not have enough data to decide on the alarm)
 
 - VPC Network traffic (what network comes in and out of the VPC) can be measured by VPC Flow Logs
 
-- By default, Lambda functions run in a `Lambda-managed VPC that has internet access`. So one need not configure a VPC, Subenets and Security Group unless they want to have their lambda accessed from inside a VPC in their own account. In that case,m you can add a VPC configuration to a lambda function. This restricts the lambda function to resources within that VPC, unless the VPC has internet access
+- By default, Lambda functions run in a `Lambda-managed VPC that has internet access`. 
+  - So one need not configure a VPC, Subenets and Security Group 
+    - Unless they want to have their lambda accessed from inside a VPC in their own account. 
+  - In that case, you can add a VPC configuration to a lambda function. 
+    - This restricts the lambda function to resources within that VPC, unless the VPC has internet access
 
 Source: [A github source for Week 4 Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w4-%20Monitoring%20and%20Optimizing%20Solutions%20on%20AWS/Week%204%20Quiz%20_%20Coursera.pdf)
 ---
@@ -1681,30 +1691,52 @@ Source: [A github source for Week 4 Quiz](https://github.com/salimt/Courses-/blo
 
 ```{mermaid}
 flowchart TD
-  client
-  load_balancer
-  subgraph AZ1
-    server_1
-  end
-  subgraph AZ2
-    server_2
-    server_3
-  end 
+  client((Client))
+  alb[Application Load Balancer]
+  tg[Target Group]
 
-  client --> load_balancer
-  load_balancer --> server_1
-  load_balancer -- if server_1<br>goes down --> server_2
+  subgraph AZ1[AZ1]
+    s1[Server 1]
+  end
+
+  subgraph AZ2[AZ2]
+    s2[Server 2]
+    s3[Server 3]
+  end
+
+  hc{{Health checks}}
+  s1bad((Server 1<br>unhealthy))
+
+  client -->|HTTP/HTTPS| alb
+  alb -->|forwards| tg
+
+  tg -->|"If server1 healthy"| s1
+  %% tg --> s2
+  %% tg --> s3
+
+  alb -.->|periodic| hc
+  hc -.-> s1
+  hc -.-> s2
+  hc -.-> s3
+
+  s1 -.->|fails checks| s1bad
+  tg ==>|if s1 unhealthy| s2
+  tg ==>|if s1 unhealthy| s3
 ```
 
 ## 8.3 Types of High Availability Architecture
 
 ![](./images/active-active-arch.png)
 
-> Active-active clusters rely on a dedicated load balancer for routing or distributing traffic across all participating nodes. The manner by which a load balancer distributes traffic depends on the specific load balancing algorithm used. For instance, some load balancers distribute traffic using Round-Robin, Weighted Round Robin or Random algorithm.
+> * Active-active clusters rely on a dedicated load balancer for routing or distributing traffic across all participating nodes. 
+> * The manner by which a load balancer distributes traffic depends on the specific load balancing algorithm used. 
+> * For instance, some load balancers distribute traffic using Round-Robin, Weighted Round Robin or Random algorithm.
 
 ![](./images/active-passive-arch.png)
 
-> Active-passive setups are common in disaster recovery (DR) strategies. In some DR strategies, the passive node is set up in a separate geographical location and then brought into play once the active node becomes incapacitated
+> * Active-passive setups are common in disaster recovery (DR) strategies. 
+> * In some DR strategies, the passive node is set up in a separate geographical location and 
+> * then brought into play once the active node becomes incapacitated
 
 Source for the images and above content: [An article on High Availability Architectures](https://www.jscape.com/blog/active-active-vs-active-passive-high-availability-cluster)
 
@@ -1729,38 +1761,33 @@ flowchart TD
 
 ### 8.4.1 What is a Load Balancer:
 
-- Purpose is to distribute the requests across all the servers hosting the application using a load balancer
+## Load balancing (bare minimum)
 
-Load balancing refers to the process of distributing tasks across a set of resources. In the case of the corporate directory application, the resources are EC2 instances that host the application, and the tasks are the different requests being sent. It’s time to distribute the requests across all the servers hosting the application using a load balancer.
-
-To do this, you first need to enable the load balancer to take all of the traffic and redirect it to the backend servers based on an algorithm. The most popular algorithm is round-robin, which sends the traffic to each server one after the other.
-
-A typical request for the application would start from the browser of the client. It’s sent to a load balancer. Then, it’s sent to one of the EC2 instances that hosts the application. The return traffic would go back through the load balancer and back to the client browser. Thus, the load balancer is directly in the path of the traffic.
-
-Although it is possible to install your own software load balancing solution on EC2 instances, AWS provides a service for that called Elastic Load Balancing (ELB).
+*   **Goal:** Spread incoming application requests across multiple backend servers (EC2 instances) so no single server gets overloaded.
+*   A **load balancer** sits in front of the servers, receives all client traffic, and forwards each request to a backend server using a routing algorithm (commonly **round-robin**, which cycles through servers).
+*   **Request path:** Client browser → load balancer → one EC2 application server → response returns via the load balancer back to the client.
+*   You *can* run your own load balancer software on EC2, but AWS provides a managed service called **Elastic Load Balancing (ELB)** for this purpose.
 
 
 ### 8.4.2 FEATURES OF ELB
 
-The ELB service provides a major advantage over using your own solution to do load balancing, in that you don’t need to manage or operate it. It can distribute incoming application traffic across EC2 instances as well as containers, IP addresses, and AWS Lambda functions.
-
-- The fact that ELB can load balance to IP addresses means that it can work in a hybrid mode as well, where it also load balances to on-premises servers.
-
-- ELB is highly available. The only option you have to ensure is that the load balancer is deployed across multiple Availability Zones.
-
-- In terms of scalability, ELB automatically scales to meet the demand of the incoming traffic. It handles the incoming traffic and sends it to your backend application.
+*   **Managed service:** <u>ELB is a fully managed load balancing service</u>, so you don’t have to run/operate your own load balancer fleet. [\[repost.aws\]](https://repost.aws/selections/KPa_EdeC-GRW6UxuEoebhIKw/aws-re-post-knowledge-center-spotlight-elastic-load-balancing-elb)
+*   **Many target types:** It can distribute traffic to **EC2 instances, containers, IP addresses, and Lambda functions** (depending on LB type). [\[aws.amazon.com\]](https://aws.amazon.com/documentation-overview/elasticloadbalancing/), [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/)
+*   **Hybrid capable via IP targets:** Because ELB can target **IP addresses**, you can load balance across **AWS + on‑prem resources** (for example over VPN/Direct Connect). [\[aws.amazon.com\]](https://aws.amazon.com/blogs/aws/new-application-load-balancing-via-ip-address-to-aws-on-premises-resources/), [\[aws.amazon.com\]](https://aws.amazon.com/elasticloadbalancing/)
+*   **Highly available:** Deploy/enable the load balancer across **multiple Availability Zones** (ALB requires at least two) so it can keep routing to healthy targets if an AZ has issues. [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html), [\[aws.github.io\]](https://aws.github.io/aws-elb-best-practices/reliability/workload_architecture/)
+*   **Elastic scaling:** ELB **automatically scales its capacity** based on changes in incoming traffic. [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html), [\[aws.amazon.com\]](https://aws.amazon.com/elasticloadbalancing/)
 
 ### 8.4.3 HEALTH CHECKS
 
-Taking the time to define an appropriate health check is critical. Only verifying that the port of an application is open doesn’t mean that the application is working. It also doesn’t mean that simply making a call to the home page of an application is the right way either.
-
-For example, the employee directory application depends on a database, and S3. The health check should validate all of those elements. One way to do that would be to create a monitoring webpage like “/monitor” that will make a call to the database to ensure it can connect and get data, and make a call to S3. Then, you point the health check on the load balancer to the “/monitor” page.
+*   Health checks should validate **real application health**, not just “port is open” or “homepage loads”; shallow checks can pass even when the app is broken. [\[aws.github.io\]](https://aws.github.io/aws-elb-best-practices/reliability/failure_management/)
+*   A good pattern is a **deep health endpoint** (example: `/monitor`) that verifies **critical dependencies** (for example DB connectivity and an S3 call) and returns failure if any dependency fails. [\[aws.github.io\]](https://aws.github.io/aws-elb-best-practices/reliability/failure_management/)
+*   Point the load balancer’s health check path to that endpoint so the load balancer can decide whether a target should receive traffic. [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html)
 
 ![](./images/EC2_monitor_health_via_ELB.png)
 
- After determining the availability of a new EC2 instance, the load balancer starts sending traffic to it. If ELB determines that an EC2 instance is no longer working, it stops sending traffic to it and lets EC2 Auto Scaling know. EC2 Auto Scaling’s responsibility is to remove it from the group and replace it with a new EC2 instance. Traffic only sends to the new instance if it passes the health check.
-
-In the case of a scale down action that EC2 Auto Scaling needs to take due to a scaling policy, it lets ELB know that EC2 instances will be terminated. ELB can prevent EC2 Auto Scaling from terminating the EC2 instance until all connections to that instance end, while preventing any new connections. That feature is called **connection draining**.
+*   New instances start receiving traffic **only after they pass** the load balancer health checks; load balancer routes traffic only to **healthy** targets (with specific edge cases if all are unhealthy). [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html), [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html)
+*   If the load balancer determines an instance is unhealthy, **traffic is stopped** to that instance, and **EC2 Auto Scaling can replace** unhealthy instances when it receives an unhealthy notification (ELB is one of the supported notification sources). [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html), [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html)
+*   During scale-in (instance termination), **connection draining / deregistration delay** allows the load balancer to **stop new connections** to the instance while letting **in-flight requests complete** before termination, reducing dropped requests. [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-conn-drain.html), [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html)
 
 ### 8.4.4 ELB COMPONENTS
 
@@ -1768,9 +1795,7 @@ In the case of a scale down action that EC2 Auto Scaling needs to take due to a 
 ![](./images/components_of_ELB.png)
 
 - Listeners: The client connects to the listener. This is often referred to as client-side. To define a listener, a port must be provided as well as the protocol, depending on the load balancer type. There can be many listeners for a single load balancer.
-
 - Target groups: The backend servers, or server-side, is defined in one or more target groups. This is where you define the type of backend you want to direct traffic to, such as EC2 Instances, AWS Lambda functions, or IP addresses. Also, a health check needs to be defined for each target group.
-
 - Rules: To associate a target group to a listener, a rule must be used. Rules are made up of a condition that can be the source IP address of the client and a condition to decide which target group to send the traffic to.
 
 ### 8.5 APPLICATION LOAD BALANCER
@@ -2068,11 +2093,11 @@ Source: [A github source for Week 4 Quiz](https://github.com/salimt/Courses-/blo
 ---
 
 # **Plagiarism Disclosure**: <br>
-> - The below notes contain my own writing like mermaid charts and bullet points combined with copy-paste paragraph notes from Coursera course (not to be misjudged for plagiarism).
+> - The above notes contain my own writing like mermaid charts and bullet points combined with my notes from Coursera course (not to be misjudged for plagiarism).
 <br>
-> - Most pics are from Coursera course. If a pic is taken from outside, source is cited below it
+> - Most pics are from the Coursera course. If a pic is taken from outside, source is cited below it
 <br>
 > - I have plenty of interactions with ChatGPT weaved into appropriate sections for better reading
 <br>
-> - The below notes are purely to refresh my memory when I take up any AWS exam in future. Unlike other articles, the below notes are not meant to be reviewed from the pov of plagiarism.
+> - The above notes are purely to refresh my memory when I take up any AWS exam in future. 
 
