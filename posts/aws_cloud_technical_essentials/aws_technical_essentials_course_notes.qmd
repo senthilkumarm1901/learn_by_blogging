@@ -251,75 +251,96 @@ aws s3api delete-object \
 
 # 2. Security 
 
-## 2.1 Introduction to AWS Identity and Access Management
-
-### WHAT IS IAM?
-
-- **IAM (Identity and Access Management)** is a web service for managing access to AWS accounts and resources.  
-- Provides centralized control of:  
-  - **Authentication** → who/what can enter the account  
-  - **Authorization** → who/what can use specific resources  
-- Benefits of IAM:  
-  - Share access without exposing **root credentials** (email/password or access keys)  
-  - Grant **granular permissions** so users/services only access what they need  
-  - Example: give a user **read-only access** to specific actions/resources in one service  
-
-### GET TO KNOW THE IAM FEATURES
-
-- **IAM is global** → not tied to a specific Region (accessible from any Region).  
-- **Integrated by default** with many AWS services.  
-- Supports **password policies** (complexity rules, rotation).  
-- Supports **MFA** for stronger security.  
-- Supports **identity federation** → users can access AWS with existing credentials (e.g., corporate network, identity provider).  
-- **Free to use** → no additional charge for IAM.  
-
-
 ![](./images/aws_iam_user_role_groups_policies.jpg)
 Source: AWS Builder
 
-### WHAT IS AN IAM USER?
 
-- An **IAM user** represents a person or service that interacts with AWS.  
-- Defined within your AWS account → all activity is **billed to your account**.  
-- IAM users can **sign in** to access AWS resources.  
-- You can create **multiple users** as needed (e.g., team members on a project).  
-- Each user should have their **own login credentials** → prevents credential sharing.  
+Below is a **bare‑minimum, distilled version** of your AWS Security notes — keeping only the concepts that actually matter long‑term and removing all repetition and teaching detail.
 
-### IAM USER CREDENTIALS
+***
 
-- An **IAM user** has a name and a set of credentials.  
-- When creating a user, you can provide:  
-  - **Console access** → username + password  
-  - **Programmatic access** → access keys for AWS CLI or AWS API  
-- **IAM user credentials** are permanent until rotated by admins.  
-- Permissions can be granted directly to users, but:  
-  - Works only for a few users  
-  - Becomes hard to manage at scale (e.g., thousands of users)  
-- **Best practice:** Group IAM users and assign permissions at the **group level**.  
+## AWS Security - Quick Notes
 
+### 1. AWS Identity and Access Management (IAM)
 
-### WHAT IS AN IAM GROUP?
+*   **IAM controls authentication and authorization** for AWS accounts and resources.
+*   Lets you **share access without using root credentials**.
+*   Provides **fine‑grained, explicit permissions**.
+*   **IAM is global** (not Region‑specific).
+*   Supports **MFA, password policies, and identity federation**.
+*   IAM itself is **free**.
 
-- An **IAM group** is a collection of IAM users.  
-- All users in a group **inherit the group’s permissions** → easier, scalable permission management.  
-- **Best practice:** Organize groups by job function (e.g., developers, security, admins).  
+***
 
-Examples:  
-- New developer joins → add to **developer group** (no need to assign permissions individually).  
-- User changes role → move from one group to another (permissions updated automatically).  
+### 2. IAM Identities
 
-Key features of groups:  
-- A group can have **many users**.  
-- A user can belong to **multiple groups**.  
-- Groups **cannot belong** to other groups.  
+*   **IAM User**
+    *   Represents a person or service.
+    *   Has permanent credentials (console and/or programmatic).
+    *   Should **not share credentials**.
 
-⚡ Contrast with root user:  
-- **Root user** = full access to all resources by default.  
-- **New IAM users/groups/roles** = **no permissions by default** until explicitly granted.  
-- Permissions in IAM are granted through **IAM policies**.  
+*   **IAM Group**
+    *   Collection of users.
+    *   Permissions are assigned **to groups, not individuals**.
+    *   Users can belong to multiple groups.
 
+*   **IAM Role**
+    *   No long‑term credentials.
+    *   Uses **temporary credentials**.
+    *   Preferred for:
+        *   AWS services
+        *   Federated users
+        *   Cross‑account access
 
-### WHAT IS AN IAM POLICY?
+***
+
+### 3. IAM Policies
+
+*   **Policies define permissions** (allow/deny).
+*   Attached to **users, groups, or roles**.
+*   Evaluated on **every AWS API call**.
+*   Core elements:
+    *   `Effect` (Allow / Deny)
+    *   `Action`
+    *   `Resource`
+*   `*` on action and resource = **full access**.
+*   **Explicit deny always wins**.
+
+***
+
+### 4. Security Best Practices
+
+*   **Lock down the root user**
+    *   Enable MFA
+    *   Delete root access keys
+    *   Never use root for daily work
+
+*   **Least privilege**
+    *   Start with minimal access
+    *   Grant only what is required
+
+*   **Prefer roles over users**
+    *   Avoid long‑lived access keys
+    *   Reduce blast radius of credential leaks
+
+***
+
+### 5. Federation & Centralized Identity
+
+*   Use an **Identity Provider (IdP)** when possible.
+*   Grant access via **IAM roles**, not IAM users.
+*   **AWS IAM Identity Center (SSO)**:
+    *   Central user & permission management
+    *   Works across multiple AWS accounts
+    *   Integrates with external IdPs
+
+***
+
+### One‑Line Mental Model
+
+> **IAM decides *who* can call *which AWS APIs* on *which resources*.**
+
+## Deep Dive into IAM Policy
 
 - **IAM policies** manage access and permissions to AWS services/resources.  
 - Policies can be attached to **users, groups, or roles**.  
@@ -383,146 +404,9 @@ When creating a policy, it is required to have each of the following elements in
 ![](./images/iam_policy_3_essential_elements.png)
 
 
+### Summarizing Security
 
----
-
-## 2.2 Role Based Access in AWS
-
-- **Lock down the root user**  
-  - Don’t share root credentials.  
-  - Delete root access keys if possible.  
-  - Enable MFA on the root account.  
-
-- **Follow the principle of least privilege**  
-  - Grant only the permissions required to perform a specific job.  
-  - Start with minimum access, then add permissions as needed.  
-
-- **Use IAM appropriately**  
-  - IAM secures access within a single AWS account (users, groups, roles).  
-  - Not for website sign-in/sign-up or OS/network security.  
-
-- **Use IAM roles when possible**  
-  - Roles provide temporary credentials (15 min – 36 hrs).  
-  - Easier to manage than long-term IAM user credentials.  
-  - Reduces risk from leaked/stale access keys.  
-
-- **Consider using an Identity Provider (IdP)**  
-  - Centralizes identity management across multiple AWS accounts.  
-  - Use IAM roles to grant permissions to federated identities.  
-  - Example: manage an employee once in the IdP instead of duplicating IAM users across accounts.  
-
-- **Consider AWS IAM Identity Center**  
-  - Provides single sign-on (SSO) for AWS accounts and apps.  
-  - Lets you create users, groups, and assign permissions centrally.  
-  - Can sync with third-party IdPs, reducing duplication.  
-  - Separates identity management from AWS for added security.  
-
----
-
-### 2.3 Summarizing the sections 2.1 and 2.2:
-
-```{mermaid}
-graph TD;
-    A[Security in AWS] --> B[AWS Identity<br> and Access Management<br>IAM]
-    B --> C[What is IAM?]
-    B --> D[Features of IAM]
-    B --> E[IAM User]
-    B --> F[IAM Group]
-    B --> G[IAM Policy]
-    B --> H[Role-Based Accesses<br> for AWS Services]
-    C --> C1[Manage access <br>to AWS resources]
-    C --> C2[Centralized authentication<br> and authorization]
-```
-
----
-
-```{mermaid}
-graph TD;
-    A[Security in AWS] --> B[AWS Identity<br> and Access Management<br>IAM]
-    B --> C[What is IAM?]
-    B --> D[Features of IAM]
-    B --> E[IAM User]
-    B --> F[IAM Group]
-    B --> G[IAM Policy]
-    B --> H[Role-Based Accesses<br> for AWS Services]
-    D --> D1[Global service]
-    D --> D2[Integrated with AWS services]
-    D --> D3[Password policies]
-    D --> D4[MFA support]
-    D --> D5[Identity federation]
-```
-
----
-
-```{mermaid}
-graph TD;
-    A[Security in AWS] --> B[AWS Identity<br> and Access Management<br>IAM]
-    B --> D[Features of IAM]
-    B --> E[IAM User]
-    B --> F[IAM Group]
-    B --> G[IAM Policy]
-    B --> H[Role-Based Accesses<br> for AWS Services]
-    E --> E1[Represents a <br>person]
-    E --> E2[User credentials -<br> Console and<br> programmatic access]
-```
-
----
-
-```{mermaid}
-graph TD;
-    A[Security in AWS] --> B[AWS Identity<br> and Access Management<br>IAM]
-    B --> D[Features of IAM]
-    B --> E[IAM User]
-    B --> F[IAM Group]
-    B --> G[IAM Policy]
-    B --> F[IAM Group]
-    B --> H[Role-Based Accesses<br> for AWS Services]
-    F --> F1[Collection of <br>users inheriting permissions]
-```
-
----
-
-
-```{mermaid}
-graph TD;
-    A[Security in AWS] --> B[AWS Identity<br> and Access Management<br>IAM]
-    B --> D[Features of IAM]
-    B --> E[IAM User]
-    B --> F[IAM Group]
-    B --> G[IAM Policy]
-    B --> F[IAM Group]
-    B --> H[Role-Based Accesses<br> for AWS Services]
-    G --> G1[JSON documents for access management]
-```
-
----
-
-```{mermaid}
-graph TD;
-    A[Security in AWS] --> B[AWS Identity<br> and Access Management<br>IAM]
-    B --> D[Features of IAM]
-    B --> E[IAM User]
-    B --> F[IAM Group]
-    B --> G[IAM Policy]
-    B --> F[IAM Group]
-    B --> H[Role-Based Accesses<br> for AWS Services]
-    A --> H[Role-Based Access in AWS]
-    H --> H1[Lock down the AWS root user]
-    H --> H2[Follow the principle of least privilege]
-    H --> H3[Use IAM appropriately]
-    H --> H4[Use IAM roles when possible]
-```
-
----
-
-
-```{mermaid}
-graph TD;
-    A[Another Security Service <br>in AWS]
-    A --> I[Identity Providers<br> and<br> AWS IAM Identity Center]
-    I --> I1[External <br> Identity Provider IdP]
-    I --> I2[AWS IdP -<br>IAM Identity Center advantages]
-```
+![](./images/security_summary.png)
 
 ---
 
