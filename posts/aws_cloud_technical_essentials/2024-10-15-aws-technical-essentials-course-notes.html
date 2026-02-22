@@ -282,38 +282,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#networking-on-aws" id="toc-networking-on-aws" class="nav-link" data-scroll-target="#networking-on-aws">4 Networking on AWS</a>
   <ul class="collapse">
-  <li><a href="#introduction-to-networking-in-aws" id="toc-introduction-to-networking-in-aws" class="nav-link" data-scroll-target="#introduction-to-networking-in-aws">4.1 Introduction to Networking in AWS</a>
+  <li><a href="#introduction-to-networking-in-aws" id="toc-introduction-to-networking-in-aws" class="nav-link" data-scroll-target="#introduction-to-networking-in-aws">Introduction to Networking in AWS</a>
   <ul class="collapse">
-  <li><a href="#what-is-networking" id="toc-what-is-networking" class="nav-link" data-scroll-target="#what-is-networking">WHAT IS NETWORKING?</a></li>
-  <li><a href="#know-the-networking-basics" id="toc-know-the-networking-basics" class="nav-link" data-scroll-target="#know-the-networking-basics">KNOW THE NETWORKING BASICS</a></li>
-  <li><a href="#what-are-ip-addresses" id="toc-what-are-ip-addresses" class="nav-link" data-scroll-target="#what-are-ip-addresses">WHAT ARE IP ADDRESSES?</a></li>
-  <li><a href="#what-is-ipv4-notation" id="toc-what-is-ipv4-notation" class="nav-link" data-scroll-target="#what-is-ipv4-notation">WHAT IS IPV4 NOTATION?</a></li>
-  <li><a href="#use-cidr-notation" id="toc-use-cidr-notation" class="nav-link" data-scroll-target="#use-cidr-notation">USE CIDR NOTATION</a></li>
-  <li><a href="#my-interactions-with-chatgpt-on-networking" id="toc-my-interactions-with-chatgpt-on-networking" class="nav-link" data-scroll-target="#my-interactions-with-chatgpt-on-networking">My Interactions with ChatGPT on Networking</a></li>
+  <li><a href="#what-is-networking" id="toc-what-is-networking" class="nav-link" data-scroll-target="#what-is-networking">What Is Networking?</a></li>
+  <li><a href="#networking-basics" id="toc-networking-basics" class="nav-link" data-scroll-target="#networking-basics">Networking Basics</a></li>
+  <li><a href="#ip-addresses" id="toc-ip-addresses" class="nav-link" data-scroll-target="#ip-addresses">IP Addresses</a></li>
+  <li><a href="#ipv4-notation" id="toc-ipv4-notation" class="nav-link" data-scroll-target="#ipv4-notation">IPv4 Notation</a></li>
   </ul></li>
-  <li><a href="#introduction-to-aws-vpc-and-its-main-services" id="toc-introduction-to-aws-vpc-and-its-main-services" class="nav-link" data-scroll-target="#introduction-to-aws-vpc-and-its-main-services">4.2 Introduction to AWS VPC and its main services</a>
+  <li><a href="#ipv4-cidr-why-you-need-ranges" id="toc-ipv4-cidr-why-you-need-ranges" class="nav-link" data-scroll-target="#ipv4-cidr-why-you-need-ranges">IPv4 → CIDR (why you need ranges)</a>
   <ul class="collapse">
-  <li><a href="#create-a-subnet" id="toc-create-a-subnet" class="nav-link" data-scroll-target="#create-a-subnet">4.2.1 Create a Subnet:</a></li>
-  <li><a href="#what-is-built-in-public-and-private-subnets" id="toc-what-is-built-in-public-and-private-subnets" class="nav-link" data-scroll-target="#what-is-built-in-public-and-private-subnets">4.2.2 What is built in <code>Public</code> and <code>Private</code> Subnets</a></li>
-  <li><a href="#gateways" id="toc-gateways" class="nav-link" data-scroll-target="#gateways">4.3 Gateways</a></li>
+  <li><a href="#cidr-notation-range" id="toc-cidr-notation-range" class="nav-link" data-scroll-target="#cidr-notation-range">CIDR Notation (range)</a></li>
   </ul></li>
-  <li><a href="#amazon-vpc-routing-and-security" id="toc-amazon-vpc-routing-and-security" class="nav-link" data-scroll-target="#amazon-vpc-routing-and-security">4.4 Amazon VPC Routing and Security</a>
+  <li><a href="#aws-vpc-what-you-must-choose" id="toc-aws-vpc-what-you-must-choose" class="nav-link" data-scroll-target="#aws-vpc-what-you-must-choose">AWS VPC (what you must choose)</a></li>
+  <li><a href="#subnets-how-you-place-resources" id="toc-subnets-how-you-place-resources" class="nav-link" data-scroll-target="#subnets-how-you-place-resources">Subnets (how you place resources)</a>
   <ul class="collapse">
-  <li><a href="#the-main-route-table" id="toc-the-main-route-table" class="nav-link" data-scroll-target="#the-main-route-table">4.4.1 The Main Route Table</a></li>
-  <li><a href="#custom-route-tables" id="toc-custom-route-tables" class="nav-link" data-scroll-target="#custom-route-tables">4.4.2 Custom Route Tables</a></li>
-  <li><a href="#secure-your-subnets-with-network-acls" id="toc-secure-your-subnets-with-network-acls" class="nav-link" data-scroll-target="#secure-your-subnets-with-network-acls">4.4.3 Secure Your Subnets with Network ACLs</a></li>
-  <li><a href="#secure-your-ec2-instances-with-security-groups" id="toc-secure-your-ec2-instances-with-security-groups" class="nav-link" data-scroll-target="#secure-your-ec2-instances-with-security-groups">4.4.4 Secure Your EC2 Instances with Security Groups</a></li>
-  <li><a href="#port-80-vs-port-443" id="toc-port-80-vs-port-443" class="nav-link" data-scroll-target="#port-80-vs-port-443">4.4.5 Port 80 vs Port 443:</a></li>
+  <li><a href="#reserved-ips-in-every-subnet" id="toc-reserved-ips-in-every-subnet" class="nav-link" data-scroll-target="#reserved-ips-in-every-subnet">Reserved IPs in every subnet</a></li>
   </ul></li>
-  <li><a href="#how-an-ec2-instance-in-a-private-subnet-reaches-the-internet" id="toc-how-an-ec2-instance-in-a-private-subnet-reaches-the-internet" class="nav-link" data-scroll-target="#how-an-ec2-instance-in-a-private-subnet-reaches-the-internet">4.5 How an EC2 Instance in a Private Subnet reaches the Internet</a></li>
-  <li><a href="#common-network-troubleshooting-steps-for-amazon-vpc" id="toc-common-network-troubleshooting-steps-for-amazon-vpc" class="nav-link" data-scroll-target="#common-network-troubleshooting-steps-for-amazon-vpc">4.6 10 Common network troubleshooting steps for Amazon VPC</a></li>
-  <li><a href="#notes-from-networking-quiz" id="toc-notes-from-networking-quiz" class="nav-link" data-scroll-target="#notes-from-networking-quiz">4.7 Notes from <code>Networking</code> Quiz:</a></li>
-  <li><a href="#chatgpt-interactions-on-nacl-and-security-group" id="toc-chatgpt-interactions-on-nacl-and-security-group" class="nav-link" data-scroll-target="#chatgpt-interactions-on-nacl-and-security-group">ChatGPT Interactions on NACL and Security Group</a>
+  <li><a href="#public-vs-private-subnets-core-pattern" id="toc-public-vs-private-subnets-core-pattern" class="nav-link" data-scroll-target="#public-vs-private-subnets-core-pattern">Public vs Private subnets (core pattern)</a></li>
+  <li><a href="#gateways-what-they-do" id="toc-gateways-what-they-do" class="nav-link" data-scroll-target="#gateways-what-they-do">Gateways (what they do)</a></li>
+  <li><a href="#vpc-routing-security-the-essential-controls" id="toc-vpc-routing-security-the-essential-controls" class="nav-link" data-scroll-target="#vpc-routing-security-the-essential-controls">VPC Routing &amp; Security (the essential controls)</a>
   <ul class="collapse">
-  <li><a href="#add-rules-to-a-network-acl-nacl" id="toc-add-rules-to-a-network-acl-nacl" class="nav-link" data-scroll-target="#add-rules-to-a-network-acl-nacl">1. <strong>Add Rules to a Network ACL (NACL)</strong>:</a></li>
-  <li><a href="#add-rules-to-a-security-group" id="toc-add-rules-to-a-security-group" class="nav-link" data-scroll-target="#add-rules-to-a-security-group">2. <strong>Add Rules to a Security Group</strong>:</a></li>
-  <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips"><strong>Tips</strong>:</a></li>
+  <li><a href="#main-route-table" id="toc-main-route-table" class="nav-link" data-scroll-target="#main-route-table">Main Route Table</a></li>
+  <li><a href="#custom-route-tables" id="toc-custom-route-tables" class="nav-link" data-scroll-target="#custom-route-tables">Custom Route Tables</a></li>
+  <li><a href="#network-acls-subnet-level-firewall" id="toc-network-acls-subnet-level-firewall" class="nav-link" data-scroll-target="#network-acls-subnet-level-firewall">Network ACLs (subnet-level firewall)</a></li>
+  <li><a href="#security-groups-instance-level-firewall" id="toc-security-groups-instance-level-firewall" class="nav-link" data-scroll-target="#security-groups-instance-level-firewall">Security Groups (instance-level firewall)</a></li>
   </ul></li>
+  <li><a href="#port-80-vs-443-only-what-matters" id="toc-port-80-vs-443-only-what-matters" class="nav-link" data-scroll-target="#port-80-vs-443-only-what-matters">Port 80 vs 443 (only what matters)</a></li>
+  <li><a href="#multi-tier-security-group-isolation-typical-3-tier" id="toc-multi-tier-security-group-isolation-typical-3-tier" class="nav-link" data-scroll-target="#multi-tier-security-group-isolation-typical-3-tier">Multi-tier security group isolation (typical 3-tier)</a></li>
+  <li><a href="#how-private-subnet-ec2-reaches-the-internet" id="toc-how-private-subnet-ec2-reaches-the-internet" class="nav-link" data-scroll-target="#how-private-subnet-ec2-reaches-the-internet">How private-subnet EC2 reaches the internet</a></li>
+  <li><a href="#vpc-troubleshooting-checks-public-ec2-web-app-not-loading" id="toc-vpc-troubleshooting-checks-public-ec2-web-app-not-loading" class="nav-link" data-scroll-target="#vpc-troubleshooting-checks-public-ec2-web-app-not-loading">10 VPC troubleshooting checks (public EC2 web app not loading)</a></li>
+  <li><a href="#quiz-notes" id="toc-quiz-notes" class="nav-link" data-scroll-target="#quiz-notes">Quiz Notes</a></li>
   </ul></li>
   <li><a href="#storage" id="toc-storage" class="nav-link" data-scroll-target="#storage">5. Storage</a>
   <ul class="collapse">
@@ -1327,417 +1325,260 @@ You secure what you build on top of it.</p>
 </section>
 <section id="networking-on-aws" class="level1">
 <h1>4 Networking on AWS</h1>
+<p>Here is a <strong>bare‑minimum, essentials‑only rewrite</strong> of that Networking section.<br>
+I’ve <strong>removed all analogy storytelling</strong>, kept only the <strong>concepts you need to remember</strong>, and preserved the <strong>technical accuracy</strong>.</p>
+<hr>
 <section id="introduction-to-networking-in-aws" class="level2">
-<h2 class="anchored" data-anchor-id="introduction-to-networking-in-aws">4.1 Introduction to Networking in AWS</h2>
+<h2 class="anchored" data-anchor-id="introduction-to-networking-in-aws">Introduction to Networking in AWS</h2>
 <section id="what-is-networking" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-networking">WHAT IS NETWORKING?</h3>
-<p>Networking is how you connect computers around the world and allow them to communicate with one another. In this trail, you’ve already seen a few examples of networking. One is the AWS global infrastructure. AWS has created a network of resources using data centers, Availability Zones, and Regions.</p>
-</section>
-<section id="know-the-networking-basics" class="level3">
-<h3 class="anchored" data-anchor-id="know-the-networking-basics">KNOW THE NETWORKING BASICS</h3>
-<p>Think about sending a letter. When sending a letter, there are three pieces of information you need. - Sender - Receiver - Payload content</p>
-<p>Let’s go further. Each address must contain information such as:</p>
+<h3 class="anchored" data-anchor-id="what-is-networking">What Is Networking?</h3>
+<blockquote class="blockquote">
+<p><strong>Networking is the routing of data between uniquely identified endpoints using IP addresses across a global network.</strong></p>
+</blockquote>
 <ul>
-<li>Name of sender and recipient</li>
-<li>Street</li>
-<li>City</li>
-<li>State or province</li>
-<li>Zip, area, or postal code</li>
-<li>Country</li>
+<li><strong>Networking</strong> enables computers to communicate with each other.</li>
+<li>In AWS, networking spans <strong>Regions, Availability Zones, and data centers</strong>.</li>
+<li>AWS operates a <strong>global network</strong> connecting these resources.</li>
 </ul>
-<p>You need all parts of an address to ensure that your letter gets to its destination. Without the correct address, postal workers are not able to properly deliver the message. In the digital world, computers handle the delivery of messages in a similar way. This is called <strong>routing</strong>.</p>
-</section>
-<section id="what-are-ip-addresses" class="level3">
-<h3 class="anchored" data-anchor-id="what-are-ip-addresses">WHAT ARE IP ADDRESSES?</h3>
-<p>In order to properly route your messages to a location, you need an address. Just like each home has a mail address, each computer has an IP address. However, instead of using the combination of street, city, state, zip code, and country, the IP address uses a combination of bits, 0s and 1s.</p>
-<p>It’s called 32-bit because you have 32 digits of 0s and 1s.</p>
-</section>
-<section id="what-is-ipv4-notation" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-ipv4-notation">WHAT IS IPV4 NOTATION?</h3>
-<p>Typically, you don’t see an IP address in this binary format. Instead, it’s converted into decimal format and noted as an Ipv4 address.</p>
-<p>In the diagram below, the 32 bits are grouped into groups of 8 bits, also called octets. Each of these groups is converted into decimal format separated by a period.</p>
-<p><img src="./images/ipv4_notation.png" class="img-fluid"></p>
-<p>In the end, this is what is called an Ipv4 address. This is important to know when trying to communicate to a single computer. But remember, you’re working with a network. This is where CIDR Notation comes in.</p>
-</section>
-<section id="use-cidr-notation" class="level3">
-<h3 class="anchored" data-anchor-id="use-cidr-notation">USE CIDR NOTATION</h3>
-<p>192.168.1.30 is a single IP address. If you wanted to express IP addresses between the range of 192.168.1.0 and 192.168.1.255, how can you do that?</p>
-<p>One way is by using Classless Inter-Domain Routing (CIDR) notation. CIDR notation is a compressed way of specifying a range of IP addresses. Specifying a range determines how many IP addresses are available to you.</p>
-<p>CIDR notation looks like this:</p>
-<pre><code>192.168.1.0/24</code></pre>
-<p>It begins with a starting IP address and is separated by a forward slash (the “/” character) followed by a number. The number at the end specifies how many of the bits of the IP address are fixed. In this example, the first 24 bits of the IP address are fixed. The rest are flexible.</p>
-<pre><code># first 24 of the 32 bits are fixed 
-192.168.1.0/24
-
-# 192 - Fixed 
-# 168 - Fixed
-# 1 - Fixed
-# last 8 bits - Flexible 
-
-# each of the last 8 bits can take 0 or 1 - so two choices. 
-# hence 2^8 = 256 IP addresses possible</code></pre>
-<p>When working with networks in the AWS Cloud, you choose your network size by using CIDR notation. In AWS, the smallest IP range you can have is <code>/28</code>, which provides you <code>16 IP addresses</code>. The largest IP range you can have is a <code>/16</code>, which provides you with <code>65,536</code> IP addresses.</p>
-</section>
-<section id="my-interactions-with-chatgpt-on-networking" class="level3">
-<h3 class="anchored" data-anchor-id="my-interactions-with-chatgpt-on-networking">My Interactions with ChatGPT on Networking</h3>
-<pre><code>
-# Q) What should be the right CIDR range to choose for my VPC? What factors dictate that? 
-When should I choose a CIDR /24 or CIDR/28 and CIDR/16 range of ip addresses?
-
-Ans: 
-Factors that decide the range of the IP addresses: 
-1. Size of the Network
-2. Subnets
-3. Growth and Scalability
-4. Private vs Public Subnets
-5. Peering and Inter-VPC Connectivity
-6. Service Endpoints &amp; NAT Gateways
-
-Summary: 
-/16: Best for large networks with many subnets, services, or where future scaling is critical.
-/24: Suitable for mid-sized networks with a moderate number of subnets.
-/28: Best for small networks, testing environments, or scenarios with very few resources.
-
-Note: On `Subnets`
-
-AWS reserves 5 IP addresses in every subnet, so in smaller CIDR blocks like /28 (where 16 IP addresses are available), you only have 11 usable IPs. Remaining 5 get used for subnets
-</code></pre>
 <hr>
 </section>
-</section>
-<section id="introduction-to-aws-vpc-and-its-main-services" class="level2">
-<h2 class="anchored" data-anchor-id="introduction-to-aws-vpc-and-its-main-services">4.2 Introduction to AWS VPC and its main services</h2>
-<p>3 Requirements to set up a VPC: 1. The name of your VPC. 2. A Region for your VPC to live in. Each VPC spans multiple Availability Zones within the Region you choose. 3. A IP range for your VPC in CIDR notation. This determines the size of your network. Each VPC can have up to four /16 IP ranges.</p>
-<p><img src="./images/vpc_azs_region.png" class="img-fluid"></p>
-<section id="create-a-subnet" class="level3">
-<h3 class="anchored" data-anchor-id="create-a-subnet">4.2.1 Create a Subnet:</h3>
-<p>After you create your VPC, you need to create subnets inside of this network. Think of subnets as smaller networks inside your base network—or virtual area networks (VLANs) in a traditional, on-premises network. In an on-premises network, the typical use case for subnets is to isolate or optimize network traffic. In AWS, subnets are used for high availability and providing different connectivity options for your resources.</p>
-<blockquote class="blockquote">
-<p>Subnet is a subset of VPC. The size of Both Subnets and VPCs are indicated with CIDR notation. A VPC CIDR range is always bigger than its subnet CIDR range.</p>
-</blockquote>
-<p>When you create a subnet, you need to choose three settings. 1. The VPC you want your subnet to live in, in this case VPC (<code>10.0.0.0/16</code>). 2. The Availability Zone you want your subnet to live in, in this case AZ1. 3. A CIDR block for your subnet, which must be a subset of the VPC CIDR block, in this case 10.0.0.0/24.</p>
-<p>When you launch an EC2 instance, you launch it inside a subnet, which will be located inside the Availability Zone you choose.</p>
-<p>Below is an image of an EC2 instance residing inside a public subnet</p>
-<p><img src="./images/public_and_private_subnetets_inside_vpc.png" class="img-fluid"></p>
-<p>How to maintain high availability with a VPC?</p>
+<section id="networking-basics" class="level3">
+<h3 class="anchored" data-anchor-id="networking-basics">Networking Basics</h3>
 <ul>
-<li>When you create your subnets, keep high availability in mind. In order to maintain redundancy and fault tolerance, create at least two subnets configured in two different Availability Zones.</li>
+<li>Communication requires:
+<ul>
+<li><strong>Source</strong></li>
+<li><strong>Destination</strong></li>
+<li><strong>Data (payload)</strong></li>
+</ul></li>
+<li>Messages are delivered using <strong>routing</strong>, which determines the path to the destination.</li>
 </ul>
-<p><strong>Reserved IPs</strong> For AWS to configure your VPC appropriately, AWS reserves five IP addresses in each subnet. These IP addresses are used for routing, Domain Name System (DNS), and network management.</p>
-<p>What are those 5 Reserved IPs at every Subnet?</p>
-<p><img src="./images/5_reserved_ip_addresses.png" class="img-fluid"></p>
-<p><img src="./images/VPC-split-by-subnet.png" class="img-fluid"></p>
-<p>Since AWS reserves these five IP addresses, it can impact how you design your network. A common starting place for those who are new to the cloud is to create a VPC with a IP range of /16 and create subnets with a IP range of /24. This provides a large amount of IP addresses to work with at both the VPC and subnet level.</p>
+<hr>
 </section>
-<section id="what-is-built-in-public-and-private-subnets" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-built-in-public-and-private-subnets">4.2.2 What is built in <code>Public</code> and <code>Private</code> Subnets</h3>
-<pre><code>Example Architecture Setup for Amazon.com or Facebook.com:
-
-
-**Public-facing Load Balancer (ALB or NLB) in a public subnet**:
-
-- The Load Balancer receives all incoming traffic (e.g., user requests to Amazon.com).
-It distributes the traffic to a pool of web servers based on load and availability.
-
-**Web Servers**:
-- The web servers can be in either a public or private subnet. If they are in a public subnet, they have a public IP address but only accept traffic from the Load Balancer.
-If they are in a private subnet, they do not have a public IP and can only receive traffic forwarded by the Load Balancer.
-
-
-**Backend Components (databases, APIs, etc.) in private subnets**:
-- These are isolated and only accessible from the web servers or other internal systems.
-- They cannot be accessed directly from the internet, ensuring sensitive data and services are protected.
-
-**NAT Gateway (optional for backend services)**:
-- Any backend instances in the private subnet that need to initiate outbound traffic (e.g., for updates, API calls) do so through a NAT Gateway.
-
-Summary:
-- Web Servers (like Amazon.com and Facebook.com) do need to allow inbound traffic for users to access their websites. However, this traffic is typically handled in a controlled and secure manner, often through Load Balancers and strict security group rules.
-- Backend systems, on the other hand, are usually hosted in private subnets and do not allow any unsolicited inbound traffic from the internet. They may make outbound requests through NAT Gateways or other secure channels.
-
-
-The **key security principle** here is that inbound traffic is tightly controlled and usually mediated by a public-facing Load Balancer, while private subnets and backend systems remain isolated and protected from direct exposure to the internet.</code></pre>
-</section>
-<section id="gateways" class="level3">
-<h3 class="anchored" data-anchor-id="gateways">4.3 Gateways</h3>
-<section id="internet-gateway" class="level4">
-<h4 class="anchored" data-anchor-id="internet-gateway">4.3.1 Internet Gateway</h4>
+<section id="ip-addresses" class="level3">
+<h3 class="anchored" data-anchor-id="ip-addresses">IP Addresses</h3>
 <ul>
-<li>To enable internet connectivity for your VPC, you need to create an internet gateway.</li>
+<li>An <strong>IP address</strong> uniquely identifies a computer on a network.</li>
+<li>Computers use <strong>binary addresses (0s and 1s)</strong> for routing.</li>
+<li><strong>IPv4 addresses are 32‑bit</strong> values.</li>
 </ul>
-<blockquote class="blockquote">
-<p>Think of this gateway as similar to a modem. Just as a modem connects your computer to the internet, the internet gateway connects your VPC to the internet. Unlike your modem at home, which sometimes goes down or offline, an internet gateway is highly available and scalable.</p>
-</blockquote>
-<ul>
-<li>After you create an internet gateway, you then need to attach it to your VPC.</li>
-</ul>
+<hr>
 </section>
-<section id="virtual-private-gateway" class="level4">
-<h4 class="anchored" data-anchor-id="virtual-private-gateway">4.3.2 Virtual Private Gateway</h4>
-<p>A virtual private gateway allows you to connect your AWS VPC to another private network. Once you create and attach a VGW to a VPC, the gateway acts as anchor on the AWS side of the connection. On the other side of the connection, you’ll need to connect a customer gateway to the other private network. A customer gateway device is a physical device or software application on your side of the connection.</p>
-<blockquote class="blockquote">
-<p>Once you have both gateways, you can then <strong>establish an encrypted VPN connection between the two sides</strong>.</p>
-</blockquote>
-</section>
-<section id="nat-gateway" class="level4">
-<h4 class="anchored" data-anchor-id="nat-gateway">4.3.2 NAT Gateway</h4>
-<p>NAT Gateway stands for Network Address Translation Gateway. The name “NAT” is derived from the process of Network Address Translation, which allows a device (like an EC2 instance) with a private IP address to communicate with external systems (like the internet) by <strong>translating its private IP into a public IP</strong> for <strong>outbound traffic</strong>.</p>
-<p><strong>Why is it called “NAT Gateway”?</strong> Network Address Translation (NAT): This is the key process behind the name. NAT allows instances in a private subnet (with only private IP addresses) to send traffic to the internet by translating their private IP addresses to a public IP address as they pass through the NAT Gateway. Gateway: It acts as a “gateway” or bridge between instances in a private subnet and external destinations, like the internet.</p>
-<p><strong>Primary Function: Outbound Internet Traffic</strong> A NAT Gateway is primarily designed to allow outbound internet access from instances in a private subnet, while preventing inbound traffic from the internet. When an instance in a private subnet needs to download updates or communicate with a service on the internet, it sends the request to the NAT Gateway. The NAT Gateway then makes the request on behalf of the instance using its own public IP and routes the response back to the instance.</p>
-<p><strong>Important Characteristics</strong>: - Outbound-only: - NAT Gateway is designed for outbound traffic only from private subnets to the internet. It does not allow incoming traffic initiated from the internet to reach instances in private subnets.</p>
+<section id="ipv4-notation" class="level3">
+<h3 class="anchored" data-anchor-id="ipv4-notation">IPv4 Notation</h3>
 <ul>
-<li>Security:
+<li>IPv4 is written in <strong>decimal format</strong> for readability.</li>
+<li>The 32 bits are split into <strong>4 groups of 8 bits (octets)</strong>.</li>
+<li>Each octet is converted to a decimal number and separated by dots
 <ul>
-<li>Since instances behind a NAT Gateway do not have public IP addresses, they are not directly reachable from the internet, enhancing security.</li>
+<li>Example format: <code>x.x.x.x</code></li>
 </ul></li>
 </ul>
-<p><strong>Summary</strong>: NAT Gateway enables instances in private subnets to connect to the internet (e.g., to download updates or communicate with external APIs), but does not allow inbound internet traffic. It serves as a way to hide the private IP addresses of those instances from external systems while enabling them to make outgoing connections.</p>
-<hr>
-<p><strong>Outbound vs.&nbsp;Inbound Traffic Breakdown</strong> Outbound Traffic refers to traffic initiated by an instance (in your private subnet) that goes out to the internet. When you send a request to download an update or access an external API, this is outbound traffic because the instance is initiating the connection.</p>
-<p>Inbound Traffic refers to traffic initiated from the internet towards your instance. For example, a web server accepting a request from an external user would be receiving inbound traffic.</p>
-<p><strong>Key Concept: Stateful Connections and Outbound Session</strong> NAT Gateways maintain <strong>stateful connections</strong>. When your instance starts a connection to the internet, the NAT Gateway tracks that connection. Any return traffic (like the update file) is automatically allowed because it is part of an ongoing session initiated by your instance. NAT Gateway does not allow new incoming connections initiated by the external source. It only forwards responses to requests that were initiated by the private instance (which keeps the session active).</p>
 <hr>
 </section>
 </section>
-</section>
-<section id="amazon-vpc-routing-and-security" class="level2">
-<h2 class="anchored" data-anchor-id="amazon-vpc-routing-and-security">4.4 Amazon VPC Routing and Security</h2>
-<section id="the-main-route-table" class="level3">
-<h3 class="anchored" data-anchor-id="the-main-route-table">4.4.1 The Main Route Table</h3>
-<p>When you create a VPC, AWS creates a route table called the main route table. A route table contains a set of rules, called routes, that are used to determine where network traffic is directed. AWS assumes that when you create a new VPC with subnets, you want traffic to flow between them. Therefore, the default configuration of the main route table is to allow traffic between all subnets in the local network.</p>
-<p><img src="./images/main_route_table_(of_a_vpc).png" class="img-fluid"></p>
-<p>There are two main parts to this route table.</p>
+<section id="ipv4-cidr-why-you-need-ranges" class="level2">
+<h2 class="anchored" data-anchor-id="ipv4-cidr-why-you-need-ranges">IPv4 → CIDR (why you need ranges)</h2>
+<p><img src="./images/ipv4_notation.png" class="img-fluid"></p>
 <ul>
-<li><p>The <strong>destination</strong>, which is a range of IP addresses where you want your traffic to go. In the example of sending a letter, you need a destination to route the letter to the appropriate place. The same is true for routing traffic. In this case, the destination is the IP range of our VPC network.</p></li>
-<li><p>The <strong>target</strong>, which is the connection through which to send the traffic. In this case, the traffic is routed through the local VPC network.</p></li>
+<li><strong>IPv4</strong> identifies a single host (32 bits → dotted decimal <code>x.x.x.x</code>).</li>
+<li>Networks need <strong>ranges</strong>, not single IPs → use <strong>CIDR</strong>.</li>
+</ul>
+<section id="cidr-notation-range" class="level3">
+<h3 class="anchored" data-anchor-id="cidr-notation-range">CIDR Notation (range)</h3>
+<ul>
+<li>Format: <code>STARTING_IP/NUMBER_OF_FIXED_BITS</code>
+<ul>
+<li>Example: <code>192.168.1.0/24</code> → first 24 bits fixed → <strong>256 IPs</strong> (2⁸).</li>
+</ul></li>
+<li>In AWS:
+<ul>
+<li>Smallest VPC/subnet range: <strong>/28 = 16 IPs</strong></li>
+<li>Largest VPC range: <strong>/16 = 65,536 IPs</strong></li>
+</ul></li>
+<li>AWS reserves <strong>5 IPs per subnet</strong>, so small subnets lose usable space fast.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="aws-vpc-what-you-must-choose" class="level2">
+<h2 class="anchored" data-anchor-id="aws-vpc-what-you-must-choose">AWS VPC (what you must choose)</h2>
+<p><img src="./images/vpc_azs_region.png" class="img-fluid"></p>
+<p><strong>VPC requires:</strong></p>
+<ol type="1">
+<li><strong>Name</strong></li>
+<li><strong>Region</strong> (VPC spans multiple AZs in that region)</li>
+<li><strong>CIDR range</strong> (VPC size; up to <strong>four /16 ranges</strong> per VPC)</li>
+</ol>
+<hr>
+</section>
+<section id="subnets-how-you-place-resources" class="level2">
+<h2 class="anchored" data-anchor-id="subnets-how-you-place-resources">Subnets (how you place resources)</h2>
+<p><img src="./images/VPC-split-by-subnet.png" class="img-fluid"></p>
+<ul>
+<li><strong>Subnet = smaller CIDR block inside a VPC</strong>, tied to <strong>one AZ</strong>.</li>
+<li>Subnet CIDR must be a <strong>subset</strong> of VPC CIDR.</li>
+<li>EC2 instances are launched <strong>inside subnets</strong> (therefore in a specific AZ).</li>
+<li>For <strong>high availability</strong>, create <strong>at least two subnets in two AZs</strong>.</li>
+</ul>
+<section id="reserved-ips-in-every-subnet" class="level3">
+<h3 class="anchored" data-anchor-id="reserved-ips-in-every-subnet">Reserved IPs in every subnet</h3>
+<p><img src="./images/5_reserved_ip_addresses.png" class="img-fluid"></p>
+<ul>
+<li>AWS reserves <strong>5 IP addresses per subnet</strong> for routing/DNS/management.<br>
+→ Plan subnet sizes with this overhead in mind.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="public-vs-private-subnets-core-pattern" class="level2">
+<h2 class="anchored" data-anchor-id="public-vs-private-subnets-core-pattern">Public vs Private subnets (core pattern)</h2>
+<p><img src="./images/public_and_private_subnetets_inside_vpc.png" class="img-fluid"></p>
+<ul>
+<li><strong>Public subnet</strong>: has a route to an <strong>Internet Gateway (IGW)</strong>.</li>
+<li><strong>Private subnet</strong>: no direct IGW route; inbound from internet is blocked by design.</li>
+<li>Common architecture:
+<ul>
+<li><strong>Public</strong>: Load balancer</li>
+<li><strong>Private</strong>: app servers + databases</li>
+<li><strong>NAT Gateway</strong>: private subnet outbound internet access (updates, external APIs)</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="gateways-what-they-do" class="level2">
+<h2 class="anchored" data-anchor-id="gateways-what-they-do">Gateways (what they do)</h2>
+<ul>
+<li><p><strong>Internet Gateway (IGW)</strong></p>
+<ul>
+<li>Enables internet connectivity for the VPC (must be <strong>attached</strong> to the VPC).</li>
+</ul></li>
+<li><p><strong>Virtual Private Gateway (VGW)</strong></p>
+<ul>
+<li>Connects VPC to another private network via <strong>encrypted VPN</strong> (with Customer Gateway on the other side).</li>
+</ul></li>
+<li><p><strong>NAT Gateway</strong></p>
+<ul>
+<li>Allows <strong>outbound-only</strong> internet from <strong>private subnets</strong> by translating private IP → public IP.</li>
+<li><strong>Stateful return traffic</strong> is allowed only for connections initiated from inside.</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="vpc-routing-security-the-essential-controls" class="level2">
+<h2 class="anchored" data-anchor-id="vpc-routing-security-the-essential-controls">VPC Routing &amp; Security (the essential controls)</h2>
+<section id="main-route-table" class="level3">
+<h3 class="anchored" data-anchor-id="main-route-table">Main Route Table</h3>
+<p><img src="&quot;./images/main_route_table_(of_a_vpc.png)&quot;" class="img-fluid"></p>
+<ul>
+<li>Default route table created with the VPC.</li>
+<li>Contains routes (Destination → Target).</li>
+<li>Default behavior: allows <strong>VPC-local traffic</strong> between subnets.</li>
 </ul>
 </section>
 <section id="custom-route-tables" class="level3">
-<h3 class="anchored" data-anchor-id="custom-route-tables">4.4.2 Custom Route Tables</h3>
-<ul>
-<li>Custom Route Tables are Route Tables for specific subnets
-<ul>
-<li>granular way to route your traffic for specific subnets.</li>
-</ul></li>
-</ul>
-<blockquote class="blockquote">
-<p>If you associate a custom route table with a subnet, the subnet will use it instead of the main route table. By default, each custom route table you create will have the <code>local</code> route already inside it, allowing communication to flow between all resources and subnets inside the VPC.</p>
-</blockquote>
+<h3 class="anchored" data-anchor-id="custom-route-tables">Custom Route Tables</h3>
 <p><img src="./images/custom_route_tables.png" class="img-fluid"></p>
-</section>
-<section id="secure-your-subnets-with-network-acls" class="level3">
-<h3 class="anchored" data-anchor-id="secure-your-subnets-with-network-acls">4.4.3 Secure Your Subnets with Network ACLs</h3>
-<p>A NACL (Network Access Control List) is <em>a stateless firewall</em> at the subnet level in AWS that controls inbound and outbound traffic to and from subnets.</p>
-<blockquote class="blockquote">
-<p>Network ACL’s are considered stateless, so you need to include both the inbound and outbound ports used for the protocol. If you don’t include the outbound range, your server would respond but the traffic would never leave the subnet.</p>
-</blockquote>
-<p><img src="./images/network_acl_inbound_and_outbound_rules.png" class="img-fluid"></p>
-<blockquote class="blockquote">
-<p>Note the <code>non modifiable</code> rules in both <code>inbound</code> and <code>outbound</code></p>
-</blockquote>
-</section>
-<section id="secure-your-ec2-instances-with-security-groups" class="level3">
-<h3 class="anchored" data-anchor-id="secure-your-ec2-instances-with-security-groups">4.4.4 Secure Your EC2 Instances with Security Groups</h3>
-<p><img src="./images/NACL_vs_sec_group_rules.png" class="img-fluid"></p>
-<blockquote class="blockquote">
-<p>Default Security Group Behaviour: Denies all inbound traffic by default, allows all outbound by default</p>
-</blockquote>
-<p>If you have a web server, you may need to accept HTTP and HTTPS requests to allow that type of traffic in through your security group. You can create an inbound rule that will allow port 80 (HTTP) and port 443 (HTTPS) as shown below.</p>
-<p><img src="./images/inbound_sg_rules_for_http_https.png" class="img-fluid"></p>
-</section>
-<section id="port-80-vs-port-443" class="level3">
-<h3 class="anchored" data-anchor-id="port-80-vs-port-443">4.4.5 Port 80 vs Port 443:</h3>
-<pre><code>Q) 1. What does port 80 and port 443 signify? 
-2. What does HTTP request and HTTPS request ? How are these 2 requests different
-
-&gt; Port 80 (HTTP): When your browser makes an HTTP request over port 80, the communication is unencrypted. 
-- Anyone intercepting the data between the browser and server can read the content in plaintext.
-- HTTP requests are typically used on websites where security is not a concern (e.g., static informational sites).
-
-E.g.: `http://` websites
-
-&gt; Port 443 (HTTPS): When your browser makes an HTTPS request over port 443, the communication is encrypted using SSL/TLS. This means:
-- The data is securely encrypted and can only be decrypted by the server and client.
-- HTTPS requests are used on websites where security is important (e.g., banking, e-commerce, login forms).
-
-E.g.: `https://` websites</code></pre>
-<p><img src="./images/http_vs_https.png" class="img-fluid"></p>
-<p><img src="./images/networking_sg_rules_for_a_multi_tier_system.png" class="img-fluid"></p>
-<blockquote class="blockquote">
-<p>This example allows you to define three tiers and isolate each tier with the security group rules you define. In this case, you only allow internet traffic to the web tier over HTTPS, Web Tier to Application Tier over HTTP, and Application tier to Database tier over MySQL. This is different from traditional on-premises environments, in which you isolate groups of resources via VLAN configuration. In AWS, security groups allow you to achieve the same isolation without tying it to your network.</p>
-</blockquote>
-<hr>
-</section>
-</section>
-<section id="how-an-ec2-instance-in-a-private-subnet-reaches-the-internet" class="level2">
-<h2 class="anchored" data-anchor-id="how-an-ec2-instance-in-a-private-subnet-reaches-the-internet">4.5 How an EC2 Instance in a Private Subnet reaches the Internet</h2>
-<p><img src="./images/how_EC2_in_private_subnet.png" class="img-fluid"></p>
-<hr>
-</section>
-<section id="common-network-troubleshooting-steps-for-amazon-vpc" class="level2">
-<h2 class="anchored" data-anchor-id="common-network-troubleshooting-steps-for-amazon-vpc">4.6 10 Common network troubleshooting steps for Amazon VPC</h2>
-<p>Below is a list of configurations you should check if you ever have <code>a public EC2 instance with a web application</code> that is not loading as expected.</p>
-<ol type="1">
-<li><p>Internet gateway &gt; Is IGW attached to VPC? &gt; Without the internet gateway, no traffic will be allowed in or out of the VPC.</p></li>
-<li><p>Route tables</p></li>
-</ol>
-<blockquote class="blockquote">
-<p>Does the route table of the subnet that has the EC2 application have destination as <code>0.0.0.0/0</code> and target as <code>igw</code> ? This route allows outbound traffic to the internet and makes the subnet a <code>public</code> subnet</p>
-</blockquote>
-<ol start="3" type="1">
-<li>Security groups</li>
-</ol>
-<blockquote class="blockquote">
-<p>By default all inbound traffic is blocked. Make sure there are inbound rules allowing HTTP (port 80) and/or HTTPS (port 443) traffic from the internet (0.0.0.0/0). Also, verify that outbound rules allow traffic to leave the instance.</p>
-</blockquote>
-<ol start="4" type="1">
-<li>Network Access Control Lists</li>
-</ol>
-<blockquote class="blockquote">
-<p>Check the NACLs associated with the subnet that has the EC2 instance NACLs are stateless, so you must explicitly allow both inbound and outbound rules that allow the http and https rules to subnet</p>
-</blockquote>
-<ol start="5" type="1">
-<li>Public IP address (Most important one :))</li>
-</ol>
-<blockquote class="blockquote">
-<p>Ensure you have <code>auto-assign IP address</code> when launching EC2 instance</p>
-</blockquote>
-<ol start="6" type="1">
-<li>HTTP vs HTTPS</li>
-</ol>
-<blockquote class="blockquote">
-<p>Confirm that your application is accessible via the correct protocol. If your application is configured for HTTPS, ensure SSL/TLS certificates are correctly installed and configured. Also, check if the web browser is trying to connect via the wrong protocol (HTTP instead of HTTPS or vice versa). For this course, the application is operating via HTTP, double check that your browser is not trying to connect via HTTPS. You can do this by selecting the address bar in the browser and making sure the address starts with http and not https.</p>
-</blockquote>
-<ol start="7" type="1">
-<li>User data script</li>
-</ol>
-<blockquote class="blockquote">
-<p>If your instance uses a user data script to configure the application on launch, verify that the script has run successfully.</p>
-</blockquote>
-<blockquote class="blockquote">
-<p>Check the instance logs (<code>/var/log/cloud-init.log</code> or <code>/var/log/cloud-init-output.log</code>) for any errors that may have occurred during the execution of the user data script.</p>
-</blockquote>
-<ol start="8" type="1">
-<li>Permissions (another important one)</li>
-</ol>
-<blockquote class="blockquote">
-<p>Verify the permissions and roles attached to your EC2 instance. Ensure the instance has the necessary IAM roles and policies to access any required AWS services, such as S3, DynamoDB, or RDS.</p>
-</blockquote>
-<ol start="9" type="1">
-<li>Personal network permissions</li>
-</ol>
-<blockquote class="blockquote">
-<p>Ensure that your personal or corporate network does not have restrictions blocking access to the public IP address of your EC2 instance.</p>
-</blockquote>
-<blockquote class="blockquote">
-<p>Some networks might have firewalls or proxy settings that could block outbound traffic to certain IP ranges or ports.</p>
-</blockquote>
-<ol start="10" type="1">
-<li>Application Code Logs</li>
-</ol>
-<blockquote class="blockquote">
-<p>Ensure that your application code is correctly deployed and running. Check the application’s logs to diagnose any runtime errors. Also, make sure the web server (e.g., Apache, Nginx) is installed and running.</p>
-</blockquote>
-<hr>
-</section>
-<section id="notes-from-networking-quiz" class="level2">
-<h2 class="anchored" data-anchor-id="notes-from-networking-quiz">4.7 Notes from <code>Networking</code> Quiz:</h2>
 <ul>
-<li>For creating VPC, you need to choose a region. We can have multiple AZs and multiple subnets inside that VPC</li>
-<li>Route Table can be attached to subnets and the overall VPC. The route table attached to the VPC is typically called the <code>main route table</code></li>
-<li>Custom Route Tables are for specific subnets</li>
-<li>If you have a resource in a public subnet, you need to attach an Internet Gateway to the VPC and create a route in the route table of the subnet to the internet gateway (then only it will be called a public subnet)</li>
-<li>By default, a <code>security group</code> blocks all incoming traffic and allows all outgoing traffic. It is stateful (meaning an result of an incoming traffic is allowed automatically)</li>
-<li>The <code>default NACL</code> is associated with all subnets in the VPC by default, allowing all traffic.</li>
-<li><code>Custom NACLs</code>: If you create a custom NACL, it denies all traffic by default until you specify rules. You can associate custom NACLs with specific subnets to override the default NACL’s behavior.</li>
-<li>Size of the network is determined by the <code>CIDR</code> notation. <code>/16</code> is a larger network than <code>/28</code></li>
+<li>Route tables can be attached to <strong>specific subnets</strong> for custom routing.</li>
+<li>If a subnet has a custom route table, it uses that instead of the main route table.</li>
+</ul>
+<hr>
+</section>
+<section id="network-acls-subnet-level-firewall" class="level3">
+<h3 class="anchored" data-anchor-id="network-acls-subnet-level-firewall">Network ACLs (subnet-level firewall)</h3>
+<p><img src="./images/network_acl_inbound_and_outbound_rules.png" class="img-fluid"></p>
+<ul>
+<li><strong>NACL = stateless</strong> subnet firewall.</li>
+<li>Must allow <strong>both inbound and outbound</strong> explicitly (return traffic isn’t automatic).</li>
+<li>Default vs custom behavior often differs (custom typically starts restrictive).</li>
+</ul>
+</section>
+<section id="security-groups-instance-level-firewall" class="level3">
+<h3 class="anchored" data-anchor-id="security-groups-instance-level-firewall">Security Groups (instance-level firewall)</h3>
+<p><img src="./images/NACL_vs_sec_group_rules.png" class="img-fluid"></p>
+<ul>
+<li><strong>Security Group = stateful</strong> instance firewall.</li>
+<li>Default SG behavior:
+<ul>
+<li><strong>Inbound: deny all</strong></li>
+<li><strong>Outbound: allow all</strong></li>
+</ul></li>
+<li>For web servers, allow inbound HTTP/HTTPS:</li>
+</ul>
+<p><img src="./images/inbound_sg_rules_for_http_https.png" class="img-fluid"></p>
+<hr>
+</section>
+</section>
+<section id="port-80-vs-443-only-what-matters" class="level2">
+<h2 class="anchored" data-anchor-id="port-80-vs-443-only-what-matters">Port 80 vs 443 (only what matters)</h2>
+<p><img src="./images/http_vs_https.png" class="img-fluid"></p>
+<ul>
+<li><strong>80 = HTTP</strong> (unencrypted)</li>
+<li><strong>443 = HTTPS</strong> (encrypted via TLS)</li>
+</ul>
+<hr>
+</section>
+<section id="multi-tier-security-group-isolation-typical-3-tier" class="level2">
+<h2 class="anchored" data-anchor-id="multi-tier-security-group-isolation-typical-3-tier">Multi-tier security group isolation (typical 3-tier)</h2>
+<p><img src="./images/networking_sg_rules_for_a_multi_tier_system.png" class="img-fluid"></p>
+<ul>
+<li>Web tier: allow internet → web over <strong>HTTPS</strong></li>
+<li>App tier: allow web → app over <strong>HTTP/needed ports</strong></li>
+<li>DB tier: allow app → DB over <strong>DB port</strong> (e.g., MySQL 3306)</li>
+<li>This isolates tiers without VLANs (security groups enforce isolation).</li>
+</ul>
+<hr>
+</section>
+<section id="how-private-subnet-ec2-reaches-the-internet" class="level2">
+<h2 class="anchored" data-anchor-id="how-private-subnet-ec2-reaches-the-internet">How private-subnet EC2 reaches the internet</h2>
+<p><img src="./images/how_EC2_in_private_subnet.png" class="img-fluid"></p>
+<ul>
+<li>Private EC2 → routes outbound traffic to <strong>NAT Gateway</strong> (in a public subnet) → internet.</li>
+<li>No direct inbound internet connectivity to private EC2.</li>
+</ul>
+<hr>
+</section>
+<section id="vpc-troubleshooting-checks-public-ec2-web-app-not-loading" class="level2">
+<h2 class="anchored" data-anchor-id="vpc-troubleshooting-checks-public-ec2-web-app-not-loading">10 VPC troubleshooting checks (public EC2 web app not loading)</h2>
+<ol type="1">
+<li><strong>IGW attached to VPC</strong></li>
+<li>Subnet route table has <code>0.0.0.0/0 → igw</code></li>
+<li><strong>Security Group</strong> allows inbound <code>80/443</code> (and outbound allowed)</li>
+<li><strong>NACL</strong> allows inbound + outbound for required ports (stateless)</li>
+<li>Instance has a <strong>public IP</strong> (auto-assign enabled)</li>
+<li>Using correct <strong>HTTP vs HTTPS</strong></li>
+<li><strong>User data script</strong> ran successfully (<code>/var/log/cloud-init*</code>)</li>
+<li>Instance has correct <strong>IAM role permissions</strong> (S3/DDB/etc.)</li>
+<li>Your corporate/personal network isn’t blocking access</li>
+<li>App + web server running; check application logs</li>
+</ol>
+<hr>
+</section>
+<section id="quiz-notes" class="level2">
+<h2 class="anchored" data-anchor-id="quiz-notes">Quiz Notes</h2>
+<ul>
+<li>VPC requires <strong>Region</strong>, contains <strong>AZs</strong> and <strong>subnets</strong></li>
+<li>Route tables attach to <strong>VPC (main)</strong> and <strong>subnets (custom)</strong></li>
+<li>Public subnet needs <strong>IGW + route</strong> to IGW</li>
+<li>By default, a&nbsp;<code>security group</code>&nbsp;blocks all incoming traffic and allows all outgoing traffic. It is stateful (meaning an result of an incoming traffic is allowed automatically)</li>
+<li>NACLs: <strong>stateless</strong> (must allow inbound + outbound). The&nbsp;<code>default NACL</code>&nbsp;is associated with all subnets in the VPC by default, allowing all traffic.</li>
+<li>CIDR determines network size: <strong>/16 larger than /28</strong></li>
 </ul>
 <p><a href="https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w2-%20AWS%20Compute%20and%20Networking/Week%202%20Quiz%20_%20Coursera.pdf">A Github Source for Week 2 Quiz</a></p>
 <hr>
-</section>
-<section id="chatgpt-interactions-on-nacl-and-security-group" class="level2">
-<h2 class="anchored" data-anchor-id="chatgpt-interactions-on-nacl-and-security-group">ChatGPT Interactions on NACL and Security Group</h2>
-<pre><code>Q) Give me aws cli command to add NACL rules and security group rules</code></pre>
-<p>Here are AWS CLI commands to add <strong>NACL rules</strong> and <strong>Security Group rules</strong>:</p>
-<section id="add-rules-to-a-network-acl-nacl" class="level3">
-<h3 class="anchored" data-anchor-id="add-rules-to-a-network-acl-nacl">1. <strong>Add Rules to a Network ACL (NACL)</strong>:</h3>
-<p>To add an inbound or outbound rule to a <strong>Network ACL</strong>, you can use the <code>aws ec2 create-network-acl-entry</code> command.</p>
-<section id="example-command-for-adding-an-inbound-rule-to-allow-http-traffic" class="level4">
-<h4 class="anchored" data-anchor-id="example-command-for-adding-an-inbound-rule-to-allow-http-traffic">Example Command for Adding an Inbound Rule to Allow HTTP Traffic:</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-network-acl-entry <span class="dt">\</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--network-acl-id</span> acl-0123456789abcdef0 <span class="dt">\</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ingress</span> <span class="dt">\</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rule-number</span> 100 <span class="dt">\</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> 6 <span class="dt">\</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port-range</span> From=80,To=80 <span class="dt">\</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr-block</span> 0.0.0.0/0 <span class="dt">\</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rule-action</span> allow</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ul>
-<li><strong><code>--network-acl-id</code></strong>: The ID of the NACL.</li>
-<li><strong><code>--ingress</code></strong>: Indicates that the rule is for inbound traffic (use <code>--egress</code> for outbound).</li>
-<li><strong><code>--rule-number</code></strong>: A unique number for the rule (rules are evaluated in order).</li>
-<li><strong><code>--protocol</code></strong>: Protocol number (<code>6</code> for TCP, <code>-1</code> for all protocols).</li>
-<li><strong><code>--port-range</code></strong>: The port range (in this case, HTTP traffic on port 80).</li>
-<li><strong><code>--cidr-block</code></strong>: The source CIDR block.</li>
-<li><strong><code>--rule-action</code></strong>: Whether to <code>allow</code> or <code>deny</code> the traffic.</li>
-</ul>
-</section>
-<section id="example-command-for-adding-an-outbound-rule-to-allow-all-traffic" class="level4">
-<h4 class="anchored" data-anchor-id="example-command-for-adding-an-outbound-rule-to-allow-all-traffic">Example Command for Adding an Outbound Rule to Allow All Traffic:</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-network-acl-entry <span class="dt">\</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--network-acl-id</span> acl-0123456789abcdef0 <span class="dt">\</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--egress</span> <span class="dt">\</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rule-number</span> 101 <span class="dt">\</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> <span class="at">-1</span> <span class="dt">\</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port-range</span> From=0,To=65535 <span class="dt">\</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr-block</span> 0.0.0.0/0 <span class="dt">\</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--rule-action</span> allow</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="add-rules-to-a-security-group" class="level3">
-<h3 class="anchored" data-anchor-id="add-rules-to-a-security-group">2. <strong>Add Rules to a Security Group</strong>:</h3>
-<p>To add inbound or outbound rules to a <strong>Security Group</strong>, use the <code>aws ec2 authorize-security-group-ingress</code> or <code>authorize-security-group-egress</code> command.</p>
-<section id="example-command-for-adding-an-inbound-rule-to-allow-ssh-port-22-from-a-specific-ip" class="level4">
-<h4 class="anchored" data-anchor-id="example-command-for-adding-an-inbound-rule-to-allow-ssh-port-22-from-a-specific-ip">Example Command for Adding an Inbound Rule to Allow SSH (Port 22) from a Specific IP:</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 authorize-security-group-ingress <span class="dt">\</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--group-id</span> sg-0123456789abcdef0 <span class="dt">\</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> tcp <span class="dt">\</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port</span> 22 <span class="dt">\</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr</span> 203.0.113.0/32 <span class="dt">\</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--description</span> <span class="st">"Allow SSH from admin IP"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ul>
-<li><strong><code>--group-id</code></strong>: The ID of the security group.</li>
-<li><strong><code>--protocol</code></strong>: Protocol type (<code>tcp</code>, <code>udp</code>, <code>icmp</code>, etc.).</li>
-<li><strong><code>--port</code></strong>: The port to allow (e.g., <code>22</code> for SSH).</li>
-<li><strong><code>--cidr</code></strong>: The CIDR block that is allowed access (a specific IP or range).</li>
-<li><strong><code>--description</code></strong>: Optional, a brief description of the rule.</li>
-</ul>
-</section>
-<section id="example-command-for-adding-an-outbound-rule-to-allow-https-port-443-to-all-ips" class="level4">
-<h4 class="anchored" data-anchor-id="example-command-for-adding-an-outbound-rule-to-allow-https-port-443-to-all-ips">Example Command for Adding an Outbound Rule to Allow HTTPS (Port 443) to All IPs:</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 authorize-security-group-egress <span class="dt">\</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--group-id</span> sg-0123456789abcdef0 <span class="dt">\</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> tcp <span class="dt">\</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port</span> 443 <span class="dt">\</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr</span> 0.0.0.0/0 <span class="dt">\</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--description</span> <span class="st">"Allow outbound HTTPS traffic"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="tips" class="level3">
-<h3 class="anchored" data-anchor-id="tips"><strong>Tips</strong>:</h3>
-<ul>
-<li><strong>Remove Rules</strong>: Use <code>aws ec2 revoke-network-acl-entry</code> or <code>aws ec2 revoke-security-group-ingress/egress</code> to remove existing rules.</li>
-<li><strong>List Rules</strong>: Use <code>aws ec2 describe-network-acls</code> or <code>aws ec2 describe-security-groups</code> to view current rules.</li>
-</ul>
-<hr>
-</section>
 </section>
 </section>
 <section id="storage" class="level1">
 <h1>5. Storage</h1>
 <section id="storage-types-on-aws" class="level2">
 <h2 class="anchored" data-anchor-id="storage-types-on-aws">5.1 Storage Types on AWS</h2>
-<p>3 Different AWS Storage Types: - block storage - file storage - object storage</p>
+<p>3 Different AWS Storage Types:</p>
+<ul>
+<li>block storage</li>
+<li>file storage</li>
+<li>object storage</li>
+</ul>
 <section id="file-storage" class="level3">
 <h3 class="anchored" data-anchor-id="file-storage">5.1.1 File Storage</h3>
 <ul>
