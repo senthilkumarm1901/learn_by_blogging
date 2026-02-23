@@ -1,0 +1,116 @@
+---
+title: "07. Monitoring"
+author: "Senthil Kumar"
+---
+
+# 7. Monitoring in AWS
+
+**Why Monitoring?**
+
+- Ensuring reliable performance
+- Are we using resources in a cost-effective way?
+- Preventive Healthcheck: Prevent outage by scaling infra or fixing issues automated
+- For security
+
+## 7.1 Intro to AWS CloudWatch
+
+### 7.1.1 **Services in CloudWatch**:
+
+- Metrics
+- Alarms (when a metric goes above a threshold)
+- Logs
+
+### 7.1.2 Types of Cloudwatch Metrics
+
+```{mermaid}
+flowchart TD
+  M((Metrics))
+  M1((Default <br>AWS Service Metrics))
+  M2((Custom<br>Application Metrics))
+
+  EX1((Eg -<br>No of hits to a Service))
+  EX2((Eg -<br>Website Load Times))
+
+  M --> M1
+  M --> M2
+
+  M1 --> EX1
+  M2 --> EX2
+```
+
+### 7.1.3 Types of Monitoring
+
+- By default, with the AWS account, a `basic monitoring` is enabled (where every 5 minutes some metrics reach the CloudWatch dashboard)
+- A `detailed monitoring` at additional cost can be setup if say, metrics need to be logged every 1 minute instead of 5 minutes
+
+
+### 7.1.4 How to filter/categorize Metrics
+
+
+```{mermaid}
+flowchart TD
+  M((Metrics))
+
+  M1((Dimensions))
+  M2((Namespaces))
+
+  EX1((Key/Value pair-<br>FunctionName/MyLambda))   
+  EX2((Metrics <br>belonging to<br>different categories-<br>aws/ec2,<br>aws/lambda))
+
+  M --> M1 --> EX1
+  M --> M2 --> EX2
+```
+
+- A `Dimension` can be used to filter the metrics
+- A `Namespace` gives a logical grouping of the logs into different categories
+
+### 7.1.5 Custom Metrics
+
+Using `boto3` sdk, you can ensure `custom metrics` like the following that reflect the health of your application can be sent to CloudWatch logs
+
+- Web page Load Time
+- Amount of tasks handled 
+
+## 7.2 Other Services in CloudWatch
+### 7.2.1 Understand the CloudWatch Dashboards
+
+- For viewing aggregated statistics of CloudWatch metrics
+
+### 7.2.2 CloudWatch Logs
+
+- For lambda, easy to setup: Enable in IAM policy
+- For EC2, enable CW logs agent
+
+
+### 7.2 CloudWatch Alarms 
+
+- When a metric goes above a threshold, an alarm can be set
+
+## 7.3 EventBridge
+
+- For a Rule-triggered workflow 
+- Allows you to define rules that filter events based on specific patterns and forward those events to one or more targets.
+
+---
+
+## 7.4 Notes from `Monitoring` Quiz
+
+- Amazon CloudWatch Widgets are used to view and analyze metrics in CloudWatch Dashboard
+
+![](https://d2908q01vomqb2.cloudfront.net/972a67c48192728a34979d9a35164c1295401b71/2022/06/21/devops_1335_2.png)
+
+- The 3 states of a metric alarm in CloudWatch: 
+  - `OK` (metric is within the defined threshold), 
+  - `Alarm` (metric is outside the defined threshold), 
+  - `Insufficient_data` (metric does not have enough data to decide on the alarm)
+
+- VPC Network traffic (what network comes in and out of the VPC) can be measured by VPC Flow Logs
+
+- By default, Lambda functions run in a `Lambda-managed VPC that has internet access`. 
+  - So one need not configure a VPC, Subenets and Security Group 
+    - Unless they want to have their lambda accessed from inside a VPC in their own account. 
+  - In that case, you can add a VPC configuration to a lambda function. 
+    - This restricts the lambda function to resources within that VPC, unless the VPC has internet access
+
+Source: [A github source for Week 4 Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w4-%20Monitoring%20and%20Optimizing%20Solutions%20on%20AWS/Week%204%20Quiz%20_%20Coursera.pdf)
+

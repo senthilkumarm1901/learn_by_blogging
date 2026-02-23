@@ -1,0 +1,229 @@
+---
+title: "1. Introduction to AWS"
+---
+
+# 1. Introduction to AWS
+
+## 1.  Introduction to AWS - The Critical Elements
+
+- **Regions → AZs → Data Centers**
+    
+    - AWS Regions consist of **Availability Zones (AZs)**.
+    - AZs consist of **one or more physical data centers**.
+
+
+- **Root account first steps (non‑negotiable)**
+    
+    1. Enable **MFA** on the root user immediately
+    2. Create an **IAM Administrator role**
+        - Full service creation permissions
+        - No account‑level or billing changes
+    3. Lock away root credentials
+
+- **IAM policies cannot restrict the root user**
+    
+    - Root user always has unrestricted access, regardless of IAM policies.
+
+- **Shared Responsibility Model**
+    
+    - AWS = **security _of_ the cloud**
+    - Customer = **security _in_ the cloud**
+
+- Summary: **Every activity in AWS is an API call**
+    
+    - Console clicks, CLI commands, SDK calls → all become **authenticated & authorized AWS API requests**.
+
+
+
+---
+
+
+### Choose the Right AWS Region
+
+**Essential takeaway:**  
+Choose Region in this order:
+
+1. **Compliance / data residency**
+2. **Latency**
+3. **Service availability**
+4. **Cost**
+5. **Availability & DR needs**
+
+![](./images/how_to_choose_aws_region.png)
+
+---
+
+### Availability Zones
+
+![](./images/regioin-az-datacenters.png){width=100%}
+
+- Each **Region contains multiple AZs**
+- Each **AZ = one or more data centers**
+- Data centers are:
+    - Physically separate
+    - Redundantly powered and networked
+- AZs are connected by **low‑latency, high‑bandwidth links**
+- AZ names:
+    - `<region><letter>` (example: `us-east-1a`)
+    - Letter mappings differ per account
+- Resource location example:
+    - `us-east-1c` → AZ “c” inside `us-east-1`
+
+---
+
+### Scope of AWS Services
+
+![](./images/aws_scope_and_responsibility_of_services_2.png)
+
+**Scope summary:**
+
+- **Global services**
+
+    - Single logical control plane across AWS
+    - Example: IAM, Route 53, CloudFront
+- **Regional services**
+    
+    - Live within a Region, usually span multiple AZs
+    - Example: S3, DynamoDB, VPC, RDS Multi‑AZ
+- **Zonal services**
+    
+    - Bound to a single AZ
+    - Example: EC2, EBS, RDS Single‑AZ
+
+**Availability & durability:**
+
+- Some services are **AWS‑managed**
+- Others require **customer‑designed HA/DR**
+
+---
+
+### Maintain Resiliency
+
+- Prefer **Region‑scoped managed services**
+- Otherwise:
+    - Deploy across **multiple AZs**
+    - Minimum **two AZs**
+- AZ failure ≠ application outage when designed correctly
+
+---
+
+### Security and the AWS Shared Responsibility Model
+
+#### Core distinction
+
+- **AWS responsibility (security of the cloud):**
+    
+    - Physical data centers
+    - Hardware, networking
+    - Host OS and virtualization layer
+- **Customer responsibility (security in the cloud):**
+    
+    - IAM, access control
+    - Data protection & encryption
+    - Network security (SGs, NACLs)
+    - Backups and recovery
+
+> AWS manages the infrastructure.  
+> You secure what you build on top of it.
+
+---
+
+## Protect the AWS Root User
+
+### Authentication vs Authorization
+
+- **Authentication:**  
+    “Who are you?” (passwords, MFA, tokens)
+    
+- **Authorization:**  
+    “What are you allowed to do?” (IAM policies)
+    
+
+---
+
+### AWS Root User
+
+- Created with the AWS account
+- Has **full, unrestricted access**
+- Credentials:
+    - Email + password (console)
+    - Access keys (programmatic)
+
+**Critical facts:**
+
+- IAM policies **cannot limit root**
+- Root should never be used for daily work
+
+---
+
+### Root User Best Practices
+
+- Enable **MFA**
+- Strong, unique password
+- **Delete root access keys**
+- Use root **only** for:
+    - Account setup
+    - Billing
+    - Rare account‑level tasks
+
+---
+
+### Why MFA Matters
+
+- Passwords alone are weak
+- MFA adds a second factor:
+    - Something you know
+    - Something you have
+    - Something you are
+- **Always enable MFA on root**
+
+---
+
+## Control Plane APIs and Data Plane APIs in AWS
+
+* AWS describes control plane as administrative APIs (CRUDL) like “creating an S3 bucket”, while data plane includes “getting and putting objects in an S3 bucket
+
+- Source: [Control Planes and Data Planes in AWS](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/control-planes-and-data-planes.html)
+
+S3 **Control plane** APIs (AWS CLI examples)
+
+✅ Create a bucket (control plane)
+
+```bash
+aws s3api create-bucket \
+  --bucket my-example-bucket-123 \
+  --region ap-south-1 \
+  --create-bucket-configuration LocationConstraint=ap-south-1
+```
+
+`create-bucket` “Creates a new S3 bucket.”
+
+> * Rule of thumb: Anything *Bucket* (create bucket, put bucket encryption, put bucket policy, lifecycle, versioning…) is typically “control plane” style because you’re configuring the container and its behavior.
+
+```bash
+aws s3api delete-object \
+  --bucket my-example-bucket-123 \
+  --key docs/readme.txt
+```
+
+> * Rule of thumb: Anything *Object* (PutObject/GetObject/ListObjects/DeleteObject/HeadObject) is “data plane” because you’re interacting with the stored data.
+
+---
+
+## Summary: Every AWS Activity Is an API Call
+
+![](./images/every_aws_service_use_is_an_api_call.png)
+
+- Console, CLI, SDK → **AWS API**
+- API calls are:
+    - Authenticated
+    - Authorized
+    - Evaluated by IAM
+- Understanding this explains:
+    - IAM behavior
+    - Auditing (CloudTrail)
+    - Automation (IaC, CI/CD)
+    - Security boundaries
+
+> **By understanding APIs, IAM, Regions, AZs, and responsibility boundaries — one understands AWS.**
+

@@ -1,0 +1,263 @@
+---
+title: "05. Storage"
+author: "Senthil Kumar"
+
+---
+
+# 5. Storage
+
+
+### AWS Storage Types 
+
+**Three storage types:**
+
+- **Block storage**: Splits data into fixed-size **blocks** with addresses → efficient random access; common for OS, DB volumes.
+- **File storage**: Hierarchical **directory tree** (paths); each file has metadata (name, size, created date). More folders can add latency.
+- **Object storage**: Flat namespace; each object = data + metadata + unique identifier; optimized for scale & throughput.
+
+#### File Storage (What/When)
+
+- **Structure**: Tree-like folders (like traditional file systems).
+- **Note**: Every additional folder adds latency.
+- **Use cases**: large content repositories, dev environments, user home directories.
+
+#### Block Storage (What/Why)
+
+- **Concept**: Files split into **addressable blocks** → efficient retrieval.
+- Typically used where **low-latency**, frequent updates, or OS-level mount semantics are needed.
+
+![](./images/block_storage.png)
+
+#### Object Storage (What/Why)
+
+- **Flat structure** (no true hierarchy).
+- **Good for high throughput** and massive scale.
+- Updating part of an object generally means overwriting the whole object.
+
+**File vs Object (from your notes):**
+
+- File: hierarchy YES; low-latency R/W; partial edit implies overwrite file; example: **Amazon EFS**
+- Object: flat; high throughput; partial edit implies overwrite object; example: **Amazon S3**
+
+| File Storage                                   | Object Storge                                  |
+| ---------------------------------------------- | ---------------------------------------------- |
+| Hierarchy - YES; Folder or tree-like structure | Flat Structure. No hierarchy                   |
+| Good for low-latency read-write                | Good for high throughput                       |
+| Edit a portion, you overwrite the whole file   | Edit a portion, you overwrite the whole object |
+| Amazon EFS                                     | Amazon S3                                      |
+
+---
+
+### EC2 Storage Options: Instance Store vs EBS
+
+#### Two EC2 instance storage options
+
+- **Instance Store**: ephemeral block storage; good for **stateless** workloads.
+- **EBS**: persistent block storage; behaves like an external drive that can outlive the instance.
+
+```{mermaid}
+flowchart TD
+  A[[Temporary<br>Instance Store]]
+  B[[Permanent<br>EBS]]
+  C(Storage connected<br>to EC2)
+  C --> A
+  C --> B  
+```
+#### 2.2 Attachment relationships (EC2 ↔ EBS)
+
+**1 EC2 to Many EBS Volumes**
+
+- An **EBS volume (in the same AZ)** can be detached from one EC2 and attached to another.
+
+```{mermaid}
+flowchart LR
+  EC[EC2]
+  EB1[[EBS 1]]
+  EB2[[EBS 2]]
+  EB3[[EBS 3]]
+  EC --> EB1
+  EC --> EB2
+  EC --> EB3
+```
+
+**1 EBS to 1 EC2 (typical)**
+
+```{mermaid}
+flowchart LR
+  EC[EC2] --> EB1[[EBS 1]]
+```
+
+**1 EBS to Many EC2 (supported for some instances)**
+
+```{mermaid}
+flowchart LR
+  EB1[[EBS 1]]
+  ECA[EC2 A]
+  ECB[EC2 B]
+
+  EB1 --> ECA
+  EB1 --> ECB
+```
+
+
+**Analogy/limits (from your notes):**
+
+- Like an external drive: if compute fails, **data can still remain** on EBS.
+- Volumes have **max size limits** (scalability bounded per volume).
+
+#### 2.3 Scaling EBS volumes
+
+Two main approaches:
+
+1. **Increase volume size** up to the maximum (**16 TB** per volume, per your notes).
+2. **Attach multiple volumes** to a single EC2 instance (one-to-many).
+
+#### 2.4 AMI types (Instance Store-backed vs EBS-backed
+
+
+```{mermaid}
+flowchart TD
+  AMI(AMI)
+  AMI1[[Instance Store<br>Backed AMI]]
+  AMI2[[EBS-Volume<br>backed AMI<br>most common]]
+  AMI --> AMI1
+  AMI --> AMI2   
+```
+
+**Key points:**
+
+- If an instance running on **instance-store backed AMI** is **stopped**, data is lost.
+- Instance-store backed AMIs are useful for **stateless apps**.
+- **Reboot** does not lose instance-store data (stop/hibernate/terminate does).
+
+---
+
+### 3) Latency vs Throughput (Choosing storage/perf tradeoffs)
+
+**Latency** = time for **one** packet to reach destination (important for DB + web interactions)
+
+```{mermaid}
+flowchart LR
+  W[Web Server] -- 1 packet sent<br> in 10 millisec --> C[Client]
+```
+
+
+**Throughput** = number of packets delivered per second (important for big data)
+
+```{mermaid}
+flowchart LR
+  W[Web Server] -- 10 packets sent<br> in 1 sec --> C[Client]
+```
+
+---
+
+### EBS Volume Types (SSD vs HDD) + Fit-to-Workload
+
+**Rule of thumb (from your table):**
+
+- **Provisioned IOPS SSD** → very low latency (databases, payment systems)
+- **General Purpose SSD** → low latency (web servers, general transactional workloads)
+- **Throughput Optimized HDD** → very high throughput (big data)
+- **Cold HDD** → infrequently accessed; can tolerate higher latency, still may need throughput for transfers
+
+**Key point:** SSDs are faster and more expensive than HDDs.
+
+![](./images/types_of_ebs_volumes.png)
+
+
+#### EBS Snapshots (Backups)
+
+- **Incremental backups**
+    - First snapshot stores full data
+    - Later snapshots store only changed blocks
+
+---
+
+### Amazon S3 (Object Storage)
+
+#### What S3 is
+
+- **S3 is object storage**: flat structure, objects addressed via unique identifiers.
+- Object = file + metadata (store as many as needed).
+
+#### S3 URL/structure (image requested)
+
+![](./images/s3_url_structure.png)
+
+#### S3 Security
+
+- Everything is **private by default**
+- You _can_ make buckets/folders/objects public, but typical best practice is **granular access**.
+- Two main access controls:
+    - **IAM policies**
+    - **S3 bucket policies**
+
+**When to use S3 bucket policies (per your notes):**
+
+- Simple **cross-account** access without IAM roles
+- IAM policy **size limit** constraints (bucket policies support larger size)
+
+> Bucket policies apply to **buckets only**, not folders/objects.
+
+#### S3 Encryption
+
+- Encryption **in transit** and **at rest**
+- **Server-side encryption**: S3 encrypts before storing; decrypts on download
+- **Client-side encryption**: you encrypt before upload and manage keys/tools
+
+#### S3 Versioning
+
+- Helps recover from accidental delete/overwrite
+- Delete puts a **delete marker** (object not immediately removed); remove marker to restore
+- Overwrite creates a **new version**; older versions remain accessible
+
+Bucket states:
+
+- **Unversioned** (default)
+- **Versioning-enabled**
+- **Versioning-suspended** (no new versions, old versions remain)
+
+#### S3 Storage Classes (quick mapping)
+
+- **S3 Standard**: frequent access; low latency/high throughput; higher cost; 11-nines durability
+- **S3 Intelligent-Tiering**: unpredictable access; auto-moves between frequent/infrequent tiers; small overhead
+- **S3 Standard-IA**: infrequent but **rapid** access; lower storage cost, higher retrieval cost
+- **S3 One Zone-IA**: infrequent, single-AZ redundancy; cheaper; lower availability
+- **S3 Glacier**: archival; minutes to hours retrieval; very low storage cost
+- **S3 Glacier Deep Archive**: lowest cost; retrieval up to ~12 hours
+- **S3 Outposts**: on-prem S3 for local residency/low latency needs
+
+#### Lifecycle Management (Automate cost control)
+
+Lifecycle policies can automate:
+
+- **Transition** (move between storage classes)
+- **Expiration** (permanent deletion)
+
+Good candidates:
+
+- Periodic logs (keep 1 week/month then delete)
+- Data whose access frequency decreases over time (hot → warm → archive → delete)
+
+---
+
+### Storage Services Recap
+
+- **EC2 Instance Store**: ephemeral block storage; for stateless apps; persists through reboot, not through stop/hibernate/terminate.
+- **EBS**: persistent; supports resizing + snapshots; SSD for I/O sensitive, HDD for throughput intensive.
+- **S3**: object storage; pay-as-you-go; replicated across multiple AZs; not attached to compute.
+- **EFS / FSx**: serverless file services; no upfront provisioning; pay for use.
+
+---
+
+### Quiz Notes (Key Takeaways)
+
+- Max **single S3 object** size: **5 TB** (good for media/video hosting).
+- **EBS** fits high-transaction relational DB storage layers.
+- Instance store data persists on **reboot**, not on **stop/hibernate/terminate**.
+- **S3 Standard-IA** vs **Glacier Deep Archive**:
+    - IA when rarely accessed but needs **quick** retrieval
+    - Deep Archive when rarely accessed and retrieval delay is acceptable (often for compliance/legal retention)
+- **Block storage** is best when only a **small portion** of a file changes.
+
+Resource link (as provided): [Storage_quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Cloud%20Technical%20Essentials/w3-%20AWS%20Storage%20and%20Databases/Week%203%20Quiz%20_%20Coursera.pdf)

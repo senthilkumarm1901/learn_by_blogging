@@ -1,0 +1,223 @@
+---
+title: "04. Networking"
+author: "Senthil Kumar"
+---
+
+# 4 Networking on AWS
+
+Here is a **bare‑minimum, essentials‑only rewrite** of that Networking section.  
+I’ve **removed all analogy storytelling**, kept only the **concepts you need to remember**, and preserved the **technical accuracy**.
+
+***
+
+## Introduction to Networking in AWS
+
+### What Is Networking?
+
+> **Networking is the routing of data between uniquely identified endpoints using IP addresses across a global network.**
+
+*   **Networking** enables computers to communicate with each other.
+*   In AWS, networking spans **Regions, Availability Zones, and data centers**.
+*   AWS operates a **global network** connecting these resources.
+
+***
+
+### Networking Basics
+
+*   Communication requires:
+    *   **Source**
+    *   **Destination**
+    *   **Data (payload)**
+*   Messages are delivered using **routing**, which determines the path to the destination.
+
+***
+
+### IP Addresses
+
+*   An **IP address** uniquely identifies a computer on a network.
+*   Computers use **binary addresses (0s and 1s)** for routing.
+*   **IPv4 addresses are 32‑bit** values.
+
+***
+
+### IPv4 Notation
+
+*   IPv4 is written in **decimal format** for readability.
+*   The 32 bits are split into **4 groups of 8 bits (octets)**.
+*   Each octet is converted to a decimal number and separated by dots
+    *   Example format: `x.x.x.x`
+
+***
+
+## IPv4 → CIDR (why you need ranges)
+
+![](./images/ipv4_notation.png)
+
+- **IPv4** identifies a single host (32 bits → dotted decimal `x.x.x.x`).
+- Networks need **ranges**, not single IPs → use **CIDR**.
+
+### CIDR Notation (range)
+
+- Format: `STARTING_IP/NUMBER_OF_FIXED_BITS`
+    - Example: `192.168.1.0/24` → first 24 bits fixed → **256 IPs** (2⁸).
+- In AWS:
+    - Smallest VPC/subnet range: **/28 = 16 IPs**
+    - Largest VPC range: **/16 = 65,536 IPs**
+- AWS reserves **5 IPs per subnet**, so small subnets lose usable space fast.
+
+---
+
+## AWS VPC (what you must choose)
+
+![](./images/vpc_azs_region.png)
+
+**VPC requires:**
+
+1. **Name**
+2. **Region** (VPC spans multiple AZs in that region)
+3. **CIDR range** (VPC size; up to **four /16 ranges** per VPC)
+
+---
+
+## Subnets (how you place resources)
+
+![](./images/VPC-split-by-subnet.png)
+
+- **Subnet = smaller CIDR block inside a VPC**, tied to **one AZ**.
+- Subnet CIDR must be a **subset** of VPC CIDR.
+- EC2 instances are launched **inside subnets** (therefore in a specific AZ).
+- For **high availability**, create **at least two subnets in two AZs**.
+
+### Reserved IPs in every subnet
+
+![](./images/5_reserved_ip_addresses.png)
+
+- AWS reserves **5 IP addresses per subnet** for routing/DNS/management.  
+    → Plan subnet sizes with this overhead in mind.
+
+---
+
+## Public vs Private subnets (core pattern)
+
+![](./images/public_and_private_subnetets_inside_vpc.png)
+
+- **Public subnet**: has a route to an **Internet Gateway (IGW)**.
+- **Private subnet**: no direct IGW route; inbound from internet is blocked by design.
+- Common architecture:
+    - **Public**: Load balancer
+    - **Private**: app servers + databases
+    - **NAT Gateway**: private subnet outbound internet access (updates, external APIs)
+
+---
+
+## Gateways (what they do)
+
+- **Internet Gateway (IGW)**
+    
+    - Enables internet connectivity for the VPC (must be **attached** to the VPC).
+- **Virtual Private Gateway (VGW)**
+    
+    - Connects VPC to another private network via **encrypted VPN** (with Customer Gateway on the other side).
+- **NAT Gateway**
+    
+    - Allows **outbound-only** internet from **private subnets** by translating private IP → public IP.
+    - **Stateful return traffic** is allowed only for connections initiated from inside.
+
+---
+
+## VPC Routing & Security (the essential controls)
+
+### Main Route Table
+
+![](./images/main_route_table_of_a_vpc.png)
+
+- Default route table created with the VPC.
+- Contains routes (Destination → Target).
+- Default behavior: allows **VPC-local traffic** between subnets.
+
+### Custom Route Tables
+
+![](./images/custom_route_tables.png)
+
+- Route tables can be attached to **specific subnets** for custom routing.
+- If a subnet has a custom route table, it uses that instead of the main route table.
+
+---
+
+### Network ACLs (subnet-level firewall)
+
+![](./images/network_acl_inbound_and_outbound_rules.png)
+
+- **NACL = stateless** subnet firewall.
+- Must allow **both inbound and outbound** explicitly (return traffic isn’t automatic).
+- Default vs custom behavior often differs (custom typically starts restrictive).
+
+### Security Groups (instance-level firewall)
+
+![](./images/NACL_vs_sec_group_rules.png)
+
+- **Security Group = stateful** instance firewall.
+- Default SG behavior:
+    - **Inbound: deny all**
+    - **Outbound: allow all**
+- For web servers, allow inbound HTTP/HTTPS:
+
+![](./images/inbound_sg_rules_for_http_https.png)
+
+---
+
+## Port 80 vs 443 (only what matters)
+
+![](./images/http_vs_https.png)
+
+- **80 = HTTP** (unencrypted)
+- **443 = HTTPS** (encrypted via TLS)
+
+---
+
+## Multi-tier security group isolation (typical 3-tier)
+
+![](./images/networking_sg_rules_for_a_multi_tier_system.png)
+
+- Web tier: allow internet → web over **HTTPS**
+- App tier: allow web → app over **HTTP/needed ports**
+- DB tier: allow app → DB over **DB port** (e.g., MySQL 3306)
+- This isolates tiers without VLANs (security groups enforce isolation).
+
+---
+
+## How private-subnet EC2 reaches the internet
+
+![](./images/how_EC2_in_private_subnet.png)
+
+- Private EC2 → routes outbound traffic to **NAT Gateway** (in a public subnet) → internet.
+- No direct inbound internet connectivity to private EC2.
+
+---
+
+## 10 VPC troubleshooting checks (public EC2 web app not loading)
+
+1. **IGW attached to VPC**
+2. Subnet route table has `0.0.0.0/0 → igw`
+3. **Security Group** allows inbound `80/443` (and outbound allowed)
+4. **NACL** allows inbound + outbound for required ports (stateless)
+5. Instance has a **public IP** (auto-assign enabled)
+6. Using correct **HTTP vs HTTPS**
+7. **User data script** ran successfully (`/var/log/cloud-init*`)
+8. Instance has correct **IAM role permissions** (S3/DDB/etc.)
+9. Your corporate/personal network isn’t blocking access
+10. App + web server running; check application logs
+
+---
+
+## Quiz Notes 
+
+- VPC requires **Region**, contains **AZs** and **subnets**
+- Route tables attach to **VPC (main)** and **subnets (custom)**
+- Public subnet needs **IGW + route** to IGW
+- By default, a `security group` blocks all incoming traffic and allows all outgoing traffic. It is stateful (meaning an result of an incoming traffic is allowed automatically)
+- NACLs: **stateless** (must allow inbound + outbound). The `default NACL` is associated with all subnets in the VPC by default, allowing all traffic.
+- CIDR determines network size: **/16 larger than /28**
+
+[A Github Source for Week 2 Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w2-%20AWS%20Compute%20and%20Networking/Week%202%20Quiz%20_%20Coursera.pdf)
+
