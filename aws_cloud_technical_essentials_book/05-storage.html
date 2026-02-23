@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Senthil Kumar">
 
-<title>1. Introduction to AWS – Learn by Blogging</title>
+<title>05. Storage – Learn by Blogging</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,41 +20,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -103,6 +69,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -156,13 +125,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">1. Introduction to AWS</h1>
+<h1 class="title">05. Storage</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Senthil Kumar </p>
+          </div>
+  </div>
     
   
     
@@ -173,257 +148,364 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="introduction-to-aws" class="level1">
-<h1>1. Introduction to AWS</h1>
-<section id="introduction-to-aws---the-critical-elements" class="level2">
-<h2 class="anchored" data-anchor-id="introduction-to-aws---the-critical-elements">1. Introduction to AWS - The Critical Elements</h2>
+<section id="storage" class="level1">
+<h1>5. Storage</h1>
+<section id="aws-storage-types" class="level3">
+<h3 class="anchored" data-anchor-id="aws-storage-types">AWS Storage Types</h3>
+<p><strong>Three storage types:</strong></p>
 <ul>
-<li><p><strong>Regions → AZs → Data Centers</strong></p>
-<ul>
-<li>AWS Regions consist of <strong>Availability Zones (AZs)</strong>.</li>
-<li>AZs consist of <strong>one or more physical data centers</strong>.</li>
-</ul></li>
-<li><p><strong>Root account first steps (non‑negotiable)</strong></p>
-<ol type="1">
-<li>Enable <strong>MFA</strong> on the root user immediately</li>
-<li>Create an <strong>IAM Administrator role</strong>
-<ul>
-<li>Full service creation permissions</li>
-<li>No account‑level or billing changes</li>
-</ul></li>
-<li>Lock away root credentials</li>
-</ol></li>
-<li><p><strong>IAM policies cannot restrict the root user</strong></p>
-<ul>
-<li>Root user always has unrestricted access, regardless of IAM policies.</li>
-</ul></li>
-<li><p><strong>Shared Responsibility Model</strong></p>
-<ul>
-<li>AWS = <strong>security <em>of</em> the cloud</strong></li>
-<li>Customer = <strong>security <em>in</em> the cloud</strong></li>
-</ul></li>
-<li><p>Summary: <strong>Every activity in AWS is an API call</strong></p>
-<ul>
-<li>Console clicks, CLI commands, SDK calls → all become <strong>authenticated &amp; authorized AWS API requests</strong>.</li>
-</ul></li>
+<li><strong>Block storage</strong>: Splits data into fixed-size <strong>blocks</strong> with addresses → efficient random access; common for OS, DB volumes.</li>
+<li><strong>File storage</strong>: Hierarchical <strong>directory tree</strong> (paths); each file has metadata (name, size, created date). More folders can add latency.</li>
+<li><strong>Object storage</strong>: Flat namespace; each object = data + metadata + unique identifier; optimized for scale &amp; throughput.</li>
 </ul>
+<section id="file-storage-whatwhen" class="level4">
+<h4 class="anchored" data-anchor-id="file-storage-whatwhen">File Storage (What/When)</h4>
+<ul>
+<li><strong>Structure</strong>: Tree-like folders (like traditional file systems).</li>
+<li><strong>Note</strong>: Every additional folder adds latency.</li>
+<li><strong>Use cases</strong>: large content repositories, dev environments, user home directories.</li>
+</ul>
+</section>
+<section id="block-storage-whatwhy" class="level4">
+<h4 class="anchored" data-anchor-id="block-storage-whatwhy">Block Storage (What/Why)</h4>
+<ul>
+<li><strong>Concept</strong>: Files split into <strong>addressable blocks</strong> → efficient retrieval.</li>
+<li>Typically used where <strong>low-latency</strong>, frequent updates, or OS-level mount semantics are needed.</li>
+</ul>
+<p><img src="./images/block_storage.png" class="img-fluid"></p>
+</section>
+<section id="object-storage-whatwhy" class="level4">
+<h4 class="anchored" data-anchor-id="object-storage-whatwhy">Object Storage (What/Why)</h4>
+<ul>
+<li><strong>Flat structure</strong> (no true hierarchy).</li>
+<li><strong>Good for high throughput</strong> and massive scale.</li>
+<li>Updating part of an object generally means overwriting the whole object.</li>
+</ul>
+<p><strong>File vs Object (from your notes):</strong></p>
+<ul>
+<li>File: hierarchy YES; low-latency R/W; partial edit implies overwrite file; example: <strong>Amazon EFS</strong></li>
+<li>Object: flat; high throughput; partial edit implies overwrite object; example: <strong>Amazon S3</strong></li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File Storage</th>
+<th>Object Storge</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hierarchy - YES; Folder or tree-like structure</td>
+<td>Flat Structure. No hierarchy</td>
+</tr>
+<tr class="even">
+<td>Good for low-latency read-write</td>
+<td>Good for high throughput</td>
+</tr>
+<tr class="odd">
+<td>Edit a portion, you overwrite the whole file</td>
+<td>Edit a portion, you overwrite the whole object</td>
+</tr>
+<tr class="even">
+<td>Amazon EFS</td>
+<td>Amazon S3</td>
+</tr>
+</tbody>
+</table>
 <hr>
-<section id="choose-the-right-aws-region" class="level3">
-<h3 class="anchored" data-anchor-id="choose-the-right-aws-region">Choose the Right AWS Region</h3>
-<p><strong>Essential takeaway:</strong><br>
-Choose Region in this order:</p>
+</section>
+</section>
+<section id="ec2-storage-options-instance-store-vs-ebs" class="level3">
+<h3 class="anchored" data-anchor-id="ec2-storage-options-instance-store-vs-ebs">EC2 Storage Options: Instance Store vs EBS</h3>
+<section id="two-ec2-instance-storage-options" class="level4">
+<h4 class="anchored" data-anchor-id="two-ec2-instance-storage-options">Two EC2 instance storage options</h4>
+<ul>
+<li><strong>Instance Store</strong>: ephemeral block storage; good for <strong>stateless</strong> workloads.</li>
+<li><strong>EBS</strong>: persistent block storage; behaves like an external drive that can outlive the instance.</li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+  A[[Temporary&lt;br&gt;Instance Store]]
+  B[[Permanent&lt;br&gt;EBS]]
+  C(Storage connected&lt;br&gt;to EC2)
+  C --&gt; A
+  C --&gt; B  
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="attachment-relationships-ec2-ebs" class="level4">
+<h4 class="anchored" data-anchor-id="attachment-relationships-ec2-ebs">2.2 Attachment relationships (EC2 ↔︎ EBS)</h4>
+<p><strong>1 EC2 to Many EBS Volumes</strong></p>
+<ul>
+<li>An <strong>EBS volume (in the same AZ)</strong> can be detached from one EC2 and attached to another.</li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  EC[EC2]
+  EB1[[EBS 1]]
+  EB2[[EBS 2]]
+  EB3[[EBS 3]]
+  EC --&gt; EB1
+  EC --&gt; EB2
+  EC --&gt; EB3
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>1 EBS to 1 EC2 (typical)</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  EC[EC2] --&gt; EB1[[EBS 1]]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>1 EBS to Many EC2 (supported for some instances)</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  EB1[[EBS 1]]
+  ECA[EC2 A]
+  ECB[EC2 B]
+
+  EB1 --&gt; ECA
+  EB1 --&gt; ECB
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Analogy/limits (from your notes):</strong></p>
+<ul>
+<li>Like an external drive: if compute fails, <strong>data can still remain</strong> on EBS.</li>
+<li>Volumes have <strong>max size limits</strong> (scalability bounded per volume).</li>
+</ul>
+</section>
+<section id="scaling-ebs-volumes" class="level4">
+<h4 class="anchored" data-anchor-id="scaling-ebs-volumes">2.3 Scaling EBS volumes</h4>
+<p>Two main approaches:</p>
 <ol type="1">
-<li><strong>Compliance / data residency</strong></li>
-<li><strong>Latency</strong></li>
-<li><strong>Service availability</strong></li>
-<li><strong>Cost</strong></li>
-<li><strong>Availability &amp; DR needs</strong></li>
+<li><strong>Increase volume size</strong> up to the maximum (<strong>16 TB</strong> per volume, per your notes).</li>
+<li><strong>Attach multiple volumes</strong> to a single EC2 instance (one-to-many).</li>
 </ol>
-<p><img src="./images/how_to_choose_aws_region.png" class="img-fluid"></p>
+</section>
+<section id="ami-types-instance-store-backed-vs-ebs-backed" class="level4">
+<h4 class="anchored" data-anchor-id="ami-types-instance-store-backed-vs-ebs-backed">2.4 AMI types (Instance Store-backed vs EBS-backed</h4>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+  AMI(AMI)
+  AMI1[[Instance Store&lt;br&gt;Backed AMI]]
+  AMI2[[EBS-Volume&lt;br&gt;backed AMI&lt;br&gt;most common]]
+  AMI --&gt; AMI1
+  AMI --&gt; AMI2   
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Key points:</strong></p>
+<ul>
+<li>If an instance running on <strong>instance-store backed AMI</strong> is <strong>stopped</strong>, data is lost.</li>
+<li>Instance-store backed AMIs are useful for <strong>stateless apps</strong>.</li>
+<li><strong>Reboot</strong> does not lose instance-store data (stop/hibernate/terminate does).</li>
+</ul>
 <hr>
 </section>
-<section id="availability-zones" class="level3">
-<h3 class="anchored" data-anchor-id="availability-zones">Availability Zones</h3>
-<p><img src="./images/regioin-az-datacenters.png" class="img-fluid" style="width:100.0%"></p>
+</section>
+<section id="latency-vs-throughput-choosing-storageperf-tradeoffs" class="level3">
+<h3 class="anchored" data-anchor-id="latency-vs-throughput-choosing-storageperf-tradeoffs">3) Latency vs Throughput (Choosing storage/perf tradeoffs)</h3>
+<p><strong>Latency</strong> = time for <strong>one</strong> packet to reach destination (important for DB + web interactions)</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  W[Web Server] -- 1 packet sent&lt;br&gt; in 10 millisec --&gt; C[Client]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Throughput</strong> = number of packets delivered per second (important for big data)</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  W[Web Server] -- 10 packets sent&lt;br&gt; in 1 sec --&gt; C[Client]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="ebs-volume-types-ssd-vs-hdd-fit-to-workload" class="level3">
+<h3 class="anchored" data-anchor-id="ebs-volume-types-ssd-vs-hdd-fit-to-workload">EBS Volume Types (SSD vs HDD) + Fit-to-Workload</h3>
+<p><strong>Rule of thumb (from your table):</strong></p>
 <ul>
-<li>Each <strong>Region contains multiple AZs</strong></li>
-<li>Each <strong>AZ = one or more data centers</strong></li>
-<li>Data centers are:
+<li><strong>Provisioned IOPS SSD</strong> → very low latency (databases, payment systems)</li>
+<li><strong>General Purpose SSD</strong> → low latency (web servers, general transactional workloads)</li>
+<li><strong>Throughput Optimized HDD</strong> → very high throughput (big data)</li>
+<li><strong>Cold HDD</strong> → infrequently accessed; can tolerate higher latency, still may need throughput for transfers</li>
+</ul>
+<p><strong>Key point:</strong> SSDs are faster and more expensive than HDDs.</p>
+<p><img src="./images/types_of_ebs_volumes.png" class="img-fluid"></p>
+<section id="ebs-snapshots-backups" class="level4">
+<h4 class="anchored" data-anchor-id="ebs-snapshots-backups">EBS Snapshots (Backups)</h4>
 <ul>
-<li>Physically separate</li>
-<li>Redundantly powered and networked</li>
-</ul></li>
-<li>AZs are connected by <strong>low‑latency, high‑bandwidth links</strong></li>
-<li>AZ names:
+<li><strong>Incremental backups</strong>
 <ul>
-<li><code>&lt;region&gt;&lt;letter&gt;</code> (example: <code>us-east-1a</code>)</li>
-<li>Letter mappings differ per account</li>
-</ul></li>
-<li>Resource location example:
-<ul>
-<li><code>us-east-1c</code> → AZ “c” inside <code>us-east-1</code></li>
+<li>First snapshot stores full data</li>
+<li>Later snapshots store only changed blocks</li>
 </ul></li>
 </ul>
 <hr>
 </section>
-<section id="scope-of-aws-services" class="level3">
-<h3 class="anchored" data-anchor-id="scope-of-aws-services">Scope of AWS Services</h3>
-<p><img src="./images/aws_scope_and_responsibility_of_services_2.png" class="img-fluid"></p>
-<p><strong>Scope summary:</strong></p>
-<ul>
-<li><p><strong>Global services</strong></p>
-<ul>
-<li>Single logical control plane across AWS</li>
-<li>Example: IAM, Route 53, CloudFront</li>
-</ul></li>
-<li><p><strong>Regional services</strong></p>
-<ul>
-<li>Live within a Region, usually span multiple AZs</li>
-<li>Example: S3, DynamoDB, VPC, RDS Multi‑AZ</li>
-</ul></li>
-<li><p><strong>Zonal services</strong></p>
-<ul>
-<li>Bound to a single AZ</li>
-<li>Example: EC2, EBS, RDS Single‑AZ</li>
-</ul></li>
-</ul>
-<p><strong>Availability &amp; durability:</strong></p>
-<ul>
-<li>Some services are <strong>AWS‑managed</strong></li>
-<li>Others require <strong>customer‑designed HA/DR</strong></li>
-</ul>
-<hr>
 </section>
-<section id="maintain-resiliency" class="level3">
-<h3 class="anchored" data-anchor-id="maintain-resiliency">Maintain Resiliency</h3>
+<section id="amazon-s3-object-storage" class="level3">
+<h3 class="anchored" data-anchor-id="amazon-s3-object-storage">Amazon S3 (Object Storage)</h3>
+<section id="what-s3-is" class="level4">
+<h4 class="anchored" data-anchor-id="what-s3-is">What S3 is</h4>
 <ul>
-<li>Prefer <strong>Region‑scoped managed services</strong></li>
-<li>Otherwise:
-<ul>
-<li>Deploy across <strong>multiple AZs</strong></li>
-<li>Minimum <strong>two AZs</strong></li>
-</ul></li>
-<li>AZ failure ≠ application outage when designed correctly</li>
+<li><strong>S3 is object storage</strong>: flat structure, objects addressed via unique identifiers.</li>
+<li>Object = file + metadata (store as many as needed).</li>
 </ul>
-<hr>
 </section>
-<section id="security-and-the-aws-shared-responsibility-model" class="level3">
-<h3 class="anchored" data-anchor-id="security-and-the-aws-shared-responsibility-model">Security and the AWS Shared Responsibility Model</h3>
-<section id="core-distinction" class="level4">
-<h4 class="anchored" data-anchor-id="core-distinction">Core distinction</h4>
+<section id="s3-urlstructure-image-requested" class="level4">
+<h4 class="anchored" data-anchor-id="s3-urlstructure-image-requested">S3 URL/structure (image requested)</h4>
+<p><img src="./images/s3_url_structure.png" class="img-fluid"></p>
+</section>
+<section id="s3-security" class="level4">
+<h4 class="anchored" data-anchor-id="s3-security">S3 Security</h4>
 <ul>
-<li><p><strong>AWS responsibility (security of the cloud):</strong></p>
+<li>Everything is <strong>private by default</strong></li>
+<li>You <em>can</em> make buckets/folders/objects public, but typical best practice is <strong>granular access</strong>.</li>
+<li>Two main access controls:
 <ul>
-<li>Physical data centers</li>
-<li>Hardware, networking</li>
-<li>Host OS and virtualization layer</li>
+<li><strong>IAM policies</strong></li>
+<li><strong>S3 bucket policies</strong></li>
 </ul></li>
-<li><p><strong>Customer responsibility (security in the cloud):</strong></p>
+</ul>
+<p><strong>When to use S3 bucket policies (per your notes):</strong></p>
 <ul>
-<li>IAM, access control</li>
-<li>Data protection &amp; encryption</li>
-<li>Network security (SGs, NACLs)</li>
-<li>Backups and recovery</li>
-</ul></li>
+<li>Simple <strong>cross-account</strong> access without IAM roles</li>
+<li>IAM policy <strong>size limit</strong> constraints (bucket policies support larger size)</li>
 </ul>
 <blockquote class="blockquote">
-<p>AWS manages the infrastructure.<br>
-You secure what you build on top of it.</p>
+<p>Bucket policies apply to <strong>buckets only</strong>, not folders/objects.</p>
 </blockquote>
-<hr>
 </section>
-</section>
-</section>
-<section id="protect-the-aws-root-user" class="level2">
-<h2 class="anchored" data-anchor-id="protect-the-aws-root-user">Protect the AWS Root User</h2>
-<section id="authentication-vs-authorization" class="level3">
-<h3 class="anchored" data-anchor-id="authentication-vs-authorization">Authentication vs Authorization</h3>
+<section id="s3-encryption" class="level4">
+<h4 class="anchored" data-anchor-id="s3-encryption">S3 Encryption</h4>
 <ul>
-<li><p><strong>Authentication:</strong><br>
-“Who are you?” (passwords, MFA, tokens)</p></li>
-<li><p><strong>Authorization:</strong><br>
-“What are you allowed to do?” (IAM policies)</p></li>
+<li>Encryption <strong>in transit</strong> and <strong>at rest</strong></li>
+<li><strong>Server-side encryption</strong>: S3 encrypts before storing; decrypts on download</li>
+<li><strong>Client-side encryption</strong>: you encrypt before upload and manage keys/tools</li>
+</ul>
+</section>
+<section id="s3-versioning" class="level4">
+<h4 class="anchored" data-anchor-id="s3-versioning">S3 Versioning</h4>
+<ul>
+<li>Helps recover from accidental delete/overwrite</li>
+<li>Delete puts a <strong>delete marker</strong> (object not immediately removed); remove marker to restore</li>
+<li>Overwrite creates a <strong>new version</strong>; older versions remain accessible</li>
+</ul>
+<p>Bucket states:</p>
+<ul>
+<li><strong>Unversioned</strong> (default)</li>
+<li><strong>Versioning-enabled</strong></li>
+<li><strong>Versioning-suspended</strong> (no new versions, old versions remain)</li>
+</ul>
+</section>
+<section id="s3-storage-classes-quick-mapping" class="level4">
+<h4 class="anchored" data-anchor-id="s3-storage-classes-quick-mapping">S3 Storage Classes (quick mapping)</h4>
+<ul>
+<li><strong>S3 Standard</strong>: frequent access; low latency/high throughput; higher cost; 11-nines durability</li>
+<li><strong>S3 Intelligent-Tiering</strong>: unpredictable access; auto-moves between frequent/infrequent tiers; small overhead</li>
+<li><strong>S3 Standard-IA</strong>: infrequent but <strong>rapid</strong> access; lower storage cost, higher retrieval cost</li>
+<li><strong>S3 One Zone-IA</strong>: infrequent, single-AZ redundancy; cheaper; lower availability</li>
+<li><strong>S3 Glacier</strong>: archival; minutes to hours retrieval; very low storage cost</li>
+<li><strong>S3 Glacier Deep Archive</strong>: lowest cost; retrieval up to ~12 hours</li>
+<li><strong>S3 Outposts</strong>: on-prem S3 for local residency/low latency needs</li>
+</ul>
+</section>
+<section id="lifecycle-management-automate-cost-control" class="level4">
+<h4 class="anchored" data-anchor-id="lifecycle-management-automate-cost-control">Lifecycle Management (Automate cost control)</h4>
+<p>Lifecycle policies can automate:</p>
+<ul>
+<li><strong>Transition</strong> (move between storage classes)</li>
+<li><strong>Expiration</strong> (permanent deletion)</li>
+</ul>
+<p>Good candidates:</p>
+<ul>
+<li>Periodic logs (keep 1 week/month then delete)</li>
+<li>Data whose access frequency decreases over time (hot → warm → archive → delete)</li>
 </ul>
 <hr>
 </section>
-<section id="aws-root-user" class="level3">
-<h3 class="anchored" data-anchor-id="aws-root-user">AWS Root User</h3>
+</section>
+<section id="storage-services-recap" class="level3">
+<h3 class="anchored" data-anchor-id="storage-services-recap">Storage Services Recap</h3>
 <ul>
-<li>Created with the AWS account</li>
-<li>Has <strong>full, unrestricted access</strong></li>
-<li>Credentials:
+<li><strong>EC2 Instance Store</strong>: ephemeral block storage; for stateless apps; persists through reboot, not through stop/hibernate/terminate.</li>
+<li><strong>EBS</strong>: persistent; supports resizing + snapshots; SSD for I/O sensitive, HDD for throughput intensive.</li>
+<li><strong>S3</strong>: object storage; pay-as-you-go; replicated across multiple AZs; not attached to compute.</li>
+<li><strong>EFS / FSx</strong>: serverless file services; no upfront provisioning; pay for use.</li>
+</ul>
+<hr>
+</section>
+<section id="quiz-notes-key-takeaways" class="level3">
+<h3 class="anchored" data-anchor-id="quiz-notes-key-takeaways">Quiz Notes (Key Takeaways)</h3>
 <ul>
-<li>Email + password (console)</li>
-<li>Access keys (programmatic)</li>
+<li>Max <strong>single S3 object</strong> size: <strong>5 TB</strong> (good for media/video hosting).</li>
+<li><strong>EBS</strong> fits high-transaction relational DB storage layers.</li>
+<li>Instance store data persists on <strong>reboot</strong>, not on <strong>stop/hibernate/terminate</strong>.</li>
+<li><strong>S3 Standard-IA</strong> vs <strong>Glacier Deep Archive</strong>:
+<ul>
+<li>IA when rarely accessed but needs <strong>quick</strong> retrieval</li>
+<li>Deep Archive when rarely accessed and retrieval delay is acceptable (often for compliance/legal retention)</li>
 </ul></li>
+<li><strong>Block storage</strong> is best when only a <strong>small portion</strong> of a file changes.</li>
 </ul>
-<p><strong>Critical facts:</strong></p>
-<ul>
-<li>IAM policies <strong>cannot limit root</strong></li>
-<li>Root should never be used for daily work</li>
-</ul>
-<hr>
-</section>
-<section id="root-user-best-practices" class="level3">
-<h3 class="anchored" data-anchor-id="root-user-best-practices">Root User Best Practices</h3>
-<ul>
-<li>Enable <strong>MFA</strong></li>
-<li>Strong, unique password</li>
-<li><strong>Delete root access keys</strong></li>
-<li>Use root <strong>only</strong> for:
-<ul>
-<li>Account setup</li>
-<li>Billing</li>
-<li>Rare account‑level tasks</li>
-</ul></li>
-</ul>
-<hr>
-</section>
-<section id="why-mfa-matters" class="level3">
-<h3 class="anchored" data-anchor-id="why-mfa-matters">Why MFA Matters</h3>
-<ul>
-<li>Passwords alone are weak</li>
-<li>MFA adds a second factor:
-<ul>
-<li>Something you know</li>
-<li>Something you have</li>
-<li>Something you are</li>
-</ul></li>
-<li><strong>Always enable MFA on root</strong></li>
-</ul>
-<hr>
-</section>
-</section>
-<section id="control-plane-apis-and-data-plane-apis-in-aws" class="level2">
-<h2 class="anchored" data-anchor-id="control-plane-apis-and-data-plane-apis-in-aws">Control Plane APIs and Data Plane APIs in AWS</h2>
-<ul>
-<li><p>AWS describes control plane as administrative APIs (CRUDL) like “creating an S3 bucket”, while data plane includes “getting and putting objects in an S3 bucket</p></li>
-<li><p>Source: <a href="https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/control-planes-and-data-planes.html">Control Planes and Data Planes in AWS</a></p></li>
-</ul>
-<p>S3 <strong>Control plane</strong> APIs (AWS CLI examples)</p>
-<p>✅ Create a bucket (control plane)</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3api create-bucket <span class="dt">\</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">--bucket</span> my-example-bucket-123 <span class="dt">\</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">--region</span> ap-south-1 <span class="dt">\</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">--create-bucket-configuration</span> LocationConstraint=ap-south-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>create-bucket</code> “Creates a new S3 bucket.”</p>
-<blockquote class="blockquote">
-<ul>
-<li>Rule of thumb: Anything <em>Bucket</em> (create bucket, put bucket encryption, put bucket policy, lifecycle, versioning…) is typically “control plane” style because you’re configuring the container and its behavior.</li>
-</ul>
-</blockquote>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3api delete-object <span class="dt">\</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bucket</span> my-example-bucket-123 <span class="dt">\</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--key</span> docs/readme.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<ul>
-<li>Rule of thumb: Anything <em>Object</em> (PutObject/GetObject/ListObjects/DeleteObject/HeadObject) is “data plane” because you’re interacting with the stored data.</li>
-</ul>
-</blockquote>
-<hr>
-</section>
-<section id="summary-every-aws-activity-is-an-api-call" class="level2">
-<h2 class="anchored" data-anchor-id="summary-every-aws-activity-is-an-api-call">Summary: Every AWS Activity Is an API Call</h2>
-<p><img src="./images/every_aws_service_use_is_an_api_call.png" class="img-fluid"></p>
-<ul>
-<li>Console, CLI, SDK → <strong>AWS API</strong></li>
-<li>API calls are:
-<ul>
-<li>Authenticated</li>
-<li>Authorized</li>
-<li>Evaluated by IAM</li>
-</ul></li>
-<li>Understanding this explains:
-<ul>
-<li>IAM behavior</li>
-<li>Auditing (CloudTrail)</li>
-<li>Automation (IaC, CI/CD)</li>
-<li>Security boundaries</li>
-</ul></li>
-</ul>
-<blockquote class="blockquote">
-<p><strong>By understanding APIs, IAM, Regions, AZs, and responsibility boundaries — one understands AWS.</strong></p>
-</blockquote>
+<p>Resource link (as provided): <a href="https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Cloud%20Technical%20Essentials/w3-%20AWS%20Storage%20and%20Databases/Week%203%20Quiz%20_%20Coursera.pdf">Storage_quiz</a></p>
 
 
 </section>
