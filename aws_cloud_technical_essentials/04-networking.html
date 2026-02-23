@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Senthil Kumar">
 
-<title>2&nbsp; 1. Introduction to AWS – AWS Technical Essentials</title>
+<title>5&nbsp; 04. Networking – AWS Technical Essentials</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,41 +21,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -65,8 +31,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./02-security.html" rel="next">
-<link href="./index.html" rel="prev">
+<link href="./05-storage.html" rel="next">
+<link href="./03-compute.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -118,7 +84,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-introduction.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">1. Introduction to AWS</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-networking.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">04. Networking</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -151,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-introduction.html" class="sidebar-item-text sidebar-link active">
+  <a href="./01-introduction.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">1. Introduction to AWS</span></span></a>
   </div>
 </li>
@@ -169,7 +135,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-networking.html" class="sidebar-item-text sidebar-link">
+  <a href="./04-networking.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">04. Networking</span></span></a>
   </div>
 </li>
@@ -207,25 +173,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#introduction-to-aws" id="toc-introduction-to-aws" class="nav-link active" data-scroll-target="#introduction-to-aws"><span class="header-section-number">3</span> 1. Introduction to AWS</a>
+  <li><a href="#networking-on-aws" id="toc-networking-on-aws" class="nav-link active" data-scroll-target="#networking-on-aws"><span class="header-section-number">6</span> 4 Networking on AWS</a>
   <ul class="collapse">
-  <li><a href="#introduction-to-aws---the-critical-elements" id="toc-introduction-to-aws---the-critical-elements" class="nav-link" data-scroll-target="#introduction-to-aws---the-critical-elements"><span class="header-section-number">3.1</span> 1. Introduction to AWS - The Critical Elements</a>
+  <li><a href="#introduction-to-networking-in-aws" id="toc-introduction-to-networking-in-aws" class="nav-link" data-scroll-target="#introduction-to-networking-in-aws"><span class="header-section-number">6.1</span> Introduction to Networking in AWS</a>
   <ul class="collapse">
-  <li><a href="#choose-the-right-aws-region" id="toc-choose-the-right-aws-region" class="nav-link" data-scroll-target="#choose-the-right-aws-region"><span class="header-section-number">3.1.1</span> Choose the Right AWS Region</a></li>
-  <li><a href="#availability-zones" id="toc-availability-zones" class="nav-link" data-scroll-target="#availability-zones"><span class="header-section-number">3.1.2</span> Availability Zones</a></li>
-  <li><a href="#scope-of-aws-services" id="toc-scope-of-aws-services" class="nav-link" data-scroll-target="#scope-of-aws-services"><span class="header-section-number">3.1.3</span> Scope of AWS Services</a></li>
-  <li><a href="#maintain-resiliency" id="toc-maintain-resiliency" class="nav-link" data-scroll-target="#maintain-resiliency"><span class="header-section-number">3.1.4</span> Maintain Resiliency</a></li>
-  <li><a href="#security-and-the-aws-shared-responsibility-model" id="toc-security-and-the-aws-shared-responsibility-model" class="nav-link" data-scroll-target="#security-and-the-aws-shared-responsibility-model"><span class="header-section-number">3.1.5</span> Security and the AWS Shared Responsibility Model</a></li>
+  <li><a href="#what-is-networking" id="toc-what-is-networking" class="nav-link" data-scroll-target="#what-is-networking"><span class="header-section-number">6.1.1</span> What Is Networking?</a></li>
+  <li><a href="#networking-basics" id="toc-networking-basics" class="nav-link" data-scroll-target="#networking-basics"><span class="header-section-number">6.1.2</span> Networking Basics</a></li>
+  <li><a href="#ip-addresses" id="toc-ip-addresses" class="nav-link" data-scroll-target="#ip-addresses"><span class="header-section-number">6.1.3</span> IP Addresses</a></li>
+  <li><a href="#ipv4-notation" id="toc-ipv4-notation" class="nav-link" data-scroll-target="#ipv4-notation"><span class="header-section-number">6.1.4</span> IPv4 Notation</a></li>
   </ul></li>
-  <li><a href="#protect-the-aws-root-user" id="toc-protect-the-aws-root-user" class="nav-link" data-scroll-target="#protect-the-aws-root-user"><span class="header-section-number">3.2</span> Protect the AWS Root User</a>
+  <li><a href="#ipv4-cidr-why-you-need-ranges" id="toc-ipv4-cidr-why-you-need-ranges" class="nav-link" data-scroll-target="#ipv4-cidr-why-you-need-ranges"><span class="header-section-number">6.2</span> IPv4 → CIDR (why you need ranges)</a>
   <ul class="collapse">
-  <li><a href="#authentication-vs-authorization" id="toc-authentication-vs-authorization" class="nav-link" data-scroll-target="#authentication-vs-authorization"><span class="header-section-number">3.2.1</span> Authentication vs Authorization</a></li>
-  <li><a href="#aws-root-user" id="toc-aws-root-user" class="nav-link" data-scroll-target="#aws-root-user"><span class="header-section-number">3.2.2</span> AWS Root User</a></li>
-  <li><a href="#root-user-best-practices" id="toc-root-user-best-practices" class="nav-link" data-scroll-target="#root-user-best-practices"><span class="header-section-number">3.2.3</span> Root User Best Practices</a></li>
-  <li><a href="#why-mfa-matters" id="toc-why-mfa-matters" class="nav-link" data-scroll-target="#why-mfa-matters"><span class="header-section-number">3.2.4</span> Why MFA Matters</a></li>
+  <li><a href="#cidr-notation-range" id="toc-cidr-notation-range" class="nav-link" data-scroll-target="#cidr-notation-range"><span class="header-section-number">6.2.1</span> CIDR Notation (range)</a></li>
   </ul></li>
-  <li><a href="#control-plane-apis-and-data-plane-apis-in-aws" id="toc-control-plane-apis-and-data-plane-apis-in-aws" class="nav-link" data-scroll-target="#control-plane-apis-and-data-plane-apis-in-aws"><span class="header-section-number">3.3</span> Control Plane APIs and Data Plane APIs in AWS</a></li>
-  <li><a href="#summary-every-aws-activity-is-an-api-call" id="toc-summary-every-aws-activity-is-an-api-call" class="nav-link" data-scroll-target="#summary-every-aws-activity-is-an-api-call"><span class="header-section-number">3.4</span> Summary: Every AWS Activity Is an API Call</a></li>
+  <li><a href="#aws-vpc-what-you-must-choose" id="toc-aws-vpc-what-you-must-choose" class="nav-link" data-scroll-target="#aws-vpc-what-you-must-choose"><span class="header-section-number">6.3</span> AWS VPC (what you must choose)</a></li>
+  <li><a href="#subnets-how-you-place-resources" id="toc-subnets-how-you-place-resources" class="nav-link" data-scroll-target="#subnets-how-you-place-resources"><span class="header-section-number">6.4</span> Subnets (how you place resources)</a>
+  <ul class="collapse">
+  <li><a href="#reserved-ips-in-every-subnet" id="toc-reserved-ips-in-every-subnet" class="nav-link" data-scroll-target="#reserved-ips-in-every-subnet"><span class="header-section-number">6.4.1</span> Reserved IPs in every subnet</a></li>
+  </ul></li>
+  <li><a href="#public-vs-private-subnets-core-pattern" id="toc-public-vs-private-subnets-core-pattern" class="nav-link" data-scroll-target="#public-vs-private-subnets-core-pattern"><span class="header-section-number">6.5</span> Public vs Private subnets (core pattern)</a></li>
+  <li><a href="#gateways-what-they-do" id="toc-gateways-what-they-do" class="nav-link" data-scroll-target="#gateways-what-they-do"><span class="header-section-number">6.6</span> Gateways (what they do)</a></li>
+  <li><a href="#vpc-routing-security-the-essential-controls" id="toc-vpc-routing-security-the-essential-controls" class="nav-link" data-scroll-target="#vpc-routing-security-the-essential-controls"><span class="header-section-number">6.7</span> VPC Routing &amp; Security (the essential controls)</a>
+  <ul class="collapse">
+  <li><a href="#main-route-table" id="toc-main-route-table" class="nav-link" data-scroll-target="#main-route-table"><span class="header-section-number">6.7.1</span> Main Route Table</a></li>
+  <li><a href="#custom-route-tables" id="toc-custom-route-tables" class="nav-link" data-scroll-target="#custom-route-tables"><span class="header-section-number">6.7.2</span> Custom Route Tables</a></li>
+  <li><a href="#network-acls-subnet-level-firewall" id="toc-network-acls-subnet-level-firewall" class="nav-link" data-scroll-target="#network-acls-subnet-level-firewall"><span class="header-section-number">6.7.3</span> Network ACLs (subnet-level firewall)</a></li>
+  <li><a href="#security-groups-instance-level-firewall" id="toc-security-groups-instance-level-firewall" class="nav-link" data-scroll-target="#security-groups-instance-level-firewall"><span class="header-section-number">6.7.4</span> Security Groups (instance-level firewall)</a></li>
+  </ul></li>
+  <li><a href="#port-80-vs-443-only-what-matters" id="toc-port-80-vs-443-only-what-matters" class="nav-link" data-scroll-target="#port-80-vs-443-only-what-matters"><span class="header-section-number">6.8</span> Port 80 vs 443 (only what matters)</a></li>
+  <li><a href="#multi-tier-security-group-isolation-typical-3-tier" id="toc-multi-tier-security-group-isolation-typical-3-tier" class="nav-link" data-scroll-target="#multi-tier-security-group-isolation-typical-3-tier"><span class="header-section-number">6.9</span> Multi-tier security group isolation (typical 3-tier)</a></li>
+  <li><a href="#how-private-subnet-ec2-reaches-the-internet" id="toc-how-private-subnet-ec2-reaches-the-internet" class="nav-link" data-scroll-target="#how-private-subnet-ec2-reaches-the-internet"><span class="header-section-number">6.10</span> How private-subnet EC2 reaches the internet</a></li>
+  <li><a href="#vpc-troubleshooting-checks-public-ec2-web-app-not-loading" id="toc-vpc-troubleshooting-checks-public-ec2-web-app-not-loading" class="nav-link" data-scroll-target="#vpc-troubleshooting-checks-public-ec2-web-app-not-loading"><span class="header-section-number">6.11</span> 10 VPC troubleshooting checks (public EC2 web app not loading)</a></li>
+  <li><a href="#quiz-notes" id="toc-quiz-notes" class="nav-link" data-scroll-target="#quiz-notes"><span class="header-section-number">6.12</span> Quiz Notes</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -235,13 +214,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">1. Introduction to AWS</span></h1>
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">04. Networking</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Senthil Kumar </p>
+          </div>
+  </div>
     
   
     
@@ -252,257 +237,249 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="introduction-to-aws" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> 1. Introduction to AWS</h1>
-<section id="introduction-to-aws---the-critical-elements" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="introduction-to-aws---the-critical-elements"><span class="header-section-number">3.1</span> 1. Introduction to AWS - The Critical Elements</h2>
+<section id="networking-on-aws" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> 4 Networking on AWS</h1>
+<p>Here is a <strong>bare‑minimum, essentials‑only rewrite</strong> of that Networking section.<br>
+I’ve <strong>removed all analogy storytelling</strong>, kept only the <strong>concepts you need to remember</strong>, and preserved the <strong>technical accuracy</strong>.</p>
+<hr>
+<section id="introduction-to-networking-in-aws" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="introduction-to-networking-in-aws"><span class="header-section-number">6.1</span> Introduction to Networking in AWS</h2>
+<section id="what-is-networking" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="what-is-networking"><span class="header-section-number">6.1.1</span> What Is Networking?</h3>
+<blockquote class="blockquote">
+<p><strong>Networking is the routing of data between uniquely identified endpoints using IP addresses across a global network.</strong></p>
+</blockquote>
 <ul>
-<li><p><strong>Regions → AZs → Data Centers</strong></p>
+<li><strong>Networking</strong> enables computers to communicate with each other.</li>
+<li>In AWS, networking spans <strong>Regions, Availability Zones, and data centers</strong>.</li>
+<li>AWS operates a <strong>global network</strong> connecting these resources.</li>
+</ul>
+<hr>
+</section>
+<section id="networking-basics" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="networking-basics"><span class="header-section-number">6.1.2</span> Networking Basics</h3>
 <ul>
-<li>AWS Regions consist of <strong>Availability Zones (AZs)</strong>.</li>
-<li>AZs consist of <strong>one or more physical data centers</strong>.</li>
+<li>Communication requires:
+<ul>
+<li><strong>Source</strong></li>
+<li><strong>Destination</strong></li>
+<li><strong>Data (payload)</strong></li>
 </ul></li>
-<li><p><strong>Root account first steps (non‑negotiable)</strong></p>
-<ol type="1">
-<li>Enable <strong>MFA</strong> on the root user immediately</li>
-<li>Create an <strong>IAM Administrator role</strong>
+<li>Messages are delivered using <strong>routing</strong>, which determines the path to the destination.</li>
+</ul>
+<hr>
+</section>
+<section id="ip-addresses" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="ip-addresses"><span class="header-section-number">6.1.3</span> IP Addresses</h3>
 <ul>
-<li>Full service creation permissions</li>
-<li>No account‑level or billing changes</li>
-</ul></li>
-<li>Lock away root credentials</li>
-</ol></li>
-<li><p><strong>IAM policies cannot restrict the root user</strong></p>
+<li>An <strong>IP address</strong> uniquely identifies a computer on a network.</li>
+<li>Computers use <strong>binary addresses (0s and 1s)</strong> for routing.</li>
+<li><strong>IPv4 addresses are 32‑bit</strong> values.</li>
+</ul>
+<hr>
+</section>
+<section id="ipv4-notation" class="level3" data-number="6.1.4">
+<h3 data-number="6.1.4" class="anchored" data-anchor-id="ipv4-notation"><span class="header-section-number">6.1.4</span> IPv4 Notation</h3>
 <ul>
-<li>Root user always has unrestricted access, regardless of IAM policies.</li>
-</ul></li>
-<li><p><strong>Shared Responsibility Model</strong></p>
+<li>IPv4 is written in <strong>decimal format</strong> for readability.</li>
+<li>The 32 bits are split into <strong>4 groups of 8 bits (octets)</strong>.</li>
+<li>Each octet is converted to a decimal number and separated by dots
 <ul>
-<li>AWS = <strong>security <em>of</em> the cloud</strong></li>
-<li>Customer = <strong>security <em>in</em> the cloud</strong></li>
-</ul></li>
-<li><p>Summary: <strong>Every activity in AWS is an API call</strong></p>
-<ul>
-<li>Console clicks, CLI commands, SDK calls → all become <strong>authenticated &amp; authorized AWS API requests</strong>.</li>
+<li>Example format: <code>x.x.x.x</code></li>
 </ul></li>
 </ul>
 <hr>
-<section id="choose-the-right-aws-region" class="level3" data-number="3.1.1">
-<h3 data-number="3.1.1" class="anchored" data-anchor-id="choose-the-right-aws-region"><span class="header-section-number">3.1.1</span> Choose the Right AWS Region</h3>
-<p><strong>Essential takeaway:</strong><br>
-Choose Region in this order:</p>
+</section>
+</section>
+<section id="ipv4-cidr-why-you-need-ranges" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="ipv4-cidr-why-you-need-ranges"><span class="header-section-number">6.2</span> IPv4 → CIDR (why you need ranges)</h2>
+<p><img src="./images/ipv4_notation.png" class="img-fluid"></p>
+<ul>
+<li><strong>IPv4</strong> identifies a single host (32 bits → dotted decimal <code>x.x.x.x</code>).</li>
+<li>Networks need <strong>ranges</strong>, not single IPs → use <strong>CIDR</strong>.</li>
+</ul>
+<section id="cidr-notation-range" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="cidr-notation-range"><span class="header-section-number">6.2.1</span> CIDR Notation (range)</h3>
+<ul>
+<li>Format: <code>STARTING_IP/NUMBER_OF_FIXED_BITS</code>
+<ul>
+<li>Example: <code>192.168.1.0/24</code> → first 24 bits fixed → <strong>256 IPs</strong> (2⁸).</li>
+</ul></li>
+<li>In AWS:
+<ul>
+<li>Smallest VPC/subnet range: <strong>/28 = 16 IPs</strong></li>
+<li>Largest VPC range: <strong>/16 = 65,536 IPs</strong></li>
+</ul></li>
+<li>AWS reserves <strong>5 IPs per subnet</strong>, so small subnets lose usable space fast.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="aws-vpc-what-you-must-choose" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="aws-vpc-what-you-must-choose"><span class="header-section-number">6.3</span> AWS VPC (what you must choose)</h2>
+<p><img src="./images/vpc_azs_region.png" class="img-fluid"></p>
+<p><strong>VPC requires:</strong></p>
 <ol type="1">
-<li><strong>Compliance / data residency</strong></li>
-<li><strong>Latency</strong></li>
-<li><strong>Service availability</strong></li>
-<li><strong>Cost</strong></li>
-<li><strong>Availability &amp; DR needs</strong></li>
+<li><strong>Name</strong></li>
+<li><strong>Region</strong> (VPC spans multiple AZs in that region)</li>
+<li><strong>CIDR range</strong> (VPC size; up to <strong>four /16 ranges</strong> per VPC)</li>
 </ol>
-<p><img src="./images/how_to_choose_aws_region.png" class="img-fluid"></p>
 <hr>
 </section>
-<section id="availability-zones" class="level3" data-number="3.1.2">
-<h3 data-number="3.1.2" class="anchored" data-anchor-id="availability-zones"><span class="header-section-number">3.1.2</span> Availability Zones</h3>
-<p><img src="./images/regioin-az-datacenters.png" class="img-fluid" style="width:100.0%"></p>
+<section id="subnets-how-you-place-resources" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="subnets-how-you-place-resources"><span class="header-section-number">6.4</span> Subnets (how you place resources)</h2>
+<p><img src="./images/VPC-split-by-subnet.png" class="img-fluid"></p>
 <ul>
-<li>Each <strong>Region contains multiple AZs</strong></li>
-<li>Each <strong>AZ = one or more data centers</strong></li>
-<li>Data centers are:
-<ul>
-<li>Physically separate</li>
-<li>Redundantly powered and networked</li>
-</ul></li>
-<li>AZs are connected by <strong>low‑latency, high‑bandwidth links</strong></li>
-<li>AZ names:
-<ul>
-<li><code>&lt;region&gt;&lt;letter&gt;</code> (example: <code>us-east-1a</code>)</li>
-<li>Letter mappings differ per account</li>
-</ul></li>
-<li>Resource location example:
-<ul>
-<li><code>us-east-1c</code> → AZ “c” inside <code>us-east-1</code></li>
-</ul></li>
+<li><strong>Subnet = smaller CIDR block inside a VPC</strong>, tied to <strong>one AZ</strong>.</li>
+<li>Subnet CIDR must be a <strong>subset</strong> of VPC CIDR.</li>
+<li>EC2 instances are launched <strong>inside subnets</strong> (therefore in a specific AZ).</li>
+<li>For <strong>high availability</strong>, create <strong>at least two subnets in two AZs</strong>.</li>
 </ul>
-<hr>
-</section>
-<section id="scope-of-aws-services" class="level3" data-number="3.1.3">
-<h3 data-number="3.1.3" class="anchored" data-anchor-id="scope-of-aws-services"><span class="header-section-number">3.1.3</span> Scope of AWS Services</h3>
-<p><img src="./images/aws_scope_and_responsibility_of_services_2.png" class="img-fluid"></p>
-<p><strong>Scope summary:</strong></p>
+<section id="reserved-ips-in-every-subnet" class="level3" data-number="6.4.1">
+<h3 data-number="6.4.1" class="anchored" data-anchor-id="reserved-ips-in-every-subnet"><span class="header-section-number">6.4.1</span> Reserved IPs in every subnet</h3>
+<p><img src="./images/5_reserved_ip_addresses.png" class="img-fluid"></p>
 <ul>
-<li><p><strong>Global services</strong></p>
-<ul>
-<li>Single logical control plane across AWS</li>
-<li>Example: IAM, Route 53, CloudFront</li>
-</ul></li>
-<li><p><strong>Regional services</strong></p>
-<ul>
-<li>Live within a Region, usually span multiple AZs</li>
-<li>Example: S3, DynamoDB, VPC, RDS Multi‑AZ</li>
-</ul></li>
-<li><p><strong>Zonal services</strong></p>
-<ul>
-<li>Bound to a single AZ</li>
-<li>Example: EC2, EBS, RDS Single‑AZ</li>
-</ul></li>
-</ul>
-<p><strong>Availability &amp; durability:</strong></p>
-<ul>
-<li>Some services are <strong>AWS‑managed</strong></li>
-<li>Others require <strong>customer‑designed HA/DR</strong></li>
-</ul>
-<hr>
-</section>
-<section id="maintain-resiliency" class="level3" data-number="3.1.4">
-<h3 data-number="3.1.4" class="anchored" data-anchor-id="maintain-resiliency"><span class="header-section-number">3.1.4</span> Maintain Resiliency</h3>
-<ul>
-<li>Prefer <strong>Region‑scoped managed services</strong></li>
-<li>Otherwise:
-<ul>
-<li>Deploy across <strong>multiple AZs</strong></li>
-<li>Minimum <strong>two AZs</strong></li>
-</ul></li>
-<li>AZ failure ≠ application outage when designed correctly</li>
-</ul>
-<hr>
-</section>
-<section id="security-and-the-aws-shared-responsibility-model" class="level3" data-number="3.1.5">
-<h3 data-number="3.1.5" class="anchored" data-anchor-id="security-and-the-aws-shared-responsibility-model"><span class="header-section-number">3.1.5</span> Security and the AWS Shared Responsibility Model</h3>
-<section id="core-distinction" class="level4" data-number="3.1.5.1">
-<h4 data-number="3.1.5.1" class="anchored" data-anchor-id="core-distinction"><span class="header-section-number">3.1.5.1</span> Core distinction</h4>
-<ul>
-<li><p><strong>AWS responsibility (security of the cloud):</strong></p>
-<ul>
-<li>Physical data centers</li>
-<li>Hardware, networking</li>
-<li>Host OS and virtualization layer</li>
-</ul></li>
-<li><p><strong>Customer responsibility (security in the cloud):</strong></p>
-<ul>
-<li>IAM, access control</li>
-<li>Data protection &amp; encryption</li>
-<li>Network security (SGs, NACLs)</li>
-<li>Backups and recovery</li>
-</ul></li>
-</ul>
-<blockquote class="blockquote">
-<p>AWS manages the infrastructure.<br>
-You secure what you build on top of it.</p>
-</blockquote>
-<hr>
-</section>
-</section>
-</section>
-<section id="protect-the-aws-root-user" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="protect-the-aws-root-user"><span class="header-section-number">3.2</span> Protect the AWS Root User</h2>
-<section id="authentication-vs-authorization" class="level3" data-number="3.2.1">
-<h3 data-number="3.2.1" class="anchored" data-anchor-id="authentication-vs-authorization"><span class="header-section-number">3.2.1</span> Authentication vs Authorization</h3>
-<ul>
-<li><p><strong>Authentication:</strong><br>
-“Who are you?” (passwords, MFA, tokens)</p></li>
-<li><p><strong>Authorization:</strong><br>
-“What are you allowed to do?” (IAM policies)</p></li>
-</ul>
-<hr>
-</section>
-<section id="aws-root-user" class="level3" data-number="3.2.2">
-<h3 data-number="3.2.2" class="anchored" data-anchor-id="aws-root-user"><span class="header-section-number">3.2.2</span> AWS Root User</h3>
-<ul>
-<li>Created with the AWS account</li>
-<li>Has <strong>full, unrestricted access</strong></li>
-<li>Credentials:
-<ul>
-<li>Email + password (console)</li>
-<li>Access keys (programmatic)</li>
-</ul></li>
-</ul>
-<p><strong>Critical facts:</strong></p>
-<ul>
-<li>IAM policies <strong>cannot limit root</strong></li>
-<li>Root should never be used for daily work</li>
-</ul>
-<hr>
-</section>
-<section id="root-user-best-practices" class="level3" data-number="3.2.3">
-<h3 data-number="3.2.3" class="anchored" data-anchor-id="root-user-best-practices"><span class="header-section-number">3.2.3</span> Root User Best Practices</h3>
-<ul>
-<li>Enable <strong>MFA</strong></li>
-<li>Strong, unique password</li>
-<li><strong>Delete root access keys</strong></li>
-<li>Use root <strong>only</strong> for:
-<ul>
-<li>Account setup</li>
-<li>Billing</li>
-<li>Rare account‑level tasks</li>
-</ul></li>
-</ul>
-<hr>
-</section>
-<section id="why-mfa-matters" class="level3" data-number="3.2.4">
-<h3 data-number="3.2.4" class="anchored" data-anchor-id="why-mfa-matters"><span class="header-section-number">3.2.4</span> Why MFA Matters</h3>
-<ul>
-<li>Passwords alone are weak</li>
-<li>MFA adds a second factor:
-<ul>
-<li>Something you know</li>
-<li>Something you have</li>
-<li>Something you are</li>
-</ul></li>
-<li><strong>Always enable MFA on root</strong></li>
+<li>AWS reserves <strong>5 IP addresses per subnet</strong> for routing/DNS/management.<br>
+→ Plan subnet sizes with this overhead in mind.</li>
 </ul>
 <hr>
 </section>
 </section>
-<section id="control-plane-apis-and-data-plane-apis-in-aws" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="control-plane-apis-and-data-plane-apis-in-aws"><span class="header-section-number">3.3</span> Control Plane APIs and Data Plane APIs in AWS</h2>
+<section id="public-vs-private-subnets-core-pattern" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="public-vs-private-subnets-core-pattern"><span class="header-section-number">6.5</span> Public vs Private subnets (core pattern)</h2>
+<p><img src="./images/public_and_private_subnetets_inside_vpc.png" class="img-fluid"></p>
 <ul>
-<li><p>AWS describes control plane as administrative APIs (CRUDL) like “creating an S3 bucket”, while data plane includes “getting and putting objects in an S3 bucket</p></li>
-<li><p>Source: <a href="https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/control-planes-and-data-planes.html">Control Planes and Data Planes in AWS</a></p></li>
-</ul>
-<p>S3 <strong>Control plane</strong> APIs (AWS CLI examples)</p>
-<p>✅ Create a bucket (control plane)</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3api create-bucket <span class="dt">\</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">--bucket</span> my-example-bucket-123 <span class="dt">\</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">--region</span> ap-south-1 <span class="dt">\</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">--create-bucket-configuration</span> LocationConstraint=ap-south-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>create-bucket</code> “Creates a new S3 bucket.”</p>
-<blockquote class="blockquote">
+<li><strong>Public subnet</strong>: has a route to an <strong>Internet Gateway (IGW)</strong>.</li>
+<li><strong>Private subnet</strong>: no direct IGW route; inbound from internet is blocked by design.</li>
+<li>Common architecture:
 <ul>
-<li>Rule of thumb: Anything <em>Bucket</em> (create bucket, put bucket encryption, put bucket policy, lifecycle, versioning…) is typically “control plane” style because you’re configuring the container and its behavior.</li>
+<li><strong>Public</strong>: Load balancer</li>
+<li><strong>Private</strong>: app servers + databases</li>
+<li><strong>NAT Gateway</strong>: private subnet outbound internet access (updates, external APIs)</li>
+</ul></li>
 </ul>
-</blockquote>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3api delete-object <span class="dt">\</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bucket</span> my-example-bucket-123 <span class="dt">\</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--key</span> docs/readme.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<ul>
-<li>Rule of thumb: Anything <em>Object</em> (PutObject/GetObject/ListObjects/DeleteObject/HeadObject) is “data plane” because you’re interacting with the stored data.</li>
-</ul>
-</blockquote>
 <hr>
 </section>
-<section id="summary-every-aws-activity-is-an-api-call" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="summary-every-aws-activity-is-an-api-call"><span class="header-section-number">3.4</span> Summary: Every AWS Activity Is an API Call</h2>
-<p><img src="./images/every_aws_service_use_is_an_api_call.png" class="img-fluid"></p>
+<section id="gateways-what-they-do" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="gateways-what-they-do"><span class="header-section-number">6.6</span> Gateways (what they do)</h2>
 <ul>
-<li>Console, CLI, SDK → <strong>AWS API</strong></li>
-<li>API calls are:
+<li><p><strong>Internet Gateway (IGW)</strong></p>
 <ul>
-<li>Authenticated</li>
-<li>Authorized</li>
-<li>Evaluated by IAM</li>
+<li>Enables internet connectivity for the VPC (must be <strong>attached</strong> to the VPC).</li>
 </ul></li>
-<li>Understanding this explains:
+<li><p><strong>Virtual Private Gateway (VGW)</strong></p>
 <ul>
-<li>IAM behavior</li>
-<li>Auditing (CloudTrail)</li>
-<li>Automation (IaC, CI/CD)</li>
-<li>Security boundaries</li>
+<li>Connects VPC to another private network via <strong>encrypted VPN</strong> (with Customer Gateway on the other side).</li>
+</ul></li>
+<li><p><strong>NAT Gateway</strong></p>
+<ul>
+<li>Allows <strong>outbound-only</strong> internet from <strong>private subnets</strong> by translating private IP → public IP.</li>
+<li><strong>Stateful return traffic</strong> is allowed only for connections initiated from inside.</li>
 </ul></li>
 </ul>
-<blockquote class="blockquote">
-<p><strong>By understanding APIs, IAM, Regions, AZs, and responsibility boundaries — one understands AWS.</strong></p>
-</blockquote>
+<hr>
+</section>
+<section id="vpc-routing-security-the-essential-controls" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="vpc-routing-security-the-essential-controls"><span class="header-section-number">6.7</span> VPC Routing &amp; Security (the essential controls)</h2>
+<section id="main-route-table" class="level3" data-number="6.7.1">
+<h3 data-number="6.7.1" class="anchored" data-anchor-id="main-route-table"><span class="header-section-number">6.7.1</span> Main Route Table</h3>
+<p><img src="./images/main_route_table_of_a_vpc.png" class="img-fluid"></p>
+<ul>
+<li>Default route table created with the VPC.</li>
+<li>Contains routes (Destination → Target).</li>
+<li>Default behavior: allows <strong>VPC-local traffic</strong> between subnets.</li>
+</ul>
+</section>
+<section id="custom-route-tables" class="level3" data-number="6.7.2">
+<h3 data-number="6.7.2" class="anchored" data-anchor-id="custom-route-tables"><span class="header-section-number">6.7.2</span> Custom Route Tables</h3>
+<p><img src="./images/custom_route_tables.png" class="img-fluid"></p>
+<ul>
+<li>Route tables can be attached to <strong>specific subnets</strong> for custom routing.</li>
+<li>If a subnet has a custom route table, it uses that instead of the main route table.</li>
+</ul>
+<hr>
+</section>
+<section id="network-acls-subnet-level-firewall" class="level3" data-number="6.7.3">
+<h3 data-number="6.7.3" class="anchored" data-anchor-id="network-acls-subnet-level-firewall"><span class="header-section-number">6.7.3</span> Network ACLs (subnet-level firewall)</h3>
+<p><img src="./images/network_acl_inbound_and_outbound_rules.png" class="img-fluid"></p>
+<ul>
+<li><strong>NACL = stateless</strong> subnet firewall.</li>
+<li>Must allow <strong>both inbound and outbound</strong> explicitly (return traffic isn’t automatic).</li>
+<li>Default vs custom behavior often differs (custom typically starts restrictive).</li>
+</ul>
+</section>
+<section id="security-groups-instance-level-firewall" class="level3" data-number="6.7.4">
+<h3 data-number="6.7.4" class="anchored" data-anchor-id="security-groups-instance-level-firewall"><span class="header-section-number">6.7.4</span> Security Groups (instance-level firewall)</h3>
+<p><img src="./images/NACL_vs_sec_group_rules.png" class="img-fluid"></p>
+<ul>
+<li><strong>Security Group = stateful</strong> instance firewall.</li>
+<li>Default SG behavior:
+<ul>
+<li><strong>Inbound: deny all</strong></li>
+<li><strong>Outbound: allow all</strong></li>
+</ul></li>
+<li>For web servers, allow inbound HTTP/HTTPS:</li>
+</ul>
+<p><img src="./images/inbound_sg_rules_for_http_https.png" class="img-fluid"></p>
+<hr>
+</section>
+</section>
+<section id="port-80-vs-443-only-what-matters" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="port-80-vs-443-only-what-matters"><span class="header-section-number">6.8</span> Port 80 vs 443 (only what matters)</h2>
+<p><img src="./images/http_vs_https.png" class="img-fluid"></p>
+<ul>
+<li><strong>80 = HTTP</strong> (unencrypted)</li>
+<li><strong>443 = HTTPS</strong> (encrypted via TLS)</li>
+</ul>
+<hr>
+</section>
+<section id="multi-tier-security-group-isolation-typical-3-tier" class="level2" data-number="6.9">
+<h2 data-number="6.9" class="anchored" data-anchor-id="multi-tier-security-group-isolation-typical-3-tier"><span class="header-section-number">6.9</span> Multi-tier security group isolation (typical 3-tier)</h2>
+<p><img src="./images/networking_sg_rules_for_a_multi_tier_system.png" class="img-fluid"></p>
+<ul>
+<li>Web tier: allow internet → web over <strong>HTTPS</strong></li>
+<li>App tier: allow web → app over <strong>HTTP/needed ports</strong></li>
+<li>DB tier: allow app → DB over <strong>DB port</strong> (e.g., MySQL 3306)</li>
+<li>This isolates tiers without VLANs (security groups enforce isolation).</li>
+</ul>
+<hr>
+</section>
+<section id="how-private-subnet-ec2-reaches-the-internet" class="level2" data-number="6.10">
+<h2 data-number="6.10" class="anchored" data-anchor-id="how-private-subnet-ec2-reaches-the-internet"><span class="header-section-number">6.10</span> How private-subnet EC2 reaches the internet</h2>
+<p><img src="./images/how_EC2_in_private_subnet.png" class="img-fluid"></p>
+<ul>
+<li>Private EC2 → routes outbound traffic to <strong>NAT Gateway</strong> (in a public subnet) → internet.</li>
+<li>No direct inbound internet connectivity to private EC2.</li>
+</ul>
+<hr>
+</section>
+<section id="vpc-troubleshooting-checks-public-ec2-web-app-not-loading" class="level2" data-number="6.11">
+<h2 data-number="6.11" class="anchored" data-anchor-id="vpc-troubleshooting-checks-public-ec2-web-app-not-loading"><span class="header-section-number">6.11</span> 10 VPC troubleshooting checks (public EC2 web app not loading)</h2>
+<ol type="1">
+<li><strong>IGW attached to VPC</strong></li>
+<li>Subnet route table has <code>0.0.0.0/0 → igw</code></li>
+<li><strong>Security Group</strong> allows inbound <code>80/443</code> (and outbound allowed)</li>
+<li><strong>NACL</strong> allows inbound + outbound for required ports (stateless)</li>
+<li>Instance has a <strong>public IP</strong> (auto-assign enabled)</li>
+<li>Using correct <strong>HTTP vs HTTPS</strong></li>
+<li><strong>User data script</strong> ran successfully (<code>/var/log/cloud-init*</code>)</li>
+<li>Instance has correct <strong>IAM role permissions</strong> (S3/DDB/etc.)</li>
+<li>Your corporate/personal network isn’t blocking access</li>
+<li>App + web server running; check application logs</li>
+</ol>
+<hr>
+</section>
+<section id="quiz-notes" class="level2" data-number="6.12">
+<h2 data-number="6.12" class="anchored" data-anchor-id="quiz-notes"><span class="header-section-number">6.12</span> Quiz Notes</h2>
+<ul>
+<li>VPC requires <strong>Region</strong>, contains <strong>AZs</strong> and <strong>subnets</strong></li>
+<li>Route tables attach to <strong>VPC (main)</strong> and <strong>subnets (custom)</strong></li>
+<li>Public subnet needs <strong>IGW + route</strong> to IGW</li>
+<li>By default, a&nbsp;<code>security group</code>&nbsp;blocks all incoming traffic and allows all outgoing traffic. It is stateful (meaning an result of an incoming traffic is allowed automatically)</li>
+<li>NACLs: <strong>stateless</strong> (must allow inbound + outbound). The&nbsp;<code>default NACL</code>&nbsp;is associated with all subnets in the VPC by default, allowing all traffic.</li>
+<li>CIDR determines network size: <strong>/16 larger than /28</strong></li>
+</ul>
+<p><a href="https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w2-%20AWS%20Compute%20and%20Networking/Week%202%20Quiz%20_%20Coursera.pdf">A Github Source for Week 2 Quiz</a></p>
 
 
 </section>
@@ -911,13 +888,13 @@ You secure what you build on top of it.</p>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./index.html" class="pagination-link" aria-label="AWS Technical Essentials">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">AWS Technical Essentials</span></span>
+      <a href="./03-compute.html" class="pagination-link" aria-label="03. Compute">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">03. Compute</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./02-security.html" class="pagination-link" aria-label="02. Security">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">02. Security</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./05-storage.html" class="pagination-link" aria-label="05. Storage">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">05. Storage</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

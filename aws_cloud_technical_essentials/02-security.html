@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Senthil Kumar">
 
-<title>2&nbsp; 1. Introduction to AWS – AWS Technical Essentials</title>
+<title>3&nbsp; 02. Security – AWS Technical Essentials</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,8 +66,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./02-security.html" rel="next">
-<link href="./index.html" rel="prev">
+<link href="./03-compute.html" rel="next">
+<link href="./01-introduction.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -118,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-introduction.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">1. Introduction to AWS</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-security.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">02. Security</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -151,13 +152,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-introduction.html" class="sidebar-item-text sidebar-link active">
+  <a href="./01-introduction.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">1. Introduction to AWS</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-security.html" class="sidebar-item-text sidebar-link">
+  <a href="./02-security.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">02. Security</span></span></a>
   </div>
 </li>
@@ -207,25 +208,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#introduction-to-aws" id="toc-introduction-to-aws" class="nav-link active" data-scroll-target="#introduction-to-aws"><span class="header-section-number">3</span> 1. Introduction to AWS</a>
+  <li><a href="#security" id="toc-security" class="nav-link active" data-scroll-target="#security"><span class="header-section-number">4</span> 2. Security</a>
   <ul class="collapse">
-  <li><a href="#introduction-to-aws---the-critical-elements" id="toc-introduction-to-aws---the-critical-elements" class="nav-link" data-scroll-target="#introduction-to-aws---the-critical-elements"><span class="header-section-number">3.1</span> 1. Introduction to AWS - The Critical Elements</a>
+  <li><a href="#aws-security---quick-notes" id="toc-aws-security---quick-notes" class="nav-link" data-scroll-target="#aws-security---quick-notes"><span class="header-section-number">4.1</span> AWS Security - Quick Notes</a>
   <ul class="collapse">
-  <li><a href="#choose-the-right-aws-region" id="toc-choose-the-right-aws-region" class="nav-link" data-scroll-target="#choose-the-right-aws-region"><span class="header-section-number">3.1.1</span> Choose the Right AWS Region</a></li>
-  <li><a href="#availability-zones" id="toc-availability-zones" class="nav-link" data-scroll-target="#availability-zones"><span class="header-section-number">3.1.2</span> Availability Zones</a></li>
-  <li><a href="#scope-of-aws-services" id="toc-scope-of-aws-services" class="nav-link" data-scroll-target="#scope-of-aws-services"><span class="header-section-number">3.1.3</span> Scope of AWS Services</a></li>
-  <li><a href="#maintain-resiliency" id="toc-maintain-resiliency" class="nav-link" data-scroll-target="#maintain-resiliency"><span class="header-section-number">3.1.4</span> Maintain Resiliency</a></li>
-  <li><a href="#security-and-the-aws-shared-responsibility-model" id="toc-security-and-the-aws-shared-responsibility-model" class="nav-link" data-scroll-target="#security-and-the-aws-shared-responsibility-model"><span class="header-section-number">3.1.5</span> Security and the AWS Shared Responsibility Model</a></li>
+  <li><a href="#aws-identity-and-access-management-iam" id="toc-aws-identity-and-access-management-iam" class="nav-link" data-scroll-target="#aws-identity-and-access-management-iam"><span class="header-section-number">4.1.1</span> 1. AWS Identity and Access Management (IAM)</a></li>
+  <li><a href="#iam-identities" id="toc-iam-identities" class="nav-link" data-scroll-target="#iam-identities"><span class="header-section-number">4.1.2</span> 2. IAM Identities</a></li>
+  <li><a href="#iam-policies" id="toc-iam-policies" class="nav-link" data-scroll-target="#iam-policies"><span class="header-section-number">4.1.3</span> 3. IAM Policies</a></li>
+  <li><a href="#security-best-practices" id="toc-security-best-practices" class="nav-link" data-scroll-target="#security-best-practices"><span class="header-section-number">4.1.4</span> 4. Security Best Practices</a></li>
+  <li><a href="#federation-centralized-identity" id="toc-federation-centralized-identity" class="nav-link" data-scroll-target="#federation-centralized-identity"><span class="header-section-number">4.1.5</span> 5. Federation &amp; Centralized Identity</a></li>
+  <li><a href="#oneline-mental-model" id="toc-oneline-mental-model" class="nav-link" data-scroll-target="#oneline-mental-model"><span class="header-section-number">4.1.6</span> One‑Line Mental Model</a></li>
   </ul></li>
-  <li><a href="#protect-the-aws-root-user" id="toc-protect-the-aws-root-user" class="nav-link" data-scroll-target="#protect-the-aws-root-user"><span class="header-section-number">3.2</span> Protect the AWS Root User</a>
+  <li><a href="#deep-dive-into-iam-policy" id="toc-deep-dive-into-iam-policy" class="nav-link" data-scroll-target="#deep-dive-into-iam-policy"><span class="header-section-number">4.2</span> Deep Dive into IAM Policy</a>
   <ul class="collapse">
-  <li><a href="#authentication-vs-authorization" id="toc-authentication-vs-authorization" class="nav-link" data-scroll-target="#authentication-vs-authorization"><span class="header-section-number">3.2.1</span> Authentication vs Authorization</a></li>
-  <li><a href="#aws-root-user" id="toc-aws-root-user" class="nav-link" data-scroll-target="#aws-root-user"><span class="header-section-number">3.2.2</span> AWS Root User</a></li>
-  <li><a href="#root-user-best-practices" id="toc-root-user-best-practices" class="nav-link" data-scroll-target="#root-user-best-practices"><span class="header-section-number">3.2.3</span> Root User Best Practices</a></li>
-  <li><a href="#why-mfa-matters" id="toc-why-mfa-matters" class="nav-link" data-scroll-target="#why-mfa-matters"><span class="header-section-number">3.2.4</span> Why MFA Matters</a></li>
+  <li><a href="#iam-policy-examples" id="toc-iam-policy-examples" class="nav-link" data-scroll-target="#iam-policy-examples"><span class="header-section-number">4.2.1</span> IAM POLICY EXAMPLES</a></li>
+  <li><a href="#understand-policy-structure" id="toc-understand-policy-structure" class="nav-link" data-scroll-target="#understand-policy-structure"><span class="header-section-number">4.2.2</span> UNDERSTAND POLICY STRUCTURE</a></li>
+  <li><a href="#summarizing-security" id="toc-summarizing-security" class="nav-link" data-scroll-target="#summarizing-security"><span class="header-section-number">4.2.3</span> Summarizing Security</a></li>
   </ul></li>
-  <li><a href="#control-plane-apis-and-data-plane-apis-in-aws" id="toc-control-plane-apis-and-data-plane-apis-in-aws" class="nav-link" data-scroll-target="#control-plane-apis-and-data-plane-apis-in-aws"><span class="header-section-number">3.3</span> Control Plane APIs and Data Plane APIs in AWS</a></li>
-  <li><a href="#summary-every-aws-activity-is-an-api-call" id="toc-summary-every-aws-activity-is-an-api-call" class="nav-link" data-scroll-target="#summary-every-aws-activity-is-an-api-call"><span class="header-section-number">3.4</span> Summary: Every AWS Activity Is an API Call</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><span class="header-section-number">4.3</span> <img src="./images/different_groups_different_permissions.png" class="img-fluid"></a>
+  <ul class="collapse">
+  <li><a href="#week-1s-quiz" id="toc-week-1s-quiz" class="nav-link" data-scroll-target="#week-1s-quiz"><span class="header-section-number">4.3.1</span> Week 1’s Quiz:</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -235,13 +238,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">1. Introduction to AWS</span></h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">02. Security</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Senthil Kumar </p>
+          </div>
+  </div>
     
   
     
@@ -252,259 +261,276 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="introduction-to-aws" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> 1. Introduction to AWS</h1>
-<section id="introduction-to-aws---the-critical-elements" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="introduction-to-aws---the-critical-elements"><span class="header-section-number">3.1</span> 1. Introduction to AWS - The Critical Elements</h2>
+<section id="security" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> 2. Security</h1>
+<p><img src="./images/aws_iam_user_role_groups_policies.jpg" class="img-fluid"> Source: AWS Builder</p>
+<p>Below is a <strong>bare‑minimum, distilled version</strong> of your AWS Security notes — keeping only the concepts that actually matter long‑term and removing all repetition and teaching detail.</p>
+<hr>
+<section id="aws-security---quick-notes" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="aws-security---quick-notes"><span class="header-section-number">4.1</span> AWS Security - Quick Notes</h2>
+<section id="aws-identity-and-access-management-iam" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="aws-identity-and-access-management-iam"><span class="header-section-number">4.1.1</span> 1. AWS Identity and Access Management (IAM)</h3>
 <ul>
-<li><p><strong>Regions → AZs → Data Centers</strong></p>
+<li><strong>IAM controls authentication and authorization</strong> for AWS accounts and resources.</li>
+<li>Lets you <strong>share access without using root credentials</strong>.</li>
+<li>Provides <strong>fine‑grained, explicit permissions</strong>.</li>
+<li><strong>IAM is global</strong> (not Region‑specific).</li>
+<li>Supports <strong>MFA, password policies, and identity federation</strong>.</li>
+<li>IAM itself is <strong>free</strong>.</li>
+</ul>
+<hr>
+</section>
+<section id="iam-identities" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="iam-identities"><span class="header-section-number">4.1.2</span> 2. IAM Identities</h3>
 <ul>
-<li>AWS Regions consist of <strong>Availability Zones (AZs)</strong>.</li>
-<li>AZs consist of <strong>one or more physical data centers</strong>.</li>
+<li><strong>IAM User</strong>
+<ul>
+<li>Represents a person or service.</li>
+<li>Has permanent credentials (console and/or programmatic).</li>
+<li>Should <strong>not share credentials</strong>.</li>
 </ul></li>
-<li><p><strong>Root account first steps (non‑negotiable)</strong></p>
+<li><strong>IAM Group</strong>
+<ul>
+<li>Collection of users.</li>
+<li>Permissions are assigned <strong>to groups, not individuals</strong>.</li>
+<li>Users can belong to multiple groups.</li>
+</ul></li>
+<li><strong>IAM Role</strong>
+<ul>
+<li>No long‑term credentials.</li>
+<li>Uses <strong>temporary credentials</strong>.</li>
+<li>Preferred for:
+<ul>
+<li>AWS services</li>
+<li>Federated users</li>
+<li>Cross‑account access</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="iam-policies" class="level3" data-number="4.1.3">
+<h3 data-number="4.1.3" class="anchored" data-anchor-id="iam-policies"><span class="header-section-number">4.1.3</span> 3. IAM Policies</h3>
+<ul>
+<li><strong>Policies define permissions</strong> (allow/deny).</li>
+<li>Attached to <strong>users, groups, or roles</strong>.</li>
+<li>Evaluated on <strong>every AWS API call</strong>.</li>
+<li>Core elements:
+<ul>
+<li><code>Effect</code> (Allow / Deny)</li>
+<li><code>Action</code></li>
+<li><code>Resource</code></li>
+</ul></li>
+<li><code>*</code> on action and resource = <strong>full access</strong>.</li>
+<li><strong>Explicit deny always wins</strong>.</li>
+</ul>
+<hr>
+</section>
+<section id="security-best-practices" class="level3" data-number="4.1.4">
+<h3 data-number="4.1.4" class="anchored" data-anchor-id="security-best-practices"><span class="header-section-number">4.1.4</span> 4. Security Best Practices</h3>
+<ul>
+<li><strong>Lock down the root user</strong>
+<ul>
+<li>Enable MFA</li>
+<li>Delete root access keys</li>
+<li>Never use root for daily work</li>
+</ul></li>
+<li><strong>Least privilege</strong>
+<ul>
+<li>Start with minimal access</li>
+<li>Grant only what is required</li>
+</ul></li>
+<li><strong>Prefer roles over users</strong>
+<ul>
+<li>Avoid long‑lived access keys</li>
+<li>Reduce blast radius of credential leaks</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="federation-centralized-identity" class="level3" data-number="4.1.5">
+<h3 data-number="4.1.5" class="anchored" data-anchor-id="federation-centralized-identity"><span class="header-section-number">4.1.5</span> 5. Federation &amp; Centralized Identity</h3>
+<ul>
+<li>Use an <strong>Identity Provider (IdP)</strong> when possible.</li>
+<li>Grant access via <strong>IAM roles</strong>, not IAM users.</li>
+<li><strong>AWS IAM Identity Center (SSO)</strong>:
+<ul>
+<li>Central user &amp; permission management</li>
+<li>Works across multiple AWS accounts</li>
+<li>Integrates with external IdPs</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="oneline-mental-model" class="level3" data-number="4.1.6">
+<h3 data-number="4.1.6" class="anchored" data-anchor-id="oneline-mental-model"><span class="header-section-number">4.1.6</span> One‑Line Mental Model</h3>
+<blockquote class="blockquote">
+<p><strong>IAM decides <em>who</em> can call <em>which AWS APIs</em> on <em>which resources</em>.</strong></p>
+</blockquote>
+</section>
+</section>
+<section id="deep-dive-into-iam-policy" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="deep-dive-into-iam-policy"><span class="header-section-number">4.2</span> Deep Dive into IAM Policy</h2>
+<ul>
+<li><strong>IAM policies</strong> manage access and permissions to AWS services/resources.<br>
+</li>
+<li>Policies can be attached to <strong>users, groups, or roles</strong>.<br>
+</li>
+<li>When a request is made, AWS evaluates:
+<ul>
+<li>Policies on the <strong>user/role</strong><br>
+</li>
+<li>Policies on any <strong>groups</strong> the user belongs to<br>
+</li>
+</ul></li>
+<li>Example: A developer in the <strong>developers group</strong> → AWS checks both the <strong>group policies</strong> and the <strong>user’s policies</strong> to decide allow/deny.</li>
+</ul>
+<section id="iam-policy-examples" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="iam-policy-examples"><span class="header-section-number">4.2.1</span> IAM POLICY EXAMPLES</h3>
+<p>Most policies are stored in AWS as JSON documents with several policy elements. Take a look at the following example of what providing admin access through an IAM identity-based policy looks like.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dt">"Version"</span><span class="fu">:</span> <span class="st">"2012-10-17"</span><span class="fu">,</span>    </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"Statement"</span><span class="fu">:</span> <span class="ot">[</span><span class="fu">{</span>        </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"Effect"</span><span class="fu">:</span> <span class="st">"Allow"</span><span class="fu">,</span>        </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"Action"</span><span class="fu">:</span> <span class="st">"*"</span><span class="fu">,</span>        </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"Resource"</span><span class="fu">:</span> <span class="st">"*"</span>     </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>     <span class="fu">}</span><span class="ot">]</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p>An <strong>IAM policy</strong> has four key JSON elements:</p>
 <ol type="1">
-<li>Enable <strong>MFA</strong> on the root user immediately</li>
-<li>Create an <strong>IAM Administrator role</strong>
+<li><strong>Version</strong> → defines the policy language version.
 <ul>
-<li>Full service creation permissions</li>
-<li>No account‑level or billing changes</li>
+<li>Always use <code>"Version": "2012-10-17"</code> for full feature support.<br>
+</li>
 </ul></li>
-<li>Lock away root credentials</li>
+<li><strong>Effect</strong> → specifies whether to <strong>Allow</strong> or <strong>Deny</strong> access.<br>
+</li>
+<li><strong>Action</strong> → describes the allowed/denied actions.
+<ul>
+<li><code>"*"</code> = wildcard → all actions.<br>
+</li>
+</ul></li>
+<li><strong>Resource</strong> → defines which resources are affected.
+<ul>
+<li><code>"*"</code> = all resources.</li>
+</ul></li>
 </ol></li>
-<li><p><strong>IAM policies cannot restrict the root user</strong></p>
+<li><p>Example: Policy with <code>"Action": "*"</code> and <code>"Resource": "*"</code> → grants <strong>administrator access</strong> (all actions on all resources).</p></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="dt">"Version"</span><span class="fu">:</span> <span class="st">"2012-10-17"</span><span class="fu">,</span>    </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"Statement"</span><span class="fu">:</span> <span class="ot">[</span><span class="fu">{</span>        </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"Effect"</span><span class="fu">:</span> <span class="st">"Allow"</span><span class="fu">,</span>        </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"Action"</span><span class="fu">:</span> <span class="ot">[</span>            </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>               <span class="st">"iam: ChangePassword"</span><span class="ot">,</span>            </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>               <span class="st">"iam: GetUser"</span>            </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>               <span class="ot">]</span><span class="fu">,</span>        </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"Resource"</span><span class="fu">:</span> <span class="st">"arn:aws:iam::123456789012:user/${aws:username}"</span>    </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>     <span class="fu">}</span><span class="ot">]</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li>Root user always has unrestricted access, regardless of IAM policies.</li>
+<li>More granular example:
+<ul>
+<li>Allows a user to:
+<ul>
+<li><code>iam:ChangePassword</code> (change their own password)<br>
+</li>
+<li><code>iam:GetUser</code> (get info about their own user)<br>
+</li>
 </ul></li>
-<li><p><strong>Shared Responsibility Model</strong></p>
-<ul>
-<li>AWS = <strong>security <em>of</em> the cloud</strong></li>
-<li>Customer = <strong>security <em>in</em> the cloud</strong></li>
-</ul></li>
-<li><p>Summary: <strong>Every activity in AWS is an API call</strong></p>
-<ul>
-<li>Console clicks, CLI commands, SDK calls → all become <strong>authenticated &amp; authorized AWS API requests</strong>.</li>
+<li>Uses <strong>variable substitution</strong> <code>${aws:username}</code> → limits permissions to the <strong>specific user</strong> only.</li>
 </ul></li>
 </ul>
-<hr>
-<section id="choose-the-right-aws-region" class="level3" data-number="3.1.1">
-<h3 data-number="3.1.1" class="anchored" data-anchor-id="choose-the-right-aws-region"><span class="header-section-number">3.1.1</span> Choose the Right AWS Region</h3>
-<p><strong>Essential takeaway:</strong><br>
-Choose Region in this order:</p>
-<ol type="1">
-<li><strong>Compliance / data residency</strong></li>
-<li><strong>Latency</strong></li>
-<li><strong>Service availability</strong></li>
-<li><strong>Cost</strong></li>
-<li><strong>Availability &amp; DR needs</strong></li>
-</ol>
-<p><img src="./images/how_to_choose_aws_region.png" class="img-fluid"></p>
-<hr>
 </section>
-<section id="availability-zones" class="level3" data-number="3.1.2">
-<h3 data-number="3.1.2" class="anchored" data-anchor-id="availability-zones"><span class="header-section-number">3.1.2</span> Availability Zones</h3>
-<p><img src="./images/regioin-az-datacenters.png" class="img-fluid" style="width:100.0%"></p>
-<ul>
-<li>Each <strong>Region contains multiple AZs</strong></li>
-<li>Each <strong>AZ = one or more data centers</strong></li>
-<li>Data centers are:
-<ul>
-<li>Physically separate</li>
-<li>Redundantly powered and networked</li>
-</ul></li>
-<li>AZs are connected by <strong>low‑latency, high‑bandwidth links</strong></li>
-<li>AZ names:
-<ul>
-<li><code>&lt;region&gt;&lt;letter&gt;</code> (example: <code>us-east-1a</code>)</li>
-<li>Letter mappings differ per account</li>
-</ul></li>
-<li>Resource location example:
-<ul>
-<li><code>us-east-1c</code> → AZ “c” inside <code>us-east-1</code></li>
-</ul></li>
-</ul>
-<hr>
+<section id="understand-policy-structure" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="understand-policy-structure"><span class="header-section-number">4.2.2</span> UNDERSTAND POLICY STRUCTURE</h3>
+<p>When creating a policy, it is required to have each of the following elements inside a policy statement.</p>
+<p><img src="./images/iam_policy_3_essential_elements.png" class="img-fluid"></p>
 </section>
-<section id="scope-of-aws-services" class="level3" data-number="3.1.3">
-<h3 data-number="3.1.3" class="anchored" data-anchor-id="scope-of-aws-services"><span class="header-section-number">3.1.3</span> Scope of AWS Services</h3>
-<p><img src="./images/aws_scope_and_responsibility_of_services_2.png" class="img-fluid"></p>
-<p><strong>Scope summary:</strong></p>
+<section id="summarizing-security" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="summarizing-security"><span class="header-section-number">4.2.3</span> Summarizing Security</h3>
+<p><img src="./images/security_summary.png" class="img-fluid"></p>
+<hr>
+<section id="different-types-of-aws-iam-users" class="level4" data-number="4.2.3.1">
+<h4 data-number="4.2.3.1" class="anchored" data-anchor-id="different-types-of-aws-iam-users"><span class="header-section-number">4.2.3.1</span> Different types of AWS IAM Users</h4>
 <ul>
-<li><p><strong>Global services</strong></p>
-<ul>
-<li>Single logical control plane across AWS</li>
-<li>Example: IAM, Route 53, CloudFront</li>
-</ul></li>
-<li><p><strong>Regional services</strong></p>
-<ul>
-<li>Live within a Region, usually span multiple AZs</li>
-<li>Example: S3, DynamoDB, VPC, RDS Multi‑AZ</li>
-</ul></li>
-<li><p><strong>Zonal services</strong></p>
-<ul>
-<li>Bound to a single AZ</li>
-<li>Example: EC2, EBS, RDS Single‑AZ</li>
-</ul></li>
+<li>Even a CICD System can be an IAM User (with specific permissions)</li>
 </ul>
-<p><strong>Availability &amp; durability:</strong></p>
+<p><img src="./images/iam_user_differences.png" class="img-fluid"> Source: AWS Blg</p>
+</section>
+<section id="the-concept-of-groups-and-roles" class="level4" data-number="4.2.3.2">
+<h4 data-number="4.2.3.2" class="anchored" data-anchor-id="the-concept-of-groups-and-roles"><span class="header-section-number">4.2.3.2</span> The concept of Groups and Roles</h4>
 <ul>
-<li>Some services are <strong>AWS‑managed</strong></li>
-<li>Others require <strong>customer‑designed HA/DR</strong></li>
+<li>One user could be in multiple groups</li>
 </ul>
+</section>
+</section>
+</section>
+<section id="section" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="section"><span class="header-section-number">4.3</span> <img src="./images/different_groups_different_permissions.png" class="img-fluid"></h2>
+<section id="how-to-enables-employees-access-aws-account-via-idp" class="level4" data-number="4.3.0.1">
+<h4 data-number="4.3.0.1" class="anchored" data-anchor-id="how-to-enables-employees-access-aws-account-via-idp"><span class="header-section-number">4.3.0.1</span> How to enables employees access AWS Account (via IdP)</h4>
+<p><img src="./images/how_to_access_aws_account_via_IDP.png" class="img-fluid"></p>
 <hr>
 </section>
-<section id="maintain-resiliency" class="level3" data-number="3.1.4">
-<h3 data-number="3.1.4" class="anchored" data-anchor-id="maintain-resiliency"><span class="header-section-number">3.1.4</span> Maintain Resiliency</h3>
-<ul>
-<li>Prefer <strong>Region‑scoped managed services</strong></li>
-<li>Otherwise:
-<ul>
-<li>Deploy across <strong>multiple AZs</strong></li>
-<li>Minimum <strong>two AZs</strong></li>
-</ul></li>
-<li>AZ failure ≠ application outage when designed correctly</li>
-</ul>
+<section id="how-to-enable-customers-access-to-application-deployed-in-aws-account" class="level4" data-number="4.3.0.2">
+<h4 data-number="4.3.0.2" class="anchored" data-anchor-id="how-to-enable-customers-access-to-application-deployed-in-aws-account"><span class="header-section-number">4.3.0.2</span> How to enable customers access to Application deployed in AWS Account</h4>
+<p><img src="./images/how_to_enable_acesss_to_apps_in_aws_account_2.png" class="img-fluid"></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 34%">
+<col style="width: 29%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>AWS IAM Identity Center</th>
+<th>AWS Cognito</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Used by</td>
+<td>Employees</td>
+<td>App users</td>
+</tr>
+<tr class="even">
+<td>Purpose</td>
+<td>Access AWS accounts</td>
+<td>Access your application</td>
+</tr>
+<tr class="odd">
+<td>Grants console access?</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>Grants CLI access?</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Issues AWS creds?</td>
+<td>Yes</td>
+<td>Yes (via Identity Pool)</td>
+</tr>
+<tr class="even">
+<td>Scope</td>
+<td>Organization-wide</td>
+<td>Application-level</td>
+</tr>
+</tbody>
+</table>
 <hr>
 </section>
-<section id="security-and-the-aws-shared-responsibility-model" class="level3" data-number="3.1.5">
-<h3 data-number="3.1.5" class="anchored" data-anchor-id="security-and-the-aws-shared-responsibility-model"><span class="header-section-number">3.1.5</span> Security and the AWS Shared Responsibility Model</h3>
-<section id="core-distinction" class="level4" data-number="3.1.5.1">
-<h4 data-number="3.1.5.1" class="anchored" data-anchor-id="core-distinction"><span class="header-section-number">3.1.5.1</span> Core distinction</h4>
-<ul>
-<li><p><strong>AWS responsibility (security of the cloud):</strong></p>
-<ul>
-<li>Physical data centers</li>
-<li>Hardware, networking</li>
-<li>Host OS and virtualization layer</li>
-</ul></li>
-<li><p><strong>Customer responsibility (security in the cloud):</strong></p>
-<ul>
-<li>IAM, access control</li>
-<li>Data protection &amp; encryption</li>
-<li>Network security (SGs, NACLs)</li>
-<li>Backups and recovery</li>
-</ul></li>
-</ul>
-<blockquote class="blockquote">
-<p>AWS manages the infrastructure.<br>
-You secure what you build on top of it.</p>
-</blockquote>
-<hr>
-</section>
-</section>
-</section>
-<section id="protect-the-aws-root-user" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="protect-the-aws-root-user"><span class="header-section-number">3.2</span> Protect the AWS Root User</h2>
-<section id="authentication-vs-authorization" class="level3" data-number="3.2.1">
-<h3 data-number="3.2.1" class="anchored" data-anchor-id="authentication-vs-authorization"><span class="header-section-number">3.2.1</span> Authentication vs Authorization</h3>
-<ul>
-<li><p><strong>Authentication:</strong><br>
-“Who are you?” (passwords, MFA, tokens)</p></li>
-<li><p><strong>Authorization:</strong><br>
-“What are you allowed to do?” (IAM policies)</p></li>
-</ul>
-<hr>
-</section>
-<section id="aws-root-user" class="level3" data-number="3.2.2">
-<h3 data-number="3.2.2" class="anchored" data-anchor-id="aws-root-user"><span class="header-section-number">3.2.2</span> AWS Root User</h3>
-<ul>
-<li>Created with the AWS account</li>
-<li>Has <strong>full, unrestricted access</strong></li>
-<li>Credentials:
-<ul>
-<li>Email + password (console)</li>
-<li>Access keys (programmatic)</li>
-</ul></li>
-</ul>
-<p><strong>Critical facts:</strong></p>
-<ul>
-<li>IAM policies <strong>cannot limit root</strong></li>
-<li>Root should never be used for daily work</li>
-</ul>
-<hr>
-</section>
-<section id="root-user-best-practices" class="level3" data-number="3.2.3">
-<h3 data-number="3.2.3" class="anchored" data-anchor-id="root-user-best-practices"><span class="header-section-number">3.2.3</span> Root User Best Practices</h3>
-<ul>
-<li>Enable <strong>MFA</strong></li>
-<li>Strong, unique password</li>
-<li><strong>Delete root access keys</strong></li>
-<li>Use root <strong>only</strong> for:
-<ul>
-<li>Account setup</li>
-<li>Billing</li>
-<li>Rare account‑level tasks</li>
-</ul></li>
-</ul>
-<hr>
-</section>
-<section id="why-mfa-matters" class="level3" data-number="3.2.4">
-<h3 data-number="3.2.4" class="anchored" data-anchor-id="why-mfa-matters"><span class="header-section-number">3.2.4</span> Why MFA Matters</h3>
-<ul>
-<li>Passwords alone are weak</li>
-<li>MFA adds a second factor:
-<ul>
-<li>Something you know</li>
-<li>Something you have</li>
-<li>Something you are</li>
-</ul></li>
-<li><strong>Always enable MFA on root</strong></li>
-</ul>
-<hr>
-</section>
-</section>
-<section id="control-plane-apis-and-data-plane-apis-in-aws" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="control-plane-apis-and-data-plane-apis-in-aws"><span class="header-section-number">3.3</span> Control Plane APIs and Data Plane APIs in AWS</h2>
-<ul>
-<li><p>AWS describes control plane as administrative APIs (CRUDL) like “creating an S3 bucket”, while data plane includes “getting and putting objects in an S3 bucket</p></li>
-<li><p>Source: <a href="https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/control-planes-and-data-planes.html">Control Planes and Data Planes in AWS</a></p></li>
-</ul>
-<p>S3 <strong>Control plane</strong> APIs (AWS CLI examples)</p>
-<p>✅ Create a bucket (control plane)</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3api create-bucket <span class="dt">\</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">--bucket</span> my-example-bucket-123 <span class="dt">\</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">--region</span> ap-south-1 <span class="dt">\</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>&nbsp; <span class="at">--create-bucket-configuration</span> LocationConstraint=ap-south-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>create-bucket</code> “Creates a new S3 bucket.”</p>
-<blockquote class="blockquote">
-<ul>
-<li>Rule of thumb: Anything <em>Bucket</em> (create bucket, put bucket encryption, put bucket policy, lifecycle, versioning…) is typically “control plane” style because you’re configuring the container and its behavior.</li>
-</ul>
-</blockquote>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3api delete-object <span class="dt">\</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bucket</span> my-example-bucket-123 <span class="dt">\</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--key</span> docs/readme.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<ul>
-<li>Rule of thumb: Anything <em>Object</em> (PutObject/GetObject/ListObjects/DeleteObject/HeadObject) is “data plane” because you’re interacting with the stored data.</li>
-</ul>
-</blockquote>
-<hr>
-</section>
-<section id="summary-every-aws-activity-is-an-api-call" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="summary-every-aws-activity-is-an-api-call"><span class="header-section-number">3.4</span> Summary: Every AWS Activity Is an API Call</h2>
-<p><img src="./images/every_aws_service_use_is_an_api_call.png" class="img-fluid"></p>
-<ul>
-<li>Console, CLI, SDK → <strong>AWS API</strong></li>
-<li>API calls are:
-<ul>
-<li>Authenticated</li>
-<li>Authorized</li>
-<li>Evaluated by IAM</li>
-</ul></li>
-<li>Understanding this explains:
-<ul>
-<li>IAM behavior</li>
-<li>Auditing (CloudTrail)</li>
-<li>Automation (IaC, CI/CD)</li>
-<li>Security boundaries</li>
-</ul></li>
-</ul>
-<blockquote class="blockquote">
-<p><strong>By understanding APIs, IAM, Regions, AZs, and responsibility boundaries — one understands AWS.</strong></p>
-</blockquote>
+<section id="week-1s-quiz" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="week-1s-quiz"><span class="header-section-number">4.3.1</span> Week 1’s Quiz:</h3>
+<p><a href="https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w1-%20Amazon%20Web%20Services%20(AWS)/Week%201%20Quiz%20_%20Coursera.pdf">A GitHub Source for Week 1 Quiz</a></p>
 
 
+</section>
 </section>
 </section>
 
@@ -911,13 +937,13 @@ You secure what you build on top of it.</p>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./index.html" class="pagination-link" aria-label="AWS Technical Essentials">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">AWS Technical Essentials</span></span>
+      <a href="./01-introduction.html" class="pagination-link" aria-label="1. Introduction to AWS">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">1. Introduction to AWS</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./02-security.html" class="pagination-link" aria-label="02. Security">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">02. Security</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./03-compute.html" class="pagination-link" aria-label="03. Compute">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">03. Compute</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

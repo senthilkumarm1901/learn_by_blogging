@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+
+<title>9&nbsp; 08. Optimization – AWS Technical Essentials</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./09-references-disclosure.html" rel="next">
+<link href="./07-monitoring.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-81f4e0afb081e06e81c4a64780ea28a8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./08-optimization.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">08. Optimization</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">AWS Technical Essentials</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">AWS Technical Essentials</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">1. Introduction to AWS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-security.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">02. Security</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-compute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">03. Compute</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-networking.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">04. Networking</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-storage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">05. Storage</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-monitoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">07. Monitoring</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-optimization.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">08. Optimization</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-references-disclosure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">9. Additional References</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#optimization-in-aws" id="toc-optimization-in-aws" class="nav-link active" data-scroll-target="#optimization-in-aws"><span class="header-section-number">10</span> 8. Optimization in AWS</a>
+  <ul class="collapse">
+  <li><a href="#notation-in-nines" id="toc-notation-in-nines" class="nav-link" data-scroll-target="#notation-in-nines"><span class="header-section-number">10.1</span> 8.1 Notation in Nines:</a></li>
+  <li><a href="#automatically-use-a-second-server-in-a-different-availability-zone" id="toc-automatically-use-a-second-server-in-a-different-availability-zone" class="nav-link" data-scroll-target="#automatically-use-a-second-server-in-a-different-availability-zone"><span class="header-section-number">10.2</span> 8.2 Automatically use a Second Server in a different availability zone</a></li>
+  <li><a href="#types-of-high-availability-architecture" id="toc-types-of-high-availability-architecture" class="nav-link" data-scroll-target="#types-of-high-availability-architecture"><span class="header-section-number">10.3</span> 8.3 Types of High Availability Architecture</a></li>
+  <li><a href="#route-traffic-with-amazon-elastic-load-balancing" id="toc-route-traffic-with-amazon-elastic-load-balancing" class="nav-link" data-scroll-target="#route-traffic-with-amazon-elastic-load-balancing"><span class="header-section-number">10.4</span> 8.4 Route Traffic with Amazon Elastic Load Balancing</a>
+  <ul class="collapse">
+  <li><a href="#what-is-a-load-balancer" id="toc-what-is-a-load-balancer" class="nav-link" data-scroll-target="#what-is-a-load-balancer"><span class="header-section-number">10.4.1</span> 8.4.1 What is a Load Balancer:</a></li>
+  </ul></li>
+  <li><a href="#load-balancing-bare-minimum" id="toc-load-balancing-bare-minimum" class="nav-link" data-scroll-target="#load-balancing-bare-minimum"><span class="header-section-number">10.5</span> Load balancing (bare minimum)</a>
+  <ul class="collapse">
+  <li><a href="#features-of-elb" id="toc-features-of-elb" class="nav-link" data-scroll-target="#features-of-elb"><span class="header-section-number">10.5.1</span> 8.4.2 FEATURES OF ELB</a></li>
+  <li><a href="#health-checks" id="toc-health-checks" class="nav-link" data-scroll-target="#health-checks"><span class="header-section-number">10.5.2</span> 8.4.3 HEALTH CHECKS</a></li>
+  <li><a href="#elb-components" id="toc-elb-components" class="nav-link" data-scroll-target="#elb-components"><span class="header-section-number">10.5.3</span> 8.4.4 ELB COMPONENTS</a></li>
+  <li><a href="#application-load-balancer" id="toc-application-load-balancer" class="nav-link" data-scroll-target="#application-load-balancer"><span class="header-section-number">10.5.4</span> 8.5 APPLICATION LOAD BALANCER</a></li>
+  <li><a href="#nlb" id="toc-nlb" class="nav-link" data-scroll-target="#nlb"><span class="header-section-number">10.5.5</span> 8.6 NLB</a></li>
+  </ul></li>
+  <li><a href="#intro-to-amazon-ec2-auto-scaling" id="toc-intro-to-amazon-ec2-auto-scaling" class="nav-link" data-scroll-target="#intro-to-amazon-ec2-auto-scaling"><span class="header-section-number">10.6</span> 8.7 Intro to Amazon EC2 Auto Scaling</a>
+  <ul class="collapse">
+  <li><a href="#vertical-scaling" id="toc-vertical-scaling" class="nav-link" data-scroll-target="#vertical-scaling"><span class="header-section-number">10.6.1</span> 8.7.1 <strong>Vertical Scaling</strong></a></li>
+  <li><a href="#active-passive-vs-active-active-systems-in-scaling" id="toc-active-passive-vs-active-active-systems-in-scaling" class="nav-link" data-scroll-target="#active-passive-vs-active-active-systems-in-scaling"><span class="header-section-number">10.6.2</span> Active-Passive vs Active-Active Systems in Scaling</a></li>
+  <li><a href="#horizontal-scaling" id="toc-horizontal-scaling" class="nav-link" data-scroll-target="#horizontal-scaling"><span class="header-section-number">10.6.3</span> 8.7.2 <strong>Horizontal Scaling</strong></a></li>
+  <li><a href="#integrate-elb-with-ec2-auto-scaling" id="toc-integrate-elb-with-ec2-auto-scaling" class="nav-link" data-scroll-target="#integrate-elb-with-ec2-auto-scaling"><span class="header-section-number">10.6.4</span> 8.7.3 <strong>Integrate ELB with EC2 Auto Scaling</strong></a></li>
+  <li><a href="#using-amazon-ec2-auto-scaling" id="toc-using-amazon-ec2-auto-scaling" class="nav-link" data-scroll-target="#using-amazon-ec2-auto-scaling"><span class="header-section-number">10.6.5</span> 8.7.4 <strong>Using Amazon EC2 Auto Scaling</strong></a></li>
+  </ul></li>
+  <li><a href="#configure-ec2-auto-scaling-components" id="toc-configure-ec2-auto-scaling-components" class="nav-link" data-scroll-target="#configure-ec2-auto-scaling-components"><span class="header-section-number">10.7</span> 8.8 <strong>Configure EC2 Auto Scaling Components</strong></a>
+  <ul class="collapse">
+  <li><a href="#learn-about-launch-templates" id="toc-learn-about-launch-templates" class="nav-link" data-scroll-target="#learn-about-launch-templates"><span class="header-section-number">10.7.1</span> 8.8.1 <strong>Learn About Launch Templates</strong></a></li>
+  <li><a href="#get-to-know-ec2-auto-scaling-groups" id="toc-get-to-know-ec2-auto-scaling-groups" class="nav-link" data-scroll-target="#get-to-know-ec2-auto-scaling-groups"><span class="header-section-number">10.7.2</span> 8.8.2 Get to Know EC2 Auto Scaling Groups</a></li>
+  <li><a href="#enable-automation-with-scaling-policies" id="toc-enable-automation-with-scaling-policies" class="nav-link" data-scroll-target="#enable-automation-with-scaling-policies"><span class="header-section-number">10.7.3</span> 8.8.3 <strong>Enable Automation with Scaling Policies</strong></a></li>
+  </ul></li>
+  <li><a href="#optimization-notes-from-quiz" id="toc-optimization-notes-from-quiz" class="nav-link" data-scroll-target="#optimization-notes-from-quiz"><span class="header-section-number">10.8</span> 8.9 <code>Optimization</code> Notes from Quiz</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">08. Optimization</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Senthil Kumar </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="optimization-in-aws" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> 8. Optimization in AWS</h1>
+<section id="notation-in-nines" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="notation-in-nines"><span class="header-section-number">10.1</span> 8.1 Notation in Nines:</h2>
+<p><img src="./images/notation_in_nines.png" class="img-fluid"></p>
+</section>
+<section id="automatically-use-a-second-server-in-a-different-availability-zone" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="automatically-use-a-second-server-in-a-different-availability-zone"><span class="header-section-number">10.2</span> 8.2 Automatically use a Second Server in a different availability zone</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+  client((Client))
+  alb[Application Load Balancer]
+  tg[Target Group]
+
+  subgraph AZ1[AZ1]
+    s1[Server 1]
+  end
+
+  subgraph AZ2[AZ2]
+    s2[Server 2]
+    s3[Server 3]
+  end
+
+  hc{{Health checks}}
+  s1bad((Server 1&lt;br&gt;unhealthy))
+
+  client --&gt;|HTTP/HTTPS| alb
+  alb --&gt;|forwards| tg
+
+  tg --&gt;|"If server1 healthy"| s1
+  %% tg --&gt; s2
+  %% tg --&gt; s3
+
+  alb -.-&gt;|periodic| hc
+  hc -.-&gt; s1
+  hc -.-&gt; s2
+  hc -.-&gt; s3
+
+  s1 -.-&gt;|fails checks| s1bad
+  tg ==&gt;|if s1 unhealthy| s2
+  tg ==&gt;|if s1 unhealthy| s3
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="types-of-high-availability-architecture" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="types-of-high-availability-architecture"><span class="header-section-number">10.3</span> 8.3 Types of High Availability Architecture</h2>
+<p><img src="./images/active-active-arch.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<ul>
+<li>Active-active clusters rely on a dedicated load balancer for routing or distributing traffic across all participating nodes.</li>
+<li>The manner by which a load balancer distributes traffic depends on the specific load balancing algorithm used.</li>
+<li>For instance, some load balancers distribute traffic using Round-Robin, Weighted Round Robin or Random algorithm.</li>
+</ul>
+</blockquote>
+<p><img src="./images/active-passive-arch.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<ul>
+<li>Active-passive setups are common in disaster recovery (DR) strategies.</li>
+<li>In some DR strategies, the passive node is set up in a separate geographical location and</li>
+<li>then brought into play once the active node becomes incapacitated</li>
+</ul>
+</blockquote>
+<p>Source for the images and above content: <a href="https://www.jscape.com/blog/active-active-vs-active-passive-high-availability-cluster">An article on High Availability Architectures</a></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+  HA[high_availability&lt;br&gt; architectures]
+  AP[active_passive]
+  AA[active_active]
+
+  P1((for Stateful&lt;br&gt;Applications))
+  P2((for Stateless&lt;br&gt;Applications))
+
+  HA --&gt; AP
+  HA --&gt; AA  
+
+  AP --&gt; P1
+  AA --&gt; P2 
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="route-traffic-with-amazon-elastic-load-balancing" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="route-traffic-with-amazon-elastic-load-balancing"><span class="header-section-number">10.4</span> 8.4 Route Traffic with Amazon Elastic Load Balancing</h2>
+<section id="what-is-a-load-balancer" class="level3" data-number="10.4.1">
+<h3 data-number="10.4.1" class="anchored" data-anchor-id="what-is-a-load-balancer"><span class="header-section-number">10.4.1</span> 8.4.1 What is a Load Balancer:</h3>
+</section>
+</section>
+<section id="load-balancing-bare-minimum" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="load-balancing-bare-minimum"><span class="header-section-number">10.5</span> Load balancing (bare minimum)</h2>
+<ul>
+<li><strong>Goal:</strong> Spread incoming application requests across multiple backend servers (EC2 instances) so no single server gets overloaded.</li>
+<li>A <strong>load balancer</strong> sits in front of the servers, receives all client traffic, and forwards each request to a backend server using a routing algorithm (commonly <strong>round-robin</strong>, which cycles through servers).</li>
+<li><strong>Request path:</strong> Client browser → load balancer → one EC2 application server → response returns via the load balancer back to the client.</li>
+<li>You <em>can</em> run your own load balancer software on EC2, but AWS provides a managed service called <strong>Elastic Load Balancing (ELB)</strong> for this purpose.</li>
+</ul>
+<section id="features-of-elb" class="level3" data-number="10.5.1">
+<h3 data-number="10.5.1" class="anchored" data-anchor-id="features-of-elb"><span class="header-section-number">10.5.1</span> 8.4.2 FEATURES OF ELB</h3>
+<ul>
+<li><strong>Managed service:</strong> <u>ELB is a fully managed load balancing service</u>, so you don’t have to run/operate your own load balancer fleet. <a href="https://repost.aws/selections/KPa_EdeC-GRW6UxuEoebhIKw/aws-re-post-knowledge-center-spotlight-elastic-load-balancing-elb">[repost.aws]</a></li>
+<li><strong>Many target types:</strong> It can distribute traffic to <strong>EC2 instances, containers, IP addresses, and Lambda functions</strong> (depending on LB type). <a href="https://aws.amazon.com/documentation-overview/elasticloadbalancing/">[aws.amazon.com]</a>, <a href="https://docs.aws.amazon.com/elasticloadbalancing/">[docs.aws.amazon.com]</a></li>
+<li><strong>Hybrid capable via IP targets:</strong> Because ELB can target <strong>IP addresses</strong>, you can load balance across <strong>AWS + on‑prem resources</strong> (for example over VPN/Direct Connect). <a href="https://aws.amazon.com/blogs/aws/new-application-load-balancing-via-ip-address-to-aws-on-premises-resources/">[aws.amazon.com]</a>, <a href="https://aws.amazon.com/elasticloadbalancing/">[aws.amazon.com]</a></li>
+<li><strong>Highly available:</strong> Deploy/enable the load balancer across <strong>multiple Availability Zones</strong> (ALB requires at least two) so it can keep routing to healthy targets if an AZ has issues. <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html">[docs.aws.amazon.com]</a>, <a href="https://aws.github.io/aws-elb-best-practices/reliability/workload_architecture/">[aws.github.io]</a></li>
+<li><strong>Elastic scaling:</strong> ELB <strong>automatically scales its capacity</strong> based on changes in incoming traffic. <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html">[docs.aws.amazon.com]</a>, <a href="https://aws.amazon.com/elasticloadbalancing/">[aws.amazon.com]</a></li>
+</ul>
+</section>
+<section id="health-checks" class="level3" data-number="10.5.2">
+<h3 data-number="10.5.2" class="anchored" data-anchor-id="health-checks"><span class="header-section-number">10.5.2</span> 8.4.3 HEALTH CHECKS</h3>
+<ul>
+<li>Health checks should validate <strong>real application health</strong>, not just “port is open” or “homepage loads”; shallow checks can pass even when the app is broken. <a href="https://aws.github.io/aws-elb-best-practices/reliability/failure_management/">[aws.github.io]</a></li>
+<li>A good pattern is a <strong>deep health endpoint</strong> (example: <code>/monitor</code>) that verifies <strong>critical dependencies</strong> (for example DB connectivity and an S3 call) and returns failure if any dependency fails. <a href="https://aws.github.io/aws-elb-best-practices/reliability/failure_management/">[aws.github.io]</a></li>
+<li>Point the load balancer’s health check path to that endpoint so the load balancer can decide whether a target should receive traffic. <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html">[docs.aws.amazon.com]</a></li>
+</ul>
+<p><img src="./images/EC2_monitor_health_via_ELB.png" class="img-fluid"></p>
+<ul>
+<li>New instances start receiving traffic <strong>only after they pass</strong> the load balancer health checks; load balancer routes traffic only to <strong>healthy</strong> targets (with specific edge cases if all are unhealthy). <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html">[docs.aws.amazon.com]</a>, <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html">[docs.aws.amazon.com]</a></li>
+<li>If the load balancer determines an instance is unhealthy, <strong>traffic is stopped</strong> to that instance, and <strong>EC2 Auto Scaling can replace</strong> unhealthy instances when it receives an unhealthy notification (ELB is one of the supported notification sources). <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html">[docs.aws.amazon.com]</a>, <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html">[docs.aws.amazon.com]</a></li>
+<li>During scale-in (instance termination), <strong>connection draining / deregistration delay</strong> allows the load balancer to <strong>stop new connections</strong> to the instance while letting <strong>in-flight requests complete</strong> before termination, reducing dropped requests. <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-conn-drain.html">[docs.aws.amazon.com]</a>, <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html">[docs.aws.amazon.com]</a></li>
+</ul>
+</section>
+<section id="elb-components" class="level3" data-number="10.5.3">
+<h3 data-number="10.5.3" class="anchored" data-anchor-id="elb-components"><span class="header-section-number">10.5.3</span> 8.4.4 ELB COMPONENTS</h3>
+<p><img src="./images/components_of_ELB.png" class="img-fluid"></p>
+<ul>
+<li>Listeners: The client connects to the listener. This is often referred to as client-side. To define a listener, a port must be provided as well as the protocol, depending on the load balancer type. There can be many listeners for a single load balancer.</li>
+<li>Target groups: The backend servers, or server-side, is defined in one or more target groups. This is where you define the type of backend you want to direct traffic to, such as EC2 Instances, AWS Lambda functions, or IP addresses. Also, a health check needs to be defined for each target group.</li>
+<li>Rules: To associate a target group to a listener, a rule must be used. Rules are made up of a condition that can be the source IP address of the client and a condition to decide which target group to send the traffic to.</li>
+</ul>
+</section>
+<section id="application-load-balancer" class="level3" data-number="10.5.4">
+<h3 data-number="10.5.4" class="anchored" data-anchor-id="application-load-balancer"><span class="header-section-number">10.5.4</span> 8.5 APPLICATION LOAD BALANCER</h3>
+<ul>
+<li><strong>Granular routing:</strong> Routes traffic based on HTTP request data (URL path, host, headers, method, source IP).<br>
+</li>
+<li><strong>Direct responses:</strong> Can send fixed responses (e.g., HTML) or redirects (e.g., HTTP → HTTPS).<br>
+</li>
+<li><strong>TLS offloading:</strong> Handles HTTPS traffic with SSL certificates from IAM or AWS Certificate Manager (ACM).<br>
+</li>
+<li><strong>User authentication:</strong> Supports OpenID Connect and integrates with SAML, LDAP, Microsoft AD, etc.<br>
+</li>
+<li><strong>Traffic security:</strong> Uses security groups to restrict allowed IP ranges.<br>
+</li>
+<li><strong>Round-robin routing:</strong> Distributes requests evenly across servers.<br>
+</li>
+<li><strong>Least outstanding requests routing:</strong> Balances load by sending new requests to servers with fewer pending requests.<br>
+</li>
+<li><strong>Sticky sessions:</strong> Uses HTTP cookies to keep traffic from a client directed to the same backend server.<br>
+</li>
+<li><strong>Protocol scope:</strong> Supports HTTP and HTTPS only; use <strong>Network Load Balancer (NLB)</strong> for other protocols.</li>
+</ul>
+</section>
+<section id="nlb" class="level3" data-number="10.5.5">
+<h3 data-number="10.5.5" class="anchored" data-anchor-id="nlb"><span class="header-section-number">10.5.5</span> 8.6 NLB</h3>
+<ul>
+<li><strong>Protocol support:</strong> Works with TCP, UDP, and TLS. Operates at the connection layer, so it does not understand HTTP/HTTPS.<br>
+</li>
+<li><strong>Flow hash routing:</strong> Routes traffic based on protocol, source/destination IP and port, and TCP sequence number.<br>
+</li>
+<li><strong>Sticky sessions:</strong> Based on the client’s source IP address (not cookies like ALB).<br>
+</li>
+<li><strong>TLS offloading:</strong> Can terminate TLS to reduce backend server load.<br>
+</li>
+<li><strong>High performance:</strong> Instantly handles millions of requests per second (no warm-up needed).<br>
+</li>
+<li><strong>Static and Elastic IPs:</strong> Supports direct client connections via fixed IP addresses—useful for DNS-restricted or firewall-rule scenarios.<br>
+</li>
+<li><strong>Source IP preservation:</strong> Passes the client’s real IP address to the backend (unlike ALB, which shows the LB’s IP).</li>
+</ul>
+<p><img src="./images/different_ELBs.png" class="img-fluid"></p>
+<hr>
+</section>
+</section>
+<section id="intro-to-amazon-ec2-auto-scaling" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="intro-to-amazon-ec2-auto-scaling"><span class="header-section-number">10.6</span> 8.7 Intro to Amazon EC2 Auto Scaling</h2>
+<p>Availability and reachability is improved by adding one more server. However, the entire system can again become unavailable if there is a capacity issue. Let’s look at that load issue with both types of systems we discussed, active-passive and active-active.</p>
+<section id="vertical-scaling" class="level3" data-number="10.6.1">
+<h3 data-number="10.6.1" class="anchored" data-anchor-id="vertical-scaling"><span class="header-section-number">10.6.1</span> 8.7.1 <strong>Vertical Scaling</strong></h3>
+</section>
+<section id="active-passive-vs-active-active-systems-in-scaling" class="level3" data-number="10.6.2">
+<h3 data-number="10.6.2" class="anchored" data-anchor-id="active-passive-vs-active-active-systems-in-scaling"><span class="header-section-number">10.6.2</span> Active-Passive vs Active-Active Systems in Scaling</h3>
+<p>When too many requests are sent to a <strong>single active-passive system</strong>, the active server becomes unavailable and (hopefully) fails over to the passive server.<br>
+But this doesn’t really solve the problem.</p>
+<section id="why-active-passive-needs-vertical-scaling" class="level4" data-number="10.6.2.1">
+<h4 data-number="10.6.2.1" class="anchored" data-anchor-id="why-active-passive-needs-vertical-scaling"><span class="header-section-number">10.6.2.1</span> Why Active-Passive Needs Vertical Scaling</h4>
+<ul>
+<li>Active-Passive systems rely on <strong>vertical scaling</strong> (increasing server size).<br>
+</li>
+<li>With <strong>EC2 instances</strong>, this means:
+<ul>
+<li>Choosing a larger instance type</li>
+<li>Or switching to a different type<br>
+</li>
+</ul></li>
+<li><strong>Limitation:</strong> Scaling can only be done when the instance is <strong>stopped</strong>.</li>
+</ul>
+</section>
+<section id="steps-for-vertical-scaling-in-active-passive" class="level4" data-number="10.6.2.2">
+<h4 data-number="10.6.2.2" class="anchored" data-anchor-id="steps-for-vertical-scaling-in-active-passive"><span class="header-section-number">10.6.2.2</span> Steps for Vertical Scaling in Active-Passive</h4>
+<ol type="1">
+<li><strong>Stop</strong> the passive instance (safe, since it’s not receiving traffic).<br>
+</li>
+<li><strong>Change</strong> the instance size or type, then <strong>start</strong> it again.<br>
+</li>
+<li><strong>Shift traffic</strong> to the passive instance (making it active).<br>
+</li>
+<li><strong>Stop, resize, and start</strong> the previous active instance (so both match).</li>
+</ol>
+</section>
+<section id="drawbacks-of-active-passive-scaling" class="level4" data-number="10.6.2.3">
+<h4 data-number="10.6.2.3" class="anchored" data-anchor-id="drawbacks-of-active-passive-scaling"><span class="header-section-number">10.6.2.3</span> Drawbacks of Active-Passive Scaling</h4>
+<ul>
+<li>Manual and repetitive work each time traffic changes.<br>
+</li>
+<li>A server can only scale <strong>vertically up to a limit</strong>.<br>
+</li>
+<li>Once the limit is reached, the only option is to:
+<ul>
+<li>Create <strong>another active-passive system</strong></li>
+<li>Split requests and functionalities across them<br>
+</li>
+<li>(Often requires <strong>massive application rewriting</strong>)</li>
+</ul></li>
+</ul>
+</section>
+<section id="active-active-advantage" class="level4" data-number="10.6.2.4">
+<h4 data-number="10.6.2.4" class="anchored" data-anchor-id="active-active-advantage"><span class="header-section-number">10.6.2.4</span> Active-Active Advantage</h4>
+<ul>
+<li>With <strong>active-active systems</strong>, scaling is <strong>horizontal</strong>.<br>
+</li>
+<li>Instead of making servers bigger, you simply <strong>add more servers</strong>.<br>
+</li>
+<li>This approach is easier, more flexible, and avoids rewriting applications.</li>
+</ul>
+</section>
+</section>
+<section id="horizontal-scaling" class="level3" data-number="10.6.3">
+<h3 data-number="10.6.3" class="anchored" data-anchor-id="horizontal-scaling"><span class="header-section-number">10.6.3</span> 8.7.2 <strong>Horizontal Scaling</strong></h3>
+<ul>
+<li><strong>Active-active system</strong> works well because the application is <strong>stateless</strong> (no client sessions stored on the server).
+<ul>
+<li>Scaling from 2 → 4 servers requires <strong>no code changes</strong>.<br>
+</li>
+<li>Just add or remove instances as needed.</li>
+</ul></li>
+<li><strong>Amazon EC2 Auto Scaling</strong> handles this automatically:
+<ul>
+<li>Creates new EC2 instances when traffic increases.<br>
+</li>
+<li>Terminates instances when traffic decreases.</li>
+</ul></li>
+<li><strong>Key advantage:</strong>
+<ul>
+<li>Active-active + stateless apps = <strong>true scalability</strong>.<br>
+</li>
+<li>Much more efficient compared to active-passive systems.</li>
+</ul></li>
+</ul>
+</section>
+<section id="integrate-elb-with-ec2-auto-scaling" class="level3" data-number="10.6.4">
+<h3 data-number="10.6.4" class="anchored" data-anchor-id="integrate-elb-with-ec2-auto-scaling"><span class="header-section-number">10.6.4</span> 8.7.3 <strong>Integrate ELB with EC2 Auto Scaling</strong></h3>
+<section id="elb-and-auto-scaling-integration" class="level4" data-number="10.6.4.1">
+<h4 data-number="10.6.4.1" class="anchored" data-anchor-id="elb-and-auto-scaling-integration"><span class="header-section-number">10.6.4.1</span> ELB and Auto Scaling Integration</h4>
+<p>The <strong>ELB service</strong> integrates seamlessly with <strong>EC2 Auto Scaling</strong>. As soon as a new EC2 instance is added to or removed from the EC2 Auto Scaling group, ELB is notified. However, before it can send traffic to a new EC2 instance, it needs to validate that the application running on that EC2 instance is available.</p>
+<p>This validation is done via the <strong>health checks feature of ELB</strong>. Monitoring is an important part of load balancers, as it should route traffic to only healthy EC2 instances. That’s why ELB supports two types of health checks:</p>
+<ul>
+<li><strong>TCP Health Check</strong>: Establishing a connection to a backend EC2 instance using TCP, and marking the instance as available if that connection is successful.<br>
+</li>
+<li><strong>HTTP/HTTPS Health Check</strong>: Making an HTTP or HTTPS request to a webpage that you specify, and validating that an HTTP response code is returned.</li>
+</ul>
+<hr>
+</section>
+<section id="traditional-scaling-vs-auto-scaling" class="level4" data-number="10.6.4.2">
+<h4 data-number="10.6.4.2" class="anchored" data-anchor-id="traditional-scaling-vs-auto-scaling"><span class="header-section-number">10.6.4.2</span> Traditional Scaling vs Auto Scaling</h4>
+<section id="traditional-scaling" class="level5" data-number="10.6.4.2.1">
+<h5 data-number="10.6.4.2.1" class="anchored" data-anchor-id="traditional-scaling"><span class="header-section-number">10.6.4.2.1</span> Traditional Scaling</h5>
+<ul>
+<li>With a traditional approach to scaling, you <strong>buy and provision enough servers</strong> to handle traffic at its peak.<br>
+</li>
+<li>At low traffic times (e.g., nighttime), there is <strong>more capacity than traffic</strong>.<br>
+</li>
+<li>This leads to <strong>wasted money</strong>, since turning off servers only saves electricity, not provisioning costs.</li>
+</ul>
+</section>
+<section id="cloud-auto-scaling-approach" class="level5" data-number="10.6.4.2.2">
+<h5 data-number="10.6.4.2.2" class="anchored" data-anchor-id="cloud-auto-scaling-approach"><span class="header-section-number">10.6.4.2.2</span> Cloud (Auto Scaling) Approach</h5>
+<ul>
+<li>Cloud uses a <strong>pay-as-you-go</strong> model.<br>
+</li>
+<li>It’s important to <strong>turn off unused services</strong>, especially EC2 instances that run On-Demand.<br>
+</li>
+<li>Manual scaling can work for predictable traffic, but unusual spikes cause:
+<ul>
+<li><strong>Over-provisioning</strong> → wasted resources.<br>
+</li>
+<li><strong>Under-provisioning</strong> → loss of customers.</li>
+</ul></li>
+</ul>
+</section>
+<section id="solution-ec2-auto-scaling" class="level5" data-number="10.6.4.2.3">
+<h5 data-number="10.6.4.2.3" class="anchored" data-anchor-id="solution-ec2-auto-scaling"><span class="header-section-number">10.6.4.2.3</span> Solution → <strong>EC2 Auto Scaling</strong></h5>
+<ul>
+<li>Automatically adds and removes EC2 instances <strong>based on conditions you define</strong>.<br>
+</li>
+<li>Ensures the right number of EC2 instances are running at any time.</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="using-amazon-ec2-auto-scaling" class="level3" data-number="10.6.5">
+<h3 data-number="10.6.5" class="anchored" data-anchor-id="using-amazon-ec2-auto-scaling"><span class="header-section-number">10.6.5</span> 8.7.4 <strong>Using Amazon EC2 Auto Scaling</strong></h3>
+<p>The EC2 Auto Scaling service works to add or remove capacity to keep a steady and predictable performance at the lowest possible cost. By adjusting the capacity to exactly what your application uses, you only pay for what your application needs. And even with applications that have steady usage, EC2 Auto Scaling can help with fleet management. If there is an issue with an EC2 instance, EC2 Auto Scaling can automatically replace that instance. This means that EC2 Auto Scaling helps both to scale your infrastructure and ensure high availability.</p>
+</section>
+</section>
+<section id="configure-ec2-auto-scaling-components" class="level2" data-number="10.7">
+<h2 data-number="10.7" class="anchored" data-anchor-id="configure-ec2-auto-scaling-components"><span class="header-section-number">10.7</span> 8.8 <strong>Configure EC2 Auto Scaling Components</strong></h2>
+<p>There are three main components to EC2 Auto Scaling.</p>
+<blockquote class="blockquote">
+<ol type="1">
+<li><strong>Launch template or configuration</strong>:</li>
+</ol>
+<ul>
+<li><em>What resource</em> should be automatically scaled?</li>
+<li>A configuration of parameters are used to create a EC2 instance</li>
+<li>AMI</li>
+<li>Security Group associated with the EC2 Instance</li>
+<li>EC2 Instance Type</li>
+<li>Additional EBS Volumes</li>
+<li>more</li>
+</ul>
+</blockquote>
+<ul>
+<li>All of these information are needed by <code>EC2 Auto Scaling</code> to create the EC2 instances on our behalf</li>
+</ul>
+<blockquote class="blockquote">
+<ol start="2" type="1">
+<li><strong>EC2 Auto Scaling Group</strong> (ASG): <em>Where</em> should the resources be deployed? and How many should be deployed?</li>
+</ol>
+</blockquote>
+<p>Where do you deploy the EC2 instances created via <code>EC2 Auto Scaling</code> - VPC - Subnets across different Availability Zones - Type of EC2 instance purchase: On-demand, Spot ?</p>
+<p>How many EC2 instances should the ASG create? - Minimum - Maximum - Desired</p>
+<blockquote class="blockquote">
+<ol start="3" type="1">
+<li><strong>Scaling policies</strong>: <em>When</em> should the resources be added or removed?</li>
+</ol>
+</blockquote>
+<ul>
+<li>Scaling policy can be set based on metrics like CPU utilization, measured via a CloudWatch Alarm</li>
+</ul>
+<section id="learn-about-launch-templates" class="level3" data-number="10.7.1">
+<h3 data-number="10.7.1" class="anchored" data-anchor-id="learn-about-launch-templates"><span class="header-section-number">10.7.1</span> 8.8.1 <strong>Learn About Launch Templates</strong></h3>
+<p><img src="./images/launch_templates.png" class="img-fluid"></p>
+<ul>
+<li>There are multiple parameters required to create EC2 instances:
+<ul>
+<li>Amazon Machine Image (AMI) ID<br>
+</li>
+<li>Instance type<br>
+</li>
+<li>Security group<br>
+</li>
+<li>Additional Amazon Elastic Block Store (EBS) volumes<br>
+</li>
+<li>And more…</li>
+</ul></li>
+<li>All this information is also required by <strong>EC2 Auto Scaling</strong> to create the EC2 instance on your behalf when there is a need to scale.<br>
+</li>
+<li>This information is stored in a <strong>launch template</strong>.</li>
+</ul>
+<hr>
+<section id="launch-template-usage" class="level4" data-number="10.7.1.1">
+<h4 data-number="10.7.1.1" class="anchored" data-anchor-id="launch-template-usage"><span class="header-section-number">10.7.1.1</span> Launch Template Usage</h4>
+<ul>
+<li>You can use a <strong>launch template</strong> to manually launch an EC2 instance.<br>
+</li>
+<li>You can also use it with <strong>EC2 Auto Scaling</strong>.<br>
+</li>
+<li>It supports <strong>versioning</strong>, which allows:
+<ul>
+<li>Quickly rolling back if there was an issue.<br>
+</li>
+<li>Specifying a default version of your launch template.<br>
+</li>
+<li>Iterating on a new version while other users continue launching EC2 instances with the default version.</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="ways-to-create-a-launch-template" class="level4" data-number="10.7.1.2">
+<h4 data-number="10.7.1.2" class="anchored" data-anchor-id="ways-to-create-a-launch-template"><span class="header-section-number">10.7.1.2</span> Ways to Create a Launch Template</h4>
+<ol type="1">
+<li><strong>Using an existing EC2 instance</strong> (fastest way, since all settings are already defined).<br>
+</li>
+<li><strong>From an existing template or a previous version</strong> of a launch template.<br>
+</li>
+<li><strong>From scratch</strong>, where you need to define:
+<ul>
+<li>AMI ID<br>
+</li>
+<li>Instance type<br>
+</li>
+<li>Key pair<br>
+</li>
+<li>Security group<br>
+</li>
+<li>Storage<br>
+</li>
+<li>Resource tags</li>
+</ul></li>
+</ol>
+<hr>
+</section>
+<section id="note" class="level4" data-number="10.7.1.3">
+<h4 data-number="10.7.1.3" class="anchored" data-anchor-id="note"><span class="header-section-number">10.7.1.3</span> Note</h4>
+<ul>
+<li>Another way to define what Amazon EC2 Auto Scaling needs to scale is by using <strong>a launch configuration</strong>.<br>
+</li>
+<li>However, a launch configuration:
+<ul>
+<li>Does <strong>not</strong> support versioning.<br>
+</li>
+<li>Cannot be created from an existing EC2 instance.<br>
+</li>
+</ul></li>
+<li>For these reasons, and to ensure that you get the latest features, <strong>use a launch template instead of a launch configuration</strong>.</li>
+</ul>
+</section>
+</section>
+<section id="get-to-know-ec2-auto-scaling-groups" class="level3" data-number="10.7.2">
+<h3 data-number="10.7.2" class="anchored" data-anchor-id="get-to-know-ec2-auto-scaling-groups"><span class="header-section-number">10.7.2</span> 8.8.2 Get to Know EC2 Auto Scaling Groups</h3>
+<ul>
+<li>The next component that EC2 Auto Scaling needs is an <strong>EC2 Auto Scaling Group (ASG)</strong>.
+<ul>
+<li>An ASG enables you to define where EC2 Auto Scaling deploys your resources.<br>
+</li>
+<li>This is where you specify the <strong>Amazon Virtual Private Cloud (VPC)</strong> and <strong>subnets</strong> the EC2 instance should be launched in.</li>
+</ul></li>
+<li>EC2 Auto Scaling takes care of creating the EC2 instances across the subnets.
+<ul>
+<li>It’s important to select <strong>at least two subnets</strong> that are across different <strong>Availability Zones (AZs)</strong>.</li>
+</ul></li>
+<li>ASGs also allow you to specify the <strong>type of purchase</strong> for the EC2 instances:
+<ul>
+<li><strong>On-Demand only</strong><br>
+</li>
+<li><strong>Spot only</strong><br>
+</li>
+<li><strong>Combination of On-Demand and Spot</strong> (lets you take advantage of Spot instances with minimal admin overhead).</li>
+</ul></li>
+<li>To specify how many instances EC2 Auto Scaling should launch, configure three <strong>capacity settings</strong> for the group size:
+<ul>
+<li><strong>Minimum</strong>: The minimum number of instances running in your ASG, even if the threshold for lowering the amount of instances is reached.<br>
+</li>
+<li><strong>Maximum</strong>: The maximum number of instances running in your ASG, even if the threshold for adding new instances is reached.<br>
+</li>
+<li><strong>Desired capacity</strong>: The target number of instances in your ASG.
+<ul>
+<li>This number must be within or equal to the minimum and maximum.<br>
+</li>
+<li>EC2 Auto Scaling automatically adds or removes instances to match this number.</li>
+</ul></li>
+</ul></li>
+</ul>
+<p><img src="./images/mini_desired_max_capacity.png" class="img-fluid"></p>
+<ul>
+<li><strong>Minimum capacity</strong>
+<ul>
+<li>EC2 Auto Scaling keeps removing EC2 instances until it reaches the minimum capacity.<br>
+</li>
+<li>Best practice: set at least <strong>two instances</strong> to ensure high availability.<br>
+</li>
+<li>Even if scaling down is instructed, EC2 Auto Scaling won’t remove instances below the minimum.</li>
+</ul></li>
+<li><strong>Maximum capacity</strong>
+<ul>
+<li>When traffic grows, EC2 Auto Scaling keeps adding instances.<br>
+</li>
+<li>Costs will also increase as more instances are added.<br>
+</li>
+<li>Setting a <strong>maximum</strong> ensures the number of instances doesn’t exceed your budget.</li>
+</ul></li>
+<li><strong>Desired capacity</strong>
+<ul>
+<li>This is the number of EC2 instances created when the Auto Scaling group is launched.<br>
+</li>
+<li>If the desired capacity decreases, Auto Scaling removes the <strong>oldest instance</strong> by default.<br>
+</li>
+<li>If it increases, Auto Scaling <strong>creates new instances</strong> using the launch template.</li>
+</ul></li>
+<li><strong>Ensure availability with EC2 Auto Scaling</strong>
+<ul>
+<li>Minimum, maximum, and desired capacity can be set to <strong>different values</strong> for dynamic scaling.<br>
+</li>
+<li>If you want Auto Scaling only for <strong>fleet management</strong>, configure all three to the <strong>same value</strong> (e.g., 4).<br>
+</li>
+<li>EC2 Auto Scaling will <strong>replace unhealthy instances</strong> to always maintain that count, ensuring high availability.</li>
+</ul></li>
+</ul>
+<p><img src="./images/mini_desired_max_capacity_2.png" class="img-fluid"></p>
+</section>
+<section id="enable-automation-with-scaling-policies" class="level3" data-number="10.7.3">
+<h3 data-number="10.7.3" class="anchored" data-anchor-id="enable-automation-with-scaling-policies"><span class="header-section-number">10.7.3</span> 8.8.3 <strong>Enable Automation with Scaling Policies</strong></h3>
+<ul>
+<li><p><strong>ASG Desired Capacity</strong></p>
+<ul>
+<li>By default, ASG stays at its initial desired capacity.<br>
+</li>
+<li>Desired capacity can be <strong>manually changed</strong> or adjusted with <strong>scaling policies</strong>.<br>
+</li>
+<li>Scaling policies use <strong>CloudWatch metrics &amp; alarms</strong> (e.g., CPU &gt; 70%) to trigger scaling actions.</li>
+</ul></li>
+<li><p><strong>Types of Scaling Policies</strong></p>
+<ul>
+<li><strong>Simple Scaling Policy</strong>
+<ul>
+<li>Uses a <strong>CloudWatch alarm</strong> to add/remove instances or set desired capacity.<br>
+</li>
+<li>Can use a <strong>fixed number</strong> or a <strong>percentage of group size</strong>.<br>
+</li>
+<li>Includes a <strong>cooldown period</strong> to avoid premature scaling while new instances boot.<br>
+</li>
+<li>Limitation: can’t handle multiple thresholds (e.g., 65% vs 85%).</li>
+</ul></li>
+<li><strong>Step Scaling Policy</strong>
+<ul>
+<li>Handles <strong>multiple thresholds</strong> with incremental actions.<br>
+</li>
+<li>Example:
+<ul>
+<li>+2 instances if CPU ≥ 85%<br>
+</li>
+<li>+4 instances if CPU ≥ 95%<br>
+</li>
+</ul></li>
+<li>Responds to alarms even if scaling activity is still in progress.</li>
+</ul></li>
+<li><strong>Target Tracking Scaling Policy</strong>
+<ul>
+<li>Simplest and most dynamic option.<br>
+</li>
+<li>Set a <strong>target value</strong> (e.g., avg CPU %, network in/out, request count).<br>
+</li>
+<li>Automatically creates and manages the required <strong>CloudWatch alarms</strong>.</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="optimization-notes-from-quiz" class="level2" data-number="10.8">
+<h2 data-number="10.8" class="anchored" data-anchor-id="optimization-notes-from-quiz"><span class="header-section-number">10.8</span> 8.9 <code>Optimization</code> Notes from Quiz</h2>
+<ul>
+<li>3 Components of <code>EC2 AutoScaling</code>: 1) Launch Template 2) <code>EC2 AutoScaling Group</code> , 3) <code>Scaling Policy</code></li>
+<li>A ELB automatically scales to meet incoming demand</li>
+<li>When a user uses ELB with an Auto Scaling Group, there is no need to manually register the individual EC2 instances scaled with the load balancer</li>
+<li>If you are routing to targets based on a rule that uses the path of the request, you are using <code>Application Load Balancer</code></li>
+<li>If you are running low-latency apps, real time games or IoT applications, use <code>Network Load Balancer</code> (if routing is NOT based on content-based routing)</li>
+<li>An application can be scaled <code>Vertically</code> by adding more firepower (compute capacity) to the existing machine OR by scaling <code>horizontally</code> by adding more EC2 instances of similar compute capacity</li>
+</ul>
+<p>Source: <a href="https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w4-%20Monitoring%20and%20Optimizing%20Solutions%20on%20AWS/Week%204%20Quiz%20_%20Coursera.pdf">A github source for Week 4 Quiz</a></p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./07-monitoring.html" class="pagination-link" aria-label="07. Monitoring">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">07. Monitoring</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./09-references-disclosure.html" class="pagination-link" aria-label="9. Additional References">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">9. Additional References</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
