@@ -105,6 +105,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -210,7 +213,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#choose-the-right-aws-region" id="toc-choose-the-right-aws-region" class="nav-link" data-scroll-target="#choose-the-right-aws-region">Choose the Right AWS Region</a></li>
   <li><a href="#availability-zones" id="toc-availability-zones" class="nav-link" data-scroll-target="#availability-zones">Availability Zones</a></li>
   <li><a href="#scope-of-aws-services" id="toc-scope-of-aws-services" class="nav-link" data-scroll-target="#scope-of-aws-services">Scope of AWS Services</a></li>
-  <li><a href="#maintain-resiliency" id="toc-maintain-resiliency" class="nav-link" data-scroll-target="#maintain-resiliency">Maintain Resiliency</a></li>
+  <li><a href="#how-to-maintain-resiliency" id="toc-how-to-maintain-resiliency" class="nav-link" data-scroll-target="#how-to-maintain-resiliency">How to Maintain Resiliency</a></li>
   <li><a href="#security-and-the-aws-shared-responsibility-model" id="toc-security-and-the-aws-shared-responsibility-model" class="nav-link" data-scroll-target="#security-and-the-aws-shared-responsibility-model">Security and the AWS Shared Responsibility Model</a></li>
   </ul></li>
   <li><a href="#protect-the-aws-root-user" id="toc-protect-the-aws-root-user" class="nav-link" data-scroll-target="#protect-the-aws-root-user">Protect the AWS Root User</a>
@@ -220,8 +223,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#root-user-best-practices" id="toc-root-user-best-practices" class="nav-link" data-scroll-target="#root-user-best-practices">Root User Best Practices</a></li>
   <li><a href="#why-mfa-matters" id="toc-why-mfa-matters" class="nav-link" data-scroll-target="#why-mfa-matters">Why MFA Matters</a></li>
   </ul></li>
-  <li><a href="#control-plane-apis-and-data-plane-apis-in-aws" id="toc-control-plane-apis-and-data-plane-apis-in-aws" class="nav-link" data-scroll-target="#control-plane-apis-and-data-plane-apis-in-aws">Control Plane APIs and Data Plane APIs in AWS</a></li>
-  <li><a href="#summary-every-aws-activity-is-an-api-call" id="toc-summary-every-aws-activity-is-an-api-call" class="nav-link" data-scroll-target="#summary-every-aws-activity-is-an-api-call">Summary: Every AWS Activity Is an API Call</a></li>
+  <li><a href="#every-aws-activity-is-an-api-call" id="toc-every-aws-activity-is-an-api-call" class="nav-link" data-scroll-target="#every-aws-activity-is-an-api-call">Every AWS Activity Is an API Call</a>
+  <ul class="collapse">
+  <li><a href="#how-does-any-aws-request-reach-a-service" id="toc-how-does-any-aws-request-reach-a-service" class="nav-link" data-scroll-target="#how-does-any-aws-request-reach-a-service">How does any AWS request reach a service?</a></li>
+  </ul></li>
+  <li><a href="#control-plane-apis-and-data-plane-apis-in-aws" id="toc-control-plane-apis-and-data-plane-apis-in-aws" class="nav-link" data-scroll-target="#control-plane-apis-and-data-plane-apis-in-aws">Control Plane APIs and Data Plane APIs in AWS</a>
+  <ul class="collapse">
+  <li><a href="#what-kind-of-work-does-the-service-do-after-iam-allows-it" id="toc-what-kind-of-work-does-the-service-do-after-iam-allows-it" class="nav-link" data-scroll-target="#what-kind-of-work-does-the-service-do-after-iam-allows-it">What kind of work does the service do after IAM allows it?</a></li>
+  <li><a href="#control-plane-vs-data-plane---s3-as-example" id="toc-control-plane-vs-data-plane---s3-as-example" class="nav-link" data-scroll-target="#control-plane-vs-data-plane---s3-as-example">Control Plane vs Data Plane - S3 as Example</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -255,6 +265,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><p><strong>Regions → AZs → Data Centers</strong></p>
 <ul>
+<li>One can deploy AWS services in different AWS Regions</li>
 <li>AWS Regions consist of <strong>Availability Zones (AZs)</strong>.</li>
 <li>AZs consist of <strong>one or more physical data centers</strong>.</li>
 </ul></li>
@@ -277,7 +288,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>AWS = <strong>security <em>of</em> the cloud</strong></li>
 <li>Customer = <strong>security <em>in</em> the cloud</strong></li>
 </ul></li>
-<li><p>Summary: <strong>Every activity in AWS is an API call</strong></p>
+<li><p><strong>Every activity in AWS is an API call</strong></p>
 <ul>
 <li>Console clicks, CLI commands, SDK calls → all become <strong>authenticated &amp; authorized AWS API requests</strong>.</li>
 </ul></li>
@@ -294,12 +305,64 @@ Choose Region in this order:</p>
 <li><strong>Cost</strong></li>
 <li><strong>Availability &amp; DR needs</strong></li>
 </ol>
-<p><img src="./images/how_to_choose_aws_region.png" class="img-fluid"></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+  A((Start:&lt;br&gt;AWS Region&lt;br&gt;Selection))
+
+  %% Parallel decision branches
+  A --&gt; B{"Compliance /&lt;br&gt;Data Residency?"}
+  A --&gt; C{"Latency-sensitive&lt;br&gt;workload?"}
+  A --&gt; D{"Required AWS&lt;br&gt;services and features&lt;br&gt;available?"}
+  A --&gt; E{"Cost a&lt;br&gt;key driver?"}
+  A --&gt; F{"Availability /&lt;br&gt;Disaster Recovery&lt;br&gt;(DR) needs?"}
+
+  %% Compliance
+  B --&gt;|Yes| B1["Restrict to Regions&lt;br&gt;that satisfy&lt;br&gt;regulatory and&lt;br&gt;residency needs"]
+  B --&gt;|No| G
+
+  %% Latency
+  C --&gt;|Yes| C1["Prefer Regions&lt;br&gt;closest to users /&lt;br&gt;systems"]
+  C --&gt;|No| G
+
+  %% Services
+  D --&gt;|No| D1["Adjust shortlist&lt;br&gt;based on AWS&lt;br&gt;Regional Services&lt;br&gt;availability"]
+  D --&gt;|Yes| G
+
+  %% Cost
+  E --&gt;|Yes| E1["Compare Regions&lt;br&gt;using AWS Pricing&lt;br&gt;Calculator"]
+  E --&gt;|No| G
+
+  %% Availability / DR
+  F --&gt;|Single Region OK| F1["Design Multi-AZ&lt;br&gt;within one Region"]
+  F --&gt;|Needs regional DR /&lt;br&gt;global users| F2["Design Multi-Region:&lt;br&gt;active / active&lt;br&gt;or&lt;br&gt;active / passive"]
+
+  %% Convergence
+  B1 --&gt; G
+  C1 --&gt; G
+  D1 --&gt; G
+  E1 --&gt; G
+  F1 --&gt; G
+  F2 --&gt; G
+
+  G((End:&lt;br&gt;Finalize Region&lt;br&gt;choice))
+
+  %% Notes
+  D1 -.-&gt; N1["Note:&lt;br&gt;New services and features&lt;br&gt;roll out gradually&lt;br&gt;and may not exist in&lt;br&gt;all Regions"]
+  E1 -.-&gt; N2["Note:&lt;br&gt;Pricing differs by Region&lt;br&gt;due to local costs&lt;br&gt;(power, land,&lt;br&gt;taxes)"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 <hr>
 </section>
 <section id="availability-zones" class="level3">
 <h3 class="anchored" data-anchor-id="availability-zones">Availability Zones</h3>
-<p><img src="./images/regioin-az-datacenters.png" class="img-fluid" style="width:100.0%"></p>
 <ul>
 <li>Each <strong>Region contains multiple AZs</strong></li>
 <li>Each <strong>AZ = one or more data centers</strong></li>
@@ -319,11 +382,40 @@ Choose Region in this order:</p>
 <li><code>us-east-1c</code> → AZ “c” inside <code>us-east-1</code></li>
 </ul></li>
 </ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  R["AWS Region&lt;br/&gt;(e.g., ap-south-1)"]
+
+  R --&gt; AZ1[Availability Zone A]
+  R --&gt; AZ2[Availability Zone B]
+  R --&gt; AZ3[Availability Zone C]
+
+  AZ1 --&gt; DC1A[Data Center A1]
+  AZ1 --&gt; DC1B[Data Center A2]
+
+  AZ2 --&gt; DC2A[Data Center B1]
+  AZ2 --&gt; DC2B[Data Center B2]
+
+  AZ3 --&gt; DC3A[Data Center C1]
+
+  %% Notes
+  DC1A -.-&gt; N1[Independent power, cooling &amp; security]
+  AZ1 -.-&gt; N2[AZs are physically separated\nand fault isolated]
+  R -.-&gt; N3[Region provides data residency\nand compliance boundary]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 <hr>
 </section>
 <section id="scope-of-aws-services" class="level3">
 <h3 class="anchored" data-anchor-id="scope-of-aws-services">Scope of AWS Services</h3>
-<p><img src="./images/aws_scope_and_responsibility_of_services_2.png" class="img-fluid"></p>
 <p><strong>Scope summary:</strong></p>
 <ul>
 <li><p><strong>Global services</strong></p>
@@ -347,10 +439,81 @@ Choose Region in this order:</p>
 <li>Some services are <strong>AWS‑managed</strong></li>
 <li>Others require <strong>customer‑designed HA/DR</strong></li>
 </ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  A[AWS Services: Scope &amp; Responsibility]
+  %% Scope buckets
+  %% =========================
+  A --&gt; G[Global Scope]
+  A --&gt; R["Regional Scope (within a Region)"]
+  A --&gt; Z["Zonal / AZ Scope (tied to 1 Availability Zone)"]
+
+  %% =========================
+  %% GLOBAL
+  %% =========================
+  subgraph G1[Global Scope&lt;br/&gt;One logical control plane across AWS]
+    G --&gt; IAM["[AWS IAM]"]
+    G --&gt; R53["[Amazon Route 53]"]
+    G --&gt; CF["[Amazon CloudFront]"]
+  end
+
+  %% =========================
+  %% REGIONAL
+  %% =========================
+  subgraph R1[Regional Scope&lt;br/&gt;Resources live in a Region and commonly span multiple AZs]
+    R --&gt; S3["[Amazon S3 (Regional endpoint)]"]
+    R --&gt; DDB["[Amazon DynamoDB]"]
+    R --&gt; RDSMA["[Amazon RDS (Multi-AZ deployment)]"]
+    R --&gt; VPC["[Amazon VPC (Regional)]"]
+  end
+
+  %% =========================
+  %% ZONAL / AZ
+  %% =========================
+  subgraph Z1[Zonal / AZ Scope&lt;br/&gt;Resources are created in ONE specific AZ]
+    Z --&gt; EC2["[Amazon EC2 instance]"]
+    Z --&gt; EBS["[Amazon EBS volume]"]
+    Z --&gt; RDSSA["[Amazon RDS (Single-AZ instance)]"]
+  end
+
+  %% =========================
+  %% Responsibility overlay
+  %% =========================
+  A --&gt; H{Who provides&lt;br/&gt;Availability &amp; Durability?}
+
+  H --&gt;|Service-managed by AWS| AWSM[AWS manages durability/availability&lt;br/&gt;based on the service design]
+  H --&gt;|Customer-designed| CUST["Customer must architect HA/DR&lt;br/&gt;(multi-AZ, backups, replication, autoscaling)"]
+
+  AWSM -.-&gt; S3
+  AWSM -.-&gt; DDB
+  AWSM -.-&gt; RDSMA
+  AWSM -.-&gt; IAM
+  AWSM -.-&gt; R53
+  AWSM -.-&gt; CF
+
+  CUST -.-&gt; EC2
+  CUST -.-&gt; EBS
+  CUST -.-&gt; RDSSA
+
+  %% =========================
+  %% Footnotes / concepts
+  %% =========================
+  R -.-&gt; N1[Regional resource = tied to a Region]
+  Z -.-&gt; N2[Zonal resource = tied to a specific AZ]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 <hr>
 </section>
-<section id="maintain-resiliency" class="level3">
-<h3 class="anchored" data-anchor-id="maintain-resiliency">Maintain Resiliency</h3>
+<section id="how-to-maintain-resiliency" class="level3">
+<h3 class="anchored" data-anchor-id="how-to-maintain-resiliency">How to Maintain Resiliency</h3>
 <ul>
 <li>Prefer <strong>Region‑scoped managed services</strong></li>
 <li>Otherwise:
@@ -449,12 +612,99 @@ You secure what you build on top of it.</p>
 <hr>
 </section>
 </section>
+<section id="every-aws-activity-is-an-api-call" class="level2">
+<h2 class="anchored" data-anchor-id="every-aws-activity-is-an-api-call">Every AWS Activity Is an API Call</h2>
+<section id="how-does-any-aws-request-reach-a-service" class="level3">
+<h3 class="anchored" data-anchor-id="how-does-any-aws-request-reach-a-service">How does any AWS request reach a service?</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  U[You / App] --&gt; I{How do you&lt;br/&gt;interact with AWS?}
+
+  I --&gt; C["AWS Management Console&lt;br/&gt;(click, create, update)"]
+  I --&gt; L["AWS CLI&lt;br/&gt;(aws ec2..., aws s3...)"]
+  I --&gt; S["AWS SDKs&lt;br/&gt;(Boto3 / Java / JS / .NET)"]
+
+  C --&gt; RQ[Signed AWS API Request]
+  L --&gt; RQ
+  S --&gt; RQ
+
+  RQ --&gt; IAM{AuthN + AuthZ&lt;br/&gt;IAM policy evaluation}
+
+  IAM --&gt;|Allowed| API[AWS Service&lt;br/&gt;API Endpoint]
+  IAM --&gt;|Denied| DENY[AccessDenied]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li>Console, CLI, SDK → <strong>AWS API</strong></li>
+<li>API calls are:
+<ul>
+<li>Authenticated</li>
+<li>Authorized</li>
+<li>Evaluated by IAM</li>
+</ul></li>
+<li>Understanding this explains:
+<ul>
+<li>IAM behavior</li>
+<li>Auditing (CloudTrail)</li>
+<li>Automation (IaC, CI/CD)</li>
+<li>Security boundaries</li>
+</ul></li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>By understanding APIs, IAM, Regions, AZs, and responsibility boundaries — one understands AWS.</strong></p>
+</blockquote>
+<hr>
+</section>
+</section>
 <section id="control-plane-apis-and-data-plane-apis-in-aws" class="level2">
 <h2 class="anchored" data-anchor-id="control-plane-apis-and-data-plane-apis-in-aws">Control Plane APIs and Data Plane APIs in AWS</h2>
 <ul>
 <li><p>AWS describes control plane as administrative APIs (CRUDL) like “creating an S3 bucket”, while data plane includes “getting and putting objects in an S3 bucket</p></li>
 <li><p>Source: <a href="https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/control-planes-and-data-planes.html">Control Planes and Data Planes in AWS</a></p></li>
 </ul>
+<section id="what-kind-of-work-does-the-service-do-after-iam-allows-it" class="level3">
+<h3 class="anchored" data-anchor-id="what-kind-of-work-does-the-service-do-after-iam-allows-it">What kind of work does the service do after IAM allows it?</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  API[AWS Service API Endpoint]
+
+  API --&gt; CP[Control Plane APIs&lt;br/&gt;Create / Describe / Update&lt;br/&gt;Delete / List]
+  API --&gt; DP[Data Plane APIs&lt;br/&gt;Use the provisioned&lt;br/&gt;resource]
+
+  %% Examples: control plane
+  CP --&gt; EC2CP[EC2:&lt;br/&gt;RunInstances /&lt;br/&gt;DescribeInstances]
+  CP --&gt; S3CP[S3:&lt;br/&gt;CreateBucket]
+  CP --&gt; SQScp[SQS:&lt;br/&gt;CreateQueue /&lt;br/&gt;GetQueueAttributes]
+
+  %% Examples: data plane
+  DP --&gt; S3DP[S3:&lt;br/&gt;PutObject / GetObject]
+  DP --&gt; EBSDP[EBS:&lt;br/&gt;Read / Write&lt;br/&gt;volume blocks]
+  DP --&gt; R53DP[Route 53:&lt;br/&gt;Answer DNS queries&lt;br/&gt;+ Health checks]
+
+  %% Key takeaway
+  CP -.-&gt; NOTE1["AWS Control Plane&lt;br/&gt;= administrative APIs (CRUDL)&lt;br/&gt;e.g., launch EC2,&lt;br/&gt;create S3 bucket,&lt;br/&gt;describe SQS queue"]
+  DP -.-&gt; NOTE2["AWS Data Plane&lt;br/&gt;= primary service function&lt;br/&gt;e.g., put/get S3 objects,&lt;br/&gt;read/write EBS,&lt;br/&gt;Route 53 DNS answers"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="control-plane-vs-data-plane---s3-as-example" class="level3">
+<h3 class="anchored" data-anchor-id="control-plane-vs-data-plane---s3-as-example">Control Plane vs Data Plane - S3 as Example</h3>
 <p>S3 <strong>Control plane</strong> APIs (AWS CLI examples)</p>
 <p>✅ Create a bucket (control plane)</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3api create-bucket <span class="dt">\</span></span>
@@ -475,32 +725,9 @@ You secure what you build on top of it.</p>
 <li>Rule of thumb: Anything <em>Object</em> (PutObject/GetObject/ListObjects/DeleteObject/HeadObject) is “data plane” because you’re interacting with the stored data.</li>
 </ul>
 </blockquote>
-<hr>
+
+
 </section>
-<section id="summary-every-aws-activity-is-an-api-call" class="level2">
-<h2 class="anchored" data-anchor-id="summary-every-aws-activity-is-an-api-call">Summary: Every AWS Activity Is an API Call</h2>
-<p><img src="./images/every_aws_service_use_is_an_api_call.png" class="img-fluid"></p>
-<ul>
-<li>Console, CLI, SDK → <strong>AWS API</strong></li>
-<li>API calls are:
-<ul>
-<li>Authenticated</li>
-<li>Authorized</li>
-<li>Evaluated by IAM</li>
-</ul></li>
-<li>Understanding this explains:
-<ul>
-<li>IAM behavior</li>
-<li>Auditing (CloudTrail)</li>
-<li>Automation (IaC, CI/CD)</li>
-<li>Security boundaries</li>
-</ul></li>
-</ul>
-<blockquote class="blockquote">
-<p><strong>By understanding APIs, IAM, Regions, AZs, and responsibility boundaries — one understands AWS.</strong></p>
-</blockquote>
-
-
 </section>
 </section>
 
