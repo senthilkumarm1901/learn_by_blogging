@@ -8,6 +8,7 @@ title: "1. Introduction to AWS"
 
 - **Regions → AZs → Data Centers**
     
+    - One can deploy AWS services in different AWS Regions
     - AWS Regions consist of **Availability Zones (AZs)**.
     - AZs consist of **one or more physical data centers**.
 
@@ -29,7 +30,7 @@ title: "1. Introduction to AWS"
     - AWS = **security _of_ the cloud**
     - Customer = **security _in_ the cloud**
 
-- Summary: **Every activity in AWS is an API call**
+- **Every activity in AWS is an API call**
     
     - Console clicks, CLI commands, SDK calls → all become **authenticated & authorized AWS API requests**.
 
@@ -49,13 +50,56 @@ Choose Region in this order:
 4. **Cost**
 5. **Availability & DR needs**
 
-![](./images/how_to_choose_aws_region.png)
+```{mermaid}
+flowchart TD
+  A((Start:<br>AWS Region<br>Selection))
+
+  %% Parallel decision branches
+  A --> B{"Compliance /<br>Data Residency?"}
+  A --> C{"Latency-sensitive<br>workload?"}
+  A --> D{"Required AWS<br>services and features<br>available?"}
+  A --> E{"Cost a<br>key driver?"}
+  A --> F{"Availability /<br>Disaster Recovery<br>(DR) needs?"}
+
+  %% Compliance
+  B -->|Yes| B1["Restrict to Regions<br>that satisfy<br>regulatory and<br>residency needs"]
+  B -->|No| G
+
+  %% Latency
+  C -->|Yes| C1["Prefer Regions<br>closest to users /<br>systems"]
+  C -->|No| G
+
+  %% Services
+  D -->|No| D1["Adjust shortlist<br>based on AWS<br>Regional Services<br>availability"]
+  D -->|Yes| G
+
+  %% Cost
+  E -->|Yes| E1["Compare Regions<br>using AWS Pricing<br>Calculator"]
+  E -->|No| G
+
+  %% Availability / DR
+  F -->|Single Region OK| F1["Design Multi-AZ<br>within one Region"]
+  F -->|Needs regional DR /<br>global users| F2["Design Multi-Region:<br>active / active<br>or<br>active / passive"]
+
+  %% Convergence
+  B1 --> G
+  C1 --> G
+  D1 --> G
+  E1 --> G
+  F1 --> G
+  F2 --> G
+
+  G((End:<br>Finalize Region<br>choice))
+
+  %% Notes
+  D1 -.-> N1["Note:<br>New services and features<br>roll out gradually<br>and may not exist in<br>all Regions"]
+  E1 -.-> N2["Note:<br>Pricing differs by Region<br>due to local costs<br>(power, land,<br>taxes)"]
+```
 
 ---
 
 ### Availability Zones
 
-![](./images/regioin-az-datacenters.png){width=100%}
 
 - Each **Region contains multiple AZs**
 - Each **AZ = one or more data centers**
@@ -69,11 +113,31 @@ Choose Region in this order:
 - Resource location example:
     - `us-east-1c` → AZ “c” inside `us-east-1`
 
+```{mermaid}
+flowchart TB
+  R["AWS Region<br/>(e.g., ap-south-1)"]
+
+  R --> AZ1[Availability Zone A]
+  R --> AZ2[Availability Zone B]
+  R --> AZ3[Availability Zone C]
+
+  AZ1 --> DC1A[Data Center A1]
+  AZ1 --> DC1B[Data Center A2]
+
+  AZ2 --> DC2A[Data Center B1]
+  AZ2 --> DC2B[Data Center B2]
+
+  AZ3 --> DC3A[Data Center C1]
+
+  %% Notes
+  DC1A -.-> N1[Independent power, cooling & security]
+  AZ1 -.-> N2[AZs are physically separated\nand fault isolated]
+  R -.-> N3[Region provides data residency\nand compliance boundary]
+```
+
 ---
 
 ### Scope of AWS Services
-
-![](./images/aws_scope_and_responsibility_of_services_2.png)
 
 **Scope summary:**
 
@@ -95,9 +159,72 @@ Choose Region in this order:
 - Some services are **AWS‑managed**
 - Others require **customer‑designed HA/DR**
 
+```{mermaid}
+flowchart TB
+  A[AWS Services: Scope & Responsibility]
+  %% Scope buckets
+  %% =========================
+  A --> G[Global Scope]
+  A --> R["Regional Scope (within a Region)"]
+  A --> Z["Zonal / AZ Scope (tied to 1 Availability Zone)"]
+
+  %% =========================
+  %% GLOBAL
+  %% =========================
+  subgraph G1[Global Scope<br/>One logical control plane across AWS]
+    G --> IAM["[AWS IAM]"]
+    G --> R53["[Amazon Route 53]"]
+    G --> CF["[Amazon CloudFront]"]
+  end
+
+  %% =========================
+  %% REGIONAL
+  %% =========================
+  subgraph R1[Regional Scope<br/>Resources live in a Region and commonly span multiple AZs]
+    R --> S3["[Amazon S3 (Regional endpoint)]"]
+    R --> DDB["[Amazon DynamoDB]"]
+    R --> RDSMA["[Amazon RDS (Multi-AZ deployment)]"]
+    R --> VPC["[Amazon VPC (Regional)]"]
+  end
+
+  %% =========================
+  %% ZONAL / AZ
+  %% =========================
+  subgraph Z1[Zonal / AZ Scope<br/>Resources are created in ONE specific AZ]
+    Z --> EC2["[Amazon EC2 instance]"]
+    Z --> EBS["[Amazon EBS volume]"]
+    Z --> RDSSA["[Amazon RDS (Single-AZ instance)]"]
+  end
+
+  %% =========================
+  %% Responsibility overlay
+  %% =========================
+  A --> H{Who provides<br/>Availability & Durability?}
+
+  H -->|Service-managed by AWS| AWSM[AWS manages durability/availability<br/>based on the service design]
+  H -->|Customer-designed| CUST["Customer must architect HA/DR<br/>(multi-AZ, backups, replication, autoscaling)"]
+
+  AWSM -.-> S3
+  AWSM -.-> DDB
+  AWSM -.-> RDSMA
+  AWSM -.-> IAM
+  AWSM -.-> R53
+  AWSM -.-> CF
+
+  CUST -.-> EC2
+  CUST -.-> EBS
+  CUST -.-> RDSSA
+
+  %% =========================
+  %% Footnotes / concepts
+  %% =========================
+  R -.-> N1[Regional resource = tied to a Region]
+  Z -.-> N2[Zonal resource = tied to a specific AZ]
+```
+
 ---
 
-### Maintain Resiliency
+### How to Maintain Resiliency
 
 - Prefer **Region‑scoped managed services**
 - Otherwise:
@@ -179,11 +306,74 @@ Choose Region in this order:
 
 ---
 
+## Every AWS Activity Is an API Call
+
+### How does any AWS request reach a service?
+
+```{mermaid}
+flowchart LR
+  U[You / App] --> I{How do you<br/>interact with AWS?}
+
+  I --> C["AWS Management Console<br/>(click, create, update)"]
+  I --> L["AWS CLI<br/>(aws ec2..., aws s3...)"]
+  I --> S["AWS SDKs<br/>(Boto3 / Java / JS / .NET)"]
+
+  C --> RQ[Signed AWS API Request]
+  L --> RQ
+  S --> RQ
+
+  RQ --> IAM{AuthN + AuthZ<br/>IAM policy evaluation}
+
+  IAM -->|Allowed| API[AWS Service<br/>API Endpoint]
+  IAM -->|Denied| DENY[AccessDenied]
+```
+
+- Console, CLI, SDK → **AWS API**
+- API calls are:
+    - Authenticated
+    - Authorized
+    - Evaluated by IAM
+- Understanding this explains:
+    - IAM behavior
+    - Auditing (CloudTrail)
+    - Automation (IaC, CI/CD)
+    - Security boundaries
+
+> **By understanding APIs, IAM, Regions, AZs, and responsibility boundaries — one understands AWS.**
+
+---
+
 ## Control Plane APIs and Data Plane APIs in AWS
 
 * AWS describes control plane as administrative APIs (CRUDL) like “creating an S3 bucket”, while data plane includes “getting and putting objects in an S3 bucket
 
 - Source: [Control Planes and Data Planes in AWS](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/control-planes-and-data-planes.html)
+
+### What kind of work does the service do after IAM allows it?
+
+```{mermaid}
+flowchart LR
+  API[AWS Service API Endpoint]
+
+  API --> CP[Control Plane APIs<br/>Create / Describe / Update<br/>Delete / List]
+  API --> DP[Data Plane APIs<br/>Use the provisioned<br/>resource]
+
+  %% Examples: control plane
+  CP --> EC2CP[EC2:<br/>RunInstances /<br/>DescribeInstances]
+  CP --> S3CP[S3:<br/>CreateBucket]
+  CP --> SQScp[SQS:<br/>CreateQueue /<br/>GetQueueAttributes]
+
+  %% Examples: data plane
+  DP --> S3DP[S3:<br/>PutObject / GetObject]
+  DP --> EBSDP[EBS:<br/>Read / Write<br/>volume blocks]
+  DP --> R53DP[Route 53:<br/>Answer DNS queries<br/>+ Health checks]
+
+  %% Key takeaway
+  CP -.-> NOTE1["AWS Control Plane<br/>= administrative APIs (CRUDL)<br/>e.g., launch EC2,<br/>create S3 bucket,<br/>describe SQS queue"]
+  DP -.-> NOTE2["AWS Data Plane<br/>= primary service function<br/>e.g., put/get S3 objects,<br/>read/write EBS,<br/>Route 53 DNS answers"]
+```
+
+### Control Plane vs Data Plane - S3 as Example
 
 S3 **Control plane** APIs (AWS CLI examples)
 
@@ -207,23 +397,4 @@ aws s3api delete-object \
 ```
 
 > * Rule of thumb: Anything *Object* (PutObject/GetObject/ListObjects/DeleteObject/HeadObject) is “data plane” because you’re interacting with the stored data.
-
----
-
-## Summary: Every AWS Activity Is an API Call
-
-![](./images/every_aws_service_use_is_an_api_call.png)
-
-- Console, CLI, SDK → **AWS API**
-- API calls are:
-    - Authenticated
-    - Authorized
-    - Evaluated by IAM
-- Understanding this explains:
-    - IAM behavior
-    - Auditing (CloudTrail)
-    - Automation (IaC, CI/CD)
-    - Security boundaries
-
-> **By understanding APIs, IAM, Regions, AZs, and responsibility boundaries — one understands AWS.**
 
