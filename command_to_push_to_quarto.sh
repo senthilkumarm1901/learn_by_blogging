@@ -5,7 +5,7 @@
 # pip install quarto-cli
 
 # Step 3: Render the project (builds website + book)
-quarto render
+quarto render && quarto render aws_cloud_technical_essentials_book
 
 # Step 4: Copy book output to _site for deployment
 mkdir -p _site/aws_cloud_technical_essentials
