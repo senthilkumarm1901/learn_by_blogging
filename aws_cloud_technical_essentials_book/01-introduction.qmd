@@ -161,17 +161,17 @@ flowchart TB
 
 ```{mermaid}
 flowchart LR
-  A[AWS Services: Scope & Responsibility]
+  A[AWS Services: Scope<br>& Responsibility]
   %% Scope buckets
   %% =========================
-  A --> G[Global Scope]
-  A --> R["Regional Scope (within a Region)"]
-  A --> Z["Zonal / AZ Scope (tied to 1 Availability Zone)"]
+  G[Global Scope<br/>One logical<br>control plane across AWS]
+  R["Regional Scope<br>Resources live in a Region<br>May span multiple AZs"]
+  Z["Zonal /<br>AZ Scope<br>(tied to 1 Availability Zone)"]
 
   %% =========================
   %% GLOBAL
   %% =========================
-  subgraph G1[Global Scope<br/>One logical control plane across AWS]
+  subgraph G1[Global Scope]
     G --> IAM["[AWS IAM]"]
     G --> R53["[Amazon Route 53]"]
     G --> CF["[Amazon CloudFront]"]
@@ -180,20 +180,22 @@ flowchart LR
   %% =========================
   %% REGIONAL
   %% =========================
-  subgraph R1[Regional Scope<br/>Resources live in a Region and commonly span multiple AZs]
-    R --> S3["[Amazon S3 (Regional endpoint)]"]
+  subgraph R1[Regional Scope]
+    R --> S3["[Amazon S3]"]
     R --> DDB["[Amazon DynamoDB]"]
-    R --> RDSMA["[Amazon RDS (Multi-AZ deployment)]"]
-    R --> VPC["[Amazon VPC (Regional)]"]
+    R --> RDSMA["[Amazon RDS<br>(Multi-AZ deployment)]"]
+    R --> VPC["[Amazon VPC]"]
+    R --> ALB["[ALB (cross-zone)]"]
+    INTER{{"AWS managed<br>but customer<br>designs HA<br>by creating subnets<br>across AZs"}}
   end
 
   %% =========================
   %% ZONAL / AZ
   %% =========================
-  subgraph Z1[Zonal / AZ Scope<br/>Resources are created in ONE specific AZ]
+  subgraph Z1[Zonal / AZ Scope]
     Z --> EC2["[Amazon EC2 instance]"]
     Z --> EBS["[Amazon EBS volume]"]
-    Z --> RDSSA["[Amazon RDS (Single-AZ instance)]"]
+    Z --> RDSSA["[Amazon RDS (Single-AZ)]"]
   end
 
   %% =========================
@@ -201,26 +203,15 @@ flowchart LR
   %% =========================
   A --> H{Who provides<br/>Availability & Durability?}
 
-  H -->|Service-managed by AWS| AWSM[AWS manages durability/availability<br/>based on the service design]
-  H -->|Customer-designed| CUST["Customer must architect HA/DR<br/>(multi-AZ, backups, replication, autoscaling)"]
+  H -->|Service-managed by AWS| AWSM[AWS manages<br>durability/availability<br/>based on the service design]
+  H -->|Customer-designed| CUST["Customer must<br>architect HA/DR<br/>(multi-AZ,<br>backups, replication,<br>autoscaling)"]
 
-  AWSM -.-> S3
-  AWSM -.-> DDB
-  AWSM -.-> RDSMA
-  AWSM -.-> IAM
-  AWSM -.-> R53
-  AWSM -.-> CF
+  AWSM -.-> G
+  AWSM-.->R
+  CUST-.-> INTER -.->VPC
+  INTER -.->ALB
 
-  CUST -.-> EC2
-  CUST -.-> EBS
-  CUST -.-> RDSSA
-
-  %% =========================
-  %% Footnotes / concepts
-  %% =========================
-  R -.-> N1[Regional resource = tied to a Region]
-  Z -.-> N2[Zonal resource = tied to a specific AZ]
-
+  CUST -.-> Z
   %% =========================
   %% Subgraph styling (visibility)
   %% =========================
