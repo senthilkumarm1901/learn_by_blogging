@@ -1,0 +1,22 @@
+<div id="book-navbar-right" class="d-none d-lg-flex align-items-center ms-auto">
+  <a class="btn btn-link px-2" href="/learn_by_blogging/blog.html">Blog</a>
+  <a class="btn btn-link px-2" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+  <a class="btn btn-link px-2" href="https://medium.com/" target="_blank" rel="noopener">Medium</a>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var container = document.querySelector('.quarto-secondary-nav .container-fluid');
+  if(container){
+    // append the navbar-right element into the header container
+    var el = document.createElement('div');
+    el.className = 'd-flex flex-grow-1 justify-content-end align-items-center';
+    el.innerHTML = document.getElementById('book-navbar-right') ? document.getElementById('book-navbar-right').outerHTML : `
+      <div class="d-none d-lg-flex align-items-center ms-auto">
+        <a class="btn btn-link px-2" href="/learn_by_blogging/blog.html">Blog</a>
+        <a class="btn btn-link px-2" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn btn-link px-2" href="https://medium.com/" target="_blank" rel="noopener">Medium</a>
+      </div>`;
+    container.appendChild(el);
+  }
+});
+</script>
