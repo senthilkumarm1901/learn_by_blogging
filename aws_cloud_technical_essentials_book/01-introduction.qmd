@@ -1,18 +1,23 @@
 ---
 title: "1. Introduction to AWS"
 format:
-    html:
-        navbar:
-            right:
-                - text: "Blog"
-                    href: "https://senthilkumarm1901.github.io/learn_by_blogging/blog.html"
-                    target: _self
-                - text: "LinkedIn"
-                    href: "https://www.linkedin.com/in/senthilkumarm1901"
-                    target: _blank
-                - text: "Medium"
-                    href: "https://medium.com/@senthilkumar.m1901"
-                    target: _blank
+  html:
+    navbar:
+      right:
+        - text: "Blog"
+          href: "https://senthilkumarm1901.github.io/learn_by_blogging/blog.html"
+          target: _self
+        - text: "LinkedIn"
+          href: "https://www.linkedin.com/in/senthilkumarm1901"
+          target: _blank
+        - text: "Medium"
+          href: "https://medium.com/@senthilkumar.m1901"
+          target: _blank
+---
+
+
+👈 **Back to:** [📝 Blog](https://senthilkumarm1901.github.io/learn_by_blogging/blog.html) | [💼 LinkedIn](https://www.linkedin.com/in/senthilkumarm1901) | [✍️ Medium](https://medium.com/@senthilkumar.m1901)
+
 ---
 
 ## 1.1 Introduction to the Critical Elements of AWS
@@ -231,13 +236,56 @@ flowchart LR
 
 ---
 
-## 1.5 How to Maintain Resiliency
+## 1.5 Cost vs Resiliency - 2 Sides of a Coin
+
+```{mermaid}
+flowchart LR
+    A[Design Phase] --> B[Implementation]
+    B --> C{The Twin Metrics}
+    
+    C -->|Reliability| D[Uptime/Latency]
+    C -->|Economics| E[Unit Cost / Waste]
+    
+    D --> F[Happy Users]
+    E --> G[Sustainable Business]
+    
+    F & G --> H[Feedback to Engineers]
+    H --> A
+
+    style C fill:#fff,stroke-dasharray: 5 5
+    %%style E fill:#ff9,stroke:#333
+```
+
+---
+
+### 1.5A How to Maintain Resiliency
 
 - Prefer **Region‑scoped managed services**
 - Otherwise:
     - Deploy across **multiple AZs**
     - Minimum **two AZs**
 - AZ failure ≠ application outage when designed correctly
+
+---
+
+### 1.5B Cost Optimization as an Architectural Choice - A Mindset View
+
+> *In the cloud, every architectural decision is a financial decision.* - So many wise folks!
+
+
+```{mermaid}
+flowchart TD
+    Start((<b>The Design Choice:</b><br/>Architectural Decision)) 
+    
+    Start --> Obs["<b>Visibility</b><br/>How will I tag and<br/>track this spend?"]
+    Start --> Clean["<b>Waste Prevention</b><br/>How do I ensure this<br/>deletes itself when idle?"]
+    Start --> Fit["<b>Right-Sizing</b><br/>What is the 'minimum'<br/>viable capacity?"]
+    Start --> Buy["<b>Procurement</b><br/>Should I commit long-term<br/>or stay flexible?"]
+    Start --> Modern["<b>Architecture</b><br/>Can I use Serverless<br/>to offload management?"]
+
+    %% Convergence into Value
+    Obs & Clean & Fit & Buy & Modern --> Value((<b>Business Value</b><br/>Cost per Unit of Work))
+```
 
 ---
 
