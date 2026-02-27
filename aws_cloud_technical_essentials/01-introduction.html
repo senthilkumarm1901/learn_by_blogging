@@ -210,7 +210,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#choose-the-right-aws-region" id="toc-choose-the-right-aws-region" class="nav-link" data-scroll-target="#choose-the-right-aws-region">1.2 Choose the Right AWS Region</a></li>
   <li><a href="#availability-zones" id="toc-availability-zones" class="nav-link" data-scroll-target="#availability-zones">1.3 Availability Zones</a></li>
   <li><a href="#scope-of-aws-services" id="toc-scope-of-aws-services" class="nav-link" data-scroll-target="#scope-of-aws-services">1.4 Scope of AWS Services</a></li>
-  <li><a href="#how-to-maintain-resiliency" id="toc-how-to-maintain-resiliency" class="nav-link" data-scroll-target="#how-to-maintain-resiliency">1.5 How to Maintain Resiliency</a></li>
+  <li><a href="#cost-vs-resiliency---2-sides-of-a-coin" id="toc-cost-vs-resiliency---2-sides-of-a-coin" class="nav-link" data-scroll-target="#cost-vs-resiliency---2-sides-of-a-coin">1.5 Cost vs Resiliency - 2 Sides of a Coin</a>
+  <ul class="collapse">
+  <li><a href="#a-how-to-maintain-resiliency" id="toc-a-how-to-maintain-resiliency" class="nav-link" data-scroll-target="#a-how-to-maintain-resiliency">1.5A How to Maintain Resiliency</a></li>
+  <li><a href="#b-cost-optimization-as-an-architectural-choice---a-mindset-view" id="toc-b-cost-optimization-as-an-architectural-choice---a-mindset-view" class="nav-link" data-scroll-target="#b-cost-optimization-as-an-architectural-choice---a-mindset-view">1.5B Cost Optimization as an Architectural Choice - A Mindset View</a></li>
+  </ul></li>
   <li><a href="#security-and-the-aws-shared-responsibility-model" id="toc-security-and-the-aws-shared-responsibility-model" class="nav-link" data-scroll-target="#security-and-the-aws-shared-responsibility-model">1.6 Security and the AWS Shared Responsibility Model</a>
   <ul class="collapse">
   <li><a href="#core-distinction" id="toc-core-distinction" class="nav-link" data-scroll-target="#core-distinction">Core distinction</a></li>
@@ -506,8 +510,37 @@ Choose Region in this order:</p>
 </div>
 <hr>
 </section>
-<section id="how-to-maintain-resiliency" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-maintain-resiliency">1.5 How to Maintain Resiliency</h2>
+<section id="cost-vs-resiliency---2-sides-of-a-coin" class="level2">
+<h2 class="anchored" data-anchor-id="cost-vs-resiliency---2-sides-of-a-coin">1.5 Cost vs Resiliency - 2 Sides of a Coin</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A[Design Phase] --&gt; B[Implementation]
+    B --&gt; C{The Twin Metrics}
+    
+    C --&gt;|Reliability| D[Uptime/Latency]
+    C --&gt;|Economics| E[Unit Cost / Waste]
+    
+    D --&gt; F[Happy Users]
+    E --&gt; G[Sustainable Business]
+    
+    F &amp; G --&gt; H[Feedback to Engineers]
+    H --&gt; A
+
+    style C fill:#fff,stroke-dasharray: 5 5
+    %%style E fill:#ff9,stroke:#333
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<hr>
+<section id="a-how-to-maintain-resiliency" class="level3">
+<h3 class="anchored" data-anchor-id="a-how-to-maintain-resiliency">1.5A How to Maintain Resiliency</h3>
 <ul>
 <li>Prefer <strong>Region‑scoped managed services</strong></li>
 <li>Otherwise:
@@ -518,6 +551,36 @@ Choose Region in this order:</p>
 <li>AZ failure ≠ application outage when designed correctly</li>
 </ul>
 <hr>
+</section>
+<section id="b-cost-optimization-as-an-architectural-choice---a-mindset-view" class="level3">
+<h3 class="anchored" data-anchor-id="b-cost-optimization-as-an-architectural-choice---a-mindset-view">1.5B Cost Optimization as an Architectural Choice - A Mindset View</h3>
+<blockquote class="blockquote">
+<p><em>In the cloud, every architectural decision is a financial decision.</em> - So many wise folks!</p>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    Start((&lt;b&gt;The Design Choice:&lt;/b&gt;&lt;br/&gt;Architectural Decision)) 
+    
+    Start --&gt; Obs["&lt;b&gt;Visibility&lt;/b&gt;&lt;br/&gt;How will I tag and&lt;br/&gt;track this spend?"]
+    Start --&gt; Clean["&lt;b&gt;Waste Prevention&lt;/b&gt;&lt;br/&gt;How do I ensure this&lt;br/&gt;deletes itself when idle?"]
+    Start --&gt; Fit["&lt;b&gt;Right-Sizing&lt;/b&gt;&lt;br/&gt;What is the 'minimum'&lt;br/&gt;viable capacity?"]
+    Start --&gt; Buy["&lt;b&gt;Procurement&lt;/b&gt;&lt;br/&gt;Should I commit long-term&lt;br/&gt;or stay flexible?"]
+    Start --&gt; Modern["&lt;b&gt;Architecture&lt;/b&gt;&lt;br/&gt;Can I use Serverless&lt;br/&gt;to offload management?"]
+
+    %% Convergence into Value
+    Obs &amp; Clean &amp; Fit &amp; Buy &amp; Modern --&gt; Value((&lt;b&gt;Business Value&lt;/b&gt;&lt;br/&gt;Cost per Unit of Work))
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<hr>
+</section>
 </section>
 <section id="security-and-the-aws-shared-responsibility-model" class="level2">
 <h2 class="anchored" data-anchor-id="security-and-the-aws-shared-responsibility-model">1.6 Security and the AWS Shared Responsibility Model</h2>
