@@ -154,7 +154,7 @@
     "href": "02-security.html",
     "title": "02. Security",
     "section": "",
-    "text": "2. Security\nSource: AWS Builder\nBelow is a bare‑minimum, distilled version of your AWS Security notes — keeping only the concepts that actually matter long‑term and removing all repetition and teaching detail.",
+    "text": "AWS Security - Quick Notes\nSource: AWS Builder",
     "crumbs": [
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>02. Security</span>"
     ]
@@ -163,8 +163,8 @@
     "objectID": "02-security.html#aws-security---quick-notes",
     "href": "02-security.html#aws-security---quick-notes",
     "title": "02. Security",
-    "section": "AWS Security - Quick Notes",
-    "text": "AWS Security - Quick Notes\n\n1. AWS Identity and Access Management (IAM)\n\nIAM controls authentication and authorization for AWS accounts and resources.\nLets you share access without using root credentials.\nProvides fine‑grained, explicit permissions.\nIAM is global (not Region‑specific).\nSupports MFA, password policies, and identity federation.\nIAM itself is free.\n\n\n\n\n2. IAM Identities\n\nIAM User\n\nRepresents a person or service.\nHas permanent credentials (console and/or programmatic).\nShould not share credentials.\n\nIAM Group\n\nCollection of users.\nPermissions are assigned to groups, not individuals.\nUsers can belong to multiple groups.\n\nIAM Role\n\nNo long‑term credentials.\nUses temporary credentials.\nPreferred for:\n\nAWS services\nFederated users\nCross‑account access\n\n\n\n\n\n\n3. IAM Policies\n\nPolicies define permissions (allow/deny).\nAttached to users, groups, or roles.\nEvaluated on every AWS API call.\nCore elements:\n\nEffect (Allow / Deny)\nAction\nResource\n\n* on action and resource = full access.\nExplicit deny always wins.\n\n\n\n\n4. Security Best Practices\n\nLock down the root user\n\nEnable MFA\nDelete root access keys\nNever use root for daily work\n\nLeast privilege\n\nStart with minimal access\nGrant only what is required\n\nPrefer roles over users\n\nAvoid long‑lived access keys\nReduce blast radius of credential leaks\n\n\n\n\n\n5. Federation & Centralized Identity\n\nUse an Identity Provider (IdP) when possible.\nGrant access via IAM roles, not IAM users.\nAWS IAM Identity Center (SSO):\n\nCentral user & permission management\nWorks across multiple AWS accounts\nIntegrates with external IdPs\n\n\n\n\n\nOne‑Line Mental Model\n\nIAM decides who can call which AWS APIs on which resources.",
+    "section": "",
+    "text": "1. AWS Identity and Access Management (IAM)\n\nIAM controls authentication and authorization for AWS accounts and resources.\nLets you share access without using root credentials.\nProvides fine‑grained, explicit permissions.\nIAM is global (not Region‑specific).\nSupports MFA, password policies, and identity federation.\nIAM itself is free.\n\n\n\n\n2. IAM Identities\n\nIAM User\n\nRepresents a person or service.\nHas permanent credentials (console and/or programmatic).\nShould not share credentials.\n\nIAM Group\n\nCollection of users.\nPermissions are assigned to groups, not individuals.\nUsers can belong to multiple groups.\n\nIAM Role\n\nNo long‑term credentials.\nUses temporary credentials.\nPreferred for:\n\nAWS services\nFederated users\nCross‑account access\n\n\n\n\n\n\n3. IAM Policies\n\nPolicies define permissions (allow/deny).\nAttached to users, groups, or roles.\nEvaluated on every AWS API call.\nCore elements:\n\nEffect (Allow / Deny)\nAction\nResource\n\n* on action and resource = full access.\nExplicit deny always wins.\n\n\n\n\n4. Security Best Practices\n\nLock down the root user\n\nEnable MFA\nDelete root access keys\nNever use root for daily work\n\nLeast privilege\n\nStart with minimal access\nGrant only what is required\n\nPrefer roles over users\n\nAvoid long‑lived access keys\nReduce blast radius of credential leaks\n\n\n\n\n\n5. Federation & Centralized Identity\n\nUse an Identity Provider (IdP) when possible.\nGrant access via IAM roles, not IAM users.\nAWS IAM Identity Center (SSO):\n\nCentral user & permission management\nWorks across multiple AWS accounts\nIntegrates with external IdPs\n\n\n\n\n\nOne‑Line Mental Model\n\nIAM decides who can call which AWS APIs on which resources.",
     "crumbs": [
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>02. Security</span>"
     ]
@@ -194,7 +194,7 @@
     "href": "03-compute.html",
     "title": "03. Compute",
     "section": "",
-    "text": "3. Compute as a Service",
+    "text": "3.1 Introduction to Compute Options in AWS",
     "crumbs": [
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>03. Compute</span>"
     ]
@@ -203,8 +203,8 @@
     "objectID": "03-compute.html#introduction-to-compute-options-in-aws",
     "href": "03-compute.html#introduction-to-compute-options-in-aws",
     "title": "03. Compute",
-    "section": "3.1 Introduction to Compute Options in AWS",
-    "text": "3.1 Introduction to Compute Options in AWS\n\nUnderstanding Servers\n\nA server processes requests from clients and returns responses.\nServers provide CPU, memory, and networking for applications.\nMost applications serve HTTP/API requests (web servers like IIS, Apache, Nginx).\nIn AWS, you choose a compute service to run these servers.\n\n\n\n\nChoose the Right Compute Option\nAWS compute falls into three categories:\n\nVirtual Machines\nContainers\nServerless\n\nVirtual Machines (VMs)\n\nClosest to traditional servers\nFull OS control\nRun on a hypervisor\n\nAmazon EC2\n\nAWS VM service\nAWS manages hardware + hypervisor\nYou manage OS and applications\n\nHypervisor\n\nEnables multiple OSs on one physical machine\nProvides isolation, scalability, and flexibility",
+    "section": "",
+    "text": "Understanding Servers\n\nA server processes requests from clients and returns responses.\nServers provide CPU, memory, and networking for applications.\nMost applications serve HTTP/API requests (web servers like IIS, Apache, Nginx).\nIn AWS, you choose a compute service to run these servers.\n\n\n\n\nChoose the Right Compute Option\nAWS compute falls into three categories:\n\nVirtual Machines\nContainers\nServerless\n\nVirtual Machines (VMs)\n\nClosest to traditional servers\nFull OS control\nRun on a hypervisor\n\nAmazon EC2\n\nAWS VM service\nAWS manages hardware + hypervisor\nYou manage OS and applications\n\nHypervisor\n\nEnables multiple OSs on one physical machine\nProvides isolation, scalability, and flexibility",
     "crumbs": [
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>03. Compute</span>"
     ]
