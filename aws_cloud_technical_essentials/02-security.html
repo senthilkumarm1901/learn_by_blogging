@@ -207,7 +207,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#aws-security---quick-notes" id="toc-aws-security---quick-notes" class="nav-link active" data-scroll-target="#aws-security---quick-notes">AWS Security - Quick Notes</a>
+  <li><a href="#introduction-to-aws-security" id="toc-introduction-to-aws-security" class="nav-link active" data-scroll-target="#introduction-to-aws-security">Introduction to AWS Security</a>
+  <ul class="collapse">
+  <li><a href="#how-iam-role-user-and-policies-interplay" id="toc-how-iam-role-user-and-policies-interplay" class="nav-link" data-scroll-target="#how-iam-role-user-and-policies-interplay">How IAM Role, User and Policies Interplay?</a></li>
+  <li><a href="#understand-policy-structure" id="toc-understand-policy-structure" class="nav-link" data-scroll-target="#understand-policy-structure">UNDERSTAND POLICY STRUCTURE</a></li>
+  </ul></li>
+  <li><a href="#aws-security---quick-notes" id="toc-aws-security---quick-notes" class="nav-link" data-scroll-target="#aws-security---quick-notes">AWS Security - Quick Notes</a>
   <ul class="collapse">
   <li><a href="#aws-identity-and-access-management-iam" id="toc-aws-identity-and-access-management-iam" class="nav-link" data-scroll-target="#aws-identity-and-access-management-iam">1. AWS Identity and Access Management (IAM)</a></li>
   <li><a href="#iam-identities" id="toc-iam-identities" class="nav-link" data-scroll-target="#iam-identities">2. IAM Identities</a></li>
@@ -219,11 +224,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#deep-dive-into-iam-policy" id="toc-deep-dive-into-iam-policy" class="nav-link" data-scroll-target="#deep-dive-into-iam-policy">Deep Dive into IAM Policy</a>
   <ul class="collapse">
   <li><a href="#iam-policy-examples" id="toc-iam-policy-examples" class="nav-link" data-scroll-target="#iam-policy-examples">IAM POLICY EXAMPLES</a></li>
-  <li><a href="#understand-policy-structure" id="toc-understand-policy-structure" class="nav-link" data-scroll-target="#understand-policy-structure">UNDERSTAND POLICY STRUCTURE</a></li>
-  <li><a href="#summarizing-security" id="toc-summarizing-security" class="nav-link" data-scroll-target="#summarizing-security">Summarizing Security</a></li>
-  </ul></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><img src="./images/different_groups_different_permissions.png" class="img-fluid"></a>
-  <ul class="collapse">
   <li><a href="#week-1s-quiz" id="toc-week-1s-quiz" class="nav-link" data-scroll-target="#week-1s-quiz">Week 1’s Quiz:</a></li>
   </ul></li>
   </ul>
@@ -259,6 +259,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>👈 <strong>Back to:</strong> <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">📝 Blog</a> | <a href="https://www.linkedin.com/in/senthilkumarm1901">💼 LinkedIn</a> | <a href="https://medium.com/@senthilkumar.m1901">✍️ Medium</a></p>
 <hr>
+<section id="introduction-to-aws-security" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-aws-security">Introduction to AWS Security</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A[Security in AWS]
+  A --&gt; B["AWS Identity&lt;br&gt;and Access&lt;br&gt;Management (IAM)"]
+  A --&gt; C[Security Best Practices]
+
+  %% IAM branches
+  B --&gt; B1[Purpose]
+  B --&gt; B2[IAM Identities]
+  B --&gt; B3[IAM Policies]
+  B --&gt; B4[IAM Characteristics]
+
+  %% Purpose
+  B1 --&gt; P1["Authentication&lt;br/&gt;(Who are you?)"]
+  B1 --&gt; P2["Authorization&lt;br/&gt;(What can you do?)"]
+
+  %% Identities
+  B2 --&gt; I1["IAM User&lt;br/&gt;(Human or service)"]
+  B2 --&gt; I2["IAM Group&lt;br/&gt;(Users + shared permissions)"]
+  B2 --&gt; I3["IAM Role&lt;br/&gt;(Temporary credentials)"]
+
+  %% Policies
+  B3 --&gt; PL1[JSON permission documents]
+  B3 --&gt; PL2[Attached to&lt;br&gt;Users, Groups, Roles]
+  B3 --&gt; PL3[Evaluated&lt;br&gt;on every&lt;br&gt;AWS API call]
+
+  %% IAM characteristics
+  B4 --&gt; CH1[Global service]
+  B4 --&gt; CH2[MFA support]
+  B4 --&gt; CH3[Password policies]
+  B4 --&gt; CH4[Identity federation]
+
+  %% Best practices
+  C --&gt; BP1[Lock down root user]
+  C --&gt; BP2[Least privilege]
+  C --&gt; BP3[Prefer roles over users]
+  C --&gt; BP4[Use federation&lt;br&gt;/ SSO when possible]
+
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="how-iam-role-user-and-policies-interplay" class="level3">
+<h3 class="anchored" data-anchor-id="how-iam-role-user-and-policies-interplay">How IAM Role, User and Policies Interplay?</h3>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -320,6 +372,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="understand-policy-structure" class="level3">
+<h3 class="anchored" data-anchor-id="understand-policy-structure">UNDERSTAND POLICY STRUCTURE</h3>
+<p>When creating a policy, it is required to have each of the following elements inside a policy statement.</p>
+<p><img src="./images/iam_policy_3_essential_elements.png" class="img-fluid"></p>
+<hr>
+<section id="the-concept-of-groups-and-roles" class="level4">
+<h4 class="anchored" data-anchor-id="the-concept-of-groups-and-roles">The concept of Groups and Roles</h4>
+<ul>
+<li>One user could be in multiple groups</li>
+</ul>
+<p><img src="./images/different_groups_different_permissions.png" class="img-fluid"></p>
+<hr>
+</section>
+<section id="different-types-of-aws-iam-users" class="level4">
+<h4 class="anchored" data-anchor-id="different-types-of-aws-iam-users">Different types of AWS IAM Users</h4>
+<ul>
+<li>Even a CICD System can be an IAM User (with specific permissions)</li>
+</ul>
+<p><img src="./images/iam_user_differences.png" class="img-fluid"> Source: AWS Blog</p>
+<hr>
+</section>
+</section>
+</section>
 <section id="aws-security---quick-notes" class="level2">
 <h2 class="anchored" data-anchor-id="aws-security---quick-notes">AWS Security - Quick Notes</h2>
 <section id="aws-identity-and-access-management-iam" class="level3">
@@ -496,33 +573,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Uses <strong>variable substitution</strong> <code>${aws:username}</code> → limits permissions to the <strong>specific user</strong> only.</li>
 </ul></li>
 </ul>
-</section>
-<section id="understand-policy-structure" class="level3">
-<h3 class="anchored" data-anchor-id="understand-policy-structure">UNDERSTAND POLICY STRUCTURE</h3>
-<p>When creating a policy, it is required to have each of the following elements inside a policy statement.</p>
-<p><img src="./images/iam_policy_3_essential_elements.png" class="img-fluid"></p>
-</section>
-<section id="summarizing-security" class="level3">
-<h3 class="anchored" data-anchor-id="summarizing-security">Summarizing Security</h3>
-<p><img src="./images/security_summary.png" class="img-fluid"></p>
 <hr>
-<section id="different-types-of-aws-iam-users" class="level4">
-<h4 class="anchored" data-anchor-id="different-types-of-aws-iam-users">Different types of AWS IAM Users</h4>
-<ul>
-<li>Even a CICD System can be an IAM User (with specific permissions)</li>
-</ul>
-<p><img src="./images/iam_user_differences.png" class="img-fluid"> Source: AWS Blg</p>
-</section>
-<section id="the-concept-of-groups-and-roles" class="level4">
-<h4 class="anchored" data-anchor-id="the-concept-of-groups-and-roles">The concept of Groups and Roles</h4>
-<ul>
-<li>One user could be in multiple groups</li>
-</ul>
-</section>
-</section>
-</section>
-<section id="section" class="level2">
-<h2 class="anchored" data-anchor-id="section"><img src="./images/different_groups_different_permissions.png" class="img-fluid"></h2>
 <section id="how-to-enables-employees-access-aws-account-via-idp" class="level4">
 <h4 class="anchored" data-anchor-id="how-to-enables-employees-access-aws-account-via-idp">How to enables employees access AWS Account (via IdP)</h4>
 <p><img src="./images/how_to_access_aws_account_via_IDP.png" class="img-fluid"></p>
@@ -578,6 +629,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <hr>
+</section>
 </section>
 <section id="week-1s-quiz" class="level3">
 <h3 class="anchored" data-anchor-id="week-1s-quiz">Week 1’s Quiz:</h3>
