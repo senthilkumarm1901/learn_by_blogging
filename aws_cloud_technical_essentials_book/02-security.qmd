@@ -21,10 +21,63 @@ format:
 
 ---
 
+```{mermaid}
+graph LR
+    AWS_Service["AWS Service<br>(Principal)"] -->|Assumes| Role
+    User[IAM User] -->|Assumes| Role[IAM Role]
+    TrustPolicy["Trust Policy<br>`Who can<br>assume role`"]
+    TrustPolicy -.->|"sts:AssumeRole"|Role
+    User -->|Belongs to| Group[IAM Group]
+    Role -->|Attached| Policy[Permissions Policy<br>`What Actions<br>on What Resources`]
+    Group -->|Attached| Policy
+    Policy -->|Allows/Denies| Resource[AWS Resource]
+    
+    style AWS_Service fill:#f9f,stroke:#333    
+    style User fill:#f9f,stroke:#333
+    style Policy fill:#bbf,stroke:#333
+    style TrustPolicy fill:#bbf,stroke:#333
+    style Resource fill:#dfd,stroke:#333
+```
 
-![](./images/aws_iam_user_role_groups_policies.jpg)
-Source: AWS Builder
+**An Example**
 
+- Goal: A Lambda (AWS Service) accessing S3
+- Principal AWS Service: AWS Lambda
+- IAM Role: A Role that enables AWS Lambda to access
+- Trust Policy for the IAM Role 👇
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "lambda.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+```
+
+- Permissions Poicy to be attached to the IAM Role
+
+```JSON
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*",
+                "s3-object-lambda:*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
 
 ## AWS Security - Quick Notes
 
