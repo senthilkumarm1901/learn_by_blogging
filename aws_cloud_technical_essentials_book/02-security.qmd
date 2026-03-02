@@ -21,6 +21,51 @@ format:
 
 ---
 
+## Introduction to AWS Security
+
+```{mermaid}
+
+flowchart LR
+  A[Security in AWS]
+  A --> B["AWS Identity<br>and Access<br>Management (IAM)"]
+  A --> C[Security Best Practices]
+
+  %% IAM branches
+  B --> B1[Purpose]
+  B --> B2[IAM Identities]
+  B --> B3[IAM Policies]
+  B --> B4[IAM Characteristics]
+
+  %% Purpose
+  B1 --> P1["Authentication<br/>(Who are you?)"]
+  B1 --> P2["Authorization<br/>(What can you do?)"]
+
+  %% Identities
+  B2 --> I1["IAM User<br/>(Human or service)"]
+  B2 --> I2["IAM Group<br/>(Users + shared permissions)"]
+  B2 --> I3["IAM Role<br/>(Temporary credentials)"]
+
+  %% Policies
+  B3 --> PL1[JSON permission documents]
+  B3 --> PL2[Attached to<br>Users, Groups, Roles]
+  B3 --> PL3[Evaluated<br>on every<br>AWS API call]
+
+  %% IAM characteristics
+  B4 --> CH1[Global service]
+  B4 --> CH2[MFA support]
+  B4 --> CH3[Password policies]
+  B4 --> CH4[Identity federation]
+
+  %% Best practices
+  C --> BP1[Lock down root user]
+  C --> BP2[Least privilege]
+  C --> BP3[Prefer roles over users]
+  C --> BP4[Use federation<br>/ SSO when possible]
+
+```
+
+### How IAM Role, User and Policies Interplay?
+
 ```{mermaid}
 graph LR
     AWS_Service["AWS Service<br>(Principal)"] -->|Assumes| Role
@@ -78,6 +123,34 @@ graph LR
     ]
 }
 ```
+
+---
+
+### UNDERSTAND POLICY STRUCTURE
+
+When creating a policy, it is required to have each of the following elements inside a policy statement.
+
+![](./images/iam_policy_3_essential_elements.png)
+
+---
+
+#### The concept of Groups and Roles 
+
+- One user could be in multiple groups
+
+![](./images/different_groups_different_permissions.png)
+
+---
+
+#### Different types of AWS IAM Users 
+
+- Even a CICD System can be an IAM User (with specific permissions)
+
+![](./images/iam_user_differences.png)
+Source: AWS Blog
+
+
+---
 
 ## AWS Security - Quick Notes
 
@@ -217,31 +290,7 @@ Most policies are stored in AWS as JSON documents with several policy elements. 
     - `iam:GetUser` (get info about their own user)  
   - Uses **variable substitution** `${aws:username}` → limits permissions to the **specific user** only.  
 
-### UNDERSTAND POLICY STRUCTURE
 
-When creating a policy, it is required to have each of the following elements inside a policy statement.
-
-![](./images/iam_policy_3_essential_elements.png)
-
-
-### Summarizing Security
-
-![](./images/security_summary.png)
-
----
-
-#### Different types of AWS IAM Users 
-
-- Even a CICD System can be an IAM User (with specific permissions)
-
-![](./images/iam_user_differences.png)
-Source: AWS Blg
-
-#### The concept of Groups and Roles 
-
-- One user could be in multiple groups
-
-![](./images/different_groups_different_permissions.png)
 ---
 
 #### How to enables employees access AWS Account (via IdP)
