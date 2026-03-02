@@ -207,25 +207,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#introduction-to-aws-security" id="toc-introduction-to-aws-security" class="nav-link active" data-scroll-target="#introduction-to-aws-security">Introduction to AWS Security</a>
+  <li><a href="#responsibility-of-iam-service-in-aws---who-can-do-what" id="toc-responsibility-of-iam-service-in-aws---who-can-do-what" class="nav-link active" data-scroll-target="#responsibility-of-iam-service-in-aws---who-can-do-what">2.1 Responsibility of IAM Service in AWS - Who can do What</a></li>
+  <li><a href="#security-in-aws---5000-feet-view" id="toc-security-in-aws---5000-feet-view" class="nav-link" data-scroll-target="#security-in-aws---5000-feet-view">2.2 Security in AWS - 5000 feet View</a></li>
+  <li><a href="#how-iam-role-user-and-policies-interplay" id="toc-how-iam-role-user-and-policies-interplay" class="nav-link" data-scroll-target="#how-iam-role-user-and-policies-interplay">2.3 How IAM Role, User and Policies Interplay?</a></li>
+  <li><a href="#structure-of-an-iam-permissions-policy" id="toc-structure-of-an-iam-permissions-policy" class="nav-link" data-scroll-target="#structure-of-an-iam-permissions-policy">2.4 Structure of an IAM Permissions Policy</a></li>
+  <li><a href="#the-concept-of-groups-and-roles" id="toc-the-concept-of-groups-and-roles" class="nav-link" data-scroll-target="#the-concept-of-groups-and-roles">2.5 The concept of Groups and Roles</a>
   <ul class="collapse">
-  <li><a href="#how-iam-role-user-and-policies-interplay" id="toc-how-iam-role-user-and-policies-interplay" class="nav-link" data-scroll-target="#how-iam-role-user-and-policies-interplay">How IAM Role, User and Policies Interplay?</a></li>
-  <li><a href="#understand-policy-structure" id="toc-understand-policy-structure" class="nav-link" data-scroll-target="#understand-policy-structure">UNDERSTAND POLICY STRUCTURE</a></li>
+  <li><a href="#user-in-2-groups-one-group-allows-other-group-says-nothing" id="toc-user-in-2-groups-one-group-allows-other-group-says-nothing" class="nav-link" data-scroll-target="#user-in-2-groups-one-group-allows-other-group-says-nothing">2.5.1 User in 2 groups; One Group Allows, Other Group Says Nothing</a></li>
+  <li><a href="#user-in-2-groups-one-group-allows-other-group-does-not-allow" id="toc-user-in-2-groups-one-group-allows-other-group-does-not-allow" class="nav-link" data-scroll-target="#user-in-2-groups-one-group-allows-other-group-does-not-allow">2.5.2 User in 2 groups; One Group Allows, Other Group does not Allow</a></li>
   </ul></li>
-  <li><a href="#aws-security---quick-notes" id="toc-aws-security---quick-notes" class="nav-link" data-scroll-target="#aws-security---quick-notes">AWS Security - Quick Notes</a>
-  <ul class="collapse">
-  <li><a href="#aws-identity-and-access-management-iam" id="toc-aws-identity-and-access-management-iam" class="nav-link" data-scroll-target="#aws-identity-and-access-management-iam">1. AWS Identity and Access Management (IAM)</a></li>
-  <li><a href="#iam-identities" id="toc-iam-identities" class="nav-link" data-scroll-target="#iam-identities">2. IAM Identities</a></li>
-  <li><a href="#iam-policies" id="toc-iam-policies" class="nav-link" data-scroll-target="#iam-policies">3. IAM Policies</a></li>
-  <li><a href="#security-best-practices" id="toc-security-best-practices" class="nav-link" data-scroll-target="#security-best-practices">4. Security Best Practices</a></li>
-  <li><a href="#federation-centralized-identity" id="toc-federation-centralized-identity" class="nav-link" data-scroll-target="#federation-centralized-identity">5. Federation &amp; Centralized Identity</a></li>
-  <li><a href="#oneline-mental-model" id="toc-oneline-mental-model" class="nav-link" data-scroll-target="#oneline-mental-model">One‑Line Mental Model</a></li>
-  </ul></li>
-  <li><a href="#deep-dive-into-iam-policy" id="toc-deep-dive-into-iam-policy" class="nav-link" data-scroll-target="#deep-dive-into-iam-policy">Deep Dive into IAM Policy</a>
-  <ul class="collapse">
-  <li><a href="#iam-policy-examples" id="toc-iam-policy-examples" class="nav-link" data-scroll-target="#iam-policy-examples">IAM POLICY EXAMPLES</a></li>
-  <li><a href="#week-1s-quiz" id="toc-week-1s-quiz" class="nav-link" data-scroll-target="#week-1s-quiz">Week 1’s Quiz:</a></li>
-  </ul></li>
+  <li><a href="#iam-roles-iam-users" id="toc-iam-roles-iam-users" class="nav-link" data-scroll-target="#iam-roles-iam-users">2.6 IAM Roles &gt;&gt; IAM Users</a></li>
+  <li><a href="#how-should-employees-access-aws-accounts-hint-via-idp" id="toc-how-should-employees-access-aws-accounts-hint-via-idp" class="nav-link" data-scroll-target="#how-should-employees-access-aws-accounts-hint-via-idp">2.7 How Should Employees Access AWS Accounts? (hint: via IdP)</a></li>
+  <li><a href="#how-should-customers-access-applications-on-aws" id="toc-how-should-customers-access-applications-on-aws" class="nav-link" data-scroll-target="#how-should-customers-access-applications-on-aws">2.8 How Should Customers Access Applications on AWS?</a></li>
+  <li><a href="#a-joint-recap" id="toc-a-joint-recap" class="nav-link" data-scroll-target="#a-joint-recap">2.7 &amp; 2.8 - A Joint Recap</a></li>
   </ul>
 </nav>
     </div>
@@ -259,8 +253,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>👈 <strong>Back to:</strong> <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">📝 Blog</a> | <a href="https://www.linkedin.com/in/senthilkumarm1901">💼 LinkedIn</a> | <a href="https://medium.com/@senthilkumar.m1901">✍️ Medium</a></p>
 <hr>
-<section id="introduction-to-aws-security" class="level2">
-<h2 class="anchored" data-anchor-id="introduction-to-aws-security">Introduction to AWS Security</h2>
+<section id="responsibility-of-iam-service-in-aws---who-can-do-what" class="level2">
+<h2 class="anchored" data-anchor-id="responsibility-of-iam-service-in-aws---who-can-do-what">2.1 Responsibility of IAM Service in AWS - Who can do What</h2>
+<p><strong>Who can do What</strong>: This is the fundamental IAM question.</p>
+<blockquote class="blockquote">
+<p>IAM decides <strong>who</strong> can call <strong>which AWS APIs</strong> on <strong>which resources</strong>.</p>
+</blockquote>
+<p>Security in AWS revolves around:</p>
+<ul>
+<li><strong>Authentication</strong> → Who are you?</li>
+<li><strong>Authorization</strong> → What are you allowed to do?</li>
+</ul>
+<p>Everything ultimately resolves to an AWS API call being evaluated against policies.</p>
+<hr>
+</section>
+<section id="security-in-aws---5000-feet-view" class="level2">
+<h2 class="anchored" data-anchor-id="security-in-aws---5000-feet-view">2.2 Security in AWS - 5000 feet View</h2>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -309,8 +317,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<section id="how-iam-role-user-and-policies-interplay" class="level3">
-<h3 class="anchored" data-anchor-id="how-iam-role-user-and-policies-interplay">How IAM Role, User and Policies Interplay?</h3>
+<hr>
+</section>
+<section id="how-iam-role-user-and-policies-interplay" class="level2">
+<h2 class="anchored" data-anchor-id="how-iam-role-user-and-policies-interplay">2.3 How IAM Role, User and Policies Interplay?</h2>
+<p><strong>Key Questions Answered in this Section</strong>:</p>
+<blockquote class="blockquote">
+<ul>
+<li>What Are IAM Identities and Why Do They Exist?</li>
+<li>How Do Roles, Trust Policies, and Permission Policies Interact?</li>
+</ul>
+</blockquote>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -357,7 +374,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li>Permissions Poicy that dictates which resource is permitted to ask and with what action</li>
+<li>Permissions Poicy that dictates which resource is permitted to ask and what can they do</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"Version"</span><span class="fu">:</span> <span class="st">"2012-10-17"</span><span class="fu">,</span></span>
@@ -374,214 +391,298 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
-<section id="understand-policy-structure" class="level3">
-<h3 class="anchored" data-anchor-id="understand-policy-structure">UNDERSTAND POLICY STRUCTURE</h3>
-<p>When creating a policy, it is required to have each of the following elements inside a policy statement.</p>
-<p><img src="./images/iam_policy_3_essential_elements.png" class="img-fluid"></p>
-<hr>
-<section id="the-concept-of-groups-and-roles" class="level4">
-<h4 class="anchored" data-anchor-id="the-concept-of-groups-and-roles">The concept of Groups and Roles</h4>
+<section id="structure-of-an-iam-permissions-policy" class="level2">
+<h2 class="anchored" data-anchor-id="structure-of-an-iam-permissions-policy">2.4 Structure of an IAM Permissions Policy</h2>
+<p>Every IAM policy contains:</p>
 <ul>
-<li>One user could be in multiple groups</li>
-</ul>
-<p><img src="./images/different_groups_different_permissions.png" class="img-fluid"></p>
-<hr>
-</section>
-<section id="different-types-of-aws-iam-users" class="level4">
-<h4 class="anchored" data-anchor-id="different-types-of-aws-iam-users">Different types of AWS IAM Users</h4>
-<ul>
-<li>Even a CICD System can be an IAM User (with specific permissions)</li>
-</ul>
-<p><img src="./images/iam_user_differences.png" class="img-fluid"> Source: AWS Blog</p>
-<hr>
-</section>
-</section>
-</section>
-<section id="aws-security---quick-notes" class="level2">
-<h2 class="anchored" data-anchor-id="aws-security---quick-notes">AWS Security - Quick Notes</h2>
-<section id="aws-identity-and-access-management-iam" class="level3">
-<h3 class="anchored" data-anchor-id="aws-identity-and-access-management-iam">1. AWS Identity and Access Management (IAM)</h3>
-<ul>
-<li><strong>IAM controls authentication and authorization</strong> for AWS accounts and resources.</li>
-<li>Lets you <strong>share access without using root credentials</strong>.</li>
-<li>Provides <strong>fine‑grained, explicit permissions</strong>.</li>
-<li><strong>IAM is global</strong> (not Region‑specific).</li>
-<li>Supports <strong>MFA, password policies, and identity federation</strong>.</li>
-<li>IAM itself is <strong>free</strong>.</li>
-</ul>
-<hr>
-</section>
-<section id="iam-identities" class="level3">
-<h3 class="anchored" data-anchor-id="iam-identities">2. IAM Identities</h3>
-<ul>
-<li><strong>IAM User</strong>
-<ul>
-<li>Represents a person or service.</li>
-<li>Has permanent credentials (console and/or programmatic).</li>
-<li>Should <strong>not share credentials</strong>.</li>
-</ul></li>
-<li><strong>IAM Group</strong>
-<ul>
-<li>Collection of users.</li>
-<li>Permissions are assigned <strong>to groups, not individuals</strong>.</li>
-<li>Users can belong to multiple groups.</li>
-</ul></li>
-<li><strong>IAM Role</strong>
-<ul>
-<li>No long‑term credentials.</li>
-<li>Uses <strong>temporary credentials</strong>.</li>
-<li>Preferred for:
-<ul>
-<li>AWS services</li>
-<li>Federated users</li>
-<li>Cross‑account access</li>
-</ul></li>
-</ul></li>
-</ul>
-<hr>
-</section>
-<section id="iam-policies" class="level3">
-<h3 class="anchored" data-anchor-id="iam-policies">3. IAM Policies</h3>
-<ul>
-<li><strong>Policies define permissions</strong> (allow/deny).</li>
-<li>Attached to <strong>users, groups, or roles</strong>.</li>
-<li>Evaluated on <strong>every AWS API call</strong>.</li>
-<li>Core elements:
+<li><p><code>Version</code></p></li>
+<li><p><code>Statement</code></p>
 <ul>
 <li><code>Effect</code> (Allow / Deny)</li>
 <li><code>Action</code></li>
 <li><code>Resource</code></li>
 </ul></li>
-<li><code>*</code> on action and resource = <strong>full access</strong>.</li>
-<li><strong>Explicit deny always wins</strong>.</li>
+</ul>
+<p>Key principles emphasized:</p>
+<ul>
+<li><code>"*"</code> on Action + Resource = full access</li>
+<li>Explicit deny overrides allow</li>
+<li>Policies are evaluated on every API call</li>
+<li>Variable substitution (e.g., <code>${aws:username}</code>) enables fine-grained control</li>
 </ul>
 <hr>
 </section>
-<section id="security-best-practices" class="level3">
-<h3 class="anchored" data-anchor-id="security-best-practices">4. Security Best Practices</h3>
-<ul>
-<li><strong>Lock down the root user</strong>
-<ul>
-<li>Enable MFA</li>
-<li>Delete root access keys</li>
-<li>Never use root for daily work</li>
-</ul></li>
-<li><strong>Least privilege</strong>
-<ul>
-<li>Start with minimal access</li>
-<li>Grant only what is required</li>
-</ul></li>
-<li><strong>Prefer roles over users</strong>
-<ul>
-<li>Avoid long‑lived access keys</li>
-<li>Reduce blast radius of credential leaks</li>
-</ul></li>
-</ul>
-<hr>
-</section>
-<section id="federation-centralized-identity" class="level3">
-<h3 class="anchored" data-anchor-id="federation-centralized-identity">5. Federation &amp; Centralized Identity</h3>
-<ul>
-<li>Use an <strong>Identity Provider (IdP)</strong> when possible.</li>
-<li>Grant access via <strong>IAM roles</strong>, not IAM users.</li>
-<li><strong>AWS IAM Identity Center (SSO)</strong>:
-<ul>
-<li>Central user &amp; permission management</li>
-<li>Works across multiple AWS accounts</li>
-<li>Integrates with external IdPs</li>
-</ul></li>
-</ul>
-<hr>
-</section>
-<section id="oneline-mental-model" class="level3">
-<h3 class="anchored" data-anchor-id="oneline-mental-model">One‑Line Mental Model</h3>
+<section id="the-concept-of-groups-and-roles" class="level2">
+<h2 class="anchored" data-anchor-id="the-concept-of-groups-and-roles">2.5 The concept of Groups and Roles</h2>
 <blockquote class="blockquote">
-<p><strong>IAM decides <em>who</em> can call <em>which AWS APIs</em> on <em>which resources</em>.</strong></p>
+<ul>
+<li>IAM Groups provide a scalable organizational pattern to accesses.</li>
+</ul>
 </blockquote>
-</section>
-</section>
-<section id="deep-dive-into-iam-policy" class="level2">
-<h2 class="anchored" data-anchor-id="deep-dive-into-iam-policy">Deep Dive into IAM Policy</h2>
 <ul>
-<li><strong>IAM policies</strong> manage access and permissions to AWS services/resources.<br>
-</li>
-<li>Policies can be attached to <strong>users, groups, or roles</strong>.<br>
-</li>
-<li>When a request is made, AWS evaluates:
+<li><p>One user can belong to multiple groups</p></li>
+<li><p>Different groups carry different permissions</p></li>
+<li><p>AWS evaluates:</p>
 <ul>
-<li>Policies on the <strong>user/role</strong><br>
-</li>
-<li>Policies on any <strong>groups</strong> the user belongs to<br>
-</li>
+<li>User-attached policies</li>
+<li>Group-attached policies</li>
 </ul></li>
-<li>Example: A developer in the <strong>developers group</strong> → AWS checks both the <strong>group policies</strong> and the <strong>user’s policies</strong> to decide allow/deny.</li>
 </ul>
-<section id="iam-policy-examples" class="level3">
-<h3 class="anchored" data-anchor-id="iam-policy-examples">IAM POLICY EXAMPLES</h3>
-<p>Most policies are stored in AWS as JSON documents with several policy elements. Take a look at the following example of what providing admin access through an IAM identity-based policy looks like.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="dt">"Version"</span><span class="fu">:</span> <span class="st">"2012-10-17"</span><span class="fu">,</span>    </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"Statement"</span><span class="fu">:</span> <span class="ot">[</span><span class="fu">{</span>        </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"Effect"</span><span class="fu">:</span> <span class="st">"Allow"</span><span class="fu">,</span>        </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"Action"</span><span class="fu">:</span> <span class="st">"*"</span><span class="fu">,</span>        </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"Resource"</span><span class="fu">:</span> <span class="st">"*"</span>     </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>     <span class="fu">}</span><span class="ot">]</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This encourages:</p>
+<blockquote class="blockquote">
+<p>Assign permissions to groups, not individuals.</p>
+</blockquote>
+<section id="user-in-2-groups-one-group-allows-other-group-says-nothing" class="level3">
+<h3 class="anchored" data-anchor-id="user-in-2-groups-one-group-allows-other-group-says-nothing">2.5.1 User in 2 groups; One Group Allows, Other Group Says Nothing</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+
+    User[IAM User]
+
+    GroupA[IAM Group A]
+    GroupB[IAM Group B]
+
+    PolicyA[Policy A&lt;br&gt;Effect: Allow&lt;br&gt;Action: s3:GetObject&lt;br&gt;Resource: MyBucket]
+    PolicyB[Policy B&lt;br&gt;No mention of S3&lt;br&gt;No Deny]
+
+    S3Bucket[S3 Bucket: MyBucket]
+
+    User --&gt;|Member of| GroupA
+    User --&gt;|Member of| GroupB
+
+    GroupA --&gt;|Attached| PolicyA
+    GroupB --&gt;|Attached| PolicyB
+
+    User --&gt;|Requests s3:GetObject| S3Bucket
+
+    PolicyA --&gt;|Allow found| S3Bucket
+    PolicyB -.-&gt;|No explicit Deny| S3Bucket
+
+    S3Bucket --&gt; Success[Access Granted]
+
+    style PolicyA fill:#bbf,stroke:#333
+    style PolicyB fill:#eee,stroke:#333
+    style Success fill:#dfd,stroke:#333
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 <ul>
-<li><p>An <strong>IAM policy</strong> has four key JSON elements:</p>
-<ol type="1">
-<li><strong>Version</strong> → defines the policy language version.
-<ul>
-<li>Always use <code>"Version": "2012-10-17"</code> for full feature support.<br>
-</li>
-</ul></li>
-<li><strong>Effect</strong> → specifies whether to <strong>Allow</strong> or <strong>Deny</strong> access.<br>
-</li>
-<li><strong>Action</strong> → describes the allowed/denied actions.
-<ul>
-<li><code>"*"</code> = wildcard → all actions.<br>
-</li>
-</ul></li>
-<li><strong>Resource</strong> → defines which resources are affected.
-<ul>
-<li><code>"*"</code> = all resources.</li>
-</ul></li>
-</ol></li>
-<li><p>Example: Policy with <code>"Action": "*"</code> and <code>"Resource": "*"</code> → grants <strong>administrator access</strong> (all actions on all resources).</p></li>
+<li>User is in two groups</li>
+<li>One group allows s3:GetObject</li>
+<li>The other group does not deny anything</li>
+<li>IAM finds at least one Allow</li>
+<li>No explicit deny exists</li>
+<li>✅ Access is granted</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="dt">"Version"</span><span class="fu">:</span> <span class="st">"2012-10-17"</span><span class="fu">,</span>    </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>     <span class="dt">"Statement"</span><span class="fu">:</span> <span class="ot">[</span><span class="fu">{</span>        </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"Effect"</span><span class="fu">:</span> <span class="st">"Allow"</span><span class="fu">,</span>        </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"Action"</span><span class="fu">:</span> <span class="ot">[</span>            </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>               <span class="st">"iam: ChangePassword"</span><span class="ot">,</span>            </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>               <span class="st">"iam: GetUser"</span>            </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>               <span class="ot">]</span><span class="fu">,</span>        </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"Resource"</span><span class="fu">:</span> <span class="st">"arn:aws:iam::123456789012:user/${aws:username}"</span>    </span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>     <span class="fu">}</span><span class="ot">]</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
 <ul>
-<li>More granular example:
+<li>IAM is additive by default.</li>
+</ul>
+</blockquote>
+<hr>
+</section>
+<section id="user-in-2-groups-one-group-allows-other-group-does-not-allow" class="level3">
+<h3 class="anchored" data-anchor-id="user-in-2-groups-one-group-allows-other-group-does-not-allow">2.5.2 User in 2 groups; One Group Allows, Other Group does not Allow</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+
+    User[IAM User]
+
+    GroupA[IAM Group A]
+    GroupB[IAM Group B]
+
+    PolicyA[Policy A&lt;br&gt;Effect: Allow&lt;br&gt;Action: s3:GetObject&lt;br&gt;Resource: MyBucket]
+
+    PolicyB[Policy B&lt;br&gt;Effect: Deny&lt;br&gt;Action: s3:GetObject&lt;br&gt;Resource: MyBucket]
+
+    S3Bucket[S3 Bucket: MyBucket]
+
+    User --&gt;|Member of| GroupA
+    User --&gt;|Member of| GroupB
+
+    GroupA --&gt;|Attached| PolicyA
+    GroupB --&gt;|Attached| PolicyB
+
+    User --&gt;|Requests s3:GetObject| S3Bucket
+
+    PolicyA --&gt;|Allow found| S3Bucket
+    PolicyB --&gt;|Explicit Deny found| S3Bucket --&gt;DenyResult[Access Denied]
+
+    style PolicyA fill:#bbf,stroke:#333
+    style PolicyB fill:#fbb,stroke:#333
+    style DenyResult fill:#fdd,stroke:#333
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 <ul>
-<li>Allows a user to:
+<li>IAM evaluates all policies</li>
+<li>It finds:
 <ul>
-<li><code>iam:ChangePassword</code> (change their own password)<br>
-</li>
-<li><code>iam:GetUser</code> (get info about their own user)<br>
-</li>
+<li>✅ One Allow</li>
+<li>❌ One Explicit Deny</li>
 </ul></li>
-<li>Uses <strong>variable substitution</strong> <code>${aws:username}</code> → limits permissions to the <strong>specific user</strong> only.</li>
+<li>Because an explicit deny exists…
+<ul>
+<li>❌ Final result: Access Denied</li>
 </ul></li>
 </ul>
 <hr>
-<section id="how-to-enables-employees-access-aws-account-via-idp" class="level4">
-<h4 class="anchored" data-anchor-id="how-to-enables-employees-access-aws-account-via-idp">How to enables employees access AWS Account (via IdP)</h4>
-<p><img src="./images/how_to_access_aws_account_via_IDP.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="iam-roles-iam-users" class="level2">
+<h2 class="anchored" data-anchor-id="iam-roles-iam-users">2.6 IAM Roles &gt;&gt; IAM Users</h2>
+<p>Security best practices emphasize:</p>
+<ul>
+<li>Avoid long-lived access keys</li>
+<li>Prefer roles over users</li>
+<li>Use temporary credentials</li>
+<li>Reduce blast radius</li>
+</ul>
+<p>Roles are positioned as the safer default, especially for:</p>
+<ul>
+<li>Services</li>
+<li>Cross-account access</li>
+<li>Federated identities</li>
+</ul>
 <hr>
 </section>
-<section id="how-to-enable-customers-access-to-application-deployed-in-aws-account" class="level4">
-<h4 class="anchored" data-anchor-id="how-to-enable-customers-access-to-application-deployed-in-aws-account">How to enable customers access to Application deployed in AWS Account</h4>
-<p><img src="./images/how_to_enable_acesss_to_apps_in_aws_account_2.png" class="img-fluid"></p>
+<section id="how-should-employees-access-aws-accounts-hint-via-idp" class="level2">
+<h2 class="anchored" data-anchor-id="how-should-employees-access-aws-accounts-hint-via-idp">2.7 How Should Employees Access AWS Accounts? (hint: via IdP)</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">---
+title: How to access AWS Account via IdP
+---
+
+flowchart LR
+
+%% ================= USER =================
+User[Corporate User]
+
+%% ================= PATH A =================
+subgraph "Path A: IAM Identity Center based Access"
+    
+    IIC["AWS IAM Identity Center&lt;br&gt;(AWS IdP)"]
+
+    subgraph AWS_Organization
+        subgraph "Member Account A"
+            RoleA[IAM Role - Account A]
+        end
+        subgraph "Member Account B"
+            RoleB[IAM Role - Account B]
+        end
+        STS1[AWS STS]
+    end
+
+    User --&gt; IIC
+    IIC --&gt;|Permission Set Mapping| RoleA
+    IIC --&gt;|Permission Set Mapping| RoleB
+    RoleA --&gt; STS1
+    RoleB --&gt; STS1
+end
+
+
+%% ================= PATH B =================
+subgraph "Path B: Federation Access"
+    
+    AAD["Azure AD(or Okta or any non-AWS IdP)"]
+
+    subgraph AWS_Accounts
+        RoleA2[IAM Role - Account A]
+        RoleB2[IAM Role - Account B]
+        STS2[AWS STS]
+    end
+
+    User --&gt; AAD
+    AAD --&gt;|"SAML Assertion*"| RoleA2
+    AAD --&gt;|"SAML Assertion*"| RoleB2
+    RoleA2 --&gt; STS2
+    RoleB2 --&gt; STS2
+end
+
+
+%% ================= CREDENTIALS =================
+STS1 --&gt; TempCreds1["Temporary Credentials(access_key, secret_key, token)"]
+STS2 --&gt; TempCreds2["Temporary Credentials(access_key, secret_key, token)"]
+
+TempCreds1 --&gt; Console1[AWS Console / CLI/ SDK]
+TempCreds2 --&gt; Console2[AWS Console / CLI/ SDK]
+
+Legend1[["*A SAML assertion is: 
+A signed authentication statement from an Identity Provider saying
+“This user is authenticated and has these attributes.”"]]
+Legend2[["*Permission Set Mapping:
+The JSON template that defines what permissions a user/role gets in a specific AWS account."]]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="how-should-customers-access-applications-on-aws" class="level2">
+<h2 class="anchored" data-anchor-id="how-should-customers-access-applications-on-aws">2.8 How Should Customers Access Applications on AWS?</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">---
+title: How to enable access to Application deployed in AWS Account
+---
+
+flowchart LR
+    AppUser[Application User]
+    App["Web / Mobile App"]
+
+    UserPool["Amazon Cognito&lt;br&gt;User Pool&lt;br&gt;(AuthN)"]
+    IdentityPool["Amazon Cognito&lt;br&gt;Identity Pool&lt;br&gt;(AuthZ)"]
+
+    AppRole[IAM Role for App]
+    STS[AWS STS]
+    S3["S3 / DynamoDB / APIs"]
+
+
+    AppUser --&gt; App
+
+    App --&gt;|"1. Sign-in"| UserPool
+    UserPool --&gt;|"2. JWT (ID token)"| App
+
+    App --&gt;|"3. Present JWT"| IdentityPool
+    IdentityPool --&gt;|"4. AssumeRoleWithWebIdentity"| STS
+    STS --&gt;|"5. Temporary AWS Credentials"| IdentityPool
+    IdentityPool --&gt;|"6 Temporary AWS Credentials"| App
+
+    App --&gt;|"7. Signed requests"| AppRole
+    AppRole -.-&gt;|"8. Access"| S3
+
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="a-joint-recap" class="level2">
+<h2 class="anchored" data-anchor-id="a-joint-recap">2.7 &amp; 2.8 - A Joint Recap</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 34%">
@@ -629,14 +730,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <hr>
-</section>
-</section>
-<section id="week-1s-quiz" class="level3">
-<h3 class="anchored" data-anchor-id="week-1s-quiz">Week 1’s Quiz:</h3>
-<p><a href="https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w1-%20Amazon%20Web%20Services%20(AWS)/Week%201%20Quiz%20_%20Coursera.pdf">A GitHub Source for Week 1 Quiz</a></p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
