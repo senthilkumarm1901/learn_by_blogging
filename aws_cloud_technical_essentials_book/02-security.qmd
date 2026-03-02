@@ -25,10 +25,10 @@ format:
 graph LR
     AWS_Service["AWS Service<br>(Principal)"] -->|Assumes| Role
     User[IAM User] -->|Assumes| Role[IAM Role]
-    TrustPolicy["Trust Policy<br>`Who can<br>assume role`"]
+    TrustPolicy["Trust Policy<br>Who can<br>assume role"]
     TrustPolicy -.->|"sts:AssumeRole"|Role
     User -->|Belongs to| Group[IAM Group]
-    Role -->|Attached| Policy[Permissions Policy<br>`What Actions<br>on What Resources`]
+    Role -->|Attached| Policy[Permissions Policy<br>What Actions<br>on What Resources]
     Group -->|Attached| Policy
     Policy -->|Allows/Denies| Resource[AWS Resource]
     
@@ -43,8 +43,8 @@ graph LR
 
 - Goal: A Lambda (AWS Service) accessing S3
 - Principal AWS Service: AWS Lambda
-- IAM Role: A Role that enables AWS Lambda to access
-- Trust Policy for the IAM Role 👇
+- IAM Role: A Role that enables AWS Lambda to access S3
+- Trust Policy for the IAM Role mentioning which "Principal" can use the role 👇
 
 ```json
 {
@@ -61,7 +61,7 @@ graph LR
 }
 ```
 
-- Permissions Poicy to be attached to the IAM Role
+- Permissions Poicy that dictates which resource is permitted to ask and with what action
 
 ```JSON
 {
