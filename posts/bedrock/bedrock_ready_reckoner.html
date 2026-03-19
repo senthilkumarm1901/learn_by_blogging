@@ -246,6 +246,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#iii.6-agentcore-custom-agent-runtime" id="toc-iii.6-agentcore-custom-agent-runtime" class="nav-link" data-scroll-target="#iii.6-agentcore-custom-agent-runtime">III.6) AgentCore (Custom Agent Runtime)</a></li>
   <li><a href="#iii.7-bedrock-agents-mcp-backed-tools" id="toc-iii.7-bedrock-agents-mcp-backed-tools" class="nav-link" data-scroll-target="#iii.7-bedrock-agents-mcp-backed-tools">III.7) Bedrock Agents + MCP-backed Tools</a></li>
   <li><a href="#iii.8-bedrock-flows" id="toc-iii.8-bedrock-flows" class="nav-link" data-scroll-target="#iii.8-bedrock-flows">III.8) Bedrock Flows</a></li>
+  <li><a href="#bedrock-managed-agents" id="toc-bedrock-managed-agents" class="nav-link" data-scroll-target="#bedrock-managed-agents">Bedrock Managed Agents</a></li>
+  <li><a href="#agentcore" id="toc-agentcore" class="nav-link" data-scroll-target="#agentcore">AgentCore</a></li>
   <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
   <li><a href="#mental-model-recap" id="toc-mental-model-recap" class="nav-link" data-scroll-target="#mental-model-recap">Mental Model Recap</a></li>
   <li><a href="#iv.-guardrails" id="toc-iv.-guardrails" class="nav-link" data-scroll-target="#iv.-guardrails">IV. Guardrails</a></li>
@@ -1056,6 +1058,93 @@ Response</code></pre>
        └─ Step N: Final response</code></pre>
 <p><strong>When to use</strong> * Need a governed, versioned, deterministic pipeline (branching/conditions/iterations) without writing orchestration code.</p>
 <p><strong>State Lives In</strong> * <strong>Execution-Tracked</strong>. State is tracked via executionId for the duration of the flow’s run.</p>
+</section>
+<section id="bedrock-managed-agents" class="level3">
+<h3 class="anchored" data-anchor-id="bedrock-managed-agents">Bedrock Managed Agents</h3>
+<blockquote class="blockquote">
+<ul>
+<li>AWS-managed Brain 🧠</li>
+<li>AWS-managed Body (memory &amp; tool) 💪</li>
+</ul>
+</blockquote>
+<p><img src="./images/agentcore-agent_2.png" class="img-fluid"></p>
+</section>
+<section id="agentcore" class="level3">
+<h3 class="anchored" data-anchor-id="agentcore">AgentCore</h3>
+<blockquote class="blockquote">
+<ul>
+<li>Application-managed Brain 🧠 (such as LangGraph/Strands Agent)</li>
+<li>AWS-managed Body (memory &amp; tool) 💪</li>
+</ul>
+</blockquote>
+<p><img src="./images/bedrock-managed-agents.png" class="img-fluid"></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Bedrock Managed Agents</th>
+<th style="text-align: left;">Bedrock AgentCore</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Planner</strong></td>
+<td style="text-align: left;"><strong>AWS-Managed:</strong> Developer provide instructions; AWS runs the loop.</td>
+<td style="text-align: left;"><strong>Custom Planner:</strong> Developer creates the loop (LangGraph, Python, etc.) on any compute.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Memory</strong></td>
+<td style="text-align: left;"><strong>Implicit:</strong> Handled automatically within the <code>invoke-agent</code> session.</td>
+<td style="text-align: left;"><strong>Explicit:</strong> Developer explicitly calls the <code>bedrock-agentcore</code> API to manually <code>GET</code> or <code>PUT</code> session state.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Tools</strong></td>
+<td style="text-align: left;"><strong>Action Groups:</strong> Triggered by AWS via Lambda during the managed loop.</td>
+<td style="text-align: left;"><strong>Managed Sidecars:</strong> Developer explicitly call AgentCore to use the <strong>Code Interpreter</strong> or <strong>Browser</strong>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Complexity</strong></td>
+<td style="text-align: left;">Low code, fast “Time-to-Market.”</td>
+<td style="text-align: left;">Higher code, “Maximum Customizability.”</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Endpoint</th>
+<th style="text-align: left;">API</th>
+<th style="text-align: left;">State Management</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>bedrock-runtime</code></strong></td>
+<td style="text-align: left;"><code>converse</code></td>
+<td style="text-align: left;"><strong>Stateless.</strong> You must manage the <code>messages</code> array in your code.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>bedrock-agent-runtime</code></strong></td>
+<td style="text-align: left;"><code>invoke-agent</code></td>
+<td style="text-align: left;"><strong>Stateful.</strong> AWS manages the session state via a <code>sessionId</code>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>bedrock-agentcore</code></strong></td>
+<td style="text-align: left;"><code>agent-runtime</code></td>
+<td style="text-align: left;"><strong>Externally Stateful.</strong> You explicitly call the AgentCore “Memory” to save/load the state for your custom loop.</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="summary" class="level3">
 <h3 class="anchored" data-anchor-id="summary">Summary</h3>
