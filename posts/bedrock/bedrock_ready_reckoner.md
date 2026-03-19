@@ -817,6 +817,36 @@ User / App
 **State Lives In**
 * **Execution-Tracked**. State is tracked via executionId for the duration of the flow's run.
 
+### Bedrock Managed Agents 
+
+> * AWS-managed Brain 🧠
+> * AWS-managed Body (memory & tool) 💪
+
+![](./images/agentcore-agent_2.png)
+
+### AgentCore 
+
+> * Application-managed Brain 🧠 (such as LangGraph/Strands Agent)
+> * AWS-managed Body (memory & tool) 💪
+
+![](./images/bedrock-managed-agents.png)
+
+
+
+| Feature | Bedrock Managed Agents | Bedrock AgentCore |
+| :--- | :--- | :--- |
+| **Planner** | **AWS-Managed:** Developer provide instructions; AWS runs the loop. | **Custom Planner:** Developer creates the loop (LangGraph, Python, etc.) on any compute. |
+| **Memory** | **Implicit:** Handled automatically within the `invoke-agent` session. | **Explicit:** Developer explicitly calls the `bedrock-agentcore` API to manually `GET` or `PUT` session state. |
+| **Tools** | **Action Groups:** Triggered by AWS via Lambda during the managed loop. | **Managed Sidecars:** Developer explicitly call AgentCore to use the **Code Interpreter** or **Browser**. |
+| **Complexity** | Low code, fast "Time-to-Market." | Higher code, "Maximum Customizability." |
+
+
+| Endpoint | API | State Management |
+| :--- | :--- | :--- |
+| **`bedrock-runtime`** | `converse` | **Stateless.** You must manage the `messages` array in your code. |
+| **`bedrock-agent-runtime`** | `invoke-agent` | **Stateful.** AWS manages the session state via a `sessionId`. |
+| **`bedrock-agentcore`** | `agent-runtime` | **Externally Stateful.** You explicitly call the AgentCore "Memory" to save/load the state for your custom loop. |
+
 ### Summary
 
 | Architecture Pattern | Orchestration Owner | State Location | Best For |
