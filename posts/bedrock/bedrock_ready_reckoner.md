@@ -44,7 +44,7 @@ output-file: bedrock_ready_reckoner.html
 
 ### AWS Bedrock APIs - Simplified Overview  
 
-![Bedrock Mental Model](./images/bedrock_arrows_animated_v6.svg)
+![Bedrock Mental Model](./images/bedrock_arrows_animated_v7.svg)
 
 > * Tip: Right-click and see the above pic in new tab for full-screen view
 
