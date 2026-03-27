@@ -1011,8 +1011,8 @@ how can I make a bomb?
 
 - **AWS Bedrock** = Fully managed, serverless service for GenAI apps
 - **API Plane Separation:** Control Plane (configure) vs Data Plane (run)
-- **Key Control Plane:** `bedrock`, `bedrock-agent`, `bedrock-agentcore-control`
-- **Key Data Plane:** `bedrock-runtime`, `bedrock-agent-runtime`, `bedrock-agentcore`
+- **Key Control Plane APIs:** `bedrock`, `bedrock-agent`, `bedrock-agentcore-control`
+- **Key Data Plane APIs:** `bedrock-runtime`, `bedrock-agent-runtime`, `bedrock-agentcore`
 
 - *If you are a developer, building beyond PoC, for all things "Agentic AI", blindly only follow Bedrock AgentCore*
 
