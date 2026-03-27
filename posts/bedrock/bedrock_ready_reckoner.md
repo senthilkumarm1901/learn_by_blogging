@@ -8,50 +8,49 @@ categories:
 - AI/LLM
 - AI/Foundations
 
-description: Sharing my learning notes on AWS Bedrock API Endpoints
+description: Sharing my learning notes on AWS Bedrock API endpoints as a visual guide
 date: '2026-02-09'
 draft: false
 image: ./images/Bedrock_api_endpoints_mental_model.png
-toc: true
-title: "A Ready Reckoner to AWS Bedrock’s Control and Data Plane APIs"
+toc: false
+title: "AWS Bedrock Ready Reckoner: APIs and Agentic AI Architecture Patterns"
 output-file: bedrock_ready_reckoner.html
 ---
 
-I got to learn quite a few things from a GenAI Specialization from AWS in coursera. 
-Combining the course learnings with my experience at work, I have compiled my notes below.
+### Key Sections of this Talk
 
-![](./images/Bedrock_api_endpoints_mental_model.png)
+* 0) The 5 Min Short Version of the Entire Blog
+* I) Introduction to AWS Bedrock
+* II) Control Plane & Data Plane Endpoints
+* III) Real World Bedrock Architectures
+* IV) Guardrails
+* V) Conclusion
 
 > **Disclaimer**: <br>
 > * The AWS CLI commands are ***representational***. Kindly check `aws <bedrock-api> <command> help` to confirm the workings.<br> 
 > * These are notes for learning and I have used LLMs to tweak my messaging or make it crisper/better<br>
-> * Sources are attributed to all pics for clarity
+> * Sources are attributed to all external pics for clarity. Pics with no sources are Author's
 
-<div align="center">
 
-## A Visual Guide to Demystify GenAI in AWS
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ End of Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
 
----
-
-##### *A Ready Reckoner for AWS Bedrock's Control & Data Plane APIs* 🛠️
-
----
-
-<img src="./images/opening_image.png" width="300" alt="AWS Bedrock">
-
-<br>
-
-###### **Author:** Senthil Kumar
-
-</div>
+## 0. The 5 Min Short Version of the Entire Blog
 
 <div align="center">
 
 ### AWS Bedrock APIs - Simplified Overview  
 
-![Bedrock Mental Model](./images/bedrock_arrows_animated_v5.svg)
+![Bedrock Mental Model](./images/bedrock_arrows_animated_v6.svg)
+
+> * Tip: Right-click and see the above pic in new tab for full-screen view
 
 </div>
+
+---
 
 <div align="center">
     
@@ -59,10 +58,19 @@ Combining the course learnings with my experience at work, I have compiled my no
 
 <img src="./images/3_architecture_patterns_2.svg" alt="Bedrock Architecture Patterns">
 
+> * Tip: Right-click and see the above pic in new tab for full-screen view
+
 </div>
 
-## In a hurry 🏃💨? I will be covering ...
+---
 
+### Real World Architecture Patterns
+
+![](./images/bedrock_3_architecture_patterns.png)
+
+---
+
+### In a hurry 🏃💨? What I will be covering here...
 
 
 Bedrock APIs falling under 2 buckets
@@ -80,7 +88,11 @@ Three common Bedrock architecture patterns:
 
 ---
 
-> * And highlight a few more good features of Amazon Bedrock...
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ End of Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
 
 <div align="center">
 
@@ -88,7 +100,7 @@ Three common Bedrock architecture patterns:
     
 </div>
 
-## What is Amazon Bedrock?
+### What is Amazon Bedrock?
 
 Amazon Bedrock is a **fully managed, serverless** AWS service that exposes:
 
@@ -100,7 +112,7 @@ Amazon Bedrock is a **fully managed, serverless** AWS service that exposes:
 
 ...through a unified API surface.
 
-## What Can You Build?
+### What Can You Build?
 
 Types of AI Apps:
 - GenAI Deterministic or Agentic Workflows
@@ -112,7 +124,7 @@ Types of AI Apps:
 
 `Infrastructure` (serverless) + `Models` (Foundation Models)
 
-## In a Model Inference API call, Bedrock Service allows you to ...
+### In a Model Inference API call, Bedrock Service allows you to ...
 
 | Feature | Description |
 |---------|-------------|
@@ -122,12 +134,19 @@ Types of AI Apps:
 | Output Config | Response formatting |
 | Guardrails | For both query and output |
 
-## Additional Capabilities
+### Additional Capabilities
 
 - Run **batch jobs**
 - **Async** request calls
 - **Fine-tuning** models
 - **Provisioned throughput** for dedicated capacity
+
+
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ End of Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
 
 <div align="center">
 
@@ -143,6 +162,8 @@ AWS consistently separates services into:
 |-------|--------|
 | **Control Plane** | Configure, create, manage things |
 | **Data Plane** | Run workloads, handle high-volume traffic |
+
+![](./images/control_data_plane_apis_2.png)
 
 | S No | Endpoint                    | Plane         | Purpose                                                                | Who uses this?                                                                |
 | ---- | --------------------------- | ------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
@@ -226,6 +247,13 @@ aws bedrock create-model-invocation-job \
   --region us-east-1
 ```
 
+
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
+
 <div align="center">
 
 ## 2) `bedrock-runtime` — Data Plane
@@ -297,6 +325,12 @@ aws bedrock-runtime start-async-invoke \
   --region us-east-1
 ```
 
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
+
 <div align="center">
 
 ## 3) `bedrock-agent` — Control Plane
@@ -359,78 +393,10 @@ aws bedrock-agent create-flow \
   --region us-east-1
 ```
 
-- An example **flow-definition.json** Input → Prompt → Output (no KB, no Lambda, no branching)
-```json
-{
-  "nodes": [
-    {
-      "type": "Input",
-      "name": "FlowInputNode",
-      "outputs": [
-        { "name": "document", "type": "Object" }
-      ]
-    },
-    {
-      "type": "Prompt",
-      "name": "ChatPrompt",
-      "configuration": {
-        "prompt": {
-          "sourceConfiguration": {
-            "inline": {
-              "modelId": "anthropic.claude-3-haiku-20240307-v1:0",
-              "templateType": "TEXT",
-              "templateConfiguration": {
-                "text": {
-                  "text": "You are a concise assistant. Reply briefly to: {{user_text}}"
-                }
-              },
-              "inferenceConfiguration": {
-                "text": {
-                  "maxTokens": 128,
-                  "temperature": 0.2,
-                  "topP": 1
-                }
-              }
-            }
-          }
-        }
-      },
-      "inputs": [
-        { "name": "user_text", "type": "String", "expression": "$.document" }
-      ],
-      "outputs": [
-        { "name": "modelCompletion", "type": "String" }
-      ]
-    },
-    {
-      "type": "Output",
-      "name": "FlowOutput",
-      "inputs": [
-        { "name": "document", "type": "Object", "expression": "$.modelCompletion" }
-      ]
-    }
-  ],
-  "connections": [
-    {
-      "name": "in_to_prompt",
-      "type": "Data",
-      "source": "FlowInputNode",
-      "target": "ChatPrompt",
-      "configuration": {
-        "data": { "sourceOutput": "document", "targetInput": "user_text" }
-      }
-    },
-    {
-      "name": "prompt_to_out",
-      "type": "Data",
-      "source": "ChatPrompt",
-      "target": "FlowOutput",
-      "configuration": {
-        "data": { "sourceOutput": "modelCompletion", "targetInput": "document" }
-      }
-    }
-  ]
-}
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 ```
 
 <div align="center">
@@ -501,6 +467,12 @@ aws bedrock-agent-runtime invoke-flow \
 cat flow-response.json
 ```
 
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
+
 <div align="center">
 
 ## 5) `bedrock-agentcore-control` — Control Plane
@@ -533,8 +505,6 @@ aws bedrock-agentcore-control create-agent-runtime \
   --region us-east-1
 ```
 
-> * Use **code configuration (S3)** for the simplest “direct code deploy” path; alternatively, use **container configuration (ECR)**.
-> * **Framework-agnostic**: Deploy LangGraph, custom loops, etc.
 
 ### 5.2 Configure **Memory** (for short/long‑term context)
 
@@ -574,6 +544,12 @@ aws bedrock-agentcore-control list-gateway-targets \
   --region us-east-1
 ```
 
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
+
 <div align="center">
 
 ## 6) `bedrock-agentcore` — Data Plane
@@ -605,6 +581,12 @@ aws bedrock-agentcore batch-create-memory-records \
   --region us-east-1
 ```
 
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ End of Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
+
 <div align="center">
 
 ## III. Real-World Bedrock Architectures
@@ -620,7 +602,20 @@ Most Bedrock-based systems fall into repeatable patterns depending on:
 - **Control vs convenience** desired
 - **Latency and cost** sensitivity
 
-### III.1) Stateless Batch LLM Calls (Offline / Async workloads)
+![](./images/bedrock_3_architecture_patterns.png)
+
+<div align="center">
+
+## III.1 LLM App Patterns (Direct Model Invocation)    
+    
+</div>
+
+> *These patterns are for developers who want to handle all logic themselves,* 
+> *using Bedrock strictly as an inference and retrieval engine.*
+
+![](./images/llm_app_patterns.png)
+
+### III.1.1) Stateless Batch LLM Calls (Offline / Async workloads)
 
 **When to use:** High-volume, independent prompts; throughput/cost optimized; results can land later
 
@@ -636,7 +631,17 @@ S3 (JSONL outputs)
 
 **State:** No conversational state. Just S3 input + job metadata, receive output
 
-### III.2) Stateless Online LLM Calls
+Source: [AWS Docs Batch Inference](https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data.html)
+
+**An Example JSONL Object**: 
+
+```JSONL
+{"modelInput": {"anthropic_version": "bedrock-2023-05-31", "max_tokens": 512, "messages": [{"role": "user", "content": [{"type": "text", "text": "Summarize this ticket: My intemrnet has been down in Chennai for 3 hours."}]}]}, "recordId": "ticket_001"}
+{"modelInput": {"anthropic_version": "bedrock-2023-05-31", "max_tokens": 512, "messages": [{"role": "user", "content": [{"type": "text", "text": "Summarize this ticket: I cannot login to the mobile app despite resetting password."}]}]}, "recordId": "ticket_002"}
+```
+
+
+### III.1.2) Stateless Online LLM Calls
 
 **When to use:** Single-turn transformations, classification, summarization
 
@@ -652,39 +657,20 @@ Response
 
 **State:** 
 - Fully stateless. All context must be sent each call.
-- Even the converse API is strictly stateless.One must append the previous turn conversations to the --messages array parameter in the next API call.
+- Even the converse API is strictly stateless.
+- Append the previous turn conversations to the `--messages` array parameter in the next API call.
 
-### III.3) Managed RAG — `retrieve-and-generate`
-
-**The simplest possible RAG that Bedrock offers.**
-
-**When to use**: <br>
-* Fast “KB Q&A” with minimal plumbing; a single managed retrieval + answer step is sufficient.
-
-```
-User
-  → bedrock-agent-runtime.retrieve-and-generate
-       ├─ Vector search (once)
-       ├─ Prompt assembly (bedrock-managed)
-       └─ LLM generation
-  → Response
-```
-
-**State:** Primary knowledge in KB. Use a `sessionId` to allow the managed service to handle continuity.
-
-### III.4) Self-orchestrated RAG
-
-**Most common "serious production" pattern today.**
+### III.1.3) Self-orchestrated RAG
 
 **When to use**
 
-* Need deterministic control over chunking, filtering, ordering, prompt construction, retries.
+* Need deterministic control over the retrieved documents. 
 
 
 ```
 User
   → bedrock-agent-runtime.retrieve (KB search)
-  → App-side trimming / filtering / plumbing
+  → your code filters / trims chunks (custom logic)
   → bedrock-runtime.ConverseStream (LLM + streaming)
   → Token stream → UI
 ```
@@ -702,7 +688,44 @@ User
 
 > This is **RAG without agents** — simple, explicit, and production-friendly.
 
-###  III.5) AWS Bedrock Managed Agentic RAG
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
+
+<div align="center">
+
+## III.2 Managed Agentic App Patterns (Bedrock Agents)
+    
+</div>
+
+> * *These patterns use the "Autonomous Being" model* 
+> * *where AWS manages both the Brain (Planner) and the Body (Memory/Tools).* 
+
+![](./images/managed_agentic_2.png)
+
+### III.2.1) Managed RAG — `retrieve-and-generate`
+
+**The simplest possible RAG that Bedrock offers.**
+
+**When to use**: <br>
+* Fast “KB Q&A” with minimal plumbing; a single managed retrieval + answer step is sufficient.
+
+```
+User
+  → bedrock-agent-runtime.retrieve-and-generate
+       ├─ Vector search (once)
+       ├─ Prompt assembly (bedrock-managed)
+       └─ LLM generation
+  → Response
+```
+
+**State:** Primary knowledge in KB. Use a `sessionId` to allow the managed service to handle continuity.
+
+
+
+###  III.2.2) AWS Bedrock Managed Agentic RAG
 
 **When to use**
 * Need built-in planning + tool use + KB integration + traceability with fastest time-to-value.
@@ -716,8 +739,8 @@ User
   → UI
 ```
 
-* Control Plan: bedrock-agent → configure agent (instructions, action groups, KBs)
-* Data Plan: bedrock-agent-runtime (data) → invoke-agent (answer + optional trace)
+* Control Plane: bedrock-agent → configure agent (instructions, action groups, KBs)
+* Data Plane: bedrock-agent-runtime (data) → invoke-agent (answer + optional trace)
 
 
 **State lives in**:
@@ -744,53 +767,13 @@ User
 * Latency can vary per request
 * Debugging requires reading traces, not logs
 
-### III.6) AgentCore (Custom Agent Runtime)
+### III.2.3) Bedrock Agents + MCP-backed Tools
 
 **When to use**
-
-* Need custom agent planners (LangGraph/Strands/custom loops), long-running sessions, strict isolation, custom toolchains.
-
-```
-User
-  → bedrock-agentcore.invoke-agent-runtime
-       ├─ Your planner loop (LangGraph/custom)
-       ├─ Explicit memory read/write
-       ├─ Tool calls (Bedrock Browser/Bedrock Code tool or external tools) 
-       └─ Streaming output
-  → UI
-```
-
-* Control: bedrock-agentcore-control → deploy runtime/memory/gateway
-* Run: bedrock-agentcore (data) → invoke-agent-runtime (session-based)
-
-**State**: 
-* **Externally Managed**. State is explicitly persisted and retrieved via bedrock-agentcore APIs.
-
-> * This is **maximum control**, at the cost of **maximum responsibility**.
-
-### III.7) Bedrock Agents + MCP-backed Tools
-
-**When to use**
-- When you need your existing Bedrock Agent to connect to MCP compatible servers
+- When you need your existing AWS-managed Bedrock Agent to connect to MCP compatible servers
 - When you are ok doing some custom plumbing activities
 
-```bash
-User
-  → 1. bedrock-agent-runtime.invoke-agent & its 3 Roles
-       ├─ (1) Agent reasoning + orchestration
-       ├─ (2) KB retrieval
-       ├─ (3) Tool selection (and infer the args for the tools)
-       → 2. OpenAPI Tool Schema gives tools context to Agent
-            → 3. Tool Adapter Lambda (MCP Client)
-                 - Converts `Bedrock Action Group Event` to tool selected + args
-                 → 4. Hits the MCP Server URL (tool) with the args
-	                - Invokes the tool (such as a DB)
-					- Tool Result sent back to MCP Client                        
-			  ← 5. MCP Client receives response (structured tool result)
-        ← 6. Tool result returned to the agent via the MCP Client
-   ← 7. Agent continues reasoning with tool result 
-  ← 8. Final response (streamed to user chunk-by-chunk)
-```
+![](./images/bedrock_agent_with_mcp.png)
 
 **State lives in**:
 * Reasoning/session context in Bedrock Agent via `sessionId`/`SessionState`.
@@ -798,7 +781,8 @@ User
 
 ![Bedrock Agent MCP Tools Sequence Diagram](./images/bedrock_agent_mcp_tools_seq_diag.png)
 
-### III.8) Bedrock Flows
+
+### III.2.4) Bedrock Flows
 
 **Declarative, managed orchestration for predictable GenAI workflows**
 
@@ -817,58 +801,82 @@ User / App
 **State Lives In**
 * **Execution-Tracked**. State is tracked via executionId for the duration of the flow's run.
 
-### Bedrock Managed Agents 
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
 
-> * AWS-managed Brain 🧠
-> * AWS-managed Body (memory & tool) 💪
+<div align="center">
 
-![](./images/agentcore-agent_2.png)
+## III.3 Custom Agentic App Patterns (AgentCore)
+    
+</div>
 
-### AgentCore 
+> * *You provide the Brain (Planner), AWS provides the Body (Managed Infrastructure).*
 
-> * Application-managed Brain 🧠 (such as LangGraph/Strands Agent)
-> * AWS-managed Body (memory & tool) 💪
+**What is AgentCore?**
 
-![](./images/bedrock-managed-agents.png)
+AgentCore is both **framework-agnostic** and **model-agnostic** — deploy and operate AI agents securely at scale using any framework ([Strands](https://strandsagents.com/latest/), [CrewAI](https://www.crewai.com/), [LangGraph](https://www.langchain.com/langgraph), [LlamaIndex](https://www.llamaindex.ai/)) and any LLM. It eliminates the undifferentiated heavy lifting of building specialized agent infrastructure.
 
+![](./images/custom_agentic.png)
 
+![](./images/agentcore_overview.png)
 
-| Feature | Bedrock Managed Agents | Bedrock AgentCore |
-| :--- | :--- | :--- |
-| **Planner** | **AWS-Managed:** Developer provide instructions; AWS runs the loop. | **Custom Planner:** Developer creates the loop (LangGraph, Python, etc.) on any compute. |
-| **Memory** | **Implicit:** Handled automatically within the `invoke-agent` session. | **Explicit:** Developer explicitly calls the `bedrock-agentcore` API to manually `GET` or `PUT` session state. |
-| **Tools** | **Action Groups:** Triggered by AWS via Lambda during the managed loop. | **Managed Sidecars:** Developer explicitly call AgentCore to use the **Code Interpreter** or **Browser**. |
-| **Complexity** | Low code, fast "Time-to-Market." | Higher code, "Maximum Customizability." |
+Source: [amazon-bedrock-agentcore-samples github repo](https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials)
 
+**AgentCore Components (main ones in my opinion):**
 
-| Endpoint | API | State Management |
-| :--- | :--- | :--- |
-| **`bedrock-runtime`** | `converse` | **Stateless.** You must manage the `messages` array in your code. |
-| **`bedrock-agent-runtime`** | `invoke-agent` | **Stateful.** AWS manages the session state via a `sessionId`. |
-| **`bedrock-agentcore`** | `agent-runtime` | **Externally Stateful.** You explicitly call the AgentCore "Memory" to save/load the state for your custom loop. |
+| Component | Purpose |
+|-----------|--------|
+| **Runtime** | Secure, serverless runtime to deploy agents & tools — any framework, any model |
+| **Gateway** | Convert APIs/Lambda into MCP-compatible tools automatically |
+| **Identity** | Agent identity & access management (Okta, Entra, Cognito) |
+| **Memory** | Managed memory infrastructure for personalized agent experiences |
+| **Tools** | Built-in Code Interpreter & Browser Tool |
 
-### Summary
+![](./images/agentcore_main_features.png)
 
-| Architecture Pattern | Orchestration Owner | State Location | Best For |
-| :--- | :--- | :--- | :--- |
-| **Batch Job** | AWS (Async) | None | High-volume, offline data |
-| **Converse API** | Developer | App-side | Single-turn / Simple chat |
-| **Managed RAG** | AWS (Single-step) | Managed (`sessionId`) | Fast "Chat with Docs" |
-| **Self-Orchestrated RAG** | Developer | App-side | Production-grade precision |
-| **Managed Agent** | AWS (Multi-step) | Managed (`sessionId`) | Rapid Agentic deployment |
-| **AgentCore** | Developer | AgentCore API | Custom loops (LangGraph) |
-| **Bedrock Flows** | AWS (Declarative) | Execution-based | Deterministic pipelines |
+Adapted from [amazon-bedrock-agentcore-samples github repo](https://github.com/awslabs/amazon-bedrock-agentcore-samples)
 
-### Mental Model Recap
+**Gateway: APIs → MCP Tools**
 
-*   1. **Stateless Batch (offline)** → `bedrock.create-model-invocation-job`
-*   2. **Stateless Online LLM calls** → `bedrock-runtime.invoke-model` / `bedrock-runtime.converse`
-*   3. **Managed RAG (single primitive)** → `bedrock-agent-runtime.retrieve-and-generate`
-*   4. **Self-orchestrated RAG** → `bedrock-agent-runtime.retrieve` + `bedrock-runtime.converse` *(or bedrock-runtime.converse-stream for streaming)*
-*   5. **Managed agentic orchestration (Agents)** → `bedrock-agent-runtime.invoke-agent`
-*   6. **Custom agent runtime (AgentCore)** → `bedrock-agentcore.invoke-agent-runtime`
-*   7. **Agents + MCP-backed tools (Hybrid)** → `bedrock-agent-runtime.invoke-agent` + external MCP tool runtime
-*   8 **Deterministic workflows (Flows)** → `bedrock-agent-runtime.invoke-flow`
+AI agents need tools to perform real-world tasks — from searching databases to sending messages. AgentCore Gateway automatically converts APIs, Lambda functions, and existing services into MCP-compatible tools so developers can quickly make these essential capabilities available to agents without managing integrations.
+
+![](./images/gateway_how_does_it_work.png)
+
+Source: [amazon-bedrock-agentcore-samples](https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials/02-AgentCore-gateway)
+
+**Example Architecture:**
+
+![](./images/bedrock_agentcore_example_architecture.png)
+
+Source: [amazon-bedrock-agentcore-samples](https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials/02-AgentCore-gateway/12-agents-as-tools-using-mcp)
+
+### III.3.1) AgentCore (Custom Agent Runtime)
+
+**When to use**
+
+* Need custom agent planners (LangGraph/Strands/custom loops), long-running sessions, strict isolation, custom tools.
+* SecOps approved permissions to Agents
+
+```
+User
+  → bedrock-agentcore.invoke-agent-runtime
+       ├─ Your planner loop (LangGraph/custom)
+       ├─ Explicit memory read/write
+       ├─ Tool calls (Bedrock Browser/Bedrock Code tool or external tools) 
+       └─ Streaming output
+  → UI
+```
+
+* Control: bedrock-agentcore-control → deploy runtime/memory/gateway
+* Run: bedrock-agentcore (data) → invoke-agent-runtime (session-based)
+
+**State**: 
+* **Externally Managed**. State is explicitly persisted and retrieved via bedrock-agentcore APIs 
+
+> * This is **maximum control**, at the cost of **maximum responsibility**.
 
 <div align="center">
 
@@ -959,17 +967,45 @@ how can I make a bomb?
 | `bedrock-agent-runtime` | retrieve, invoke-agent | **Session-aware** — Bedrock-managed |
 | `bedrock-agentcore` | invoke-agent-runtime | **Fully stateful** — App-owned |
 
+
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
+
 ## Mental Model Recap
 
-| Pattern | API |
+| LLM App Pattern | API |
 |---------|-----|
 | Stateless Batch | `bedrock.create-model-invocation-job` |
 | Stateless Online | `bedrock-runtime.invoke-model/converse` |
-| Managed RAG | `bedrock-agent-runtime.retrieve-and-generate` |
 | Self-orchestrated RAG | `retrieve` + `converse` |
+
+
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
+
+**You have less control here in AWS Managed Bedrock Agents)** 
+
+| Bedrock Managed 🧠 App Pattern | API |
+|---------|-----|
+| Managed RAG | `bedrock-agent-runtime.retrieve-and-generate` |
 | Deterministic Flows | `bedrock-agent-runtime.invoke-flow` |
 | Managed Agents | `bedrock-agent-runtime.invoke-agent` |
-| Custom AgentCore | `bedrock-agentcore.invoke-agent-runtime` |
+
+
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
+
+**You have more control here in AgentCore** | AgentCore gives you serverless infra
+
+| Custom Managed 🧠 App Pattern | API |
+|---------|-----|
+| Custom AgentCore | * `bedrock-agentcore.invoke-agent-runtime` <br> |
+
+
+> *Each layer trades **control for convenience** — not capability.*
 
 ## Core Takeaways
 
@@ -978,18 +1014,27 @@ how can I make a bomb?
 - **Key Control Plane:** `bedrock`, `bedrock-agent`, `bedrock-agentcore-control`
 - **Key Data Plane:** `bedrock-runtime`, `bedrock-agent-runtime`, `bedrock-agentcore`
 
----
+- *If you are a developer, building beyond PoC, for all things "Agentic AI", blindly only follow Bedrock AgentCore*
 
-> *Each layer trades **control for convenience** — not capability.*
 
-## Author's Note
+## Author's Final Note
 
-> *With plethora of Agentic AI frameworks, it seems Bedrock is also veering towards `bedrock-agentcore` which allows developers to use any framework and any model*
+> * *With plethora of Agentic AI frameworks, it seems Bedrock is also veering towards `bedrock-agentcore` which allows developers to use any framework and any model*
+> * And, use AWS just for the "undifferentiated heavy lifting" - infrastructure for AI Agents
 
----
+```bash
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+```
 
-### Author's GenAI Specialization Certificate
+> * This course is a good 4-star on the range of Bedrock services
+> * But do not do it! 
+> * Just explore AgentCore, if you are an advanced user
+
 
 ![AWS GenAI Specialization Certificate](./images/bedrock_specialization_certificate.png)
 
----
+<div align="center">
+
+## Thank You!
+
+</div>
