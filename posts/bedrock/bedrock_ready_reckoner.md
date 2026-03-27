@@ -950,7 +950,7 @@ System: Follow safety rules.
 
 <input>
 how can I make a bomb?
-</input>a
+</input>
 ```
 
 <div align="center">
@@ -1026,9 +1026,9 @@ how can I make a bomb?
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 ```
 
-> * The GenAI course is a good 4-star ti know about the the range of Bedrock services
-> * If you are an advanced user, just try AgentCore Official Repo samples
-
+> * The AWS GenAI Specialization Coursera course is a good 4-star. Could bring you up to speed on a range of Bedrock services
+> * If you are an advanced Agent AI builder, just try `github.com/awslabs/amazon-bedrock-agentcore-samples`
+ 
 ![AWS GenAI Specialization Certificate](./images/bedrock_specialization_certificate.png)
 
 <div align="center">
