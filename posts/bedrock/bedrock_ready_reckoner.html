@@ -8,9 +8,9 @@
 
 <meta name="author" content="Senthil Kumar">
 <meta name="dcterms.date" content="2026-02-09">
-<meta name="description" content="Sharing my learning notes on AWS Bedrock API Endpoints">
+<meta name="description" content="Sharing my learning notes on AWS Bedrock API endpoints as a visual guide">
 
-<title>A Ready Reckoner to AWS Bedrock’s Control and Data Plane APIs – Learn by Blogging</title>
+<title>AWS Bedrock Ready Reckoner: APIs and Agentic AI Architecture Patterns – Learn by Blogging</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -111,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -153,10 +153,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">A Ready Reckoner to AWS Bedrock’s Control and Data Plane APIs</h1>
+      <h1 class="title">AWS Bedrock Ready Reckoner: APIs and Agentic AI Architecture Patterns</h1>
                   <div>
         <div class="description">
-          Sharing my learning notes on AWS Bedrock API Endpoints
+          Sharing my learning notes on AWS Bedrock API endpoints as a visual guide
         </div>
       </div>
                           <div class="quarto-categories">
@@ -192,79 +192,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#a-visual-guide-to-demystify-genai-in-aws" id="toc-a-visual-guide-to-demystify-genai-in-aws" class="nav-link active" data-scroll-target="#a-visual-guide-to-demystify-genai-in-aws">A Visual Guide to Demystify GenAI in AWS</a></li>
-  <li><a href="#aws-bedrock-apis---simplified-overview" id="toc-aws-bedrock-apis---simplified-overview" class="nav-link" data-scroll-target="#aws-bedrock-apis---simplified-overview">AWS Bedrock APIs - Simplified Overview</a></li>
-  <li><a href="#the-three-main-bedrock-architecture-patterns" id="toc-the-three-main-bedrock-architecture-patterns" class="nav-link" data-scroll-target="#the-three-main-bedrock-architecture-patterns">The Three Main Bedrock Architecture Patterns</a></li>
-  <li><a href="#in-a-hurry-i-will-be-covering" id="toc-in-a-hurry-i-will-be-covering" class="nav-link" data-scroll-target="#in-a-hurry-i-will-be-covering">In a hurry 🏃💨? I will be covering …</a></li>
-  <li><a href="#i.-introduction-to-aws-bedrock" id="toc-i.-introduction-to-aws-bedrock" class="nav-link" data-scroll-target="#i.-introduction-to-aws-bedrock">I. Introduction to AWS Bedrock</a></li>
-  <li><a href="#what-is-amazon-bedrock" id="toc-what-is-amazon-bedrock" class="nav-link" data-scroll-target="#what-is-amazon-bedrock">What is Amazon Bedrock?</a></li>
-  <li><a href="#what-can-you-build" id="toc-what-can-you-build" class="nav-link" data-scroll-target="#what-can-you-build">What Can You Build?</a></li>
-  <li><a href="#in-a-model-inference-api-call-bedrock-service-allows-you-to" id="toc-in-a-model-inference-api-call-bedrock-service-allows-you-to" class="nav-link" data-scroll-target="#in-a-model-inference-api-call-bedrock-service-allows-you-to">In a Model Inference API call, Bedrock Service allows you to …</a></li>
-  <li><a href="#additional-capabilities" id="toc-additional-capabilities" class="nav-link" data-scroll-target="#additional-capabilities">Additional Capabilities</a></li>
-  <li><a href="#ii.-control-plane-data-plane-endpoints" id="toc-ii.-control-plane-data-plane-endpoints" class="nav-link" data-scroll-target="#ii.-control-plane-data-plane-endpoints">II. Control Plane &amp; Data Plane Endpoints</a></li>
-  <li><a href="#api-plane-separation" id="toc-api-plane-separation" class="nav-link" data-scroll-target="#api-plane-separation">API Plane Separation</a></li>
-  <li><a href="#bedrock-control-plane" id="toc-bedrock-control-plane" class="nav-link" data-scroll-target="#bedrock-control-plane">1) <code>bedrock</code> — Control Plane</a></li>
-  <li><a href="#discover-models-metadata" id="toc-discover-models-metadata" class="nav-link" data-scroll-target="#discover-models-metadata">1.1 Discover Models &amp; Metadata</a></li>
-  <li><a href="#configure-accountregionlevel-invocation-logging" id="toc-configure-accountregionlevel-invocation-logging" class="nav-link" data-scroll-target="#configure-accountregionlevel-invocation-logging">1.2 Configure account/Region‑level <strong>invocation logging</strong></a></li>
-  <li><a href="#provisioned-throughput" id="toc-provisioned-throughput" class="nav-link" data-scroll-target="#provisioned-throughput">1.3 Provisioned Throughput</a></li>
-  <li><a href="#fine-tuning" id="toc-fine-tuning" class="nav-link" data-scroll-target="#fine-tuning">1.4 Fine-Tuning</a></li>
-  <li><a href="#batch-inference" id="toc-batch-inference" class="nav-link" data-scroll-target="#batch-inference">1.5 Batch Inference</a></li>
-  <li><a href="#bedrock-runtime-data-plane" id="toc-bedrock-runtime-data-plane" class="nav-link" data-scroll-target="#bedrock-runtime-data-plane">2) <code>bedrock-runtime</code> — Data Plane</a></li>
-  <li><a href="#singleprompt-invokemodel-typical-text-generation" id="toc-singleprompt-invokemodel-typical-text-generation" class="nav-link" data-scroll-target="#singleprompt-invokemodel-typical-text-generation">2.1 Single‑prompt <strong>InvokeModel</strong> (typical text generation)</a></li>
-  <li><a href="#converse-api-uniform-chat-interface" id="toc-converse-api-uniform-chat-interface" class="nav-link" data-scroll-target="#converse-api-uniform-chat-interface">2.2 Converse API (Uniform Chat Interface)</a></li>
-  <li><a href="#embeddings" id="toc-embeddings" class="nav-link" data-scroll-target="#embeddings">2.3 Embeddings</a></li>
-  <li><a href="#async-inference" id="toc-async-inference" class="nav-link" data-scroll-target="#async-inference">2.4 Async Inference</a></li>
-  <li><a href="#bedrock-agent-control-plane" id="toc-bedrock-agent-control-plane" class="nav-link" data-scroll-target="#bedrock-agent-control-plane">3) <code>bedrock-agent</code> — Control Plane</a></li>
-  <li><a href="#create-manage-an-agent" id="toc-create-manage-an-agent" class="nav-link" data-scroll-target="#create-manage-an-agent">3.1 Create &amp; Manage an Agent</a></li>
-  <li><a href="#create-knowledge-base" id="toc-create-knowledge-base" class="nav-link" data-scroll-target="#create-knowledge-base">3.2 Create Knowledge Base</a></li>
-  <li><a href="#prompt-management" id="toc-prompt-management" class="nav-link" data-scroll-target="#prompt-management">3.3 Prompt Management</a></li>
-  <li><a href="#flows" id="toc-flows" class="nav-link" data-scroll-target="#flows">3.4 Flows</a></li>
-  <li><a href="#bedrock-agent-runtime-data-plane" id="toc-bedrock-agent-runtime-data-plane" class="nav-link" data-scroll-target="#bedrock-agent-runtime-data-plane">4) <code>bedrock-agent-runtime</code> — Data Plane</a></li>
-  <li><a href="#invoke-an-agent" id="toc-invoke-an-agent" class="nav-link" data-scroll-target="#invoke-an-agent">4.1 Invoke an Agent</a></li>
-  <li><a href="#retrieve-vector-search-only-vs-retrieveandgenerate-managed-rag" id="toc-retrieve-vector-search-only-vs-retrieveandgenerate-managed-rag" class="nav-link" data-scroll-target="#retrieve-vector-search-only-vs-retrieveandgenerate-managed-rag">4.2 <strong>retrieve</strong> (vector search only) vs <strong>retrieve‑and‑generate</strong> (managed RAG)</a></li>
-  <li><a href="#invoke-a-flow-with-bedrock-agent-runtime" id="toc-invoke-a-flow-with-bedrock-agent-runtime" class="nav-link" data-scroll-target="#invoke-a-flow-with-bedrock-agent-runtime">4.3 <strong>Invoke a Flow</strong> with <code>bedrock-agent-runtime</code></a></li>
-  <li><a href="#bedrock-agentcore-control-control-plane" id="toc-bedrock-agentcore-control-control-plane" class="nav-link" data-scroll-target="#bedrock-agentcore-control-control-plane">5) <code>bedrock-agentcore-control</code> — Control Plane</a></li>
-  <li><a href="#create-agentcore-runtime" id="toc-create-agentcore-runtime" class="nav-link" data-scroll-target="#create-agentcore-runtime">Create AgentCore Runtime</a>
-  <ul class="collapse">
-  <li><a href="#configure-memory-for-shortlongterm-context" id="toc-configure-memory-for-shortlongterm-context" class="nav-link" data-scroll-target="#configure-memory-for-shortlongterm-context">5.2 Configure <strong>Memory</strong> (for short/long‑term context)</a></li>
-  <li><a href="#configure-gateway-turn-apislambdamcp-servers-into-tools" id="toc-configure-gateway-turn-apislambdamcp-servers-into-tools" class="nav-link" data-scroll-target="#configure-gateway-turn-apislambdamcp-servers-into-tools">5.3 Configure <strong>Gateway</strong> (turn APIs/Lambda/MCP servers into tools)</a></li>
-  </ul></li>
-  <li><a href="#bedrock-agentcore-data-plane" id="toc-bedrock-agentcore-data-plane" class="nav-link" data-scroll-target="#bedrock-agentcore-data-plane">6) <code>bedrock-agentcore</code> — Data Plane</a></li>
-  <li><a href="#invoke-agent-runtime-memory" id="toc-invoke-agent-runtime-memory" class="nav-link" data-scroll-target="#invoke-agent-runtime-memory">Invoke Agent Runtime &amp; Memory</a></li>
-  <li><a href="#iii.-real-world-bedrock-architectures" id="toc-iii.-real-world-bedrock-architectures" class="nav-link" data-scroll-target="#iii.-real-world-bedrock-architectures">III. Real-World Bedrock Architectures</a></li>
-  <li><a href="#architecture-patterns-overview" id="toc-architecture-patterns-overview" class="nav-link" data-scroll-target="#architecture-patterns-overview">Architecture Patterns Overview</a></li>
-  <li><a href="#iii.1-stateless-batch-llm-calls-offline-async-workloads" id="toc-iii.1-stateless-batch-llm-calls-offline-async-workloads" class="nav-link" data-scroll-target="#iii.1-stateless-batch-llm-calls-offline-async-workloads">III.1) Stateless Batch LLM Calls (Offline / Async workloads)</a></li>
-  <li><a href="#iii.2-stateless-online-llm-calls" id="toc-iii.2-stateless-online-llm-calls" class="nav-link" data-scroll-target="#iii.2-stateless-online-llm-calls">III.2) Stateless Online LLM Calls</a></li>
-  <li><a href="#iii.3-managed-rag-retrieve-and-generate" id="toc-iii.3-managed-rag-retrieve-and-generate" class="nav-link" data-scroll-target="#iii.3-managed-rag-retrieve-and-generate">III.3) Managed RAG — <code>retrieve-and-generate</code></a></li>
-  <li><a href="#iii.4-self-orchestrated-rag" id="toc-iii.4-self-orchestrated-rag" class="nav-link" data-scroll-target="#iii.4-self-orchestrated-rag">III.4) Self-orchestrated RAG</a></li>
-  <li><a href="#iii.5-aws-bedrock-managed-agentic-rag" id="toc-iii.5-aws-bedrock-managed-agentic-rag" class="nav-link" data-scroll-target="#iii.5-aws-bedrock-managed-agentic-rag">III.5) AWS Bedrock Managed Agentic RAG</a></li>
-  <li><a href="#iii.6-agentcore-custom-agent-runtime" id="toc-iii.6-agentcore-custom-agent-runtime" class="nav-link" data-scroll-target="#iii.6-agentcore-custom-agent-runtime">III.6) AgentCore (Custom Agent Runtime)</a></li>
-  <li><a href="#iii.7-bedrock-agents-mcp-backed-tools" id="toc-iii.7-bedrock-agents-mcp-backed-tools" class="nav-link" data-scroll-target="#iii.7-bedrock-agents-mcp-backed-tools">III.7) Bedrock Agents + MCP-backed Tools</a></li>
-  <li><a href="#iii.8-bedrock-flows" id="toc-iii.8-bedrock-flows" class="nav-link" data-scroll-target="#iii.8-bedrock-flows">III.8) Bedrock Flows</a></li>
-  <li><a href="#bedrock-managed-agents" id="toc-bedrock-managed-agents" class="nav-link" data-scroll-target="#bedrock-managed-agents">Bedrock Managed Agents</a></li>
-  <li><a href="#agentcore" id="toc-agentcore" class="nav-link" data-scroll-target="#agentcore">AgentCore</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
-  <li><a href="#mental-model-recap" id="toc-mental-model-recap" class="nav-link" data-scroll-target="#mental-model-recap">Mental Model Recap</a></li>
-  <li><a href="#iv.-guardrails" id="toc-iv.-guardrails" class="nav-link" data-scroll-target="#iv.-guardrails">IV. Guardrails</a></li>
-  <li><a href="#how-guardrails-work" id="toc-how-guardrails-work" class="nav-link" data-scroll-target="#how-guardrails-work">How Guardrails Work</a></li>
-  <li><a href="#how-guardrails-are-enforced-in-bedrock-runtime-apis" id="toc-how-guardrails-are-enforced-in-bedrock-runtime-apis" class="nav-link" data-scroll-target="#how-guardrails-are-enforced-in-bedrock-runtime-apis">How Guardrails are enforced in Bedrock Runtime APIs</a></li>
-  <li><a href="#why-input-tags-matter" id="toc-why-input-tags-matter" class="nav-link" data-scroll-target="#why-input-tags-matter">Why <code>&lt;input&gt;</code> Tags Matter</a></li>
-  <li><a href="#v.-summary" id="toc-v.-summary" class="nav-link" data-scroll-target="#v.-summary">V. Summary</a></li>
-  <li><a href="#three-bedrock-runtime-apis" id="toc-three-bedrock-runtime-apis" class="nav-link" data-scroll-target="#three-bedrock-runtime-apis">Three Bedrock Runtime APIs</a></li>
-  <li><a href="#mental-model-recap-1" id="toc-mental-model-recap-1" class="nav-link" data-scroll-target="#mental-model-recap-1">Mental Model Recap</a></li>
-  <li><a href="#core-takeaways" id="toc-core-takeaways" class="nav-link" data-scroll-target="#core-takeaways">Core Takeaways</a></li>
-  <li><a href="#authors-note" id="toc-authors-note" class="nav-link" data-scroll-target="#authors-note">Author’s Note</a>
-  <ul class="collapse">
-  <li><a href="#authors-genai-specialization-certificate" id="toc-authors-genai-specialization-certificate" class="nav-link" data-scroll-target="#authors-genai-specialization-certificate">Author’s GenAI Specialization Certificate</a></li>
-  </ul></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
@@ -272,39 +200,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>I got to learn quite a few things from a GenAI Specialization from AWS in coursera. Combining the course learnings with my experience at work, I have compiled my notes below.</p>
-<p><img src="./images/Bedrock_api_endpoints_mental_model.png" class="img-fluid"></p>
+<section id="key-sections-of-this-talk" class="level3">
+<h3 class="anchored" data-anchor-id="key-sections-of-this-talk">Key Sections of this Talk</h3>
+<ul>
+<li><ol start="0" type="1">
+<li>The 5 Min Short Version of the Entire Blog</li>
+</ol></li>
+<li><ol type="I">
+<li>Introduction to AWS Bedrock</li>
+</ol></li>
+<li><ol start="2" type="I">
+<li>Control Plane &amp; Data Plane Endpoints</li>
+</ol></li>
+<li><ol start="3" type="I">
+<li>Real World Bedrock Architectures</li>
+</ol></li>
+<li><ol start="4" type="I">
+<li>Guardrails</li>
+</ol></li>
+<li><ol start="22" type="A">
+<li>Conclusion</li>
+</ol></li>
+</ul>
 <blockquote class="blockquote">
-<p><strong>Disclaimer</strong>: <br> * The AWS CLI commands are <strong><em>representational</em></strong>. Kindly check <code>aws &lt;bedrock-api&gt; &lt;command&gt; help</code> to confirm the workings.<br> * These are notes for learning and I have used LLMs to tweak my messaging or make it crisper/better<br> * Sources are attributed to all pics for clarity</p>
+<p><strong>Disclaimer</strong>: <br> * The AWS CLI commands are <strong><em>representational</em></strong>. Kindly check <code>aws &lt;bedrock-api&gt; &lt;command&gt; help</code> to confirm the workings.<br> * These are notes for learning and I have used LLMs to tweak my messaging or make it crisper/better<br> * Sources are attributed to all external pics for clarity. Pics with no sources are Author’s</p>
 </blockquote>
-<section id="a-visual-guide-to-demystify-genai-in-aws" class="level2" data-align="center">
-<h2 class="anchored" data-anchor-id="a-visual-guide-to-demystify-genai-in-aws">A Visual Guide to Demystify GenAI in AWS</h2>
-<hr>
-<section id="a-ready-reckoner-for-aws-bedrocks-control-data-plane-apis" class="level5">
-<h5 class="anchored" data-anchor-id="a-ready-reckoner-for-aws-bedrocks-control-data-plane-apis"><em>A Ready Reckoner for AWS Bedrock’s Control &amp; Data Plane APIs</em> 🛠️</h5>
-<hr>
-<p><img src="./images/opening_image.png" width="300" alt="AWS Bedrock"></p>
-<p><br></p>
-<section id="author-senthil-kumar" class="level6">
-<h6 class="anchored" data-anchor-id="author-senthil-kumar"><strong>Author:</strong> Senthil Kumar</h6>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span> End of Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-</section>
-</section>
+<section id="the-5-min-short-version-of-the-entire-blog" class="level2">
+<h2 class="anchored" data-anchor-id="the-5-min-short-version-of-the-entire-blog">0. The 5 Min Short Version of the Entire Blog</h2>
 <section id="aws-bedrock-apis---simplified-overview" class="level3" data-align="center">
 <h3 class="anchored" data-anchor-id="aws-bedrock-apis---simplified-overview">AWS Bedrock APIs - Simplified Overview</h3>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./images/bedrock_arrows_animated_v5.svg" class="img-fluid figure-img"></p>
+<p><img src="./images/bedrock_arrows_animated_v6.svg" class="img-fluid figure-img"></p>
 <figcaption>Bedrock Mental Model</figcaption>
 </figure>
 </div>
+<blockquote class="blockquote">
+<ul>
+<li>Tip: Right-click and see the above pic in new tab for full-screen view</li>
+</ul>
+</blockquote>
 </section>
+<hr>
 <section id="the-three-main-bedrock-architecture-patterns" class="level3" data-align="center">
 <h3 class="anchored" data-anchor-id="the-three-main-bedrock-architecture-patterns">The Three Main Bedrock Architecture Patterns</h3>
 <p><img src="./images/3_architecture_patterns_2.svg" alt="Bedrock Architecture Patterns"></p>
+<blockquote class="blockquote">
+<ul>
+<li>Tip: Right-click and see the above pic in new tab for full-screen view</li>
+</ul>
+</blockquote>
 </section>
-<section id="in-a-hurry-i-will-be-covering" class="level2">
-<h2 class="anchored" data-anchor-id="in-a-hurry-i-will-be-covering">In a hurry 🏃💨? I will be covering …</h2>
+<hr>
+<section id="real-world-architecture-patterns" class="level3">
+<h3 class="anchored" data-anchor-id="real-world-architecture-patterns">Real World Architecture Patterns</h3>
+<p><img src="./images/bedrock_3_architecture_patterns.png" class="img-fluid"></p>
+<hr>
+</section>
+<section id="in-a-hurry-what-i-will-be-covering-here" class="level3">
+<h3 class="anchored" data-anchor-id="in-a-hurry-what-i-will-be-covering-here">In a hurry 🏃💨? What I will be covering here…</h3>
 <p>Bedrock APIs falling under 2 buckets</p>
 <ul>
 <li><strong>Control Plane</strong> APIs: Administrative APIs / define what exists</li>
@@ -318,17 +276,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Custom Agentic App → AgentCore runtime</li>
 </ol>
 <hr>
-<blockquote class="blockquote">
-<ul>
-<li>And highlight a few more good features of Amazon Bedrock…</li>
-</ul>
-</blockquote>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span> End of Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
 </section>
 <section id="i.-introduction-to-aws-bedrock" class="level2" data-align="center">
 <h2 class="anchored" data-anchor-id="i.-introduction-to-aws-bedrock">I. Introduction to AWS Bedrock</h2>
 </section>
-<section id="what-is-amazon-bedrock" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-amazon-bedrock">What is Amazon Bedrock?</h2>
+<section id="what-is-amazon-bedrock" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-amazon-bedrock">What is Amazon Bedrock?</h3>
 <p>Amazon Bedrock is a <strong>fully managed, serverless</strong> AWS service that exposes:</p>
 <ul>
 <li><strong>Foundation Models</strong> (claude, titan, etc.,)</li>
@@ -341,15 +298,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>…through a unified API surface.</p>
 </section>
-<section id="what-can-you-build" class="level2">
-<h2 class="anchored" data-anchor-id="what-can-you-build">What Can You Build?</h2>
+<section id="what-can-you-build" class="level3">
+<h3 class="anchored" data-anchor-id="what-can-you-build">What Can You Build?</h3>
 <p>Types of AI Apps: - GenAI Deterministic or Agentic Workflows - Conversational AI Applications</p>
 <hr>
 <p><strong>What Bedrock offers:</strong></p>
 <p><code>Infrastructure</code> (serverless) + <code>Models</code> (Foundation Models)</p>
 </section>
-<section id="in-a-model-inference-api-call-bedrock-service-allows-you-to" class="level2">
-<h2 class="anchored" data-anchor-id="in-a-model-inference-api-call-bedrock-service-allows-you-to">In a Model Inference API call, Bedrock Service allows you to …</h2>
+<section id="in-a-model-inference-api-call-bedrock-service-allows-you-to" class="level3">
+<h3 class="anchored" data-anchor-id="in-a-model-inference-api-call-bedrock-service-allows-you-to">In a Model Inference API call, Bedrock Service allows you to …</h3>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -381,14 +338,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="additional-capabilities" class="level2">
-<h2 class="anchored" data-anchor-id="additional-capabilities">Additional Capabilities</h2>
+<section id="additional-capabilities" class="level3">
+<h3 class="anchored" data-anchor-id="additional-capabilities">Additional Capabilities</h3>
 <ul>
 <li>Run <strong>batch jobs</strong></li>
 <li><strong>Async</strong> request calls</li>
 <li><strong>Fine-tuning</strong> models</li>
 <li><strong>Provisioned throughput</strong> for dedicated capacity</li>
 </ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span> End of Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="ii.-control-plane-data-plane-endpoints" class="level2" data-align="center">
 <h2 class="anchored" data-anchor-id="ii.-control-plane-data-plane-endpoints">II. Control Plane &amp; Data Plane Endpoints</h2>
@@ -414,6 +374,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+<p><img src="./images/control_data_plane_apis_2.png" class="img-fluid"></p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 2%">
@@ -489,53 +450,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <section id="discover-models-metadata" class="level3">
 <h3 class="anchored" data-anchor-id="discover-models-metadata">1.1 Discover Models &amp; Metadata</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List available foundation models</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock list-foundation-models <span class="at">--region</span> us-east-1</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect a specific model</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock get-foundation-model <span class="dt">\</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-identifier</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List available foundation models</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock list-foundation-models <span class="at">--region</span> us-east-1</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect a specific model</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock get-foundation-model <span class="dt">\</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-identifier</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="configure-accountregionlevel-invocation-logging" class="level3">
 <h3 class="anchored" data-anchor-id="configure-accountregionlevel-invocation-logging">1.2 Configure account/Region‑level <strong>invocation logging</strong></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Enable model invocation logging to S3</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock put-model-invocation-logging-configuration <span class="dt">\</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--logging-config</span> <span class="st">'{</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st">    "s3Config": { "bucketName": "my-bedrock-logs" },</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st">    "textDataDeliveryEnabled": true,</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">    "imageDataDeliveryEnabled": true</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">  }'</span> <span class="dt">\</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Enable model invocation logging to S3</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock put-model-invocation-logging-configuration <span class="dt">\</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--logging-config</span> <span class="st">'{</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="st">    "s3Config": { "bucketName": "my-bedrock-logs" },</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="st">    "textDataDeliveryEnabled": true,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="st">    "imageDataDeliveryEnabled": true</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="st">  }'</span> <span class="dt">\</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="provisioned-throughput" class="level3">
 <h3 class="anchored" data-anchor-id="provisioned-throughput">1.3 Provisioned Throughput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create Provisioned Throughput (dedicated capacity)</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock create-provisioned-model-throughput <span class="dt">\</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--provisioned-model-name</span> my-pt-sonnet <span class="dt">\</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-units</span> 1 <span class="dt">\</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--commitment-duration</span> OneMonth <span class="dt">\</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create Provisioned Throughput (dedicated capacity)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock create-provisioned-model-throughput <span class="dt">\</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--provisioned-model-name</span> my-pt-sonnet <span class="dt">\</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-units</span> 1 <span class="dt">\</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--commitment-duration</span> OneMonth <span class="dt">\</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="fine-tuning" class="level3">
 <h3 class="anchored" data-anchor-id="fine-tuning">1.4 Fine-Tuning</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit a fine-tuning job</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock create-model-customization-job <span class="dt">\</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--job-name</span> ft-haiku-faq <span class="dt">\</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--base-model-identifier</span> anthropic.claude-3-haiku-20240307-v1:0 <span class="dt">\</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--training-data-config</span> <span class="st">'{"s3Uri":"s3://my-train-bucket/data/"}'</span> <span class="dt">\</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit a fine-tuning job</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock create-model-customization-job <span class="dt">\</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--job-name</span> ft-haiku-faq <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--base-model-identifier</span> anthropic.claude-3-haiku-20240307-v1:0 <span class="dt">\</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--training-data-config</span> <span class="st">'{"s3Uri":"s3://my-train-bucket/data/"}'</span> <span class="dt">\</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="batch-inference" class="level3">
 <h3 class="anchored" data-anchor-id="batch-inference">1.5 Batch Inference</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create batch inference job</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock create-model-invocation-job <span class="dt">\</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--job-name</span> faq-batch-jan <span class="dt">\</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input-data-config</span> <span class="st">'{"s3InputDataConfig":{"s3Uri":"s3://my-batch/input/"}}'</span> <span class="dt">\</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create batch inference job</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock create-model-invocation-job <span class="dt">\</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--job-name</span> faq-batch-jan <span class="dt">\</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input-data-config</span> <span class="st">'{"s3InputDataConfig":{"s3Uri":"s3://my-batch/input/"}}'</span> <span class="dt">\</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span> End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="bedrock-runtime-data-plane" class="level2" data-align="center">
 <h2 class="anchored" data-anchor-id="bedrock-runtime-data-plane">2) <code>bedrock-runtime</code> — Data Plane</h2>
@@ -549,56 +513,59 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <section id="singleprompt-invokemodel-typical-text-generation" class="level3">
 <h3 class="anchored" data-anchor-id="singleprompt-invokemodel-typical-text-generation">2.1 Single‑prompt <strong>InvokeModel</strong> (typical text generation)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare provider-specific body (example: Anthropic Claude 3.x)</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> request.json <span class="op">&lt;&lt;'JSON'</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="st">{</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">  "anthropic_version":"bedrock-2023-05-31",</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="st">  "max_tokens":512,</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="st">  "messages":[{"role":"user","content":[{"type":"text","text":"Summarize ChatGPT architecture in 5 bullets."}]}]</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="op">JSON</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke model and save response</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime invoke-model <span class="dt">\</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--content-type</span> application/json <span class="dt">\</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--body</span> fileb://request.json <span class="dt">\</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1 <span class="op">&gt;</span> response.json</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare provider-specific body (example: Anthropic Claude 3.x)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> request.json <span class="op">&lt;&lt;'JSON'</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="st">{</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="st">  "anthropic_version":"bedrock-2023-05-31",</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="st">  "max_tokens":512,</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="st">  "messages":[{"role":"user","content":[{"type":"text","text":"Summarize ChatGPT architecture in 5 bullets."}]}]</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="op">JSON</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke model and save response</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime invoke-model <span class="dt">\</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--content-type</span> application/json <span class="dt">\</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--body</span> fileb://request.json <span class="dt">\</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1 <span class="op">&gt;</span> response.json</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
 <p><strong>Note:</strong> AWS CLI does not support streaming responses</p>
 </blockquote>
 </section>
 <section id="converse-api-uniform-chat-interface" class="level3">
 <h3 class="anchored" data-anchor-id="converse-api-uniform-chat-interface">2.2 Converse API (Uniform Chat Interface)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple multi-turn chat</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime converse <span class="dt">\</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> anthropic.claude-3-haiku-20240307-v1:0 <span class="dt">\</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--messages</span> <span class="st">'[{"role":"user","content":[{"text":"Give me 3 risks..."}]}]'</span> <span class="dt">\</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a managed Prompt (Prompt Management)</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime converse <span class="dt">\</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> arn:aws:bedrock:us-east-1:<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:prompt/<span class="op">&lt;</span>PROMPT_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--prompt-variables</span> <span class="st">'{"input":"Generate a release note"}'</span> <span class="dt">\</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple multi-turn chat</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime converse <span class="dt">\</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> anthropic.claude-3-haiku-20240307-v1:0 <span class="dt">\</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--messages</span> <span class="st">'[{"role":"user","content":[{"text":"Give me 3 risks..."}]}]'</span> <span class="dt">\</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a managed Prompt (Prompt Management)</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime converse <span class="dt">\</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> arn:aws:bedrock:us-east-1:<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:prompt/<span class="op">&lt;</span>PROMPT_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--prompt-variables</span> <span class="st">'{"input":"Generate a release note"}'</span> <span class="dt">\</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="embeddings" class="level3">
 <h3 class="anchored" data-anchor-id="embeddings">2.3 Embeddings</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Text embeddings (Titan v2)</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime invoke-model <span class="dt">\</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> amazon.titan-embed-text-v2:0 <span class="dt">\</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--body</span> <span class="st">'{"inputText":"Bedrock embeddings"}'</span> <span class="dt">\</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Text embeddings (Titan v2)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime invoke-model <span class="dt">\</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> amazon.titan-embed-text-v2:0 <span class="dt">\</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--body</span> <span class="st">'{"inputText":"Bedrock embeddings"}'</span> <span class="dt">\</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="async-inference" class="level3">
 <h3 class="anchored" data-anchor-id="async-inference">2.4 Async Inference</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start async invoke (long-running media workloads)</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime start-async-invoke <span class="dt">\</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> amazon.nova-reel-v1:0 <span class="dt">\</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-input</span> file://reel_request.json <span class="dt">\</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output-data-config</span> <span class="st">'s3OutputDataConfig={"s3Uri":"s3://my-async/"}'</span> <span class="dt">\</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start async invoke (long-running media workloads)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-runtime start-async-invoke <span class="dt">\</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-id</span> amazon.nova-reel-v1:0 <span class="dt">\</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-input</span> file://reel_request.json <span class="dt">\</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output-data-config</span> <span class="st">'s3OutputDataConfig={"s3Uri":"s3://my-async/"}'</span> <span class="dt">\</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span> End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="bedrock-agent-control-plane" class="level2" data-align="center">
 <h2 class="anchored" data-anchor-id="bedrock-agent-control-plane">3) <code>bedrock-agent</code> — Control Plane</h2>
@@ -611,121 +578,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <section id="create-manage-an-agent" class="level3">
 <h3 class="anchored" data-anchor-id="create-manage-an-agent">3.1 Create &amp; Manage an Agent</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an agent with instructions and a foundation model</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-agent <span class="dt">\</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-name</span> <span class="st">"ops-assistant"</span> <span class="dt">\</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--instruction</span> <span class="st">"You are an internal Ops assistant."</span> <span class="dt">\</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--foundation-model</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-resource-role-arn</span> arn:aws:iam::<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:role/BedrockAgentRole <span class="dt">\</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an alias</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-agent-alias <span class="dt">\</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-id</span> <span class="op">&lt;</span>AGENT_ID<span class="op">&gt;</span> --agent-alias-name prod <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an agent with instructions and a foundation model</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-agent <span class="dt">\</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-name</span> <span class="st">"ops-assistant"</span> <span class="dt">\</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--instruction</span> <span class="st">"You are an internal Ops assistant."</span> <span class="dt">\</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--foundation-model</span> anthropic.claude-3-5-sonnet-20240620-v1:0 <span class="dt">\</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-resource-role-arn</span> arn:aws:iam::<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:role/BedrockAgentRole <span class="dt">\</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an alias</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-agent-alias <span class="dt">\</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-id</span> <span class="op">&lt;</span>AGENT_ID<span class="op">&gt;</span> --agent-alias-name prod <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="create-knowledge-base" class="level3">
 <h3 class="anchored" data-anchor-id="create-knowledge-base">3.2 Create Knowledge Base</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create knowledge base (storage + vector config defined via JSON files)</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-knowledge-base <span class="dt">\</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> kb-docs <span class="dt">\</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--role-arn</span> arn:aws:iam::<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:role/BedrockKBRole <span class="dt">\</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--knowledge-base-configuration</span> file://kb-config.json <span class="dt">\</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--storage-configuration</span> file://kb-storage.json <span class="dt">\</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Add data source and start ingestion</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-data-source <span class="dt">\</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--knowledge-base-id</span> <span class="op">&lt;</span>KB_ID<span class="op">&gt;</span> --name s3-docs <span class="dt">\</span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--data-source-configuration</span> file://kb-datasource.json <span class="dt">\</span></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create knowledge base (storage + vector config defined via JSON files)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-knowledge-base <span class="dt">\</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> kb-docs <span class="dt">\</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--role-arn</span> arn:aws:iam::<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:role/BedrockKBRole <span class="dt">\</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--knowledge-base-configuration</span> file://kb-config.json <span class="dt">\</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--storage-configuration</span> file://kb-storage.json <span class="dt">\</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Add data source and start ingestion</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-data-source <span class="dt">\</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--knowledge-base-id</span> <span class="op">&lt;</span>KB_ID<span class="op">&gt;</span> --name s3-docs <span class="dt">\</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--data-source-configuration</span> file://kb-datasource.json <span class="dt">\</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="prompt-management" class="level3">
 <h3 class="anchored" data-anchor-id="prompt-management">3.3 Prompt Management</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a prompt with a variant</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-prompt <span class="dt">\</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> <span class="st">"cs-faq"</span> <span class="at">--default-variant</span> <span class="st">"v1"</span> <span class="dt">\</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--variants</span> file://prompt-variant.json <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a prompt with a variant</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-prompt <span class="dt">\</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> <span class="st">"cs-faq"</span> <span class="at">--default-variant</span> <span class="st">"v1"</span> <span class="dt">\</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--variants</span> file://prompt-variant.json <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="flows" class="level3">
 <h3 class="anchored" data-anchor-id="flows">3.4 Flows</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a Flow</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-flow <span class="dt">\</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> <span class="st">"chat-lite"</span> <span class="dt">\</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--definition</span> file://flow-definition.json <span class="dt">\</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ul>
-<li>An example <strong>flow-definition.json</strong> Input → Prompt → Output (no KB, no Lambda, no branching)</li>
-</ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"nodes"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Input"</span><span class="fu">,</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"FlowInputNode"</span><span class="fu">,</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"outputs"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span> <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"document"</span><span class="fu">,</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Object"</span> <span class="fu">}</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="ot">,</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Prompt"</span><span class="fu">,</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"ChatPrompt"</span><span class="fu">,</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"configuration"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"prompt"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"sourceConfiguration"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"inline"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>              <span class="dt">"modelId"</span><span class="fu">:</span> <span class="st">"anthropic.claude-3-haiku-20240307-v1:0"</span><span class="fu">,</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>              <span class="dt">"templateType"</span><span class="fu">:</span> <span class="st">"TEXT"</span><span class="fu">,</span></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>              <span class="dt">"templateConfiguration"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>                <span class="dt">"text"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">"text"</span><span class="fu">:</span> <span class="st">"You are a concise assistant. Reply briefly to: {{user_text}}"</span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>                <span class="fu">}</span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>              <span class="fu">},</span></span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>              <span class="dt">"inferenceConfiguration"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>                <span class="dt">"text"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">"maxTokens"</span><span class="fu">:</span> <span class="dv">128</span><span class="fu">,</span></span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">"temperature"</span><span class="fu">:</span> <span class="fl">0.2</span><span class="fu">,</span></span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>                  <span class="dt">"topP"</span><span class="fu">:</span> <span class="dv">1</span></span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>                <span class="fu">}</span></span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>              <span class="fu">}</span></span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>            <span class="fu">}</span></span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>          <span class="fu">}</span></span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"inputs"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span> <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"user_text"</span><span class="fu">,</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"String"</span><span class="fu">,</span> <span class="dt">"expression"</span><span class="fu">:</span> <span class="st">"$.document"</span> <span class="fu">}</span></span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span><span class="fu">,</span></span>
-<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"outputs"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span> <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"modelCompletion"</span><span class="fu">,</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"String"</span> <span class="fu">}</span></span>
-<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
-<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="ot">,</span></span>
-<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
-<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Output"</span><span class="fu">,</span></span>
-<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"FlowOutput"</span><span class="fu">,</span></span>
-<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"inputs"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span> <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"document"</span><span class="fu">,</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Object"</span><span class="fu">,</span> <span class="dt">"expression"</span><span class="fu">:</span> <span class="st">"$.modelCompletion"</span> <span class="fu">}</span></span>
-<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
-<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
-<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
-<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"connections"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
-<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"in_to_prompt"</span><span class="fu">,</span></span>
-<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Data"</span><span class="fu">,</span></span>
-<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"source"</span><span class="fu">:</span> <span class="st">"FlowInputNode"</span><span class="fu">,</span></span>
-<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"target"</span><span class="fu">:</span> <span class="st">"ChatPrompt"</span><span class="fu">,</span></span>
-<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"configuration"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"data"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"sourceOutput"</span><span class="fu">:</span> <span class="st">"document"</span><span class="fu">,</span> <span class="dt">"targetInput"</span><span class="fu">:</span> <span class="st">"user_text"</span> <span class="fu">}</span></span>
-<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
-<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="ot">,</span></span>
-<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
-<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"prompt_to_out"</span><span class="fu">,</span></span>
-<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Data"</span><span class="fu">,</span></span>
-<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"source"</span><span class="fu">:</span> <span class="st">"ChatPrompt"</span><span class="fu">,</span></span>
-<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"target"</span><span class="fu">:</span> <span class="st">"FlowOutput"</span><span class="fu">,</span></span>
-<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"configuration"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb14-66"><a href="#cb14-66" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"data"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"sourceOutput"</span><span class="fu">:</span> <span class="st">"modelCompletion"</span><span class="fu">,</span> <span class="dt">"targetInput"</span><span class="fu">:</span> <span class="st">"document"</span> <span class="fu">}</span></span>
-<span id="cb14-67"><a href="#cb14-67" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
-<span id="cb14-68"><a href="#cb14-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
-<span id="cb14-69"><a href="#cb14-69" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
-<span id="cb14-70"><a href="#cb14-70" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a Flow</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent create-flow <span class="dt">\</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> <span class="st">"chat-lite"</span> <span class="dt">\</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--definition</span> file://flow-definition.json <span class="dt">\</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span> End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="bedrock-agent-runtime-data-plane" class="level2" data-align="center">
 <h2 class="anchored" data-anchor-id="bedrock-agent-runtime-data-plane">4) <code>bedrock-agent-runtime</code> — Data Plane</h2>
@@ -739,53 +636,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <section id="invoke-an-agent" class="level3">
 <h3 class="anchored" data-anchor-id="invoke-an-agent">4.1 Invoke an Agent</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke an agent alias with session state</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent-runtime invoke-agent <span class="dt">\</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-id</span> <span class="op">&lt;</span>AGENT_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-alias-id</span> <span class="op">&lt;</span>ALIAS_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--session-id</span> <span class="va">$(</span><span class="fu">uuidgen</span><span class="va">)</span> <span class="dt">\</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input-text</span> <span class="st">"Summarize yesterday's on-call incident."</span> <span class="dt">\</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-agent-runtime; agent-id/alias route to deployed agent; session-id threads convo.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke an agent alias with session state</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent-runtime invoke-agent <span class="dt">\</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-id</span> <span class="op">&lt;</span>AGENT_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-alias-id</span> <span class="op">&lt;</span>ALIAS_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--session-id</span> <span class="va">$(</span><span class="fu">uuidgen</span><span class="va">)</span> <span class="dt">\</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input-text</span> <span class="st">"Summarize yesterday's on-call incident."</span> <span class="dt">\</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co"># path=bedrock-agent-runtime; agent-id/alias route to deployed agent; session-id threads convo.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="retrieve-vector-search-only-vs-retrieveandgenerate-managed-rag" class="level3">
 <h3 class="anchored" data-anchor-id="retrieve-vector-search-only-vs-retrieveandgenerate-managed-rag">4.2 <strong>retrieve</strong> (vector search only) vs <strong>retrieve‑and‑generate</strong> (managed RAG)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve: semantic search only (no LLM generation)</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent-runtime retrieve <span class="dt">\</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--knowledge-base-id</span> <span class="op">&lt;</span>KB_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--retrieval-query</span> <span class="st">'{"text":"backup policy steps"}'</span> <span class="dt">\</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve-and-generate: fetch + generate in one call</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent-runtime retrieve-and-generate <span class="dt">\</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input</span> <span class="st">'{"text":"What are our P1 on-call steps?"}'</span> <span class="dt">\</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--retrieve-and-generate-configuration</span> <span class="st">'{...}'</span> <span class="dt">\</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve: semantic search only (no LLM generation)</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent-runtime retrieve <span class="dt">\</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--knowledge-base-id</span> <span class="op">&lt;</span>KB_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--retrieval-query</span> <span class="st">'{"text":"backup policy steps"}'</span> <span class="dt">\</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve-and-generate: fetch + generate in one call</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent-runtime retrieve-and-generate <span class="dt">\</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input</span> <span class="st">'{"text":"What are our P1 on-call steps?"}'</span> <span class="dt">\</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--retrieve-and-generate-configuration</span> <span class="st">'{...}'</span> <span class="dt">\</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="invoke-a-flow-with-bedrock-agent-runtime" class="level3">
 <h3 class="anchored" data-anchor-id="invoke-a-flow-with-bedrock-agent-runtime">4.3 <strong>Invoke a Flow</strong> with <code>bedrock-agent-runtime</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the flow input (maps to your Flow's Input Node names)</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> flow-input.json <span class="op">&lt;&lt;'JSON'</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="st">{</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="st">  "inputs": [</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="st">    {</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="st">      "content": { "document": "hello" },</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="st">      "nodeName": "FlowInputNode",</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="st">      "nodeOutputName": "document"</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="st">  ]</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="op">JSON</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke a Flow alias</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent-runtime invoke-flow <span class="dt">\</span></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--flow-identifier</span> <span class="op">&lt;</span>FLOW_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">--flow-alias-identifier</span> <span class="op">&lt;</span>ALIAS_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cli-input-json</span> file://flow-input.json <span class="dt">\</span></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1 <span class="op">&gt;</span> flow-response.json</span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="co"># (Typical inspection)</span></span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> flow-response.json</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the flow input (maps to your Flow's Input Node names)</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> flow-input.json <span class="op">&lt;&lt;'JSON'</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="st">{</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="st">  "inputs": [</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="st">    {</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="st">      "content": { "document": "hello" },</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="st">      "nodeName": "FlowInputNode",</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="st">      "nodeOutputName": "document"</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="st">  ]</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="op">JSON</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke a Flow alias</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agent-runtime invoke-flow <span class="dt">\</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--flow-identifier</span> <span class="op">&lt;</span>FLOW_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">--flow-alias-identifier</span> <span class="op">&lt;</span>ALIAS_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cli-input-json</span> file://flow-input.json <span class="dt">\</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1 <span class="op">&gt;</span> flow-response.json</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="co"># (Typical inspection)</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> flow-response.json</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span> End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="bedrock-agentcore-control-control-plane" class="level2" data-align="center">
 <h2 class="anchored" data-anchor-id="bedrock-agentcore-control-control-plane">5) <code>bedrock-agentcore-control</code> — Control Plane</h2>
@@ -795,64 +695,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="create-agentcore-runtime" class="level2">
 <h2 class="anchored" data-anchor-id="create-agentcore-runtime">Create AgentCore Runtime</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Package &amp; upload your LangGraph agent</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Example: package and upload your agent code</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">zip</span> <span class="at">-r</span> agent.zip app.py requirements.txt my_langgraph_pkg/</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3 cp agent.zip s3://my-bucket/agentcore/artifacts/agent.zip <span class="at">--region</span> us-east-1</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Create the AgentCore Runtime (direct code deploy)</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control create-agent-runtime <span class="dt">\</span></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-name</span> chat-runtime <span class="dt">\</span></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-artifact</span> <span class="st">'{</span></span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="st">    "codeConfiguration": {</span></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="st">      "code": { "s3": { "bucket":"my-bucket","prefix":"agentcore/artifacts/" } },</span></span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="st">      "runtime": "PYTHON_3_11"</span></span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="st">  }'</span> <span class="dt">\</span></span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">--role-arn</span> arn:aws:iam::<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:role/AgentCoreExecutionRole <span class="dt">\</span></span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<ul>
-<li>Use <strong>code configuration (S3)</strong> for the simplest “direct code deploy” path; alternatively, use <strong>container configuration (ECR)</strong>.</li>
-<li><strong>Framework-agnostic</strong>: Deploy LangGraph, custom loops, etc.</li>
-</ul>
-</blockquote>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Package &amp; upload your LangGraph agent</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Example: package and upload your agent code</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">zip</span> <span class="at">-r</span> agent.zip app.py requirements.txt my_langgraph_pkg/</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3 cp agent.zip s3://my-bucket/agentcore/artifacts/agent.zip <span class="at">--region</span> us-east-1</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Create the AgentCore Runtime (direct code deploy)</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control create-agent-runtime <span class="dt">\</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-name</span> chat-runtime <span class="dt">\</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-artifact</span> <span class="st">'{</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="st">    "codeConfiguration": {</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="st">      "code": { "s3": { "bucket":"my-bucket","prefix":"agentcore/artifacts/" } },</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="st">      "runtime": "PYTHON_3_11"</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="st">  }'</span> <span class="dt">\</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">--role-arn</span> arn:aws:iam::<span class="op">&lt;</span>ACCOUNT_ID<span class="op">&gt;</span>:role/AgentCoreExecutionRole <span class="dt">\</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="configure-memory-for-shortlongterm-context" class="level3">
 <h3 class="anchored" data-anchor-id="configure-memory-for-shortlongterm-context">5.2 Configure <strong>Memory</strong> (for short/long‑term context)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a Memory resource</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control create-memory <span class="dt">\</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> chat-memory <span class="dt">\</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># List memories</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control list-memories <span class="at">--region</span> us-east-1</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Describe a Memory</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control get-memory <span class="dt">\</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--memory-id</span> <span class="op">&lt;</span>MEMORY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a Memory resource</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control create-memory <span class="dt">\</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> chat-memory <span class="dt">\</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co"># List memories</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control list-memories <span class="at">--region</span> us-east-1</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Describe a Memory</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control get-memory <span class="dt">\</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--memory-id</span> <span class="op">&lt;</span>MEMORY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="configure-gateway-turn-apislambdamcp-servers-into-tools" class="level3">
 <h3 class="anchored" data-anchor-id="configure-gateway-turn-apislambdamcp-servers-into-tools">5.3 Configure <strong>Gateway</strong> (turn APIs/Lambda/MCP servers into tools)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a Gateway (tool registry)</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control create-gateway <span class="dt">\</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> chat-gateway <span class="dt">\</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Register a tool target (e.g., an internal API / MCP server / Lambda)</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control create-gateway-target <span class="dt">\</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--gateway-id</span> <span class="op">&lt;</span>GATEWAY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> kb-search <span class="dt">\</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co"># List gateways &amp; targets</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control list-gateways <span class="at">--region</span> us-east-1</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control list-gateway-targets <span class="dt">\</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--gateway-id</span> <span class="op">&lt;</span>GATEWAY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a Gateway (tool registry)</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control create-gateway <span class="dt">\</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> chat-gateway <span class="dt">\</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Register a tool target (e.g., an internal API / MCP server / Lambda)</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control create-gateway-target <span class="dt">\</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--gateway-id</span> <span class="op">&lt;</span>GATEWAY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> kb-search <span class="dt">\</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co"># List gateways &amp; targets</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control list-gateways <span class="at">--region</span> us-east-1</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore-control list-gateway-targets <span class="dt">\</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--gateway-id</span> <span class="op">&lt;</span>GATEWAY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span> End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 <section id="bedrock-agentcore-data-plane" class="level2" data-align="center">
@@ -872,18 +769,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <section id="invoke-agent-runtime-memory" class="level3">
 <h3 class="anchored" data-anchor-id="invoke-agent-runtime-memory">Invoke Agent Runtime &amp; Memory</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke against an AgentCore Runtime</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore invoke-agent-runtime <span class="dt">\</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-id</span> <span class="op">&lt;</span>RUNTIME_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--session-id</span> <span class="va">$(</span><span class="fu">uuidgen</span><span class="va">)</span> <span class="dt">\</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input</span> <span class="st">'{"prompt":"hello"}'</span> <span class="dt">\</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Add memory records</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore batch-create-memory-records <span class="dt">\</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--memory-id</span> <span class="op">&lt;</span>MEMORY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--records</span> <span class="st">'[{"type":"TEXT","text":"User prefers concise."}]'</span> <span class="dt">\</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke against an AgentCore Runtime</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore invoke-agent-runtime <span class="dt">\</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--agent-runtime-id</span> <span class="op">&lt;</span>RUNTIME_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--session-id</span> <span class="va">$(</span><span class="fu">uuidgen</span><span class="va">)</span> <span class="dt">\</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input</span> <span class="st">'{"prompt":"hello"}'</span> <span class="dt">\</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Add memory records</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> bedrock-agentcore batch-create-memory-records <span class="dt">\</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--memory-id</span> <span class="op">&lt;</span>MEMORY_ID<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--records</span> <span class="st">'[{"type":"TEXT","text":"User prefers concise."}]'</span> <span class="dt">\</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span> us-east-1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span> End of Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="iii.-real-world-bedrock-architectures" class="level2" data-align="center">
 <h2 class="anchored" data-anchor-id="iii.-real-world-bedrock-architectures">III. Real-World Bedrock Architectures</h2>
@@ -897,21 +797,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Control vs convenience</strong> desired</li>
 <li><strong>Latency and cost</strong> sensitivity</li>
 </ul>
+<p><img src="./images/bedrock_3_architecture_patterns.png" class="img-fluid"></p>
 </section>
-<section id="iii.1-stateless-batch-llm-calls-offline-async-workloads" class="level3">
-<h3 class="anchored" data-anchor-id="iii.1-stateless-batch-llm-calls-offline-async-workloads">III.1) Stateless Batch LLM Calls (Offline / Async workloads)</h3>
+<section id="iii.1-llm-app-patterns-direct-model-invocation" class="level2" data-align="center">
+<h2 class="anchored" data-anchor-id="iii.1-llm-app-patterns-direct-model-invocation">III.1 LLM App Patterns (Direct Model Invocation)</h2>
+</section>
+<blockquote class="blockquote">
+<p><em>These patterns are for developers who want to handle all logic themselves,</em> <em>using Bedrock strictly as an inference and retrieval engine.</em></p>
+</blockquote>
+<p><img src="./images/llm_app_patterns.png" class="img-fluid"></p>
+<section id="iii.1.1-stateless-batch-llm-calls-offline-async-workloads" class="level3">
+<h3 class="anchored" data-anchor-id="iii.1.1-stateless-batch-llm-calls-offline-async-workloads">III.1.1) Stateless Batch LLM Calls (Offline / Async workloads)</h3>
 <p><strong>When to use:</strong> High-volume, independent prompts; throughput/cost optimized; results can land later</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">S3</span> <span class="er">(</span><span class="ex">JSONL</span> inputs<span class="kw">)</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>   <span class="ex">│</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>   <span class="ex">▼</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="ex">bedrock.create-model-invocation-job</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>   <span class="ex">│</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>   <span class="ex">▼</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="ex">S3</span> <span class="er">(</span><span class="ex">JSONL</span> outputs<span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">S3</span> <span class="er">(</span><span class="ex">JSONL</span> inputs<span class="kw">)</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>   <span class="ex">│</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>   <span class="ex">▼</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="ex">bedrock.create-model-invocation-job</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>   <span class="ex">│</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>   <span class="ex">▼</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="ex">S3</span> <span class="er">(</span><span class="ex">JSONL</span> outputs<span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>State:</strong> No conversational state. Just S3 input + job metadata, receive output</p>
+<p>Source: <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data.html">AWS Docs Batch Inference</a></p>
+<p><strong>An Example JSONL Object</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode jsonl code-with-copy"><code class="sourceCode json"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="dt">"modelInput"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"anthropic_version"</span><span class="fu">:</span> <span class="st">"bedrock-2023-05-31"</span><span class="fu">,</span> <span class="dt">"max_tokens"</span><span class="fu">:</span> <span class="dv">512</span><span class="fu">,</span> <span class="dt">"messages"</span><span class="fu">:</span> <span class="ot">[</span><span class="fu">{</span><span class="dt">"role"</span><span class="fu">:</span> <span class="st">"user"</span><span class="fu">,</span> <span class="dt">"content"</span><span class="fu">:</span> <span class="ot">[</span><span class="fu">{</span><span class="dt">"type"</span><span class="fu">:</span> <span class="st">"text"</span><span class="fu">,</span> <span class="dt">"text"</span><span class="fu">:</span> <span class="st">"Summarize this ticket: My intemrnet has been down in Chennai for 3 hours."</span><span class="fu">}</span><span class="ot">]</span><span class="fu">}</span><span class="ot">]</span><span class="fu">},</span> <span class="dt">"recordId"</span><span class="fu">:</span> <span class="st">"ticket_001"</span><span class="fu">}</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="dt">"modelInput"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"anthropic_version"</span><span class="fu">:</span> <span class="st">"bedrock-2023-05-31"</span><span class="fu">,</span> <span class="dt">"max_tokens"</span><span class="fu">:</span> <span class="dv">512</span><span class="fu">,</span> <span class="dt">"messages"</span><span class="fu">:</span> <span class="ot">[</span><span class="fu">{</span><span class="dt">"role"</span><span class="fu">:</span> <span class="st">"user"</span><span class="fu">,</span> <span class="dt">"content"</span><span class="fu">:</span> <span class="ot">[</span><span class="fu">{</span><span class="dt">"type"</span><span class="fu">:</span> <span class="st">"text"</span><span class="fu">,</span> <span class="dt">"text"</span><span class="fu">:</span> <span class="st">"Summarize this ticket: I cannot login to the mobile app despite resetting password."</span><span class="fu">}</span><span class="ot">]</span><span class="fu">}</span><span class="ot">]</span><span class="fu">},</span> <span class="dt">"recordId"</span><span class="fu">:</span> <span class="st">"ticket_002"</span><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="iii.2-stateless-online-llm-calls" class="level3">
-<h3 class="anchored" data-anchor-id="iii.2-stateless-online-llm-calls">III.2) Stateless Online LLM Calls</h3>
+<section id="iii.1.2-stateless-online-llm-calls" class="level3">
+<h3 class="anchored" data-anchor-id="iii.1.2-stateless-online-llm-calls">III.1.2) Stateless Online LLM Calls</h3>
 <p><strong>When to use:</strong> Single-turn transformations, classification, summarization</p>
 <pre><code>User / App
    │
@@ -920,30 +832,17 @@ bedrock-runtime.invoke-model or converse
    │
    ▼
 Response</code></pre>
-<p><strong>State:</strong> - Fully stateless. All context must be sent each call. - Even the converse API is strictly stateless.One must append the previous turn conversations to the –messages array parameter in the next API call.</p>
+<p><strong>State:</strong> - Fully stateless. All context must be sent each call. - Even the converse API is strictly stateless. - Append the previous turn conversations to the <code>--messages</code> array parameter in the next API call.</p>
 </section>
-<section id="iii.3-managed-rag-retrieve-and-generate" class="level3">
-<h3 class="anchored" data-anchor-id="iii.3-managed-rag-retrieve-and-generate">III.3) Managed RAG — <code>retrieve-and-generate</code></h3>
-<p><strong>The simplest possible RAG that Bedrock offers.</strong></p>
-<p><strong>When to use</strong>: <br> * Fast “KB Q&amp;A” with minimal plumbing; a single managed retrieval + answer step is sufficient.</p>
-<pre><code>User
-  → bedrock-agent-runtime.retrieve-and-generate
-       ├─ Vector search (once)
-       ├─ Prompt assembly (bedrock-managed)
-       └─ LLM generation
-  → Response</code></pre>
-<p><strong>State:</strong> Primary knowledge in KB. Use a <code>sessionId</code> to allow the managed service to handle continuity.</p>
-</section>
-<section id="iii.4-self-orchestrated-rag" class="level3">
-<h3 class="anchored" data-anchor-id="iii.4-self-orchestrated-rag">III.4) Self-orchestrated RAG</h3>
-<p><strong>Most common “serious production” pattern today.</strong></p>
+<section id="iii.1.3-self-orchestrated-rag" class="level3">
+<h3 class="anchored" data-anchor-id="iii.1.3-self-orchestrated-rag">III.1.3) Self-orchestrated RAG</h3>
 <p><strong>When to use</strong></p>
 <ul>
-<li>Need deterministic control over chunking, filtering, ordering, prompt construction, retries.</li>
+<li>Need deterministic control over the retrieved documents.</li>
 </ul>
 <pre><code>User
   → bedrock-agent-runtime.retrieve (KB search)
-  → App-side trimming / filtering / plumbing
+  → your code filters / trims chunks (custom logic)
   → bedrock-runtime.ConverseStream (LLM + streaming)
   → Token stream → UI</code></pre>
 <p><strong>Key characteristics</strong></p>
@@ -959,9 +858,34 @@ Response</code></pre>
 <blockquote class="blockquote">
 <p>This is <strong>RAG without agents</strong> — simple, explicit, and production-friendly.</p>
 </blockquote>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span> End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="iii.5-aws-bedrock-managed-agentic-rag" class="level3">
-<h3 class="anchored" data-anchor-id="iii.5-aws-bedrock-managed-agentic-rag">III.5) AWS Bedrock Managed Agentic RAG</h3>
+<section id="iii.2-managed-agentic-app-patterns-bedrock-agents" class="level2" data-align="center">
+<h2 class="anchored" data-anchor-id="iii.2-managed-agentic-app-patterns-bedrock-agents">III.2 Managed Agentic App Patterns (Bedrock Agents)</h2>
+</section>
+<blockquote class="blockquote">
+<ul>
+<li><em>These patterns use the “Autonomous Being” model</em></li>
+<li><em>where AWS manages both the Brain (Planner) and the Body (Memory/Tools).</em></li>
+</ul>
+</blockquote>
+<p><img src="./images/managed_agentic_2.png" class="img-fluid"></p>
+<section id="iii.2.1-managed-rag-retrieve-and-generate" class="level3">
+<h3 class="anchored" data-anchor-id="iii.2.1-managed-rag-retrieve-and-generate">III.2.1) Managed RAG — <code>retrieve-and-generate</code></h3>
+<p><strong>The simplest possible RAG that Bedrock offers.</strong></p>
+<p><strong>When to use</strong>: <br> * Fast “KB Q&amp;A” with minimal plumbing; a single managed retrieval + answer step is sufficient.</p>
+<pre><code>User
+  → bedrock-agent-runtime.retrieve-and-generate
+       ├─ Vector search (once)
+       ├─ Prompt assembly (bedrock-managed)
+       └─ LLM generation
+  → Response</code></pre>
+<p><strong>State:</strong> Primary knowledge in KB. Use a <code>sessionId</code> to allow the managed service to handle continuity.</p>
+</section>
+<section id="iii.2.2-aws-bedrock-managed-agentic-rag" class="level3">
+<h3 class="anchored" data-anchor-id="iii.2.2-aws-bedrock-managed-agentic-rag">III.2.2) AWS Bedrock Managed Agentic RAG</h3>
 <p><strong>When to use</strong> * Need built-in planning + tool use + KB integration + traceability with fastest time-to-value.</p>
 <pre><code>User
   → bedrock-agent-runtime.invoke-agent
@@ -970,8 +894,8 @@ Response</code></pre>
        └─ Event stream (answer + trace)
   → UI</code></pre>
 <ul>
-<li>Control Plan: bedrock-agent → configure agent (instructions, action groups, KBs)</li>
-<li>Data Plan: bedrock-agent-runtime (data) → invoke-agent (answer + optional trace)</li>
+<li>Control Plane: bedrock-agent → configure agent (instructions, action groups, KBs)</li>
+<li>Data Plane: bedrock-agent-runtime (data) → invoke-agent (answer + optional trace)</li>
 </ul>
 <p><strong>State lives in</strong>: * Agent session context is tied to <code>sessionId</code> and can be shaped via <code>SessionState</code> (session attributes, conversation history, etc.).</p>
 <p><strong>Key characteristics</strong></p>
@@ -997,11 +921,96 @@ Response</code></pre>
 <li>Debugging requires reading traces, not logs</li>
 </ul>
 </section>
-<section id="iii.6-agentcore-custom-agent-runtime" class="level3">
-<h3 class="anchored" data-anchor-id="iii.6-agentcore-custom-agent-runtime">III.6) AgentCore (Custom Agent Runtime)</h3>
+<section id="iii.2.3-bedrock-agents-mcp-backed-tools" class="level3">
+<h3 class="anchored" data-anchor-id="iii.2.3-bedrock-agents-mcp-backed-tools">III.2.3) Bedrock Agents + MCP-backed Tools</h3>
+<p><strong>When to use</strong> - When you need your existing AWS-managed Bedrock Agent to connect to MCP compatible servers - When you are ok doing some custom plumbing activities</p>
+<p><img src="./images/bedrock_agent_with_mcp.png" class="img-fluid"></p>
+<p><strong>State lives in</strong>: * Reasoning/session context in Bedrock Agent via <code>sessionId</code>/<code>SessionState</code>. * Tool/data-side state in external MCP services</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/bedrock_agent_mcp_tools_seq_diag.png" class="img-fluid figure-img"></p>
+<figcaption>Bedrock Agent MCP Tools Sequence Diagram</figcaption>
+</figure>
+</div>
+</section>
+<section id="iii.2.4-bedrock-flows" class="level3">
+<h3 class="anchored" data-anchor-id="iii.2.4-bedrock-flows">III.2.4) Bedrock Flows</h3>
+<p><strong>Declarative, managed orchestration for predictable GenAI workflows</strong></p>
+<pre><code>User / App
+  → bedrock-flow-runtime.invoke-flow
+       ├─ Step 1: Prompt / Model call
+       ├─ Step 2: Conditional logic
+       ├─ Step 3: Retrieval or transform
+       └─ Step N: Final response</code></pre>
+<p><strong>When to use</strong> * Need a governed, versioned, deterministic pipeline (branching/conditions/iterations) without writing orchestration code.</p>
+<p><strong>State Lives In</strong> * <strong>Execution-Tracked</strong>. State is tracked via executionId for the duration of the flow’s run.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span> End of Sub-Section ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="iii.3-custom-agentic-app-patterns-agentcore" class="level2" data-align="center">
+<h2 class="anchored" data-anchor-id="iii.3-custom-agentic-app-patterns-agentcore">III.3 Custom Agentic App Patterns (AgentCore)</h2>
+</section>
+<blockquote class="blockquote">
+<ul>
+<li><em>You provide the Brain (Planner), AWS provides the Body (Managed Infrastructure).</em></li>
+</ul>
+</blockquote>
+<p><strong>What is AgentCore?</strong></p>
+<p>AgentCore is both <strong>framework-agnostic</strong> and <strong>model-agnostic</strong> — deploy and operate AI agents securely at scale using any framework (<a href="https://strandsagents.com/latest/">Strands</a>, <a href="https://www.crewai.com/">CrewAI</a>, <a href="https://www.langchain.com/langgraph">LangGraph</a>, <a href="https://www.llamaindex.ai/">LlamaIndex</a>) and any LLM. It eliminates the undifferentiated heavy lifting of building specialized agent infrastructure.</p>
+<p><img src="./images/custom_agentic.png" class="img-fluid"></p>
+<p><img src="./images/agentcore_overview.png" class="img-fluid"></p>
+<p>Source: <a href="https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials">amazon-bedrock-agentcore-samples github repo</a></p>
+<p><strong>AgentCore Components (main ones in my opinion):</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 57%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Runtime</strong></td>
+<td>Secure, serverless runtime to deploy agents &amp; tools — any framework, any model</td>
+</tr>
+<tr class="even">
+<td><strong>Gateway</strong></td>
+<td>Convert APIs/Lambda into MCP-compatible tools automatically</td>
+</tr>
+<tr class="odd">
+<td><strong>Identity</strong></td>
+<td>Agent identity &amp; access management (Okta, Entra, Cognito)</td>
+</tr>
+<tr class="even">
+<td><strong>Memory</strong></td>
+<td>Managed memory infrastructure for personalized agent experiences</td>
+</tr>
+<tr class="odd">
+<td><strong>Tools</strong></td>
+<td>Built-in Code Interpreter &amp; Browser Tool</td>
+</tr>
+</tbody>
+</table>
+<p><img src="./images/agentcore_main_features.png" class="img-fluid"></p>
+<p>Adapted from <a href="https://github.com/awslabs/amazon-bedrock-agentcore-samples">amazon-bedrock-agentcore-samples github repo</a></p>
+<p><strong>Gateway: APIs → MCP Tools</strong></p>
+<p>AI agents need tools to perform real-world tasks — from searching databases to sending messages. AgentCore Gateway automatically converts APIs, Lambda functions, and existing services into MCP-compatible tools so developers can quickly make these essential capabilities available to agents without managing integrations.</p>
+<p><img src="./images/gateway_how_does_it_work.png" class="img-fluid"></p>
+<p>Source: <a href="https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials/02-AgentCore-gateway">amazon-bedrock-agentcore-samples</a></p>
+<p><strong>Example Architecture:</strong></p>
+<p><img src="./images/bedrock_agentcore_example_architecture.png" class="img-fluid"></p>
+<p>Source: <a href="https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials/02-AgentCore-gateway/12-agents-as-tools-using-mcp">amazon-bedrock-agentcore-samples</a></p>
+<section id="iii.3.1-agentcore-custom-agent-runtime" class="level3">
+<h3 class="anchored" data-anchor-id="iii.3.1-agentcore-custom-agent-runtime">III.3.1) AgentCore (Custom Agent Runtime)</h3>
 <p><strong>When to use</strong></p>
 <ul>
-<li>Need custom agent planners (LangGraph/Strands/custom loops), long-running sessions, strict isolation, custom toolchains.</li>
+<li>Need custom agent planners (LangGraph/Strands/custom loops), long-running sessions, strict isolation, custom tools.</li>
+<li>SecOps approved permissions to Agents</li>
 </ul>
 <pre><code>User
   → bedrock-agentcore.invoke-agent-runtime
@@ -1014,227 +1023,12 @@ Response</code></pre>
 <li>Control: bedrock-agentcore-control → deploy runtime/memory/gateway</li>
 <li>Run: bedrock-agentcore (data) → invoke-agent-runtime (session-based)</li>
 </ul>
-<p><strong>State</strong>: * <strong>Externally Managed</strong>. State is explicitly persisted and retrieved via bedrock-agentcore APIs.</p>
+<p><strong>State</strong>: * <strong>Externally Managed</strong>. State is explicitly persisted and retrieved via bedrock-agentcore APIs</p>
 <blockquote class="blockquote">
 <ul>
 <li>This is <strong>maximum control</strong>, at the cost of <strong>maximum responsibility</strong>.</li>
 </ul>
 </blockquote>
-</section>
-<section id="iii.7-bedrock-agents-mcp-backed-tools" class="level3">
-<h3 class="anchored" data-anchor-id="iii.7-bedrock-agents-mcp-backed-tools">III.7) Bedrock Agents + MCP-backed Tools</h3>
-<p><strong>When to use</strong> - When you need your existing Bedrock Agent to connect to MCP compatible servers - When you are ok doing some custom plumbing activities</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">→</span> 1. bedrock-agent-runtime.invoke-agent <span class="kw">&amp;</span> <span class="ex">its</span> 3 Roles</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> <span class="er">(</span><span class="ex">1</span><span class="kw">)</span> <span class="ex">Agent</span> reasoning + orchestration</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> <span class="er">(</span><span class="ex">2</span><span class="kw">)</span> <span class="ex">KB</span> retrieval</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">├─</span> <span class="er">(</span><span class="ex">3</span><span class="kw">)</span> <span class="ex">Tool</span> selection <span class="er">(</span><span class="ex">and</span> infer the args for the tools<span class="kw">)</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>       <span class="ex">→</span> 2. OpenAPI Tool Schema gives tools context to Agent</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>            <span class="ex">→</span> 3. Tool Adapter Lambda <span class="er">(</span><span class="ex">MCP</span> Client<span class="kw">)</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>                 <span class="ex">-</span> Converts <span class="kw">`</span><span class="ex">Bedrock</span> Action Group Event<span class="kw">`</span> to tool selected + args</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>                 <span class="ex">→</span> 4. Hits the MCP Server URL <span class="er">(</span><span class="ex">tool</span><span class="kw">)</span> <span class="ex">with</span> the args</span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>                    <span class="ex">-</span> Invokes the tool <span class="er">(</span><span class="ex">such</span> as a DB<span class="kw">)</span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>                    <span class="ex">-</span> Tool Result sent back to MCP Client                        </span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>              <span class="ex">←</span> 5. MCP Client receives response <span class="er">(</span><span class="ex">structured</span> tool result<span class="kw">)</span></span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>        <span class="ex">←</span> 6. Tool result returned to the agent via the MCP Client</span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>   <span class="ex">←</span> 7. Agent continues reasoning with tool result </span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  <span class="ex">←</span> 8. Final response <span class="er">(</span><span class="ex">streamed</span> to user chunk-by-chunk<span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>State lives in</strong>: * Reasoning/session context in Bedrock Agent via <code>sessionId</code>/<code>SessionState</code>. * Tool/data-side state in external MCP services</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="./images/bedrock_agent_mcp_tools_seq_diag.png" class="img-fluid figure-img"></p>
-<figcaption>Bedrock Agent MCP Tools Sequence Diagram</figcaption>
-</figure>
-</div>
-</section>
-<section id="iii.8-bedrock-flows" class="level3">
-<h3 class="anchored" data-anchor-id="iii.8-bedrock-flows">III.8) Bedrock Flows</h3>
-<p><strong>Declarative, managed orchestration for predictable GenAI workflows</strong></p>
-<pre><code>User / App
-  → bedrock-flow-runtime.invoke-flow
-       ├─ Step 1: Prompt / Model call
-       ├─ Step 2: Conditional logic
-       ├─ Step 3: Retrieval or transform
-       └─ Step N: Final response</code></pre>
-<p><strong>When to use</strong> * Need a governed, versioned, deterministic pipeline (branching/conditions/iterations) without writing orchestration code.</p>
-<p><strong>State Lives In</strong> * <strong>Execution-Tracked</strong>. State is tracked via executionId for the duration of the flow’s run.</p>
-</section>
-<section id="bedrock-managed-agents" class="level3">
-<h3 class="anchored" data-anchor-id="bedrock-managed-agents">Bedrock Managed Agents</h3>
-<blockquote class="blockquote">
-<ul>
-<li>AWS-managed Brain 🧠</li>
-<li>AWS-managed Body (memory &amp; tool) 💪</li>
-</ul>
-</blockquote>
-<p><img src="./images/agentcore-agent_2.png" class="img-fluid"></p>
-</section>
-<section id="agentcore" class="level3">
-<h3 class="anchored" data-anchor-id="agentcore">AgentCore</h3>
-<blockquote class="blockquote">
-<ul>
-<li>Application-managed Brain 🧠 (such as LangGraph/Strands Agent)</li>
-<li>AWS-managed Body (memory &amp; tool) 💪</li>
-</ul>
-</blockquote>
-<p><img src="./images/bedrock-managed-agents.png" class="img-fluid"></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Feature</th>
-<th style="text-align: left;">Bedrock Managed Agents</th>
-<th style="text-align: left;">Bedrock AgentCore</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><strong>Planner</strong></td>
-<td style="text-align: left;"><strong>AWS-Managed:</strong> Developer provide instructions; AWS runs the loop.</td>
-<td style="text-align: left;"><strong>Custom Planner:</strong> Developer creates the loop (LangGraph, Python, etc.) on any compute.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>Memory</strong></td>
-<td style="text-align: left;"><strong>Implicit:</strong> Handled automatically within the <code>invoke-agent</code> session.</td>
-<td style="text-align: left;"><strong>Explicit:</strong> Developer explicitly calls the <code>bedrock-agentcore</code> API to manually <code>GET</code> or <code>PUT</code> session state.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>Tools</strong></td>
-<td style="text-align: left;"><strong>Action Groups:</strong> Triggered by AWS via Lambda during the managed loop.</td>
-<td style="text-align: left;"><strong>Managed Sidecars:</strong> Developer explicitly call AgentCore to use the <strong>Code Interpreter</strong> or <strong>Browser</strong>.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>Complexity</strong></td>
-<td style="text-align: left;">Low code, fast “Time-to-Market.”</td>
-<td style="text-align: left;">Higher code, “Maximum Customizability.”</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Endpoint</th>
-<th style="text-align: left;">API</th>
-<th style="text-align: left;">State Management</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><strong><code>bedrock-runtime</code></strong></td>
-<td style="text-align: left;"><code>converse</code></td>
-<td style="text-align: left;"><strong>Stateless.</strong> You must manage the <code>messages</code> array in your code.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong><code>bedrock-agent-runtime</code></strong></td>
-<td style="text-align: left;"><code>invoke-agent</code></td>
-<td style="text-align: left;"><strong>Stateful.</strong> AWS manages the session state via a <code>sessionId</code>.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong><code>bedrock-agentcore</code></strong></td>
-<td style="text-align: left;"><code>agent-runtime</code></td>
-<td style="text-align: left;"><strong>Externally Stateful.</strong> You explicitly call the AgentCore “Memory” to save/load the state for your custom loop.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="summary" class="level3">
-<h3 class="anchored" data-anchor-id="summary">Summary</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Architecture Pattern</th>
-<th style="text-align: left;">Orchestration Owner</th>
-<th style="text-align: left;">State Location</th>
-<th style="text-align: left;">Best For</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><strong>Batch Job</strong></td>
-<td style="text-align: left;">AWS (Async)</td>
-<td style="text-align: left;">None</td>
-<td style="text-align: left;">High-volume, offline data</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>Converse API</strong></td>
-<td style="text-align: left;">Developer</td>
-<td style="text-align: left;">App-side</td>
-<td style="text-align: left;">Single-turn / Simple chat</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>Managed RAG</strong></td>
-<td style="text-align: left;">AWS (Single-step)</td>
-<td style="text-align: left;">Managed (<code>sessionId</code>)</td>
-<td style="text-align: left;">Fast “Chat with Docs”</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>Self-Orchestrated RAG</strong></td>
-<td style="text-align: left;">Developer</td>
-<td style="text-align: left;">App-side</td>
-<td style="text-align: left;">Production-grade precision</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>Managed Agent</strong></td>
-<td style="text-align: left;">AWS (Multi-step)</td>
-<td style="text-align: left;">Managed (<code>sessionId</code>)</td>
-<td style="text-align: left;">Rapid Agentic deployment</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>AgentCore</strong></td>
-<td style="text-align: left;">Developer</td>
-<td style="text-align: left;">AgentCore API</td>
-<td style="text-align: left;">Custom loops (LangGraph)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>Bedrock Flows</strong></td>
-<td style="text-align: left;">AWS (Declarative)</td>
-<td style="text-align: left;">Execution-based</td>
-<td style="text-align: left;">Deterministic pipelines</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="mental-model-recap" class="level3">
-<h3 class="anchored" data-anchor-id="mental-model-recap">Mental Model Recap</h3>
-<ul>
-<li><ol type="1">
-<li><strong>Stateless Batch (offline)</strong> → <code>bedrock.create-model-invocation-job</code></li>
-</ol></li>
-<li><ol start="2" type="1">
-<li><strong>Stateless Online LLM calls</strong> → <code>bedrock-runtime.invoke-model</code> / <code>bedrock-runtime.converse</code></li>
-</ol></li>
-<li><ol start="3" type="1">
-<li><strong>Managed RAG (single primitive)</strong> → <code>bedrock-agent-runtime.retrieve-and-generate</code></li>
-</ol></li>
-<li><ol start="4" type="1">
-<li><strong>Self-orchestrated RAG</strong> → <code>bedrock-agent-runtime.retrieve</code> + <code>bedrock-runtime.converse</code> <em>(or bedrock-runtime.converse-stream for streaming)</em></li>
-</ol></li>
-<li><ol start="5" type="1">
-<li><strong>Managed agentic orchestration (Agents)</strong> → <code>bedrock-agent-runtime.invoke-agent</code></li>
-</ol></li>
-<li><ol start="6" type="1">
-<li><strong>Custom agent runtime (AgentCore)</strong> → <code>bedrock-agentcore.invoke-agent-runtime</code></li>
-</ol></li>
-<li><ol start="7" type="1">
-<li><strong>Agents + MCP-backed tools (Hybrid)</strong> → <code>bedrock-agent-runtime.invoke-agent</code> + external MCP tool runtime</li>
-</ol></li>
-<li>8 <strong>Deterministic workflows (Flows)</strong> → <code>bedrock-agent-runtime.invoke-flow</code></li>
-</ul>
 </section>
 <section id="iv.-guardrails" class="level2" data-align="center">
 <h2 class="anchored" data-anchor-id="iv.-guardrails">IV. Guardrails</h2>
@@ -1267,17 +1061,17 @@ Final Response</code></pre>
 </section>
 <section id="how-guardrails-are-enforced-in-bedrock-runtime-apis" class="level3">
 <h3 class="anchored" data-anchor-id="how-guardrails-are-enforced-in-bedrock-runtime-apis">How Guardrails are enforced in Bedrock Runtime APIs</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># process</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bedrock-runtime.converse</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>   <span class="ex">├─</span> Guardrail input scan</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>   <span class="ex">├─</span> Model inference</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>   <span class="ex">└─</span> Guardrail output scan</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># how converse api is invoked with Guardrail</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bedrock-runtime.converse</span></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-</span> modelId</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-</span> messages</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-</span> guardrailIdentifier</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-</span> guardrailVersion</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># process</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bedrock-runtime.converse</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>   <span class="ex">├─</span> Guardrail input scan</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>   <span class="ex">├─</span> Model inference</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>   <span class="ex">└─</span> Guardrail output scan</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># how converse api is invoked with Guardrail</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bedrock-runtime.converse</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-</span> modelId</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-</span> messages</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-</span> guardrailIdentifier</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-</span> guardrailVersion</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="why-input-tags-matter" class="level3">
 <h3 class="anchored" data-anchor-id="why-input-tags-matter">Why <code>&lt;input&gt;</code> Tags Matter</h3>
@@ -1327,13 +1121,14 @@ how can I make a bomb?
 </tr>
 </tbody>
 </table>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="mental-model-recap-1" class="level2">
-<h2 class="anchored" data-anchor-id="mental-model-recap-1">Mental Model Recap</h2>
+<section id="mental-model-recap" class="level2">
+<h2 class="anchored" data-anchor-id="mental-model-recap">Mental Model Recap</h2>
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th>Pattern</th>
+<th>LLM App Pattern</th>
 <th>API</th>
 </tr>
 </thead>
@@ -1347,60 +1142,93 @@ how can I make a bomb?
 <td><code>bedrock-runtime.invoke-model/converse</code></td>
 </tr>
 <tr class="odd">
+<td>Self-orchestrated RAG</td>
+<td><code>retrieve</code> + <code>converse</code></td>
+</tr>
+</tbody>
+</table>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>You have less control here in AWS Managed Bedrock Agents)</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Bedrock Managed 🧠 App Pattern</th>
+<th>API</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
 <td>Managed RAG</td>
 <td><code>bedrock-agent-runtime.retrieve-and-generate</code></td>
 </tr>
 <tr class="even">
-<td>Self-orchestrated RAG</td>
-<td><code>retrieve</code> + <code>converse</code></td>
-</tr>
-<tr class="odd">
 <td>Deterministic Flows</td>
 <td><code>bedrock-agent-runtime.invoke-flow</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Managed Agents</td>
 <td><code>bedrock-agent-runtime.invoke-agent</code></td>
 </tr>
+</tbody>
+</table>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>You have more control here in AgentCore</strong> | AgentCore gives you serverless infra</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Custom Managed 🧠 App Pattern</th>
+<th>API</th>
+</tr>
+</thead>
+<tbody>
 <tr class="odd">
 <td>Custom AgentCore</td>
-<td><code>bedrock-agentcore.invoke-agent-runtime</code></td>
+<td>* <code>bedrock-agentcore.invoke-agent-runtime</code> <br></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="core-takeaways" class="level2">
-<h2 class="anchored" data-anchor-id="core-takeaways">Core Takeaways</h2>
-<ul>
-<li><strong>AWS Bedrock</strong> = Fully managed, serverless service for GenAI apps</li>
-<li><strong>API Plane Separation:</strong> Control Plane (configure) vs Data Plane (run)</li>
-<li><strong>Key Control Plane:</strong> <code>bedrock</code>, <code>bedrock-agent</code>, <code>bedrock-agentcore-control</code></li>
-<li><strong>Key Data Plane:</strong> <code>bedrock-runtime</code>, <code>bedrock-agent-runtime</code>, <code>bedrock-agentcore</code></li>
-</ul>
-<hr>
 <blockquote class="blockquote">
 <p><em>Each layer trades <strong>control for convenience</strong> — not capability.</em></p>
 </blockquote>
 </section>
-<section id="authors-note" class="level2">
-<h2 class="anchored" data-anchor-id="authors-note">Author’s Note</h2>
+<section id="core-takeaways" class="level2">
+<h2 class="anchored" data-anchor-id="core-takeaways">Core Takeaways</h2>
+<ul>
+<li><p><strong>AWS Bedrock</strong> = Fully managed, serverless service for GenAI apps</p></li>
+<li><p><strong>API Plane Separation:</strong> Control Plane (configure) vs Data Plane (run)</p></li>
+<li><p><strong>Key Control Plane:</strong> <code>bedrock</code>, <code>bedrock-agent</code>, <code>bedrock-agentcore-control</code></p></li>
+<li><p><strong>Key Data Plane:</strong> <code>bedrock-runtime</code>, <code>bedrock-agent-runtime</code>, <code>bedrock-agentcore</code></p></li>
+<li><p><em>If you are a developer, building beyond PoC, for all things “Agentic AI”, blindly only follow Bedrock AgentCore</em></p></li>
+</ul>
+</section>
+<section id="authors-final-note" class="level2">
+<h2 class="anchored" data-anchor-id="authors-final-note">Author’s Final Note</h2>
 <blockquote class="blockquote">
-<p><em>With plethora of Agentic AI frameworks, it seems Bedrock is also veering towards <code>bedrock-agentcore</code> which allows developers to use any framework and any model</em></p>
+<ul>
+<li><em>With plethora of Agentic AI frameworks, it seems Bedrock is also veering towards <code>bedrock-agentcore</code> which allows developers to use any framework and any model</em></li>
+<li>And, use AWS just for the “undifferentiated heavy lifting” - infrastructure for AI Agents</li>
+</ul>
 </blockquote>
-<hr>
-<section id="authors-genai-specialization-certificate" class="level3">
-<h3 class="anchored" data-anchor-id="authors-genai-specialization-certificate">Author’s GenAI Specialization Certificate</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="ex">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<ul>
+<li>This course is a good 4-star on the range of Bedrock services</li>
+<li>But do not do it!</li>
+<li>Just explore AgentCore, if you are an advanced user</li>
+</ul>
+</blockquote>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="./images/bedrock_specialization_certificate.png" class="img-fluid figure-img"></p>
 <figcaption>AWS GenAI Specialization Certificate</figcaption>
 </figure>
 </div>
-<hr>
+</section>
+<section id="thank-you" class="level2" data-align="center">
+<h2 class="anchored" data-anchor-id="thank-you">Thank You!</h2>
+</section>
 
 
-</section>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
