@@ -1026,10 +1026,8 @@ how can I make a bomb?
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 ```
 
-> * This course is a good 4-star on the range of Bedrock services
-> * But do not do it! 
-> * Just explore AgentCore, if you are an advanced user
-
+> * The GenAI course is a good 4-star ti know about the the range of Bedrock services
+> * If you are an advanced user, just try AgentCore Official Repo samples
 
 ![AWS GenAI Specialization Certificate](./images/bedrock_specialization_certificate.png)
 
