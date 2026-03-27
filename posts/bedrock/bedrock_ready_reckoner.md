@@ -17,7 +17,7 @@ title: "AWS Bedrock Ready Reckoner: APIs and Agentic AI Architecture Patterns"
 output-file: bedrock_ready_reckoner.html
 ---
 
-### Key Sections of this Talk
+### Key Sections of this Blog
 
 * 0) The 5 Min Short Version of the Entire Blog
 * I) Introduction to AWS Bedrock
