@@ -172,13 +172,36 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#aws-storage-types" id="toc-aws-storage-types" class="nav-link active" data-scroll-target="#aws-storage-types">AWS Storage Types</a></li>
-  <li><a href="#ec2-storage-options-instance-store-vs-ebs" id="toc-ec2-storage-options-instance-store-vs-ebs" class="nav-link" data-scroll-target="#ec2-storage-options-instance-store-vs-ebs">EC2 Storage Options: Instance Store vs EBS</a></li>
-  <li><a href="#latency-vs-throughput-choosing-storageperf-tradeoffs" id="toc-latency-vs-throughput-choosing-storageperf-tradeoffs" class="nav-link" data-scroll-target="#latency-vs-throughput-choosing-storageperf-tradeoffs">3) Latency vs Throughput (Choosing storage/perf tradeoffs)</a></li>
-  <li><a href="#ebs-volume-types-ssd-vs-hdd-fit-to-workload" id="toc-ebs-volume-types-ssd-vs-hdd-fit-to-workload" class="nav-link" data-scroll-target="#ebs-volume-types-ssd-vs-hdd-fit-to-workload">EBS Volume Types (SSD vs HDD) + Fit-to-Workload</a></li>
-  <li><a href="#amazon-s3-object-storage" id="toc-amazon-s3-object-storage" class="nav-link" data-scroll-target="#amazon-s3-object-storage">Amazon S3 (Object Storage)</a></li>
-  <li><a href="#storage-services-recap" id="toc-storage-services-recap" class="nav-link" data-scroll-target="#storage-services-recap">Storage Services Recap</a></li>
-  <li><a href="#quiz-notes-key-takeaways" id="toc-quiz-notes-key-takeaways" class="nav-link" data-scroll-target="#quiz-notes-key-takeaways">Quiz Notes (Key Takeaways)</a></li>
+  <li><a href="#aws-storage-types" id="toc-aws-storage-types" class="nav-link active" data-scroll-target="#aws-storage-types">5.1 AWS Storage Types</a>
+  <ul class="collapse">
+  <li><a href="#file-storage" id="toc-file-storage" class="nav-link" data-scroll-target="#file-storage">5.1.1 File Storage</a></li>
+  <li><a href="#block-storage" id="toc-block-storage" class="nav-link" data-scroll-target="#block-storage">5.1.2 Block Storage</a></li>
+  <li><a href="#object-storage" id="toc-object-storage" class="nav-link" data-scroll-target="#object-storage">5.1.3 Object Storage</a></li>
+  </ul></li>
+  <li><a href="#ec2-storage-options-instance-store-vs-ebs" id="toc-ec2-storage-options-instance-store-vs-ebs" class="nav-link" data-scroll-target="#ec2-storage-options-instance-store-vs-ebs">5.2 EC2 Storage Options: Instance Store vs EBS</a>
+  <ul class="collapse">
+  <li><a href="#two-ec2-instance-storage-options" id="toc-two-ec2-instance-storage-options" class="nav-link" data-scroll-target="#two-ec2-instance-storage-options">5.2.1 Two EC2 Instance Storage Options</a></li>
+  <li><a href="#attachment-relationships-ec2-ebs" id="toc-attachment-relationships-ec2-ebs" class="nav-link" data-scroll-target="#attachment-relationships-ec2-ebs">5.2.2 Attachment Relationships (EC2 ↔︎ EBS)</a></li>
+  <li><a href="#scaling-ebs-volumes" id="toc-scaling-ebs-volumes" class="nav-link" data-scroll-target="#scaling-ebs-volumes">5.2.3 Scaling EBS Volumes</a></li>
+  <li><a href="#ami-types-instance-store-backed-vs-ebs-backed" id="toc-ami-types-instance-store-backed-vs-ebs-backed" class="nav-link" data-scroll-target="#ami-types-instance-store-backed-vs-ebs-backed">5.2.4 AMI Types (Instance Store-backed vs EBS-backed)</a></li>
+  </ul></li>
+  <li><a href="#latency-vs-throughput-choosing-storageperf-tradeoffs" id="toc-latency-vs-throughput-choosing-storageperf-tradeoffs" class="nav-link" data-scroll-target="#latency-vs-throughput-choosing-storageperf-tradeoffs">5.3 Latency vs Throughput (Choosing Storage/Perf Tradeoffs)</a></li>
+  <li><a href="#ebs-volume-types-ssd-vs-hdd-fit-to-workload" id="toc-ebs-volume-types-ssd-vs-hdd-fit-to-workload" class="nav-link" data-scroll-target="#ebs-volume-types-ssd-vs-hdd-fit-to-workload">5.4 EBS Volume Types (SSD vs HDD) + Fit-to-Workload</a>
+  <ul class="collapse">
+  <li><a href="#ebs-snapshots-backups" id="toc-ebs-snapshots-backups" class="nav-link" data-scroll-target="#ebs-snapshots-backups">5.4.1 EBS Snapshots (Backups)</a></li>
+  </ul></li>
+  <li><a href="#amazon-s3-object-storage" id="toc-amazon-s3-object-storage" class="nav-link" data-scroll-target="#amazon-s3-object-storage">5.5 Amazon S3 (Object Storage)</a>
+  <ul class="collapse">
+  <li><a href="#what-s3-is" id="toc-what-s3-is" class="nav-link" data-scroll-target="#what-s3-is">5.5.1 What S3 Is</a></li>
+  <li><a href="#s3-urlstructure" id="toc-s3-urlstructure" class="nav-link" data-scroll-target="#s3-urlstructure">5.5.2 S3 URL/Structure</a></li>
+  <li><a href="#s3-security" id="toc-s3-security" class="nav-link" data-scroll-target="#s3-security">5.5.3 S3 Security</a></li>
+  <li><a href="#s3-encryption" id="toc-s3-encryption" class="nav-link" data-scroll-target="#s3-encryption">5.5.4 S3 Encryption</a></li>
+  <li><a href="#s3-versioning" id="toc-s3-versioning" class="nav-link" data-scroll-target="#s3-versioning">5.5.5 S3 Versioning</a></li>
+  <li><a href="#s3-storage-classes" id="toc-s3-storage-classes" class="nav-link" data-scroll-target="#s3-storage-classes">5.5.6 S3 Storage Classes</a></li>
+  <li><a href="#lifecycle-management-automate-cost-control" id="toc-lifecycle-management-automate-cost-control" class="nav-link" data-scroll-target="#lifecycle-management-automate-cost-control">5.5.7 Lifecycle Management (Automate Cost Control)</a></li>
+  </ul></li>
+  <li><a href="#storage-services-recap" id="toc-storage-services-recap" class="nav-link" data-scroll-target="#storage-services-recap">5.6 Storage Services Recap</a></li>
+  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways">5.7 Key Takeaways</a></li>
   </ul>
 </nav>
     </div>
@@ -212,32 +235,36 @@ ul.task-list li input[type="checkbox"] {
 
 <p>👈 <strong>Back to:</strong> <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">📝 Blog</a> | <a href="https://www.linkedin.com/in/senthilkumarm1901">💼 LinkedIn</a> | <a href="https://medium.com/@senthilkumar.m1901">✍️ Medium</a></p>
 <hr>
-<section id="aws-storage-types" class="level3">
-<h3 class="anchored" data-anchor-id="aws-storage-types">AWS Storage Types</h3>
+<section id="aws-storage-types" class="level2">
+<h2 class="anchored" data-anchor-id="aws-storage-types">5.1 AWS Storage Types</h2>
+<blockquote class="blockquote">
+<p>❓ How do you choose between S3, EBS, and EFS without guessing?</p>
+<p><em>Hint: Think access pattern, latency vs throughput, and how your application interacts with data.</em></p>
+</blockquote>
 <p><strong>Three storage types:</strong></p>
 <ul>
 <li><strong>Block storage</strong>: Splits data into fixed-size <strong>blocks</strong> with addresses → efficient random access; common for OS, DB volumes.</li>
 <li><strong>File storage</strong>: Hierarchical <strong>directory tree</strong> (paths); each file has metadata (name, size, created date). More folders can add latency.</li>
 <li><strong>Object storage</strong>: Flat namespace; each object = data + metadata + unique identifier; optimized for scale &amp; throughput.</li>
 </ul>
-<section id="file-storage-whatwhen" class="level4">
-<h4 class="anchored" data-anchor-id="file-storage-whatwhen">File Storage (What/When)</h4>
+<section id="file-storage" class="level3">
+<h3 class="anchored" data-anchor-id="file-storage">5.1.1 File Storage</h3>
 <ul>
 <li><strong>Structure</strong>: Tree-like folders (like traditional file systems).</li>
 <li><strong>Note</strong>: Every additional folder adds latency.</li>
 <li><strong>Use cases</strong>: large content repositories, dev environments, user home directories.</li>
 </ul>
 </section>
-<section id="block-storage-whatwhy" class="level4">
-<h4 class="anchored" data-anchor-id="block-storage-whatwhy">Block Storage (What/Why)</h4>
+<section id="block-storage" class="level3">
+<h3 class="anchored" data-anchor-id="block-storage">5.1.2 Block Storage</h3>
 <ul>
 <li><strong>Concept</strong>: Files split into <strong>addressable blocks</strong> → efficient retrieval.</li>
 <li>Typically used where <strong>low-latency</strong>, frequent updates, or OS-level mount semantics are needed.</li>
 </ul>
 <p><img src="./images/block_storage.png" class="img-fluid"></p>
 </section>
-<section id="object-storage-whatwhy" class="level4">
-<h4 class="anchored" data-anchor-id="object-storage-whatwhy">Object Storage (What/Why)</h4>
+<section id="object-storage" class="level3">
+<h3 class="anchored" data-anchor-id="object-storage">5.1.3 Object Storage</h3>
 <ul>
 <li><strong>Flat structure</strong> (no true hierarchy).</li>
 <li><strong>Good for high throughput</strong> and massive scale.</li>
@@ -281,10 +308,10 @@ ul.task-list li input[type="checkbox"] {
 <hr>
 </section>
 </section>
-<section id="ec2-storage-options-instance-store-vs-ebs" class="level3">
-<h3 class="anchored" data-anchor-id="ec2-storage-options-instance-store-vs-ebs">EC2 Storage Options: Instance Store vs EBS</h3>
-<section id="two-ec2-instance-storage-options" class="level4">
-<h4 class="anchored" data-anchor-id="two-ec2-instance-storage-options">Two EC2 instance storage options</h4>
+<section id="ec2-storage-options-instance-store-vs-ebs" class="level2">
+<h2 class="anchored" data-anchor-id="ec2-storage-options-instance-store-vs-ebs">5.2 EC2 Storage Options: Instance Store vs EBS</h2>
+<section id="two-ec2-instance-storage-options" class="level3">
+<h3 class="anchored" data-anchor-id="two-ec2-instance-storage-options">5.2.1 Two EC2 Instance Storage Options</h3>
 <ul>
 <li><strong>Instance Store</strong>: ephemeral block storage; good for <strong>stateless</strong> workloads.</li>
 <li><strong>EBS</strong>: persistent block storage; behaves like an external drive that can outlive the instance.</li>
@@ -307,8 +334,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </section>
-<section id="attachment-relationships-ec2-ebs" class="level4">
-<h4 class="anchored" data-anchor-id="attachment-relationships-ec2-ebs">2.2 Attachment relationships (EC2 ↔︎ EBS)</h4>
+<section id="attachment-relationships-ec2-ebs" class="level3">
+<h3 class="anchored" data-anchor-id="attachment-relationships-ec2-ebs">5.2.2 Attachment Relationships (EC2 ↔︎ EBS)</h3>
 <p><strong>1 EC2 to Many EBS Volumes</strong></p>
 <ul>
 <li>An <strong>EBS volume (in the same AZ)</strong> can be detached from one EC2 and attached to another.</li>
@@ -371,16 +398,16 @@ ul.task-list li input[type="checkbox"] {
 <li>Volumes have <strong>max size limits</strong> (scalability bounded per volume).</li>
 </ul>
 </section>
-<section id="scaling-ebs-volumes" class="level4">
-<h4 class="anchored" data-anchor-id="scaling-ebs-volumes">2.3 Scaling EBS volumes</h4>
+<section id="scaling-ebs-volumes" class="level3">
+<h3 class="anchored" data-anchor-id="scaling-ebs-volumes">5.2.3 Scaling EBS Volumes</h3>
 <p>Two main approaches:</p>
 <ol type="1">
 <li><strong>Increase volume size</strong> up to the maximum (<strong>16 TB</strong> per volume, per your notes).</li>
 <li><strong>Attach multiple volumes</strong> to a single EC2 instance (one-to-many).</li>
 </ol>
 </section>
-<section id="ami-types-instance-store-backed-vs-ebs-backed" class="level4">
-<h4 class="anchored" data-anchor-id="ami-types-instance-store-backed-vs-ebs-backed">2.4 AMI types (Instance Store-backed vs EBS-backed</h4>
+<section id="ami-types-instance-store-backed-vs-ebs-backed" class="level3">
+<h3 class="anchored" data-anchor-id="ami-types-instance-store-backed-vs-ebs-backed">5.2.4 AMI Types (Instance Store-backed vs EBS-backed)</h3>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -407,8 +434,8 @@ ul.task-list li input[type="checkbox"] {
 <hr>
 </section>
 </section>
-<section id="latency-vs-throughput-choosing-storageperf-tradeoffs" class="level3">
-<h3 class="anchored" data-anchor-id="latency-vs-throughput-choosing-storageperf-tradeoffs">3) Latency vs Throughput (Choosing storage/perf tradeoffs)</h3>
+<section id="latency-vs-throughput-choosing-storageperf-tradeoffs" class="level2">
+<h2 class="anchored" data-anchor-id="latency-vs-throughput-choosing-storageperf-tradeoffs">5.3 Latency vs Throughput (Choosing Storage/Perf Tradeoffs)</h2>
 <p><strong>Latency</strong> = time for <strong>one</strong> packet to reach destination (important for DB + web interactions)</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -439,8 +466,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <hr>
 </section>
-<section id="ebs-volume-types-ssd-vs-hdd-fit-to-workload" class="level3">
-<h3 class="anchored" data-anchor-id="ebs-volume-types-ssd-vs-hdd-fit-to-workload">EBS Volume Types (SSD vs HDD) + Fit-to-Workload</h3>
+<section id="ebs-volume-types-ssd-vs-hdd-fit-to-workload" class="level2">
+<h2 class="anchored" data-anchor-id="ebs-volume-types-ssd-vs-hdd-fit-to-workload">5.4 EBS Volume Types (SSD vs HDD) + Fit-to-Workload</h2>
 <p><strong>Rule of thumb (from your table):</strong></p>
 <ul>
 <li><strong>Provisioned IOPS SSD</strong> → very low latency (databases, payment systems)</li>
@@ -450,8 +477,8 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p><strong>Key point:</strong> SSDs are faster and more expensive than HDDs.</p>
 <p><img src="./images/types_of_ebs_volumes.png" class="img-fluid"></p>
-<section id="ebs-snapshots-backups" class="level4">
-<h4 class="anchored" data-anchor-id="ebs-snapshots-backups">EBS Snapshots (Backups)</h4>
+<section id="ebs-snapshots-backups" class="level3">
+<h3 class="anchored" data-anchor-id="ebs-snapshots-backups">5.4.1 EBS Snapshots (Backups)</h3>
 <ul>
 <li><strong>Incremental backups</strong>
 <ul>
@@ -462,21 +489,21 @@ ul.task-list li input[type="checkbox"] {
 <hr>
 </section>
 </section>
-<section id="amazon-s3-object-storage" class="level3">
-<h3 class="anchored" data-anchor-id="amazon-s3-object-storage">Amazon S3 (Object Storage)</h3>
-<section id="what-s3-is" class="level4">
-<h4 class="anchored" data-anchor-id="what-s3-is">What S3 is</h4>
+<section id="amazon-s3-object-storage" class="level2">
+<h2 class="anchored" data-anchor-id="amazon-s3-object-storage">5.5 Amazon S3 (Object Storage)</h2>
+<section id="what-s3-is" class="level3">
+<h3 class="anchored" data-anchor-id="what-s3-is">5.5.1 What S3 Is</h3>
 <ul>
 <li><strong>S3 is object storage</strong>: flat structure, objects addressed via unique identifiers.</li>
 <li>Object = file + metadata (store as many as needed).</li>
 </ul>
 </section>
-<section id="s3-urlstructure-image-requested" class="level4">
-<h4 class="anchored" data-anchor-id="s3-urlstructure-image-requested">S3 URL/structure (image requested)</h4>
+<section id="s3-urlstructure" class="level3">
+<h3 class="anchored" data-anchor-id="s3-urlstructure">5.5.2 S3 URL/Structure</h3>
 <p><img src="./images/s3_url_structure.png" class="img-fluid"></p>
 </section>
-<section id="s3-security" class="level4">
-<h4 class="anchored" data-anchor-id="s3-security">S3 Security</h4>
+<section id="s3-security" class="level3">
+<h3 class="anchored" data-anchor-id="s3-security">5.5.3 S3 Security</h3>
 <ul>
 <li>Everything is <strong>private by default</strong></li>
 <li>You <em>can</em> make buckets/folders/objects public, but typical best practice is <strong>granular access</strong>.</li>
@@ -495,16 +522,16 @@ ul.task-list li input[type="checkbox"] {
 <p>Bucket policies apply to <strong>buckets only</strong>, not folders/objects.</p>
 </blockquote>
 </section>
-<section id="s3-encryption" class="level4">
-<h4 class="anchored" data-anchor-id="s3-encryption">S3 Encryption</h4>
+<section id="s3-encryption" class="level3">
+<h3 class="anchored" data-anchor-id="s3-encryption">5.5.4 S3 Encryption</h3>
 <ul>
 <li>Encryption <strong>in transit</strong> and <strong>at rest</strong></li>
 <li><strong>Server-side encryption</strong>: S3 encrypts before storing; decrypts on download</li>
 <li><strong>Client-side encryption</strong>: you encrypt before upload and manage keys/tools</li>
 </ul>
 </section>
-<section id="s3-versioning" class="level4">
-<h4 class="anchored" data-anchor-id="s3-versioning">S3 Versioning</h4>
+<section id="s3-versioning" class="level3">
+<h3 class="anchored" data-anchor-id="s3-versioning">5.5.5 S3 Versioning</h3>
 <ul>
 <li>Helps recover from accidental delete/overwrite</li>
 <li>Delete puts a <strong>delete marker</strong> (object not immediately removed); remove marker to restore</li>
@@ -517,8 +544,8 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Versioning-suspended</strong> (no new versions, old versions remain)</li>
 </ul>
 </section>
-<section id="s3-storage-classes-quick-mapping" class="level4">
-<h4 class="anchored" data-anchor-id="s3-storage-classes-quick-mapping">S3 Storage Classes (quick mapping)</h4>
+<section id="s3-storage-classes" class="level3">
+<h3 class="anchored" data-anchor-id="s3-storage-classes">5.5.6 S3 Storage Classes</h3>
 <ul>
 <li><strong>S3 Standard</strong>: frequent access; low latency/high throughput; higher cost; 11-nines durability</li>
 <li><strong>S3 Intelligent-Tiering</strong>: unpredictable access; auto-moves between frequent/infrequent tiers; small overhead</li>
@@ -529,8 +556,8 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>S3 Outposts</strong>: on-prem S3 for local residency/low latency needs</li>
 </ul>
 </section>
-<section id="lifecycle-management-automate-cost-control" class="level4">
-<h4 class="anchored" data-anchor-id="lifecycle-management-automate-cost-control">Lifecycle Management (Automate cost control)</h4>
+<section id="lifecycle-management-automate-cost-control" class="level3">
+<h3 class="anchored" data-anchor-id="lifecycle-management-automate-cost-control">5.5.7 Lifecycle Management (Automate Cost Control)</h3>
 <p>Lifecycle policies can automate:</p>
 <ul>
 <li><strong>Transition</strong> (move between storage classes)</li>
@@ -544,8 +571,8 @@ ul.task-list li input[type="checkbox"] {
 <hr>
 </section>
 </section>
-<section id="storage-services-recap" class="level3">
-<h3 class="anchored" data-anchor-id="storage-services-recap">Storage Services Recap</h3>
+<section id="storage-services-recap" class="level2">
+<h2 class="anchored" data-anchor-id="storage-services-recap">5.6 Storage Services Recap</h2>
 <ul>
 <li><strong>EC2 Instance Store</strong>: ephemeral block storage; for stateless apps; persists through reboot, not through stop/hibernate/terminate.</li>
 <li><strong>EBS</strong>: persistent; supports resizing + snapshots; SSD for I/O sensitive, HDD for throughput intensive.</li>
@@ -554,8 +581,8 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <hr>
 </section>
-<section id="quiz-notes-key-takeaways" class="level3">
-<h3 class="anchored" data-anchor-id="quiz-notes-key-takeaways">Quiz Notes (Key Takeaways)</h3>
+<section id="key-takeaways" class="level2">
+<h2 class="anchored" data-anchor-id="key-takeaways">5.7 Key Takeaways</h2>
 <ul>
 <li>Max <strong>single S3 object</strong> size: <strong>5 TB</strong> (good for media/video hosting).</li>
 <li><strong>EBS</strong> fits high-transaction relational DB storage layers.</li>
@@ -567,7 +594,6 @@ ul.task-list li input[type="checkbox"] {
 </ul></li>
 <li><strong>Block storage</strong> is best when only a <strong>small portion</strong> of a file changes.</li>
 </ul>
-<p>Resource link (as provided): <a href="https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Cloud%20Technical%20Essentials/w3-%20AWS%20Storage%20and%20Databases/Week%203%20Quiz%20_%20Coursera.pdf">Storage_quiz</a></p>
 
 
 </section>

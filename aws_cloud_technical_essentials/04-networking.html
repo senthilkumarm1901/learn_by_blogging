@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -182,25 +217,35 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#cidr-notation-range" id="toc-cidr-notation-range" class="nav-link" data-scroll-target="#cidr-notation-range">CIDR Notation (range)</a></li>
   </ul></li>
-  <li><a href="#aws-vpc-what-you-must-choose" id="toc-aws-vpc-what-you-must-choose" class="nav-link" data-scroll-target="#aws-vpc-what-you-must-choose">AWS VPC (what you must choose)</a></li>
+  <li><a href="#aws-vpc-what-you-must-choose" id="toc-aws-vpc-what-you-must-choose" class="nav-link" data-scroll-target="#aws-vpc-what-you-must-choose">AWS VPC (what you must choose)</a>
+  <ul class="collapse">
+  <li><a href="#cli-create-a-vpc" id="toc-cli-create-a-vpc" class="nav-link" data-scroll-target="#cli-create-a-vpc">🧪 CLI: Create a VPC</a></li>
+  </ul></li>
   <li><a href="#subnets-how-you-place-resources" id="toc-subnets-how-you-place-resources" class="nav-link" data-scroll-target="#subnets-how-you-place-resources">Subnets (how you place resources)</a>
   <ul class="collapse">
+  <li><a href="#cli-create-subnets-public-private" id="toc-cli-create-subnets-public-private" class="nav-link" data-scroll-target="#cli-create-subnets-public-private">🧪 CLI: Create Subnets (Public + Private)</a></li>
   <li><a href="#reserved-ips-in-every-subnet" id="toc-reserved-ips-in-every-subnet" class="nav-link" data-scroll-target="#reserved-ips-in-every-subnet">Reserved IPs in every subnet</a></li>
   </ul></li>
   <li><a href="#public-vs-private-subnets-core-pattern" id="toc-public-vs-private-subnets-core-pattern" class="nav-link" data-scroll-target="#public-vs-private-subnets-core-pattern">Public vs Private subnets (core pattern)</a></li>
-  <li><a href="#gateways-what-they-do" id="toc-gateways-what-they-do" class="nav-link" data-scroll-target="#gateways-what-they-do">Gateways (what they do)</a></li>
+  <li><a href="#gateways-what-they-do" id="toc-gateways-what-they-do" class="nav-link" data-scroll-target="#gateways-what-they-do">Gateways (what they do)</a>
+  <ul class="collapse">
+  <li><a href="#cli-internet-gateway-public-routing" id="toc-cli-internet-gateway-public-routing" class="nav-link" data-scroll-target="#cli-internet-gateway-public-routing">🧪 CLI: Internet Gateway + Public Routing</a></li>
+  <li><a href="#cli-nat-gateway-private-internet-access" id="toc-cli-nat-gateway-private-internet-access" class="nav-link" data-scroll-target="#cli-nat-gateway-private-internet-access">🧪 CLI: NAT Gateway (Private → Internet Access)</a></li>
+  </ul></li>
   <li><a href="#vpc-routing-security-the-essential-controls" id="toc-vpc-routing-security-the-essential-controls" class="nav-link" data-scroll-target="#vpc-routing-security-the-essential-controls">VPC Routing &amp; Security (the essential controls)</a>
   <ul class="collapse">
   <li><a href="#main-route-table" id="toc-main-route-table" class="nav-link" data-scroll-target="#main-route-table">Main Route Table</a></li>
   <li><a href="#custom-route-tables" id="toc-custom-route-tables" class="nav-link" data-scroll-target="#custom-route-tables">Custom Route Tables</a></li>
+  <li><a href="#cli-route-table-association" id="toc-cli-route-table-association" class="nav-link" data-scroll-target="#cli-route-table-association">🧪 CLI: Route Table Association</a></li>
   <li><a href="#network-acls-subnet-level-firewall" id="toc-network-acls-subnet-level-firewall" class="nav-link" data-scroll-target="#network-acls-subnet-level-firewall">Network ACLs (subnet-level firewall)</a></li>
   <li><a href="#security-groups-instance-level-firewall" id="toc-security-groups-instance-level-firewall" class="nav-link" data-scroll-target="#security-groups-instance-level-firewall">Security Groups (instance-level firewall)</a></li>
+  <li><a href="#cli-security-group-rules-httphttps" id="toc-cli-security-group-rules-httphttps" class="nav-link" data-scroll-target="#cli-security-group-rules-httphttps">🧪 CLI: Security Group Rules (HTTP/HTTPS)</a></li>
   </ul></li>
   <li><a href="#port-80-vs-443-only-what-matters" id="toc-port-80-vs-443-only-what-matters" class="nav-link" data-scroll-target="#port-80-vs-443-only-what-matters">Port 80 vs 443 (only what matters)</a></li>
   <li><a href="#multi-tier-security-group-isolation-typical-3-tier" id="toc-multi-tier-security-group-isolation-typical-3-tier" class="nav-link" data-scroll-target="#multi-tier-security-group-isolation-typical-3-tier">Multi-tier security group isolation (typical 3-tier)</a></li>
   <li><a href="#how-private-subnet-ec2-reaches-the-internet" id="toc-how-private-subnet-ec2-reaches-the-internet" class="nav-link" data-scroll-target="#how-private-subnet-ec2-reaches-the-internet">How private-subnet EC2 reaches the internet</a></li>
   <li><a href="#vpc-troubleshooting-checks-public-ec2-web-app-not-loading" id="toc-vpc-troubleshooting-checks-public-ec2-web-app-not-loading" class="nav-link" data-scroll-target="#vpc-troubleshooting-checks-public-ec2-web-app-not-loading">10 VPC troubleshooting checks (public EC2 web app not loading)</a></li>
-  <li><a href="#quiz-notes" id="toc-quiz-notes" class="nav-link" data-scroll-target="#quiz-notes">Quiz Notes</a></li>
+  <li><a href="#key-notes-to-remember" id="toc-key-notes-to-remember" class="nav-link" data-scroll-target="#key-notes-to-remember">📝 Key Notes to Remember</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -237,6 +282,9 @@ ul.task-list li input[type="checkbox"] {
 <hr>
 <section id="networking-on-aws" class="level1">
 <h1>4 Networking on AWS</h1>
+<blockquote class="blockquote">
+<p>❓ What actually happens inside a VPC when your app talks to the internet?</p>
+</blockquote>
 <section id="introduction-to-networking-in-aws" class="level2">
 <h2 class="anchored" data-anchor-id="introduction-to-networking-in-aws">Introduction to Networking in AWS</h2>
 <section id="what-is-networking" class="level3">
@@ -319,7 +367,13 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Region</strong> (VPC spans multiple AZs in that region)</li>
 <li><strong>CIDR range</strong> (VPC size; up to <strong>four /16 ranges</strong> per VPC)</li>
 </ol>
+<section id="cli-create-a-vpc" class="level3">
+<h3 class="anchored" data-anchor-id="cli-create-a-vpc">🧪 CLI: Create a VPC</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-vpc <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr-block</span> 10.0.0.0/16 <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--tag-specifications</span> ResourceType=vpc,Tags=<span class="pp">[</span><span class="ss">{Key=Name,Value=SampleVpc}</span><span class="pp">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
+</section>
 </section>
 <section id="subnets-how-you-place-resources" class="level2">
 <h2 class="anchored" data-anchor-id="subnets-how-you-place-resources">Subnets (how you place resources)</h2>
@@ -330,6 +384,29 @@ ul.task-list li input[type="checkbox"] {
 <li>EC2 instances are launched <strong>inside subnets</strong> (therefore in a specific AZ).</li>
 <li>For <strong>high availability</strong>, create <strong>at least two subnets in two AZs</strong>.</li>
 </ul>
+<hr>
+<section id="cli-create-subnets-public-private" class="level3">
+<h3 class="anchored" data-anchor-id="cli-create-subnets-public-private">🧪 CLI: Create Subnets (Public + Private)</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Public subnet</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-subnet <span class="dt">\</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--vpc-id</span> <span class="op">&lt;</span>vpc-id<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr-block</span> 10.0.0.0/24</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Private subnets (in different AZs)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-subnet <span class="dt">\</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--vpc-id</span> <span class="op">&lt;</span>vpc-id<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr-block</span> 10.0.1.0/24 <span class="dt">\</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--availability-zone</span> ap-south-1a</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-subnet <span class="dt">\</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--vpc-id</span> <span class="op">&lt;</span>vpc-id<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr-block</span> 10.0.2.0/24 <span class="dt">\</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--availability-zone</span> ap-south-1b</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>💡 Subnets define where resources live (in the cidr-block set of IP addresses allocated to the subnet) and which AZ they belong to.</p>
+</blockquote>
+<hr>
+</section>
 <section id="reserved-ips-in-every-subnet" class="level3">
 <h3 class="anchored" data-anchor-id="reserved-ips-in-every-subnet">Reserved IPs in every subnet</h3>
 <p><img src="./images/5_reserved_ip_addresses.png" class="img-fluid"></p>
@@ -350,7 +427,7 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li><strong>Public</strong>: Load balancer</li>
 <li><strong>Private</strong>: app servers + databases</li>
-<li><strong>NAT Gateway</strong>: private subnet outbound internet access (updates, external APIs)</li>
+<li><strong>NAT Gateway</strong>: private subnet with outbound internet access (updates, external APIs)</li>
 </ul></li>
 </ul>
 <hr>
@@ -366,13 +443,56 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li>Connects VPC to another private network via <strong>encrypted VPN</strong> (with Customer Gateway on the other side).</li>
 </ul></li>
+</ul>
+<section id="cli-internet-gateway-public-routing" class="level3">
+<h3 class="anchored" data-anchor-id="cli-internet-gateway-public-routing">🧪 CLI: Internet Gateway + Public Routing</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create IGW</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-internet-gateway</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Attach IGW to VPC</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 attach-internet-gateway <span class="dt">\</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--internet-gateway-id</span> <span class="op">&lt;</span>igw-id<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--vpc-id</span> <span class="op">&lt;</span>vpc-id<span class="op">&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create route to internet</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-route <span class="dt">\</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--route-table-id</span> <span class="op">&lt;</span>route-table-id<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--destination-cidr-block</span> 0.0.0.0/0 <span class="dt">\</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--gateway-id</span> <span class="op">&lt;</span>igw-id<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>💡 A subnet becomes public only when its route table points to an IGW.</p>
+</blockquote>
+<ul>
 <li><p><strong>NAT Gateway</strong></p>
 <ul>
 <li>Allows <strong>outbound-only</strong> internet from <strong>private subnets</strong> by translating private IP → public IP.</li>
 <li><strong>Stateful return traffic</strong> is allowed only for connections initiated from inside.</li>
 </ul></li>
 </ul>
+</section>
+<section id="cli-nat-gateway-private-internet-access" class="level3">
+<h3 class="anchored" data-anchor-id="cli-nat-gateway-private-internet-access">🧪 CLI: NAT Gateway (Private → Internet Access)</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Allocate Elastic IP</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 allocate-address</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create NAT Gateway (must be in public subnet)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-nat-gateway <span class="dt">\</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--subnet-id</span> <span class="op">&lt;</span>public-subnet-id<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--allocation-id</span> <span class="op">&lt;</span>elastic-ip-allocation-id<span class="op">&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Route private subnet traffic via NAT</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-route <span class="dt">\</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--route-table-id</span> <span class="op">&lt;</span>private-route-table-id<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--destination-cidr-block</span> 0.0.0.0/0 <span class="dt">\</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--nat-gateway-id</span> <span class="op">&lt;</span>nat-gateway-id<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+
+</blockquote>
+</blockquote>
+<p>💡 NAT enables outbound-only internet from private subnets.</p>
 <hr>
+</section>
 </section>
 <section id="vpc-routing-security-the-essential-controls" class="level2">
 <h2 class="anchored" data-anchor-id="vpc-routing-security-the-essential-controls">VPC Routing &amp; Security (the essential controls)</h2>
@@ -392,6 +512,15 @@ ul.task-list li input[type="checkbox"] {
 <li>Route tables can be attached to <strong>specific subnets</strong> for custom routing.</li>
 <li>If a subnet has a custom route table, it uses that instead of the main route table.</li>
 </ul>
+</section>
+<section id="cli-route-table-association" class="level3">
+<h3 class="anchored" data-anchor-id="cli-route-table-association">🧪 CLI: Route Table Association</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 associate-route-table <span class="dt">\</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--subnet-id</span> <span class="op">&lt;</span>subnet-id<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--route-table-id</span> <span class="op">&lt;</span>route-table-id<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>💡 Routing behavior is controlled by which route table a subnet is associated with.</p>
+</blockquote>
 <hr>
 </section>
 <section id="network-acls-subnet-level-firewall" class="level3">
@@ -416,6 +545,25 @@ ul.task-list li input[type="checkbox"] {
 <li>For web servers, allow inbound HTTP/HTTPS:</li>
 </ul>
 <p><img src="./images/inbound_sg_rules_for_http_https.png" class="img-fluid"></p>
+</section>
+<section id="cli-security-group-rules-httphttps" class="level3">
+<h3 class="anchored" data-anchor-id="cli-security-group-rules-httphttps">🧪 CLI: Security Group Rules (HTTP/HTTPS)</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Allow HTTP</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 authorize-security-group-ingress <span class="dt">\</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--group-id</span> <span class="op">&lt;</span>sg-id<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> tcp <span class="dt">\</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port</span> 80 <span class="dt">\</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr</span> 0.0.0.0/0</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Allow HTTPS</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 authorize-security-group-ingress <span class="dt">\</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--group-id</span> <span class="op">&lt;</span>sg-id<span class="op">&gt;</span> <span class="dt">\</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> tcp <span class="dt">\</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port</span> 443 <span class="dt">\</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cidr</span> 0.0.0.0/0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>💡 Security Groups are stateful — return traffic is automatically allowed.</p>
+</blockquote>
 <hr>
 </section>
 </section>
@@ -464,8 +612,8 @@ ul.task-list li input[type="checkbox"] {
 </ol>
 <hr>
 </section>
-<section id="quiz-notes" class="level2">
-<h2 class="anchored" data-anchor-id="quiz-notes">Quiz Notes</h2>
+<section id="key-notes-to-remember" class="level2">
+<h2 class="anchored" data-anchor-id="key-notes-to-remember">📝 Key Notes to Remember</h2>
 <ul>
 <li>VPC requires <strong>Region</strong>, contains <strong>AZs</strong> and <strong>subnets</strong></li>
 <li>Route tables attach to <strong>VPC (main)</strong> and <strong>subnets (custom)</strong></li>
@@ -474,7 +622,6 @@ ul.task-list li input[type="checkbox"] {
 <li>NACLs: <strong>stateless</strong> (must allow inbound + outbound). The&nbsp;<code>default NACL</code>&nbsp;is associated with all subnets in the VPC by default, allowing all traffic.</li>
 <li>CIDR determines network size: <strong>/16 larger than /28</strong></li>
 </ul>
-<p><a href="https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w2-%20AWS%20Compute%20and%20Networking/Week%202%20Quiz%20_%20Coursera.pdf">A Github Source for Week 2 Quiz</a></p>
 
 
 </section>
