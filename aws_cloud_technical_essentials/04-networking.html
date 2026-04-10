@@ -206,46 +206,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#networking-on-aws" id="toc-networking-on-aws" class="nav-link active" data-scroll-target="#networking-on-aws">4 Networking on AWS</a>
   <ul class="collapse">
-  <li><a href="#introduction-to-networking-in-aws" id="toc-introduction-to-networking-in-aws" class="nav-link" data-scroll-target="#introduction-to-networking-in-aws">Introduction to Networking in AWS</a>
+  <li><a href="#introduction-to-networking-in-aws" id="toc-introduction-to-networking-in-aws" class="nav-link" data-scroll-target="#introduction-to-networking-in-aws">4.1 Introduction to Networking in AWS</a>
   <ul class="collapse">
-  <li><a href="#what-is-networking" id="toc-what-is-networking" class="nav-link" data-scroll-target="#what-is-networking">What Is Networking?</a></li>
-  <li><a href="#networking-basics" id="toc-networking-basics" class="nav-link" data-scroll-target="#networking-basics">Networking Basics</a></li>
-  <li><a href="#ip-addresses" id="toc-ip-addresses" class="nav-link" data-scroll-target="#ip-addresses">IP Addresses</a></li>
-  <li><a href="#ipv4-notation" id="toc-ipv4-notation" class="nav-link" data-scroll-target="#ipv4-notation">IPv4 Notation</a></li>
+  <li><a href="#what-is-networking" id="toc-what-is-networking" class="nav-link" data-scroll-target="#what-is-networking">4.1.1 What Is Networking?</a></li>
+  <li><a href="#networking-basics" id="toc-networking-basics" class="nav-link" data-scroll-target="#networking-basics">4.1.2 Networking Basics</a></li>
+  <li><a href="#ip-addresses" id="toc-ip-addresses" class="nav-link" data-scroll-target="#ip-addresses">4.1.3 IP Addresses</a></li>
+  <li><a href="#ipv4-notation" id="toc-ipv4-notation" class="nav-link" data-scroll-target="#ipv4-notation">4.1.4 IPv4 Notation</a></li>
   </ul></li>
-  <li><a href="#ipv4-cidr-why-you-need-ranges" id="toc-ipv4-cidr-why-you-need-ranges" class="nav-link" data-scroll-target="#ipv4-cidr-why-you-need-ranges">IPv4 → CIDR (why you need ranges)</a>
+  <li><a href="#ipv4-cidr-why-you-need-ranges" id="toc-ipv4-cidr-why-you-need-ranges" class="nav-link" data-scroll-target="#ipv4-cidr-why-you-need-ranges">4.2 IPv4 → CIDR (why you need ranges)</a>
   <ul class="collapse">
-  <li><a href="#cidr-notation-range" id="toc-cidr-notation-range" class="nav-link" data-scroll-target="#cidr-notation-range">CIDR Notation (range)</a></li>
+  <li><a href="#cidr-notation-range" id="toc-cidr-notation-range" class="nav-link" data-scroll-target="#cidr-notation-range">4.2.1 CIDR Notation (range)</a></li>
   </ul></li>
-  <li><a href="#aws-vpc-what-you-must-choose" id="toc-aws-vpc-what-you-must-choose" class="nav-link" data-scroll-target="#aws-vpc-what-you-must-choose">AWS VPC (what you must choose)</a>
+  <li><a href="#aws-vpc" id="toc-aws-vpc" class="nav-link" data-scroll-target="#aws-vpc">4.3 AWS VPC</a>
   <ul class="collapse">
   <li><a href="#cli-create-a-vpc" id="toc-cli-create-a-vpc" class="nav-link" data-scroll-target="#cli-create-a-vpc">🧪 CLI: Create a VPC</a></li>
   </ul></li>
-  <li><a href="#subnets-how-you-place-resources" id="toc-subnets-how-you-place-resources" class="nav-link" data-scroll-target="#subnets-how-you-place-resources">Subnets (how you place resources)</a>
+  <li><a href="#subnets-how-you-place-resources" id="toc-subnets-how-you-place-resources" class="nav-link" data-scroll-target="#subnets-how-you-place-resources">4.4 Subnets (how you place resources)</a>
   <ul class="collapse">
   <li><a href="#cli-create-subnets-public-private" id="toc-cli-create-subnets-public-private" class="nav-link" data-scroll-target="#cli-create-subnets-public-private">🧪 CLI: Create Subnets (Public + Private)</a></li>
-  <li><a href="#reserved-ips-in-every-subnet" id="toc-reserved-ips-in-every-subnet" class="nav-link" data-scroll-target="#reserved-ips-in-every-subnet">Reserved IPs in every subnet</a></li>
+  <li><a href="#reserved-ips-in-every-subnet" id="toc-reserved-ips-in-every-subnet" class="nav-link" data-scroll-target="#reserved-ips-in-every-subnet">4.4.1 Reserved IPs in every subnet</a></li>
   </ul></li>
-  <li><a href="#public-vs-private-subnets-core-pattern" id="toc-public-vs-private-subnets-core-pattern" class="nav-link" data-scroll-target="#public-vs-private-subnets-core-pattern">Public vs Private subnets (core pattern)</a></li>
-  <li><a href="#gateways-what-they-do" id="toc-gateways-what-they-do" class="nav-link" data-scroll-target="#gateways-what-they-do">Gateways (what they do)</a>
+  <li><a href="#public-vs-private-subnets" id="toc-public-vs-private-subnets" class="nav-link" data-scroll-target="#public-vs-private-subnets">4.5 Public vs Private subnets</a></li>
+  <li><a href="#gateways" id="toc-gateways" class="nav-link" data-scroll-target="#gateways">4.6 Gateways</a>
   <ul class="collapse">
+  <li><a href="#internet-gateway-igw" id="toc-internet-gateway-igw" class="nav-link" data-scroll-target="#internet-gateway-igw">4.6.1 Internet Gateway (IGW)</a></li>
+  <li><a href="#virtual-private-gateway-vgw" id="toc-virtual-private-gateway-vgw" class="nav-link" data-scroll-target="#virtual-private-gateway-vgw">4.6.2 Virtual Private Gateway (VGW)</a></li>
   <li><a href="#cli-internet-gateway-public-routing" id="toc-cli-internet-gateway-public-routing" class="nav-link" data-scroll-target="#cli-internet-gateway-public-routing">🧪 CLI: Internet Gateway + Public Routing</a></li>
+  <li><a href="#nat-gateway" id="toc-nat-gateway" class="nav-link" data-scroll-target="#nat-gateway">4.6.3 NAT Gateway</a></li>
   <li><a href="#cli-nat-gateway-private-internet-access" id="toc-cli-nat-gateway-private-internet-access" class="nav-link" data-scroll-target="#cli-nat-gateway-private-internet-access">🧪 CLI: NAT Gateway (Private → Internet Access)</a></li>
   </ul></li>
-  <li><a href="#vpc-routing-security-the-essential-controls" id="toc-vpc-routing-security-the-essential-controls" class="nav-link" data-scroll-target="#vpc-routing-security-the-essential-controls">VPC Routing &amp; Security (the essential controls)</a>
+  <li><a href="#vpc-routing-security" id="toc-vpc-routing-security" class="nav-link" data-scroll-target="#vpc-routing-security">4.7 VPC Routing &amp; Security</a>
   <ul class="collapse">
-  <li><a href="#main-route-table" id="toc-main-route-table" class="nav-link" data-scroll-target="#main-route-table">Main Route Table</a></li>
-  <li><a href="#custom-route-tables" id="toc-custom-route-tables" class="nav-link" data-scroll-target="#custom-route-tables">Custom Route Tables</a></li>
+  <li><a href="#main-route-table" id="toc-main-route-table" class="nav-link" data-scroll-target="#main-route-table">4.7.1 Main Route Table</a></li>
+  <li><a href="#custom-route-tables" id="toc-custom-route-tables" class="nav-link" data-scroll-target="#custom-route-tables">4.7.2 Custom Route Tables</a></li>
   <li><a href="#cli-route-table-association" id="toc-cli-route-table-association" class="nav-link" data-scroll-target="#cli-route-table-association">🧪 CLI: Route Table Association</a></li>
-  <li><a href="#network-acls-subnet-level-firewall" id="toc-network-acls-subnet-level-firewall" class="nav-link" data-scroll-target="#network-acls-subnet-level-firewall">Network ACLs (subnet-level firewall)</a></li>
-  <li><a href="#security-groups-instance-level-firewall" id="toc-security-groups-instance-level-firewall" class="nav-link" data-scroll-target="#security-groups-instance-level-firewall">Security Groups (instance-level firewall)</a></li>
+  <li><a href="#network-acls-subnet-level-firewall" id="toc-network-acls-subnet-level-firewall" class="nav-link" data-scroll-target="#network-acls-subnet-level-firewall">4.7.3 Network ACLs (subnet-level firewall)</a></li>
+  <li><a href="#security-groups-instance-level-firewall" id="toc-security-groups-instance-level-firewall" class="nav-link" data-scroll-target="#security-groups-instance-level-firewall">4.7.4 Security Groups (instance-level firewall)</a></li>
   <li><a href="#cli-security-group-rules-httphttps" id="toc-cli-security-group-rules-httphttps" class="nav-link" data-scroll-target="#cli-security-group-rules-httphttps">🧪 CLI: Security Group Rules (HTTP/HTTPS)</a></li>
   </ul></li>
-  <li><a href="#port-80-vs-443-only-what-matters" id="toc-port-80-vs-443-only-what-matters" class="nav-link" data-scroll-target="#port-80-vs-443-only-what-matters">Port 80 vs 443 (only what matters)</a></li>
-  <li><a href="#multi-tier-security-group-isolation-typical-3-tier" id="toc-multi-tier-security-group-isolation-typical-3-tier" class="nav-link" data-scroll-target="#multi-tier-security-group-isolation-typical-3-tier">Multi-tier security group isolation (typical 3-tier)</a></li>
-  <li><a href="#how-private-subnet-ec2-reaches-the-internet" id="toc-how-private-subnet-ec2-reaches-the-internet" class="nav-link" data-scroll-target="#how-private-subnet-ec2-reaches-the-internet">How private-subnet EC2 reaches the internet</a></li>
-  <li><a href="#vpc-troubleshooting-checks-public-ec2-web-app-not-loading" id="toc-vpc-troubleshooting-checks-public-ec2-web-app-not-loading" class="nav-link" data-scroll-target="#vpc-troubleshooting-checks-public-ec2-web-app-not-loading">10 VPC troubleshooting checks (public EC2 web app not loading)</a></li>
-  <li><a href="#key-notes-to-remember" id="toc-key-notes-to-remember" class="nav-link" data-scroll-target="#key-notes-to-remember">📝 Key Notes to Remember</a></li>
+  <li><a href="#port-80-vs-443-only-what-matters" id="toc-port-80-vs-443-only-what-matters" class="nav-link" data-scroll-target="#port-80-vs-443-only-what-matters">4.8 Port 80 vs 443 (only what matters)</a></li>
+  <li><a href="#multi-tier-security-group-isolation-typical-3-tier" id="toc-multi-tier-security-group-isolation-typical-3-tier" class="nav-link" data-scroll-target="#multi-tier-security-group-isolation-typical-3-tier">4.9 Multi-tier security group isolation (typical 3-tier)</a></li>
+  <li><a href="#how-private-subnet-ec2-reaches-the-internet" id="toc-how-private-subnet-ec2-reaches-the-internet" class="nav-link" data-scroll-target="#how-private-subnet-ec2-reaches-the-internet">4.10 How private-subnet EC2 reaches the internet</a></li>
+  <li><a href="#ten-vpc-troubleshooting-checks-public-ec2-web-app-not-loading" id="toc-ten-vpc-troubleshooting-checks-public-ec2-web-app-not-loading" class="nav-link" data-scroll-target="#ten-vpc-troubleshooting-checks-public-ec2-web-app-not-loading">4.11 Ten VPC troubleshooting checks (public EC2 web app not loading)</a></li>
+  <li><a href="#key-notes-to-remember" id="toc-key-notes-to-remember" class="nav-link" data-scroll-target="#key-notes-to-remember">4.12 Key Notes to Remember</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -286,9 +289,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>❓ What actually happens inside a VPC when your app talks to the internet?</p>
 </blockquote>
 <section id="introduction-to-networking-in-aws" class="level2">
-<h2 class="anchored" data-anchor-id="introduction-to-networking-in-aws">Introduction to Networking in AWS</h2>
+<h2 class="anchored" data-anchor-id="introduction-to-networking-in-aws">4.1 Introduction to Networking in AWS</h2>
 <section id="what-is-networking" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-networking">What Is Networking?</h3>
+<h3 class="anchored" data-anchor-id="what-is-networking">4.1.1 What Is Networking?</h3>
 <blockquote class="blockquote">
 <p><strong>Networking is the routing of data between uniquely identified endpoints using IP addresses across a global network.</strong></p>
 </blockquote>
@@ -300,7 +303,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 <section id="networking-basics" class="level3">
-<h3 class="anchored" data-anchor-id="networking-basics">Networking Basics</h3>
+<h3 class="anchored" data-anchor-id="networking-basics">4.1.2 Networking Basics</h3>
 <ul>
 <li>Communication requires:
 <ul>
@@ -313,7 +316,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 <section id="ip-addresses" class="level3">
-<h3 class="anchored" data-anchor-id="ip-addresses">IP Addresses</h3>
+<h3 class="anchored" data-anchor-id="ip-addresses">4.1.3 IP Addresses</h3>
 <ul>
 <li>An <strong>IP address</strong> uniquely identifies a computer on a network.</li>
 <li>Computers use <strong>binary addresses (0s and 1s)</strong> for routing.</li>
@@ -322,7 +325,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 <section id="ipv4-notation" class="level3">
-<h3 class="anchored" data-anchor-id="ipv4-notation">IPv4 Notation</h3>
+<h3 class="anchored" data-anchor-id="ipv4-notation">4.1.4 IPv4 Notation</h3>
 <ul>
 <li>IPv4 is written in <strong>decimal format</strong> for readability.</li>
 <li>The 32 bits are split into <strong>4 groups of 8 bits (octets)</strong>.</li>
@@ -335,14 +338,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 <section id="ipv4-cidr-why-you-need-ranges" class="level2">
-<h2 class="anchored" data-anchor-id="ipv4-cidr-why-you-need-ranges">IPv4 → CIDR (why you need ranges)</h2>
+<h2 class="anchored" data-anchor-id="ipv4-cidr-why-you-need-ranges">4.2 IPv4 → CIDR (why you need ranges)</h2>
 <p><img src="./images/ipv4_notation.png" class="img-fluid"></p>
 <ul>
 <li><strong>IPv4</strong> identifies a single host (32 bits → dotted decimal <code>x.x.x.x</code>).</li>
 <li>Networks need <strong>ranges</strong>, not single IPs → use <strong>CIDR</strong>.</li>
 </ul>
 <section id="cidr-notation-range" class="level3">
-<h3 class="anchored" data-anchor-id="cidr-notation-range">CIDR Notation (range)</h3>
+<h3 class="anchored" data-anchor-id="cidr-notation-range">4.2.1 CIDR Notation (range)</h3>
 <ul>
 <li>Format: <code>STARTING_IP/NUMBER_OF_FIXED_BITS</code>
 <ul>
@@ -358,8 +361,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 </section>
-<section id="aws-vpc-what-you-must-choose" class="level2">
-<h2 class="anchored" data-anchor-id="aws-vpc-what-you-must-choose">AWS VPC (what you must choose)</h2>
+<section id="aws-vpc" class="level2">
+<h2 class="anchored" data-anchor-id="aws-vpc">4.3 AWS VPC</h2>
 <p><img src="./images/vpc_azs_region.png" class="img-fluid"></p>
 <p><strong>VPC requires:</strong></p>
 <ol type="1">
@@ -376,7 +379,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 <section id="subnets-how-you-place-resources" class="level2">
-<h2 class="anchored" data-anchor-id="subnets-how-you-place-resources">Subnets (how you place resources)</h2>
+<h2 class="anchored" data-anchor-id="subnets-how-you-place-resources">4.4 Subnets (how you place resources)</h2>
 <p><img src="./images/VPC-split-by-subnet.png" class="img-fluid"></p>
 <ul>
 <li><strong>Subnet = smaller CIDR block inside a VPC</strong>, tied to <strong>one AZ</strong>.</li>
@@ -408,7 +411,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 <section id="reserved-ips-in-every-subnet" class="level3">
-<h3 class="anchored" data-anchor-id="reserved-ips-in-every-subnet">Reserved IPs in every subnet</h3>
+<h3 class="anchored" data-anchor-id="reserved-ips-in-every-subnet">4.4.1 Reserved IPs in every subnet</h3>
 <p><img src="./images/5_reserved_ip_addresses.png" class="img-fluid"></p>
 <ul>
 <li>AWS reserves <strong>5 IP addresses per subnet</strong> for routing/DNS/management.<br>
@@ -417,8 +420,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 </section>
-<section id="public-vs-private-subnets-core-pattern" class="level2">
-<h2 class="anchored" data-anchor-id="public-vs-private-subnets-core-pattern">Public vs Private subnets (core pattern)</h2>
+<section id="public-vs-private-subnets" class="level2">
+<h2 class="anchored" data-anchor-id="public-vs-private-subnets">4.5 Public vs Private subnets</h2>
 <p><img src="./images/public_and_private_subnetets_inside_vpc.png" class="img-fluid"></p>
 <ul>
 <li><strong>Public subnet</strong>: has a route to an <strong>Internet Gateway (IGW)</strong>.</li>
@@ -432,18 +435,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <hr>
 </section>
-<section id="gateways-what-they-do" class="level2">
-<h2 class="anchored" data-anchor-id="gateways-what-they-do">Gateways (what they do)</h2>
-<ul>
-<li><p><strong>Internet Gateway (IGW)</strong></p>
+<section id="gateways" class="level2">
+<h2 class="anchored" data-anchor-id="gateways">4.6 Gateways</h2>
+<section id="internet-gateway-igw" class="level3">
+<h3 class="anchored" data-anchor-id="internet-gateway-igw">4.6.1 Internet Gateway (IGW)</h3>
 <ul>
 <li>Enables internet connectivity for the VPC (must be <strong>attached</strong> to the VPC).</li>
-</ul></li>
-<li><p><strong>Virtual Private Gateway (VGW)</strong></p>
+</ul>
+</section>
+<section id="virtual-private-gateway-vgw" class="level3">
+<h3 class="anchored" data-anchor-id="virtual-private-gateway-vgw">4.6.2 Virtual Private Gateway (VGW)</h3>
 <ul>
 <li>Connects VPC to another private network via <strong>encrypted VPN</strong> (with Customer Gateway on the other side).</li>
-</ul></li>
 </ul>
+</section>
 <section id="cli-internet-gateway-public-routing" class="level3">
 <h3 class="anchored" data-anchor-id="cli-internet-gateway-public-routing">🧪 CLI: Internet Gateway + Public Routing</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create IGW</span></span>
@@ -462,12 +467,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>💡 A subnet becomes public only when its route table points to an IGW.</p>
 </blockquote>
-<ul>
-<li><p><strong>NAT Gateway</strong></p>
+</section>
+<section id="nat-gateway" class="level3">
+<h3 class="anchored" data-anchor-id="nat-gateway">4.6.3 NAT Gateway</h3>
 <ul>
 <li>Allows <strong>outbound-only</strong> internet from <strong>private subnets</strong> by translating private IP → public IP.</li>
 <li><strong>Stateful return traffic</strong> is allowed only for connections initiated from inside.</li>
-</ul></li>
 </ul>
 </section>
 <section id="cli-nat-gateway-private-internet-access" class="level3">
@@ -494,10 +499,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 </section>
-<section id="vpc-routing-security-the-essential-controls" class="level2">
-<h2 class="anchored" data-anchor-id="vpc-routing-security-the-essential-controls">VPC Routing &amp; Security (the essential controls)</h2>
+<section id="vpc-routing-security" class="level2">
+<h2 class="anchored" data-anchor-id="vpc-routing-security">4.7 VPC Routing &amp; Security</h2>
 <section id="main-route-table" class="level3">
-<h3 class="anchored" data-anchor-id="main-route-table">Main Route Table</h3>
+<h3 class="anchored" data-anchor-id="main-route-table">4.7.1 Main Route Table</h3>
 <p><img src="./images/main_route_table_of_a_vpc.png" class="img-fluid"></p>
 <ul>
 <li>Default route table created with the VPC.</li>
@@ -506,7 +511,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </section>
 <section id="custom-route-tables" class="level3">
-<h3 class="anchored" data-anchor-id="custom-route-tables">Custom Route Tables</h3>
+<h3 class="anchored" data-anchor-id="custom-route-tables">4.7.2 Custom Route Tables</h3>
 <p><img src="./images/custom_route_tables.png" class="img-fluid"></p>
 <ul>
 <li>Route tables can be attached to <strong>specific subnets</strong> for custom routing.</li>
@@ -524,7 +529,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 <section id="network-acls-subnet-level-firewall" class="level3">
-<h3 class="anchored" data-anchor-id="network-acls-subnet-level-firewall">Network ACLs (subnet-level firewall)</h3>
+<h3 class="anchored" data-anchor-id="network-acls-subnet-level-firewall">4.7.3 Network ACLs (subnet-level firewall)</h3>
 <p><img src="./images/network_acl_inbound_and_outbound_rules.png" class="img-fluid"></p>
 <ul>
 <li><strong>NACL = stateless</strong> subnet firewall.</li>
@@ -533,7 +538,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </section>
 <section id="security-groups-instance-level-firewall" class="level3">
-<h3 class="anchored" data-anchor-id="security-groups-instance-level-firewall">Security Groups (instance-level firewall)</h3>
+<h3 class="anchored" data-anchor-id="security-groups-instance-level-firewall">4.7.4 Security Groups (instance-level firewall)</h3>
 <p><img src="./images/NACL_vs_sec_group_rules.png" class="img-fluid"></p>
 <ul>
 <li><strong>Security Group = stateful</strong> instance firewall.</li>
@@ -568,7 +573,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 <section id="port-80-vs-443-only-what-matters" class="level2">
-<h2 class="anchored" data-anchor-id="port-80-vs-443-only-what-matters">Port 80 vs 443 (only what matters)</h2>
+<h2 class="anchored" data-anchor-id="port-80-vs-443-only-what-matters">4.8 Port 80 vs 443 (only what matters)</h2>
 <p><img src="./images/http_vs_https.png" class="img-fluid"></p>
 <ul>
 <li><strong>80 = HTTP</strong> (unencrypted)</li>
@@ -577,7 +582,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 <section id="multi-tier-security-group-isolation-typical-3-tier" class="level2">
-<h2 class="anchored" data-anchor-id="multi-tier-security-group-isolation-typical-3-tier">Multi-tier security group isolation (typical 3-tier)</h2>
+<h2 class="anchored" data-anchor-id="multi-tier-security-group-isolation-typical-3-tier">4.9 Multi-tier security group isolation (typical 3-tier)</h2>
 <p><img src="./images/networking_sg_rules_for_a_multi_tier_system.png" class="img-fluid"></p>
 <ul>
 <li>Web tier: allow internet → web over <strong>HTTPS</strong></li>
@@ -588,7 +593,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 <section id="how-private-subnet-ec2-reaches-the-internet" class="level2">
-<h2 class="anchored" data-anchor-id="how-private-subnet-ec2-reaches-the-internet">How private-subnet EC2 reaches the internet</h2>
+<h2 class="anchored" data-anchor-id="how-private-subnet-ec2-reaches-the-internet">4.10 How private-subnet EC2 reaches the internet</h2>
 <p><img src="./images/how_EC2_in_private_subnet.png" class="img-fluid"></p>
 <ul>
 <li>Private EC2 → routes outbound traffic to <strong>NAT Gateway</strong> (in a public subnet) → internet.</li>
@@ -596,8 +601,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <hr>
 </section>
-<section id="vpc-troubleshooting-checks-public-ec2-web-app-not-loading" class="level2">
-<h2 class="anchored" data-anchor-id="vpc-troubleshooting-checks-public-ec2-web-app-not-loading">10 VPC troubleshooting checks (public EC2 web app not loading)</h2>
+<section id="ten-vpc-troubleshooting-checks-public-ec2-web-app-not-loading" class="level2">
+<h2 class="anchored" data-anchor-id="ten-vpc-troubleshooting-checks-public-ec2-web-app-not-loading">4.11 Ten VPC troubleshooting checks (public EC2 web app not loading)</h2>
 <ol type="1">
 <li><strong>IGW attached to VPC</strong></li>
 <li>Subnet route table has <code>0.0.0.0/0 → igw</code></li>
@@ -613,7 +618,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 <section id="key-notes-to-remember" class="level2">
-<h2 class="anchored" data-anchor-id="key-notes-to-remember">📝 Key Notes to Remember</h2>
+<h2 class="anchored" data-anchor-id="key-notes-to-remember">4.12 Key Notes to Remember</h2>
 <ul>
 <li>VPC requires <strong>Region</strong>, contains <strong>AZs</strong> and <strong>subnets</strong></li>
 <li>Route tables attach to <strong>VPC (main)</strong> and <strong>subnets (custom)</strong></li>

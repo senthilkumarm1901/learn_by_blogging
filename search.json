@@ -1802,85 +1802,85 @@
     "objectID": "aws_cloud_technical_essentials_book/04-networking.html#introduction-to-networking-in-aws",
     "href": "aws_cloud_technical_essentials_book/04-networking.html#introduction-to-networking-in-aws",
     "title": "04. Networking",
-    "section": "Introduction to Networking in AWS",
-    "text": "Introduction to Networking in AWS\n\nWhat Is Networking?\n\nNetworking is the routing of data between uniquely identified endpoints using IP addresses across a global network.\n\n\nNetworking enables computers to communicate with each other.\nIn AWS, networking spans Regions, Availability Zones, and data centers.\nAWS operates a global network connecting these resources.\n\n\n\n\nNetworking Basics\n\nCommunication requires:\n\nSource\nDestination\nData (payload)\n\nMessages are delivered using routing, which determines the path to the destination.\n\n\n\n\nIP Addresses\n\nAn IP address uniquely identifies a computer on a network.\nComputers use binary addresses (0s and 1s) for routing.\nIPv4 addresses are 32‑bit values.\n\n\n\n\nIPv4 Notation\n\nIPv4 is written in decimal format for readability.\nThe 32 bits are split into 4 groups of 8 bits (octets).\nEach octet is converted to a decimal number and separated by dots\n\nExample format: x.x.x.x"
+    "section": "4.1 Introduction to Networking in AWS",
+    "text": "4.1 Introduction to Networking in AWS\n\n4.1.1 What Is Networking?\n\nNetworking is the routing of data between uniquely identified endpoints using IP addresses across a global network.\n\n\nNetworking enables computers to communicate with each other.\nIn AWS, networking spans Regions, Availability Zones, and data centers.\nAWS operates a global network connecting these resources.\n\n\n\n\n4.1.2 Networking Basics\n\nCommunication requires:\n\nSource\nDestination\nData (payload)\n\nMessages are delivered using routing, which determines the path to the destination.\n\n\n\n\n4.1.3 IP Addresses\n\nAn IP address uniquely identifies a computer on a network.\nComputers use binary addresses (0s and 1s) for routing.\nIPv4 addresses are 32‑bit values.\n\n\n\n\n4.1.4 IPv4 Notation\n\nIPv4 is written in decimal format for readability.\nThe 32 bits are split into 4 groups of 8 bits (octets).\nEach octet is converted to a decimal number and separated by dots\n\nExample format: x.x.x.x"
   },
   {
     "objectID": "aws_cloud_technical_essentials_book/04-networking.html#ipv4-cidr-why-you-need-ranges",
     "href": "aws_cloud_technical_essentials_book/04-networking.html#ipv4-cidr-why-you-need-ranges",
     "title": "04. Networking",
-    "section": "IPv4 → CIDR (why you need ranges)",
-    "text": "IPv4 → CIDR (why you need ranges)\n\n\nIPv4 identifies a single host (32 bits → dotted decimal x.x.x.x).\nNetworks need ranges, not single IPs → use CIDR.\n\n\nCIDR Notation (range)\n\nFormat: STARTING_IP/NUMBER_OF_FIXED_BITS\n\nExample: 192.168.1.0/24 → first 24 bits fixed → 256 IPs (2⁸).\n\nIn AWS:\n\nSmallest VPC/subnet range: /28 = 16 IPs\nLargest VPC range: /16 = 65,536 IPs\n\nAWS reserves 5 IPs per subnet, so small subnets lose usable space fast."
+    "section": "4.2 IPv4 → CIDR (why you need ranges)",
+    "text": "4.2 IPv4 → CIDR (why you need ranges)\n\n\nIPv4 identifies a single host (32 bits → dotted decimal x.x.x.x).\nNetworks need ranges, not single IPs → use CIDR.\n\n\n4.2.1 CIDR Notation (range)\n\nFormat: STARTING_IP/NUMBER_OF_FIXED_BITS\n\nExample: 192.168.1.0/24 → first 24 bits fixed → 256 IPs (2⁸).\n\nIn AWS:\n\nSmallest VPC/subnet range: /28 = 16 IPs\nLargest VPC range: /16 = 65,536 IPs\n\nAWS reserves 5 IPs per subnet, so small subnets lose usable space fast."
   },
   {
-    "objectID": "aws_cloud_technical_essentials_book/04-networking.html#aws-vpc-what-you-must-choose",
-    "href": "aws_cloud_technical_essentials_book/04-networking.html#aws-vpc-what-you-must-choose",
+    "objectID": "aws_cloud_technical_essentials_book/04-networking.html#aws-vpc",
+    "href": "aws_cloud_technical_essentials_book/04-networking.html#aws-vpc",
     "title": "04. Networking",
-    "section": "AWS VPC (what you must choose)",
-    "text": "AWS VPC (what you must choose)\n\nVPC requires:\n\nName\nRegion (VPC spans multiple AZs in that region)\nCIDR range (VPC size; up to four /16 ranges per VPC)\n\n\n🧪 CLI: Create a VPC\naws ec2 create-vpc \\\n  --cidr-block 10.0.0.0/16 \\\n  --tag-specifications ResourceType=vpc,Tags=[{Key=Name,Value=SampleVpc}]"
+    "section": "4.3 AWS VPC",
+    "text": "4.3 AWS VPC\n\nVPC requires:\n\nName\nRegion (VPC spans multiple AZs in that region)\nCIDR range (VPC size; up to four /16 ranges per VPC)\n\n\n🧪 CLI: Create a VPC\naws ec2 create-vpc \\\n  --cidr-block 10.0.0.0/16 \\\n  --tag-specifications ResourceType=vpc,Tags=[{Key=Name,Value=SampleVpc}]"
   },
   {
     "objectID": "aws_cloud_technical_essentials_book/04-networking.html#subnets-how-you-place-resources",
     "href": "aws_cloud_technical_essentials_book/04-networking.html#subnets-how-you-place-resources",
     "title": "04. Networking",
-    "section": "Subnets (how you place resources)",
-    "text": "Subnets (how you place resources)\n\n\nSubnet = smaller CIDR block inside a VPC, tied to one AZ.\nSubnet CIDR must be a subset of VPC CIDR.\nEC2 instances are launched inside subnets (therefore in a specific AZ).\nFor high availability, create at least two subnets in two AZs.\n\n\n\n🧪 CLI: Create Subnets (Public + Private)\n# Public subnet\naws ec2 create-subnet \\\n  --vpc-id &lt;vpc-id&gt; \\\n  --cidr-block 10.0.0.0/24\n\n# Private subnets (in different AZs)\naws ec2 create-subnet \\\n  --vpc-id &lt;vpc-id&gt; \\\n  --cidr-block 10.0.1.0/24 \\\n  --availability-zone ap-south-1a\n\naws ec2 create-subnet \\\n  --vpc-id &lt;vpc-id&gt; \\\n  --cidr-block 10.0.2.0/24 \\\n  --availability-zone ap-south-1b\n\n💡 Subnets define where resources live (in the cidr-block set of IP addresses allocated to the subnet) and which AZ they belong to.\n\n\n\n\nReserved IPs in every subnet\n\n\nAWS reserves 5 IP addresses per subnet for routing/DNS/management.\n→ Plan subnet sizes with this overhead in mind."
+    "section": "4.4 Subnets (how you place resources)",
+    "text": "4.4 Subnets (how you place resources)\n\n\nSubnet = smaller CIDR block inside a VPC, tied to one AZ.\nSubnet CIDR must be a subset of VPC CIDR.\nEC2 instances are launched inside subnets (therefore in a specific AZ).\nFor high availability, create at least two subnets in two AZs.\n\n\n\n🧪 CLI: Create Subnets (Public + Private)\n# Public subnet\naws ec2 create-subnet \\\n  --vpc-id &lt;vpc-id&gt; \\\n  --cidr-block 10.0.0.0/24\n\n# Private subnets (in different AZs)\naws ec2 create-subnet \\\n  --vpc-id &lt;vpc-id&gt; \\\n  --cidr-block 10.0.1.0/24 \\\n  --availability-zone ap-south-1a\n\naws ec2 create-subnet \\\n  --vpc-id &lt;vpc-id&gt; \\\n  --cidr-block 10.0.2.0/24 \\\n  --availability-zone ap-south-1b\n\n💡 Subnets define where resources live (in the cidr-block set of IP addresses allocated to the subnet) and which AZ they belong to.\n\n\n\n\n4.4.1 Reserved IPs in every subnet\n\n\nAWS reserves 5 IP addresses per subnet for routing/DNS/management.\n→ Plan subnet sizes with this overhead in mind."
   },
   {
-    "objectID": "aws_cloud_technical_essentials_book/04-networking.html#public-vs-private-subnets-core-pattern",
-    "href": "aws_cloud_technical_essentials_book/04-networking.html#public-vs-private-subnets-core-pattern",
+    "objectID": "aws_cloud_technical_essentials_book/04-networking.html#public-vs-private-subnets",
+    "href": "aws_cloud_technical_essentials_book/04-networking.html#public-vs-private-subnets",
     "title": "04. Networking",
-    "section": "Public vs Private subnets (core pattern)",
-    "text": "Public vs Private subnets (core pattern)\n\n\nPublic subnet: has a route to an Internet Gateway (IGW).\nPrivate subnet: no direct IGW route; inbound from internet is blocked by design.\nCommon architecture:\n\nPublic: Load balancer\nPrivate: app servers + databases\nNAT Gateway: private subnet with outbound internet access (updates, external APIs)"
+    "section": "4.5 Public vs Private subnets",
+    "text": "4.5 Public vs Private subnets\n\n\nPublic subnet: has a route to an Internet Gateway (IGW).\nPrivate subnet: no direct IGW route; inbound from internet is blocked by design.\nCommon architecture:\n\nPublic: Load balancer\nPrivate: app servers + databases\nNAT Gateway: private subnet with outbound internet access (updates, external APIs)"
   },
   {
-    "objectID": "aws_cloud_technical_essentials_book/04-networking.html#gateways-what-they-do",
-    "href": "aws_cloud_technical_essentials_book/04-networking.html#gateways-what-they-do",
+    "objectID": "aws_cloud_technical_essentials_book/04-networking.html#gateways",
+    "href": "aws_cloud_technical_essentials_book/04-networking.html#gateways",
     "title": "04. Networking",
-    "section": "Gateways (what they do)",
-    "text": "Gateways (what they do)\n\nInternet Gateway (IGW)\n\nEnables internet connectivity for the VPC (must be attached to the VPC).\n\nVirtual Private Gateway (VGW)\n\nConnects VPC to another private network via encrypted VPN (with Customer Gateway on the other side).\n\n\n\n🧪 CLI: Internet Gateway + Public Routing\n# Create IGW\naws ec2 create-internet-gateway\n\n# Attach IGW to VPC\naws ec2 attach-internet-gateway \\\n  --internet-gateway-id &lt;igw-id&gt; \\\n  --vpc-id &lt;vpc-id&gt;\n\n# Create route to internet\naws ec2 create-route \\\n  --route-table-id &lt;route-table-id&gt; \\\n  --destination-cidr-block 0.0.0.0/0 \\\n  --gateway-id &lt;igw-id&gt;\n\n💡 A subnet becomes public only when its route table points to an IGW.\n\n\nNAT Gateway\n\nAllows outbound-only internet from private subnets by translating private IP → public IP.\nStateful return traffic is allowed only for connections initiated from inside.\n\n\n\n\n🧪 CLI: NAT Gateway (Private → Internet Access)\n# Allocate Elastic IP\naws ec2 allocate-address\n\n# Create NAT Gateway (must be in public subnet)\naws ec2 create-nat-gateway \\\n  --subnet-id &lt;public-subnet-id&gt; \\\n  --allocation-id &lt;elastic-ip-allocation-id&gt;\n\n# Route private subnet traffic via NAT\naws ec2 create-route \\\n  --route-table-id &lt;private-route-table-id&gt; \\\n  --destination-cidr-block 0.0.0.0/0 \\\n  --nat-gateway-id &lt;nat-gateway-id&gt;\n\n\n\n\n\n💡 NAT enables outbound-only internet from private subnets."
+    "section": "4.6 Gateways",
+    "text": "4.6 Gateways\n\n4.6.1 Internet Gateway (IGW)\n\nEnables internet connectivity for the VPC (must be attached to the VPC).\n\n\n\n4.6.2 Virtual Private Gateway (VGW)\n\nConnects VPC to another private network via encrypted VPN (with Customer Gateway on the other side).\n\n\n\n🧪 CLI: Internet Gateway + Public Routing\n# Create IGW\naws ec2 create-internet-gateway\n\n# Attach IGW to VPC\naws ec2 attach-internet-gateway \\\n  --internet-gateway-id &lt;igw-id&gt; \\\n  --vpc-id &lt;vpc-id&gt;\n\n# Create route to internet\naws ec2 create-route \\\n  --route-table-id &lt;route-table-id&gt; \\\n  --destination-cidr-block 0.0.0.0/0 \\\n  --gateway-id &lt;igw-id&gt;\n\n💡 A subnet becomes public only when its route table points to an IGW.\n\n\n\n4.6.3 NAT Gateway\n\nAllows outbound-only internet from private subnets by translating private IP → public IP.\nStateful return traffic is allowed only for connections initiated from inside.\n\n\n\n🧪 CLI: NAT Gateway (Private → Internet Access)\n# Allocate Elastic IP\naws ec2 allocate-address\n\n# Create NAT Gateway (must be in public subnet)\naws ec2 create-nat-gateway \\\n  --subnet-id &lt;public-subnet-id&gt; \\\n  --allocation-id &lt;elastic-ip-allocation-id&gt;\n\n# Route private subnet traffic via NAT\naws ec2 create-route \\\n  --route-table-id &lt;private-route-table-id&gt; \\\n  --destination-cidr-block 0.0.0.0/0 \\\n  --nat-gateway-id &lt;nat-gateway-id&gt;\n\n\n\n\n\n💡 NAT enables outbound-only internet from private subnets."
   },
   {
-    "objectID": "aws_cloud_technical_essentials_book/04-networking.html#vpc-routing-security-the-essential-controls",
-    "href": "aws_cloud_technical_essentials_book/04-networking.html#vpc-routing-security-the-essential-controls",
+    "objectID": "aws_cloud_technical_essentials_book/04-networking.html#vpc-routing-security",
+    "href": "aws_cloud_technical_essentials_book/04-networking.html#vpc-routing-security",
     "title": "04. Networking",
-    "section": "VPC Routing & Security (the essential controls)",
-    "text": "VPC Routing & Security (the essential controls)\n\nMain Route Table\n\n\nDefault route table created with the VPC.\nContains routes (Destination → Target).\nDefault behavior: allows VPC-local traffic between subnets.\n\n\n\nCustom Route Tables\n\n\nRoute tables can be attached to specific subnets for custom routing.\nIf a subnet has a custom route table, it uses that instead of the main route table.\n\n\n\n🧪 CLI: Route Table Association\naws ec2 associate-route-table \\\n  --subnet-id &lt;subnet-id&gt; \\\n  --route-table-id &lt;route-table-id&gt;\n\n💡 Routing behavior is controlled by which route table a subnet is associated with.\n\n\n\n\nNetwork ACLs (subnet-level firewall)\n\n\nNACL = stateless subnet firewall.\nMust allow both inbound and outbound explicitly (return traffic isn’t automatic).\nDefault vs custom behavior often differs (custom typically starts restrictive).\n\n\n\nSecurity Groups (instance-level firewall)\n\n\nSecurity Group = stateful instance firewall.\nDefault SG behavior:\n\nInbound: deny all\nOutbound: allow all\n\nFor web servers, allow inbound HTTP/HTTPS:\n\n\n\n\n🧪 CLI: Security Group Rules (HTTP/HTTPS)\n# Allow HTTP\naws ec2 authorize-security-group-ingress \\\n  --group-id &lt;sg-id&gt; \\\n  --protocol tcp \\\n  --port 80 \\\n  --cidr 0.0.0.0/0\n\n# Allow HTTPS\naws ec2 authorize-security-group-ingress \\\n  --group-id &lt;sg-id&gt; \\\n  --protocol tcp \\\n  --port 443 \\\n  --cidr 0.0.0.0/0\n\n💡 Security Groups are stateful — return traffic is automatically allowed."
+    "section": "4.7 VPC Routing & Security",
+    "text": "4.7 VPC Routing & Security\n\n4.7.1 Main Route Table\n\n\nDefault route table created with the VPC.\nContains routes (Destination → Target).\nDefault behavior: allows VPC-local traffic between subnets.\n\n\n\n4.7.2 Custom Route Tables\n\n\nRoute tables can be attached to specific subnets for custom routing.\nIf a subnet has a custom route table, it uses that instead of the main route table.\n\n\n\n🧪 CLI: Route Table Association\naws ec2 associate-route-table \\\n  --subnet-id &lt;subnet-id&gt; \\\n  --route-table-id &lt;route-table-id&gt;\n\n💡 Routing behavior is controlled by which route table a subnet is associated with.\n\n\n\n\n4.7.3 Network ACLs (subnet-level firewall)\n\n\nNACL = stateless subnet firewall.\nMust allow both inbound and outbound explicitly (return traffic isn’t automatic).\nDefault vs custom behavior often differs (custom typically starts restrictive).\n\n\n\n4.7.4 Security Groups (instance-level firewall)\n\n\nSecurity Group = stateful instance firewall.\nDefault SG behavior:\n\nInbound: deny all\nOutbound: allow all\n\nFor web servers, allow inbound HTTP/HTTPS:\n\n\n\n\n🧪 CLI: Security Group Rules (HTTP/HTTPS)\n# Allow HTTP\naws ec2 authorize-security-group-ingress \\\n  --group-id &lt;sg-id&gt; \\\n  --protocol tcp \\\n  --port 80 \\\n  --cidr 0.0.0.0/0\n\n# Allow HTTPS\naws ec2 authorize-security-group-ingress \\\n  --group-id &lt;sg-id&gt; \\\n  --protocol tcp \\\n  --port 443 \\\n  --cidr 0.0.0.0/0\n\n💡 Security Groups are stateful — return traffic is automatically allowed."
   },
   {
     "objectID": "aws_cloud_technical_essentials_book/04-networking.html#port-80-vs-443-only-what-matters",
     "href": "aws_cloud_technical_essentials_book/04-networking.html#port-80-vs-443-only-what-matters",
     "title": "04. Networking",
-    "section": "Port 80 vs 443 (only what matters)",
-    "text": "Port 80 vs 443 (only what matters)\n\n\n80 = HTTP (unencrypted)\n443 = HTTPS (encrypted via TLS)"
+    "section": "4.8 Port 80 vs 443 (only what matters)",
+    "text": "4.8 Port 80 vs 443 (only what matters)\n\n\n80 = HTTP (unencrypted)\n443 = HTTPS (encrypted via TLS)"
   },
   {
     "objectID": "aws_cloud_technical_essentials_book/04-networking.html#multi-tier-security-group-isolation-typical-3-tier",
     "href": "aws_cloud_technical_essentials_book/04-networking.html#multi-tier-security-group-isolation-typical-3-tier",
     "title": "04. Networking",
-    "section": "Multi-tier security group isolation (typical 3-tier)",
-    "text": "Multi-tier security group isolation (typical 3-tier)\n\n\nWeb tier: allow internet → web over HTTPS\nApp tier: allow web → app over HTTP/needed ports\nDB tier: allow app → DB over DB port (e.g., MySQL 3306)\nThis isolates tiers without VLANs (security groups enforce isolation)."
+    "section": "4.9 Multi-tier security group isolation (typical 3-tier)",
+    "text": "4.9 Multi-tier security group isolation (typical 3-tier)\n\n\nWeb tier: allow internet → web over HTTPS\nApp tier: allow web → app over HTTP/needed ports\nDB tier: allow app → DB over DB port (e.g., MySQL 3306)\nThis isolates tiers without VLANs (security groups enforce isolation)."
   },
   {
     "objectID": "aws_cloud_technical_essentials_book/04-networking.html#how-private-subnet-ec2-reaches-the-internet",
     "href": "aws_cloud_technical_essentials_book/04-networking.html#how-private-subnet-ec2-reaches-the-internet",
     "title": "04. Networking",
-    "section": "How private-subnet EC2 reaches the internet",
-    "text": "How private-subnet EC2 reaches the internet\n\n\nPrivate EC2 → routes outbound traffic to NAT Gateway (in a public subnet) → internet.\nNo direct inbound internet connectivity to private EC2."
+    "section": "4.10 How private-subnet EC2 reaches the internet",
+    "text": "4.10 How private-subnet EC2 reaches the internet\n\n\nPrivate EC2 → routes outbound traffic to NAT Gateway (in a public subnet) → internet.\nNo direct inbound internet connectivity to private EC2."
   },
   {
-    "objectID": "aws_cloud_technical_essentials_book/04-networking.html#vpc-troubleshooting-checks-public-ec2-web-app-not-loading",
-    "href": "aws_cloud_technical_essentials_book/04-networking.html#vpc-troubleshooting-checks-public-ec2-web-app-not-loading",
+    "objectID": "aws_cloud_technical_essentials_book/04-networking.html#ten-vpc-troubleshooting-checks-public-ec2-web-app-not-loading",
+    "href": "aws_cloud_technical_essentials_book/04-networking.html#ten-vpc-troubleshooting-checks-public-ec2-web-app-not-loading",
     "title": "04. Networking",
-    "section": "10 VPC troubleshooting checks (public EC2 web app not loading)",
-    "text": "10 VPC troubleshooting checks (public EC2 web app not loading)\n\nIGW attached to VPC\nSubnet route table has 0.0.0.0/0 → igw\nSecurity Group allows inbound 80/443 (and outbound allowed)\nNACL allows inbound + outbound for required ports (stateless)\nInstance has a public IP (auto-assign enabled)\nUsing correct HTTP vs HTTPS\nUser data script ran successfully (/var/log/cloud-init*)\nInstance has correct IAM role permissions (S3/DDB/etc.)\nYour corporate/personal network isn’t blocking access\nApp + web server running; check application logs"
+    "section": "4.11 Ten VPC troubleshooting checks (public EC2 web app not loading)",
+    "text": "4.11 Ten VPC troubleshooting checks (public EC2 web app not loading)\n\nIGW attached to VPC\nSubnet route table has 0.0.0.0/0 → igw\nSecurity Group allows inbound 80/443 (and outbound allowed)\nNACL allows inbound + outbound for required ports (stateless)\nInstance has a public IP (auto-assign enabled)\nUsing correct HTTP vs HTTPS\nUser data script ran successfully (/var/log/cloud-init*)\nInstance has correct IAM role permissions (S3/DDB/etc.)\nYour corporate/personal network isn’t blocking access\nApp + web server running; check application logs"
   },
   {
     "objectID": "aws_cloud_technical_essentials_book/04-networking.html#key-notes-to-remember",
     "href": "aws_cloud_technical_essentials_book/04-networking.html#key-notes-to-remember",
     "title": "04. Networking",
-    "section": "📝 Key Notes to Remember",
-    "text": "📝 Key Notes to Remember\n\nVPC requires Region, contains AZs and subnets\nRoute tables attach to VPC (main) and subnets (custom)\nPublic subnet needs IGW + route to IGW\nBy default, a security group blocks all incoming traffic and allows all outgoing traffic. It is stateful (meaning an result of an incoming traffic is allowed automatically)\nNACLs: stateless (must allow inbound + outbound). The default NACL is associated with all subnets in the VPC by default, allowing all traffic.\nCIDR determines network size: /16 larger than /28"
+    "section": "4.12 Key Notes to Remember",
+    "text": "4.12 Key Notes to Remember\n\nVPC requires Region, contains AZs and subnets\nRoute tables attach to VPC (main) and subnets (custom)\nPublic subnet needs IGW + route to IGW\nBy default, a security group blocks all incoming traffic and allows all outgoing traffic. It is stateful (meaning an result of an incoming traffic is allowed automatically)\nNACLs: stateless (must allow inbound + outbound). The default NACL is associated with all subnets in the VPC by default, allowing all traffic.\nCIDR determines network size: /16 larger than /28"
   },
   {
     "objectID": "posts/2020-09-17-ptw_lda_vs_use_k_means.html",
