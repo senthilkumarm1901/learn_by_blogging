@@ -24,7 +24,10 @@ format:
 
 ## Databases in AWS
 
-### Database vs Data Warehouse vs Data Lake
+> * ❓ When do you pick RDS vs DynamoDB—and why does it matter?
+> * Hint: Think in terms of **data model, access patterns, and scale requirements**—not just "SQL vs NoSQL".
+
+### 6.1 Database vs Data Warehouse vs Data Lake
 
 ```{mermaid}
 flowchart TD
@@ -65,18 +68,24 @@ A quick way to choose the right “data home” in AWS:
 | **AWS Service** | Amazon RDS, DynamoDB             | Amazon Redshift                | Amazon S3                                 |
 | **Example**     | E-commerce apps, customer orders | Business analytics, dashboards | Raw data for analytics, ML                |
 
-### Are AWS databases always on EC2? What’s with `db.xxx`?
+---
+
+### 6.2 Are AWS databases always on EC2? What’s with `db.xxx`?
 
 - Many AWS databases are **managed services**, where you don’t manage servers directly.
 - Some managed services still use underlying compute, but you interact through the service layer, not the EC2 instances.
 - The `db.` prefix commonly shows up as an **RDS/Aurora instance class naming convention** (example style: `db.t3.medium`), not as a universal AWS database naming rule.
 
-### PostgreSQL on AWS: self-managed vs managed
+---
+
+### 6.3 PostgreSQL on AWS: self-managed vs managed
 
 - **Self-managed on EC2** gives full control (install/patch/backup/tune yourself), useful for highly custom setups.
 - **Managed PostgreSQL** (Amazon RDS for PostgreSQL or Aurora PostgreSQL-compatible) reduces operational overhead with built-in management features, at the cost of some constraints on customization.
 
-## Managed databases in AWS
+---
+
+### 6.4 Managed databases in AWS
 
 ```{mermaid}
 flowchart TD
@@ -147,7 +156,9 @@ flowchart TD
 
 > * In AWS one would generally choose AWS managed options like **RDS/Aurora/DynamoDB/Redshift** than installing and operating databases yourself on **EC2**.
 
-## Decisions to make when choosing a DB
+---
+
+### 6.5 Decisions to make when choosing a DB
 
 ```{mermaid}
 flowchart TB
@@ -205,9 +216,11 @@ Practical selection checklist:
     - “Burstable” for spiky, low-to-moderate average usage
 - Align storage media (SSD/HDD) with latency and throughput needs.
 
-## Where database instances sit in AWS networking
+---
 
-### RDS lies inside VPC Private Subnet
+### 6.6 Where database instances sit in AWS networking
+
+#### 6.6.1 RDS lies inside VPC Private Subnet
 
 ![](./images/dbs_inside_private_subnet.png)
 
@@ -215,8 +228,8 @@ Amazon RDS is **deployed into your VPC** (into subnets you choose via a DB subne
 
 - The primary control plane for “who can connect” is the **VPC security group** attached to the DB instance. You typically allow inbound DB ports only from your app tier’s security group (or a tight CIDR), not from the open internet. 
 - If the DB is **not publicly accessible**, clients from outside the VPC need a private connectivity path (VPN/Direct Connect/Client VPN, or other private network patterns). 
-### Dynamo DB lies outside VPC 
 
+#### 6.6.2 DynamoDB lies outside VPC
 
 - **DynamoDB is a regional AWS service, not placed “inside” your VPC** like RDS. Your app talks to DynamoDB’s regional endpoint over HTTPS.
   
@@ -241,7 +254,9 @@ High-level intuition:
 - **RDS** is deployed into your VPC (commonly private subnets).
 - **DynamoDB** is a regional managed service that’s not “inside” your VPC like an EC2 instance; private access patterns typically rely on networking constructs 
 
-## Backups in RDS
+---
+
+## 6.7 Backups in RDS
 
 ```{mermaid}
 flowchart TD
@@ -275,7 +290,9 @@ Essentials:
 - **Manual snapshots** are useful for keeping backups longer than the automated retention period.
 - A practical approach is using **both**: automated backups for operational recovery, snapshots for long-term retention or milestones.
 
-## Redundancy in RDS via Multiple Availability Zones
+---
+
+## 6.8 Redundancy in RDS via Multiple Availability Zones
 
 ```{mermaid}
 flowchart TD
@@ -303,7 +320,9 @@ flowchart TD
 - Multi-AZ deployments aim at improved resilience through cross-AZ redundancy.
 - Multi AZ deployment ensure `High Availability` and `High Durability`
 
-## Encrypting EBS volumes used by EC2 workloads
+---
+
+## 6.9 Encrypting EBS volumes used by EC2 workloads
 
 > Consider this scenario: You are a cloud engineer who works at a company that uses Amazon Elastic Compute Cloud (Amazon EC2) instances and Amazon Elastic Block Store (Amazon EBS) volumes. The company is currently using unencrypted EBS volumes. You are tasked with migrating the data on these unencrypted EBS volumes to encrypted EBS volumes. What steps can you take to migrate the data to encrypted EBS volumes?
 
@@ -321,7 +340,9 @@ This ensures seamless migration of data from unencrypted to encrypted EBS volume
 
 Source: One of the answers from a Cousera Forum
 
-## DynamoDB essentials
+---
+
+## 6.10 DynamoDB essentials
 
 - Amazon DynamoDB is a fully managed NoSQL database service.
 - It scales to handle large request volumes and large datasets.
@@ -335,10 +356,30 @@ Source: One of the answers from a Cousera Forum
 
 Like a `primary column` in RDS, a `primary attribute` is needed in Dynamo DB. An item could have any number of attributes
 
-## Quiz reference
 
+---
 
+## 6.11 Final Recap - RDS vs DynamoDB — How to Choose
 
-[Database Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w3-%20AWS%20Storage%20and%20Databases/Week%203%20Quiz%20_%20Coursera.pdf)
+| Decision Factor        | Amazon RDS (Relational)                  | Amazon DynamoDB (NoSQL)                 |
+|----------------------|------------------------------------------|----------------------------------------|
+| Data model           | Structured (tables, schema)              | Flexible (key-value, attributes)       |
+| Query patterns       | Complex joins, transactions              | Simple, predictable access patterns    |
+| Scaling              | Vertical + read replicas                 | Automatic horizontal scaling           |
+| Performance          | Good, but depends on tuning              | Single-digit ms at massive scale       |
+| Transactions         | Strong ACID support                      | Limited (but supports transactions)    |
+| Use cases            | Banking, ERP, transactional systems      | High-scale apps, gaming, IoT, APIs     |
+| Ops overhead         | Moderate (patching, tuning)              | Minimal (fully managed/serverless)     |
+| Networking           | Inside VPC (private subnets)             | Outside VPC (via endpoints)            |
 
+---
 
+### Rule of thumb:
+
+- Use **RDS** when:
+  - You need **relationships, joins, strict schema**
+  - Example: orders, payments, financial systems
+
+- Use **DynamoDB** when:
+  - You need **massive scale + predictable access patterns**
+  - Example: user sessions, leaderboards, event data
