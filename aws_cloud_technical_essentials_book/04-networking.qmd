@@ -25,9 +25,9 @@ format:
 
 > ❓ What actually happens inside a VPC when your app talks to the internet?
 
-## Introduction to Networking in AWS
+## 4.1 Introduction to Networking in AWS
 
-### What Is Networking?
+### 4.1.1 What Is Networking?
 
 > **Networking is the routing of data between uniquely identified endpoints using IP addresses across a global network.**
 
@@ -37,7 +37,7 @@ format:
 
 ***
 
-### Networking Basics
+### 4.1.2 Networking Basics
 
 *   Communication requires:
     *   **Source**
@@ -47,7 +47,7 @@ format:
 
 ***
 
-### IP Addresses
+### 4.1.3 IP Addresses
 
 *   An **IP address** uniquely identifies a computer on a network.
 *   Computers use **binary addresses (0s and 1s)** for routing.
@@ -55,7 +55,7 @@ format:
 
 ***
 
-### IPv4 Notation
+### 4.1.4 IPv4 Notation
 
 *   IPv4 is written in **decimal format** for readability.
 *   The 32 bits are split into **4 groups of 8 bits (octets)**.
@@ -64,14 +64,14 @@ format:
 
 ***
 
-## IPv4 → CIDR (why you need ranges)
+## 4.2 IPv4 → CIDR (why you need ranges)
 
 ![](./images/ipv4_notation.png)
 
 - **IPv4** identifies a single host (32 bits → dotted decimal `x.x.x.x`).
 - Networks need **ranges**, not single IPs → use **CIDR**.
 
-### CIDR Notation (range)
+### 4.2.1 CIDR Notation (range)
 
 - Format: `STARTING_IP/NUMBER_OF_FIXED_BITS`
     - Example: `192.168.1.0/24` → first 24 bits fixed → **256 IPs** (2⁸).
@@ -82,7 +82,7 @@ format:
 
 ---
 
-## AWS VPC (what you must choose)
+## 4.3 AWS VPC
 
 ![](./images/vpc_azs_region.png)
 
@@ -102,7 +102,7 @@ aws ec2 create-vpc \
 
 ---
 
-## Subnets (how you place resources)
+## 4.4 Subnets (how you place resources)
 
 ![](./images/VPC-split-by-subnet.png)
 
@@ -138,7 +138,8 @@ aws ec2 create-subnet \
 
 ---
 
-### Reserved IPs in every subnet
+
+### 4.4.1 Reserved IPs in every subnet
 
 ![](./images/5_reserved_ip_addresses.png)
 
@@ -147,7 +148,7 @@ aws ec2 create-subnet \
 
 ---
 
-## Public vs Private subnets (core pattern)
+## 4.5 Public vs Private subnets
 
 ![](./images/public_and_private_subnetets_inside_vpc.png)
 
@@ -161,14 +162,16 @@ aws ec2 create-subnet \
 
 ---
 
-## Gateways (what they do)
+## 4.6 Gateways
 
-- **Internet Gateway (IGW)**
+### 4.6.1 Internet Gateway (IGW)
+
+
+- Enables internet connectivity for the VPC (must be **attached** to the VPC).
+
+### 4.6.2 Virtual Private Gateway (VGW)
     
-    - Enables internet connectivity for the VPC (must be **attached** to the VPC).
-- **Virtual Private Gateway (VGW)**
-    
-    - Connects VPC to another private network via **encrypted VPN** (with Customer Gateway on the other side).
+- Connects VPC to another private network via **encrypted VPN** (with Customer Gateway on the other side).
 
 ### 🧪 CLI: Internet Gateway + Public Routing
 
@@ -189,10 +192,10 @@ aws ec2 create-route \
 ```
 > 💡 A subnet becomes public only when its route table points to an IGW.
 
-- **NAT Gateway**
+### 4.6.3 NAT Gateway
     
-    - Allows **outbound-only** internet from **private subnets** by translating private IP → public IP.
-    - **Stateful return traffic** is allowed only for connections initiated from inside.
+- Allows **outbound-only** internet from **private subnets** by translating private IP → public IP.
+- **Stateful return traffic** is allowed only for connections initiated from inside.
 
 ### 🧪 CLI: NAT Gateway (Private → Internet Access)
 
@@ -218,9 +221,9 @@ aws ec2 create-route \
 
 ---
 
-## VPC Routing & Security (the essential controls)
+## 4.7 VPC Routing & Security
 
-### Main Route Table
+### 4.7.1 Main Route Table
 
 ![](./images/main_route_table_of_a_vpc.png)
 
@@ -228,7 +231,7 @@ aws ec2 create-route \
 - Contains routes (Destination → Target).
 - Default behavior: allows **VPC-local traffic** between subnets.
 
-### Custom Route Tables
+### 4.7.2 Custom Route Tables
 
 ![](./images/custom_route_tables.png)
 
@@ -247,7 +250,7 @@ aws ec2 associate-route-table \
 
 ---
 
-### Network ACLs (subnet-level firewall)
+### 4.7.3 Network ACLs (subnet-level firewall)
 
 ![](./images/network_acl_inbound_and_outbound_rules.png)
 
@@ -255,7 +258,7 @@ aws ec2 associate-route-table \
 - Must allow **both inbound and outbound** explicitly (return traffic isn’t automatic).
 - Default vs custom behavior often differs (custom typically starts restrictive).
 
-### Security Groups (instance-level firewall)
+### 4.7.4 Security Groups (instance-level firewall)
 
 ![](./images/NACL_vs_sec_group_rules.png)
 
@@ -289,7 +292,7 @@ aws ec2 authorize-security-group-ingress \
 
 ---
 
-## Port 80 vs 443 (only what matters)
+## 4.8 Port 80 vs 443 (only what matters)
 
 ![](./images/http_vs_https.png)
 
@@ -298,7 +301,7 @@ aws ec2 authorize-security-group-ingress \
 
 ---
 
-## Multi-tier security group isolation (typical 3-tier)
+## 4.9 Multi-tier security group isolation (typical 3-tier)
 
 ![](./images/networking_sg_rules_for_a_multi_tier_system.png)
 
@@ -309,7 +312,7 @@ aws ec2 authorize-security-group-ingress \
 
 ---
 
-## How private-subnet EC2 reaches the internet
+## 4.10 How private-subnet EC2 reaches the internet
 
 ![](./images/how_EC2_in_private_subnet.png)
 
@@ -318,7 +321,7 @@ aws ec2 authorize-security-group-ingress \
 
 ---
 
-## 10 VPC troubleshooting checks (public EC2 web app not loading)
+## 4.11 Ten VPC troubleshooting checks (public EC2 web app not loading)
 
 1. **IGW attached to VPC**
 2. Subnet route table has `0.0.0.0/0 → igw`
@@ -333,7 +336,7 @@ aws ec2 authorize-security-group-ingress \
 
 ---
 
-## 📝 Key Notes to Remember
+## 4.12 Key Notes to Remember
 
 - VPC requires **Region**, contains **AZs** and **subnets**
 - Route tables attach to **VPC (main)** and **subnets (custom)**
