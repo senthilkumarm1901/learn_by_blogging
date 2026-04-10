@@ -19,6 +19,8 @@ format:
 
 👈 **Back to:** [📝 Blog](https://senthilkumarm1901.github.io/learn_by_blogging/blog.html) | [💼 LinkedIn](https://www.linkedin.com/in/senthilkumarm1901) | [✍️ Medium](https://medium.com/@senthilkumar.m1901)
 
+## 7.1 Intro to AWS CloudWatch
+
 ---
 
 **Why Monitoring?**
@@ -28,7 +30,44 @@ format:
 - Preventive Healthcheck: Prevent outage by scaling infra or fixing issues automated
 - For security
 
-## 7.1 Intro to AWS CloudWatch
+---
+
+> * ❓ How do you know what’s happening inside your cloud system (before users do)?
+
+```{mermaid}
+flowchart TD
+  U((Users Experience Issue))
+  M((Metrics))
+  L((Logs))
+  A((Alarms))
+  D((Dashboards))
+
+  M --> A
+  L --> A
+  A --> D
+
+  D -->|Early Insight| Dev((Developers / DevOps))
+  Dev -->|Fix / Scale| System((System))
+
+  System -->|Avoids Impact| U
+```
+
+Answer: Proactive Monitoring using Amazon CloudWatch
+
+- **Metrics** tell you what is happening (CPU, latency, errors)
+- **Logs** tell you why it is happening
+- **Alarms** notify you before things break
+- **Dashboards** give a real-time system view
+
+👉 Instead of reacting to user complaints, you:
+
+- Detect anomalies early
+- Automatically trigger scaling or recovery
+- Maintain reliability and performance
+
+> This is the core idea behind observability in the cloud.
+
+---
 
 ### 7.1.1 **Services in CloudWatch**:
 
@@ -109,7 +148,7 @@ Using `boto3` sdk, you can ensure `custom metrics` like the following that refle
 
 ---
 
-## 7.4 Notes from `Monitoring` Quiz
+## 7.4 Quick Recap
 
 - Amazon CloudWatch Widgets are used to view and analyze metrics in CloudWatch Dashboard
 
@@ -127,6 +166,3 @@ Using `boto3` sdk, you can ensure `custom metrics` like the following that refle
     - Unless they want to have their lambda accessed from inside a VPC in their own account. 
   - In that case, you can add a VPC configuration to a lambda function. 
     - This restricts the lambda function to resources within that VPC, unless the VPC has internet access
-
-Source: [A github source for Week 4 Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w4-%20Monitoring%20and%20Optimizing%20Solutions%20on%20AWS/Week%204%20Quiz%20_%20Coursera.pdf)
-
