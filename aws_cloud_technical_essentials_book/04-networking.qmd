@@ -23,6 +23,8 @@ format:
 
 # 4 Networking on AWS
 
+> ❓ What actually happens inside a VPC when your app talks to the internet?
+
 ## Introduction to Networking in AWS
 
 ### What Is Networking?
@@ -90,6 +92,14 @@ format:
 2. **Region** (VPC spans multiple AZs in that region)
 3. **CIDR range** (VPC size; up to **four /16 ranges** per VPC)
 
+### 🧪 CLI: Create a VPC
+
+```bash
+aws ec2 create-vpc \
+  --cidr-block 10.0.0.0/16 \
+  --tag-specifications ResourceType=vpc,Tags=[{Key=Name,Value=SampleVpc}]
+```
+
 ---
 
 ## Subnets (how you place resources)
@@ -100,6 +110,33 @@ format:
 - Subnet CIDR must be a **subset** of VPC CIDR.
 - EC2 instances are launched **inside subnets** (therefore in a specific AZ).
 - For **high availability**, create **at least two subnets in two AZs**.
+
+
+---
+
+### 🧪 CLI: Create Subnets (Public + Private)
+
+```bash
+# Public subnet
+aws ec2 create-subnet \
+  --vpc-id <vpc-id> \
+  --cidr-block 10.0.0.0/24
+
+# Private subnets (in different AZs)
+aws ec2 create-subnet \
+  --vpc-id <vpc-id> \
+  --cidr-block 10.0.1.0/24 \
+  --availability-zone ap-south-1a
+
+aws ec2 create-subnet \
+  --vpc-id <vpc-id> \
+  --cidr-block 10.0.2.0/24 \
+  --availability-zone ap-south-1b
+```
+
+> 💡 Subnets define where resources live (in the cidr-block set of IP addresses allocated to the subnet) and which AZ they belong to.
+
+---
 
 ### Reserved IPs in every subnet
 
@@ -119,7 +156,8 @@ format:
 - Common architecture:
     - **Public**: Load balancer
     - **Private**: app servers + databases
-    - **NAT Gateway**: private subnet outbound internet access (updates, external APIs)
+    - **NAT Gateway**: private subnet with outbound internet access (updates, external APIs)
+
 
 ---
 
@@ -131,10 +169,52 @@ format:
 - **Virtual Private Gateway (VGW)**
     
     - Connects VPC to another private network via **encrypted VPN** (with Customer Gateway on the other side).
+
+### 🧪 CLI: Internet Gateway + Public Routing
+
+```bash
+# Create IGW
+aws ec2 create-internet-gateway
+
+# Attach IGW to VPC
+aws ec2 attach-internet-gateway \
+  --internet-gateway-id <igw-id> \
+  --vpc-id <vpc-id>
+
+# Create route to internet
+aws ec2 create-route \
+  --route-table-id <route-table-id> \
+  --destination-cidr-block 0.0.0.0/0 \
+  --gateway-id <igw-id>
+```
+> 💡 A subnet becomes public only when its route table points to an IGW.
+
 - **NAT Gateway**
     
     - Allows **outbound-only** internet from **private subnets** by translating private IP → public IP.
     - **Stateful return traffic** is allowed only for connections initiated from inside.
+
+### 🧪 CLI: NAT Gateway (Private → Internet Access)
+
+```bash
+# Allocate Elastic IP
+aws ec2 allocate-address
+
+# Create NAT Gateway (must be in public subnet)
+aws ec2 create-nat-gateway \
+  --subnet-id <public-subnet-id> \
+  --allocation-id <elastic-ip-allocation-id>
+
+# Route private subnet traffic via NAT
+aws ec2 create-route \
+  --route-table-id <private-route-table-id> \
+  --destination-cidr-block 0.0.0.0/0 \
+  --nat-gateway-id <nat-gateway-id>
+```
+
+> >
+
+💡 NAT enables outbound-only internet from private subnets.
 
 ---
 
@@ -154,6 +234,16 @@ format:
 
 - Route tables can be attached to **specific subnets** for custom routing.
 - If a subnet has a custom route table, it uses that instead of the main route table.
+
+### 🧪 CLI: Route Table Association
+
+```bash
+aws ec2 associate-route-table \
+  --subnet-id <subnet-id> \
+  --route-table-id <route-table-id>
+```
+
+> 💡 Routing behavior is controlled by which route table a subnet is associated with.
 
 ---
 
@@ -176,6 +266,26 @@ format:
 - For web servers, allow inbound HTTP/HTTPS:
 
 ![](./images/inbound_sg_rules_for_http_https.png)
+
+### 🧪 CLI: Security Group Rules (HTTP/HTTPS)
+
+```bash
+# Allow HTTP
+aws ec2 authorize-security-group-ingress \
+  --group-id <sg-id> \
+  --protocol tcp \
+  --port 80 \
+  --cidr 0.0.0.0/0
+
+# Allow HTTPS
+aws ec2 authorize-security-group-ingress \
+  --group-id <sg-id> \
+  --protocol tcp \
+  --port 443 \
+  --cidr 0.0.0.0/0
+```
+
+> 💡 Security Groups are stateful — return traffic is automatically allowed.
 
 ---
 
@@ -223,7 +333,7 @@ format:
 
 ---
 
-## Quiz Notes 
+## 📝 Key Notes to Remember
 
 - VPC requires **Region**, contains **AZs** and **subnets**
 - Route tables attach to **VPC (main)** and **subnets (custom)**
@@ -231,6 +341,3 @@ format:
 - By default, a `security group` blocks all incoming traffic and allows all outgoing traffic. It is stateful (meaning an result of an incoming traffic is allowed automatically)
 - NACLs: **stateless** (must allow inbound + outbound). The `default NACL` is associated with all subnets in the VPC by default, allowing all traffic.
 - CIDR determines network size: **/16 larger than /28**
-
-[A Github Source for Week 2 Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w2-%20AWS%20Compute%20and%20Networking/Week%202%20Quiz%20_%20Coursera.pdf)
-
