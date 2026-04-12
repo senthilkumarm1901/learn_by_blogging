@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -179,7 +214,7 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#what-is-a-load-balancer" id="toc-what-is-a-load-balancer" class="nav-link" data-scroll-target="#what-is-a-load-balancer">8.4.1 What is a Load Balancer:</a></li>
   </ul></li>
-  <li><a href="#load-balancing-bare-minimum" id="toc-load-balancing-bare-minimum" class="nav-link" data-scroll-target="#load-balancing-bare-minimum">Load balancing (bare minimum)</a>
+  <li><a href="#load-balancing" id="toc-load-balancing" class="nav-link" data-scroll-target="#load-balancing">Load balancing</a>
   <ul class="collapse">
   <li><a href="#features-of-elb" id="toc-features-of-elb" class="nav-link" data-scroll-target="#features-of-elb">8.4.2 FEATURES OF ELB</a></li>
   <li><a href="#health-checks" id="toc-health-checks" class="nav-link" data-scroll-target="#health-checks">8.4.3 HEALTH CHECKS</a></li>
@@ -271,9 +306,9 @@ ul.task-list li input[type="checkbox"] {
   client --&gt;|HTTP/HTTPS| alb
   alb --&gt;|forwards| tg
 
-  tg --&gt;|"If server1 healthy"| s1
-  %% tg --&gt; s2
-  %% tg --&gt; s3
+  tg --&gt;|if server1 healthy| s1
+  tg --&gt;|if server1 unhealthy| s2
+  tg --&gt;|if server1 unhealthy| s3
 
   alb -.-&gt;|periodic| hc
   hc -.-&gt; s1
@@ -281,8 +316,7 @@ ul.task-list li input[type="checkbox"] {
   hc -.-&gt; s3
 
   s1 -.-&gt;|fails checks| s1bad
-  tg ==&gt;|if s1 unhealthy| s2
-  tg ==&gt;|if s1 unhealthy| s3
+  s1bad -.-&gt;|removed from rotation| tg
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -303,10 +337,13 @@ ul.task-list li input[type="checkbox"] {
 <p><img src="./images/active-passive-arch.png" class="img-fluid"></p>
 <blockquote class="blockquote">
 <ul>
-<li>Active-passive setups are common in disaster recovery (DR) strategies.</li>
-<li>In some DR strategies, the passive node is set up in a separate geographical location and</li>
-<li>then brought into play once the active node becomes incapacitated</li>
+<li><p>Active-passive setups are common in disaster recovery (DR) strategies.</p></li>
+<li><p>In some DR strategies, the passive node is set up in a separate geographical location and</p></li>
+<li><p>then brought into play once the active node becomes incapacitated</p></li>
+<li><p><strong>Why stateful apps often use active-passive:</strong> stateful systems keep session or application state on a single node, so routing every request to the same active node avoids state synchronization complexity and consistency issues. The passive node is kept on standby and is only activated after the active node fails.</p></li>
+<li><p><strong>Why stateless apps often use active-active:</strong> stateless systems do not retain client session state on any individual server, so any active node can safely serve any request. This allows traffic to be distributed across multiple active nodes and enables true horizontal scaling without session affinity.</p></li>
 </ul>
+<p>Stateful apps need a single primary node for consistent state, while stateless apps can use all nodes concurrently because they do not depend on per-node session data.</p>
 </blockquote>
 <p>Source for the images and above content: <a href="https://www.jscape.com/blog/active-active-vs-active-passive-high-availability-cluster">An article on High Availability Architectures</a></p>
 <div class="cell" data-layout-align="default">
@@ -341,10 +378,10 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="what-is-a-load-balancer">8.4.1 What is a Load Balancer:</h3>
 </section>
 </section>
-<section id="load-balancing-bare-minimum" class="level2">
-<h2 class="anchored" data-anchor-id="load-balancing-bare-minimum">Load balancing (bare minimum)</h2>
+<section id="load-balancing" class="level2">
+<h2 class="anchored" data-anchor-id="load-balancing">Load balancing</h2>
 <ul>
-<li><strong>Goal:</strong> Spread incoming application requests across multiple backend servers (EC2 instances) so no single server gets overloaded.</li>
+<li><strong>Goal:</strong> Spread incoming application requests across multiple backend servers (EC2 instances) so <strong>internal servers do not get overloaded</strong>.</li>
 <li>A <strong>load balancer</strong> sits in front of the servers, receives all client traffic, and forwards each request to a backend server using a routing algorithm (commonly <strong>round-robin</strong>, which cycles through servers).</li>
 <li><strong>Request path:</strong> Client browser → load balancer → one EC2 application server → response returns via the load balancer back to the client.</li>
 <li>You <em>can</em> run your own load balancer software on EC2, but AWS provides a managed service called <strong>Elastic Load Balancing (ELB)</strong> for this purpose.</li>
@@ -354,7 +391,8 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li><strong>Managed service:</strong> <u>ELB is a fully managed load balancing service</u>, so you don’t have to run/operate your own load balancer fleet. <a href="https://repost.aws/selections/KPa_EdeC-GRW6UxuEoebhIKw/aws-re-post-knowledge-center-spotlight-elastic-load-balancing-elb">[repost.aws]</a></li>
 <li><strong>Many target types:</strong> It can distribute traffic to <strong>EC2 instances, containers, IP addresses, and Lambda functions</strong> (depending on LB type). <a href="https://aws.amazon.com/documentation-overview/elasticloadbalancing/">[aws.amazon.com]</a>, <a href="https://docs.aws.amazon.com/elasticloadbalancing/">[docs.aws.amazon.com]</a></li>
-<li><strong>Hybrid capable via IP targets:</strong> Because ELB can target <strong>IP addresses</strong>, you can load balance across <strong>AWS + on‑prem resources</strong> (for example over VPN/Direct Connect). <a href="https://aws.amazon.com/blogs/aws/new-application-load-balancing-via-ip-address-to-aws-on-premises-resources/">[aws.amazon.com]</a>, <a href="https://aws.amazon.com/elasticloadbalancing/">[aws.amazon.com]</a></li>
+<li><strong>Question:</strong> Why is the AWS service called <strong>Elastic Load Balancing</strong>? Because it automatically adjusts capacity and routes traffic across healthy targets as demand changes, making the load balancer behave like an “elastic” service.</li>
+<li><strong>Hybrid capable via IP targets:</strong> Because ELB can target <strong>IP addresses</strong>, any IP address can be a target. <a href="https://aws.amazon.com/elasticloadbalancing/">[aws.amazon.com]</a></li>
 <li><strong>Highly available:</strong> Deploy/enable the load balancer across <strong>multiple Availability Zones</strong> (ALB requires at least two) so it can keep routing to healthy targets if an AZ has issues. <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html">[docs.aws.amazon.com]</a>, <a href="https://aws.github.io/aws-elb-best-practices/reliability/workload_architecture/">[aws.github.io]</a></li>
 <li><strong>Elastic scaling:</strong> ELB <strong>automatically scales its capacity</strong> based on changes in incoming traffic. <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html">[docs.aws.amazon.com]</a>, <a href="https://aws.amazon.com/elasticloadbalancing/">[aws.amazon.com]</a></li>
 </ul>
@@ -364,6 +402,37 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li>Health checks should validate <strong>real application health</strong>, not just “port is open” or “homepage loads”; shallow checks can pass even when the app is broken. <a href="https://aws.github.io/aws-elb-best-practices/reliability/failure_management/">[aws.github.io]</a></li>
 <li>A good pattern is a <strong>deep health endpoint</strong> (example: <code>/monitor</code>) that verifies <strong>critical dependencies</strong> (for example DB connectivity and an S3 call) and returns failure if any dependency fails. <a href="https://aws.github.io/aws-elb-best-practices/reliability/failure_management/">[aws.github.io]</a></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastapi <span class="im">import</span> FastAPI, status</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastapi.responses <span class="im">import</span> JSONResponse</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> FastAPI()</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">"/health"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">async</span> <span class="kw">def</span> health():</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"status"</span>: <span class="st">"ok"</span>}  <span class="co"># shallow check: app is reachable</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">"/monitor"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="cf">async</span> <span class="kw">def</span> monitor():</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    db_ok <span class="op">=</span> check_database()</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    cache_ok <span class="op">=</span> check_cache()</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> db_ok <span class="kw">and</span> cache_ok:</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {<span class="st">"status"</span>: <span class="st">"ok"</span>}</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> JSONResponse(</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        status_code<span class="op">=</span>status.HTTP_503_SERVICE_UNAVAILABLE,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        content<span class="op">=</span>{<span class="st">"status"</span>: <span class="st">"fail"</span>, <span class="st">"dependencies"</span>: {<span class="st">"db"</span>: db_ok, <span class="st">"cache"</span>: cache_ok}},</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_database():</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># replace with a real database connectivity test</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_cache():</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># replace with a real cache/session-store test</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">True</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
 <li>Point the load balancer’s health check path to that endpoint so the load balancer can decide whether a target should receive traffic. <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html">[docs.aws.amazon.com]</a></li>
 </ul>
 <p><img src="./images/EC2_monitor_health_via_ELB.png" class="img-fluid"></p>
@@ -371,6 +440,7 @@ ul.task-list li input[type="checkbox"] {
 <li>New instances start receiving traffic <strong>only after they pass</strong> the load balancer health checks; load balancer routes traffic only to <strong>healthy</strong> targets (with specific edge cases if all are unhealthy). <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html">[docs.aws.amazon.com]</a>, <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html">[docs.aws.amazon.com]</a></li>
 <li>If the load balancer determines an instance is unhealthy, <strong>traffic is stopped</strong> to that instance, and <strong>EC2 Auto Scaling can replace</strong> unhealthy instances when it receives an unhealthy notification (ELB is one of the supported notification sources). <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html">[docs.aws.amazon.com]</a>, <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html">[docs.aws.amazon.com]</a></li>
 <li>During scale-in (instance termination), <strong>connection draining / deregistration delay</strong> allows the load balancer to <strong>stop new connections</strong> to the instance while letting <strong>in-flight requests complete</strong> before termination, reducing dropped requests. <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-conn-drain.html">[docs.aws.amazon.com]</a>, <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html">[docs.aws.amazon.com]</a></li>
+<li><strong>Amazing:</strong> ELB completes in-flight requests before terminating EC2 instances, which makes scale-in and unhealthy-instance removal much safer for clients.</li>
 </ul>
 </section>
 <section id="elb-components" class="level3">
@@ -378,50 +448,52 @@ ul.task-list li input[type="checkbox"] {
 <p><img src="./images/components_of_ELB.png" class="img-fluid"></p>
 <ul>
 <li>Listeners: The client connects to the listener. This is often referred to as client-side. To define a listener, a port must be provided as well as the protocol, depending on the load balancer type. There can be many listeners for a single load balancer.</li>
-<li>Target groups: The backend servers, or server-side, is defined in one or more target groups. This is where you define the type of backend you want to direct traffic to, such as EC2 Instances, AWS Lambda functions, or IP addresses. Also, a health check needs to be defined for each target group.</li>
+<li>Target groups: The backend servers or resources are grouped into a target group. A target group defines the set of targets (such as EC2 instances, IP addresses, or Lambda functions), the protocol and port for routing to them, and the health check settings that determine which targets are eligible to receive traffic.</li>
 <li>Rules: To associate a target group to a listener, a rule must be used. Rules are made up of a condition that can be the source IP address of the client and a condition to decide which target group to send the traffic to.</li>
 </ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> elbv2 create-target-group <span class="dt">\</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> my-target-group <span class="dt">\</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> HTTP <span class="dt">\</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port</span> 80 <span class="dt">\</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--vpc-id</span> vpc-0123456789abcdef0 <span class="dt">\</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--health-check-protocol</span> HTTP <span class="dt">\</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--health-check-path</span> /monitor <span class="dt">\</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--health-check-interval-seconds</span> 30</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> elbv2 create-listener <span class="dt">\</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--load-balancer-arn</span> arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/my-alb/1234567890abcdef <span class="dt">\</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--protocol</span> HTTP <span class="dt">\</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port</span> 80 <span class="dt">\</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--default-actions</span> Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/my-target-group/abcdef0123456789</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> elbv2 create-rule <span class="dt">\</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">--listener-arn</span> arn:aws:elasticloadbalancing:us-east-1:123456789012:listener/app/my-alb/1234567890abcdef/abcdef0123456789 <span class="dt">\</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">--priority</span> 10 <span class="dt">\</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">--conditions</span> Field=path-pattern,Values=<span class="st">'/app/*'</span> <span class="dt">\</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">--actions</span> Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/my-target-group/abcdef0123456789</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="application-load-balancer" class="level3">
 <h3 class="anchored" data-anchor-id="application-load-balancer">8.5 APPLICATION LOAD BALANCER</h3>
-<ul>
-<li><strong>Granular routing:</strong> Routes traffic based on HTTP request data (URL path, host, headers, method, source IP).<br>
-</li>
-<li><strong>Direct responses:</strong> Can send fixed responses (e.g., HTML) or redirects (e.g., HTTP → HTTPS).<br>
-</li>
-<li><strong>TLS offloading:</strong> Handles HTTPS traffic with SSL certificates from IAM or AWS Certificate Manager (ACM).<br>
-</li>
-<li><strong>User authentication:</strong> Supports OpenID Connect and integrates with SAML, LDAP, Microsoft AD, etc.<br>
-</li>
-<li><strong>Traffic security:</strong> Uses security groups to restrict allowed IP ranges.<br>
-</li>
-<li><strong>Round-robin routing:</strong> Distributes requests evenly across servers.<br>
-</li>
-<li><strong>Least outstanding requests routing:</strong> Balances load by sending new requests to servers with fewer pending requests.<br>
-</li>
-<li><strong>Sticky sessions:</strong> Uses HTTP cookies to keep traffic from a client directed to the same backend server.<br>
-</li>
-<li><strong>Protocol scope:</strong> Supports HTTP and HTTPS only; use <strong>Network Load Balancer (NLB)</strong> for other protocols.</li>
-</ul>
+<pre class="{mermaid}"><code>flowchart TB
+  A[Client]
+  ALB[Application Load Balancer&lt;br&gt;(Layer 7)]
+  NLB[Network Load Balancer&lt;br&gt;(Layer 4)]
+  TL[Transport Layer&lt;br&gt;(TCP / UDP)]
+  BE[Backend Targets]
+
+  A --&gt;|HTTP / HTTPS| ALB
+  A --&gt;|TCP / UDP| NLB
+  ALB --&gt;|forwards application traffic| TL
+  NLB --&gt;|forwards transport traffic| TL
+  TL --&gt; BE</code></pre>
 </section>
 <section id="nlb" class="level3">
 <h3 class="anchored" data-anchor-id="nlb">8.6 NLB</h3>
 <ul>
-<li><strong>Protocol support:</strong> Works with TCP, UDP, and TLS. Operates at the connection layer, so it does not understand HTTP/HTTPS.<br>
-</li>
-<li><strong>Flow hash routing:</strong> Routes traffic based on protocol, source/destination IP and port, and TCP sequence number.<br>
-</li>
-<li><strong>Sticky sessions:</strong> Based on the client’s source IP address (not cookies like ALB).<br>
-</li>
-<li><strong>TLS offloading:</strong> Can terminate TLS to reduce backend server load.<br>
-</li>
-<li><strong>High performance:</strong> Instantly handles millions of requests per second (no warm-up needed).<br>
-</li>
-<li><strong>Static and Elastic IPs:</strong> Supports direct client connections via fixed IP addresses—useful for DNS-restricted or firewall-rule scenarios.<br>
-</li>
-<li><strong>Source IP preservation:</strong> Passes the client’s real IP address to the backend (unlike ALB, which shows the LB’s IP).</li>
+<li>ALB operates at the application layer and routes HTTP/HTTPS traffic.</li>
+<li>NLB operates at the transport layer and routes TCP/UDP traffic.</li>
+<li>The transport layer is where connection handling and packet forwarding happen.</li>
 </ul>
-<p><img src="./images/different_ELBs.png" class="img-fluid"></p>
 <hr>
 </section>
 </section>
@@ -516,6 +588,27 @@ But this doesn’t really solve the problem.</p>
 <section id="elb-and-auto-scaling-integration" class="level4">
 <h4 class="anchored" data-anchor-id="elb-and-auto-scaling-integration">ELB and Auto Scaling Integration</h4>
 <p>The <strong>ELB service</strong> integrates seamlessly with <strong>EC2 Auto Scaling</strong>. As soon as a new EC2 instance is added to or removed from the EC2 Auto Scaling group, ELB is notified. However, before it can send traffic to a new EC2 instance, it needs to validate that the application running on that EC2 instance is available.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  alb[Application Load Balancer]
+  tg[Target Group]
+  ec2[EC2 Instance]
+  asg[EC2 Auto Scaling Group]
+
+  alb --&gt;|routes traffic| tg
+  tg --&gt;|forwards to| ec2
+  alb --&gt;|sends unhealthy notification| asg
+  asg --&gt;|replaces unhealthy instance| ec2
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 <p>This validation is done via the <strong>health checks feature of ELB</strong>. Monitoring is an important part of load balancers, as it should route traffic to only healthy EC2 instances. That’s why ELB supports two types of health checks:</p>
 <ul>
 <li><strong>TCP Health Check</strong>: Establishing a connection to a backend EC2 instance using TCP, and marking the instance as available if that connection is successful.<br>
@@ -811,7 +904,6 @@ But this doesn’t really solve the problem.</p>
 <li>If you are running low-latency apps, real time games or IoT applications, use <code>Network Load Balancer</code> (if routing is NOT based on content-based routing)</li>
 <li>An application can be scaled <code>Vertically</code> by adding more firepower (compute capacity) to the existing machine OR by scaling <code>horizontally</code> by adding more EC2 instances of similar compute capacity</li>
 </ul>
-<p>Source: <a href="https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w4-%20Monitoring%20and%20Optimizing%20Solutions%20on%20AWS/Week%204%20Quiz%20_%20Coursera.pdf">A github source for Week 4 Quiz</a></p>
 
 
 </section>
