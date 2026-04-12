@@ -205,16 +205,14 @@ aws elbv2 create-rule \
 ```{mermaid}
 flowchart TB
   A[Client]
-  ALB[Application Load Balancer<br>(Layer 7)]
-  NLB[Network Load Balancer<br>(Layer 4)]
-  TL[Transport Layer<br>(TCP / UDP)]
-  BE[Backend Targets]
+  ALB[Application Load Balancer<br>(Layer 7 - HTTP/HTTPS)]
+  NLB[Network Load Balancer<br>(Layer 4 - TCP/UDP)]
+  BE[Backend Targets<br>(EC2 / Containers / IP / Lambda)]
 
   A -->|HTTP / HTTPS| ALB
   A -->|TCP / UDP| NLB
-  ALB -->|forwards application traffic| TL
-  NLB -->|forwards transport traffic| TL
-  TL --> BE
+  ALB -->|HTTP-based routing| BE
+  NLB -->|TCP/UDP forwarding| BE
 ```
 
 ### 8.6 NLB
