@@ -50,9 +50,9 @@ flowchart TD
   client -->|HTTP/HTTPS| alb
   alb -->|forwards| tg
 
-  tg -->|"If server1 healthy"| s1
-  %% tg --> s2
-  %% tg --> s3
+  tg -->|if server1 healthy| s1
+  tg -->|if server1 unhealthy| s2
+  tg -->|if server1 unhealthy| s3
 
   alb -.->|periodic| hc
   hc -.-> s1
@@ -60,8 +60,7 @@ flowchart TD
   hc -.-> s3
 
   s1 -.->|fails checks| s1bad
-  tg ==>|if s1 unhealthy| s2
-  tg ==>|if s1 unhealthy| s3
+  s1bad -.->|removed from rotation| tg
 ```
 
 ## 8.3 Types of High Availability Architecture
@@ -77,6 +76,11 @@ flowchart TD
 > * Active-passive setups are common in disaster recovery (DR) strategies. 
 > * In some DR strategies, the passive node is set up in a separate geographical location and 
 > * then brought into play once the active node becomes incapacitated
+>
+> * **Why stateful apps often use active-passive:** stateful systems keep session or application state on a single node, so routing every request to the same active node avoids state synchronization complexity and consistency issues. The passive node is kept on standby and is only activated after the active node fails.
+> * **Why stateless apps often use active-active:** stateless systems do not retain client session state on any individual server, so any active node can safely serve any request. This allows traffic to be distributed across multiple active nodes and enables true horizontal scaling without session affinity.
+>
+> Stateful apps need a single primary node for consistent state, while stateless apps can use all nodes concurrently because they do not depend on per-node session data.
 
 Source for the images and above content: [An article on High Availability Architectures](https://www.jscape.com/blog/active-active-vs-active-passive-high-availability-cluster)
 
@@ -101,9 +105,9 @@ flowchart TD
 
 ### 8.4.1 What is a Load Balancer:
 
-## Load balancing (bare minimum)
+## Load balancing
 
-*   **Goal:** Spread incoming application requests across multiple backend servers (EC2 instances) so no single server gets overloaded.
+*   **Goal:** Spread incoming application requests across multiple backend servers (EC2 instances) so **internal servers do not get overloaded**.
 *   A **load balancer** sits in front of the servers, receives all client traffic, and forwards each request to a backend server using a routing algorithm (commonly **round-robin**, which cycles through servers).
 *   **Request path:** Client browser → load balancer → one EC2 application server → response returns via the load balancer back to the client.
 *   You *can* run your own load balancer software on EC2, but AWS provides a managed service called **Elastic Load Balancing (ELB)** for this purpose.
@@ -113,7 +117,8 @@ flowchart TD
 
 *   **Managed service:** <u>ELB is a fully managed load balancing service</u>, so you don’t have to run/operate your own load balancer fleet. [\[repost.aws\]](https://repost.aws/selections/KPa_EdeC-GRW6UxuEoebhIKw/aws-re-post-knowledge-center-spotlight-elastic-load-balancing-elb)
 *   **Many target types:** It can distribute traffic to **EC2 instances, containers, IP addresses, and Lambda functions** (depending on LB type). [\[aws.amazon.com\]](https://aws.amazon.com/documentation-overview/elasticloadbalancing/), [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/)
-*   **Hybrid capable via IP targets:** Because ELB can target **IP addresses**, you can load balance across **AWS + on‑prem resources** (for example over VPN/Direct Connect). [\[aws.amazon.com\]](https://aws.amazon.com/blogs/aws/new-application-load-balancing-via-ip-address-to-aws-on-premises-resources/), [\[aws.amazon.com\]](https://aws.amazon.com/elasticloadbalancing/)
+*   **Question:** Why is the AWS service called **Elastic Load Balancing**? Because it automatically adjusts capacity and routes traffic across healthy targets as demand changes, making the load balancer behave like an “elastic” service.
+*   **Hybrid capable via IP targets:** Because ELB can target **IP addresses**, any IP address can be a target. [\[aws.amazon.com\]](https://aws.amazon.com/elasticloadbalancing/)
 *   **Highly available:** Deploy/enable the load balancer across **multiple Availability Zones** (ALB requires at least two) so it can keep routing to healthy targets if an AZ has issues. [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html), [\[aws.github.io\]](https://aws.github.io/aws-elb-best-practices/reliability/workload_architecture/)
 *   **Elastic scaling:** ELB **automatically scales its capacity** based on changes in incoming traffic. [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html), [\[aws.amazon.com\]](https://aws.amazon.com/elasticloadbalancing/)
 
@@ -121,6 +126,39 @@ flowchart TD
 
 *   Health checks should validate **real application health**, not just “port is open” or “homepage loads”; shallow checks can pass even when the app is broken. [\[aws.github.io\]](https://aws.github.io/aws-elb-best-practices/reliability/failure_management/)
 *   A good pattern is a **deep health endpoint** (example: `/monitor`) that verifies **critical dependencies** (for example DB connectivity and an S3 call) and returns failure if any dependency fails. [\[aws.github.io\]](https://aws.github.io/aws-elb-best-practices/reliability/failure_management/)
+
+```python
+from fastapi import FastAPI, status
+from fastapi.responses import JSONResponse
+
+app = FastAPI()
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}  # shallow check: app is reachable
+
+@app.get("/monitor")
+async def monitor():
+    db_ok = check_database()
+    cache_ok = check_cache()
+    if db_ok and cache_ok:
+        return {"status": "ok"}
+    return JSONResponse(
+        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        content={"status": "fail", "dependencies": {"db": db_ok, "cache": cache_ok}},
+    )
+
+
+def check_database():
+    # replace with a real database connectivity test
+    return True
+
+
+def check_cache():
+    # replace with a real cache/session-store test
+    return True
+```
+
 *   Point the load balancer’s health check path to that endpoint so the load balancer can decide whether a target should receive traffic. [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html)
 
 ![](./images/EC2_monitor_health_via_ELB.png)
@@ -128,6 +166,7 @@ flowchart TD
 *   New instances start receiving traffic **only after they pass** the load balancer health checks; load balancer routes traffic only to **healthy** targets (with specific edge cases if all are unhealthy). [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html), [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html)
 *   If the load balancer determines an instance is unhealthy, **traffic is stopped** to that instance, and **EC2 Auto Scaling can replace** unhealthy instances when it receives an unhealthy notification (ELB is one of the supported notification sources). [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html), [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html)
 *   During scale-in (instance termination), **connection draining / deregistration delay** allows the load balancer to **stop new connections** to the instance while letting **in-flight requests complete** before termination, reducing dropped requests. [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-conn-drain.html), [\[docs.aws.amazon.com\]](https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html)
+*   **Amazing:** ELB completes in-flight requests before terminating EC2 instances, which makes scale-in and unhealthy-instance removal much safer for clients.
 
 ### 8.4.4 ELB COMPONENTS
 
@@ -135,33 +174,54 @@ flowchart TD
 ![](./images/components_of_ELB.png)
 
 - Listeners: The client connects to the listener. This is often referred to as client-side. To define a listener, a port must be provided as well as the protocol, depending on the load balancer type. There can be many listeners for a single load balancer.
-- Target groups: The backend servers, or server-side, is defined in one or more target groups. This is where you define the type of backend you want to direct traffic to, such as EC2 Instances, AWS Lambda functions, or IP addresses. Also, a health check needs to be defined for each target group.
+- Target groups: The backend servers or resources are grouped into a target group. A target group defines the set of targets (such as EC2 instances, IP addresses, or Lambda functions), the protocol and port for routing to them, and the health check settings that determine which targets are eligible to receive traffic.
 - Rules: To associate a target group to a listener, a rule must be used. Rules are made up of a condition that can be the source IP address of the client and a condition to decide which target group to send the traffic to.
+
+```bash
+aws elbv2 create-target-group \
+  --name my-target-group \
+  --protocol HTTP \
+  --port 80 \
+  --vpc-id vpc-0123456789abcdef0 \
+  --health-check-protocol HTTP \
+  --health-check-path /monitor \
+  --health-check-interval-seconds 30
+
+aws elbv2 create-listener \
+  --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/my-alb/1234567890abcdef \
+  --protocol HTTP \
+  --port 80 \
+  --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/my-target-group/abcdef0123456789
+
+aws elbv2 create-rule \
+  --listener-arn arn:aws:elasticloadbalancing:us-east-1:123456789012:listener/app/my-alb/1234567890abcdef/abcdef0123456789 \
+  --priority 10 \
+  --conditions Field=path-pattern,Values='/app/*' \
+  --actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/my-target-group/abcdef0123456789
+```
 
 ### 8.5 APPLICATION LOAD BALANCER
 
-- **Granular routing:** Routes traffic based on HTTP request data (URL path, host, headers, method, source IP).  
-- **Direct responses:** Can send fixed responses (e.g., HTML) or redirects (e.g., HTTP → HTTPS).  
-- **TLS offloading:** Handles HTTPS traffic with SSL certificates from IAM or AWS Certificate Manager (ACM).  
-- **User authentication:** Supports OpenID Connect and integrates with SAML, LDAP, Microsoft AD, etc.  
-- **Traffic security:** Uses security groups to restrict allowed IP ranges.  
-- **Round-robin routing:** Distributes requests evenly across servers.  
-- **Least outstanding requests routing:** Balances load by sending new requests to servers with fewer pending requests.  
-- **Sticky sessions:** Uses HTTP cookies to keep traffic from a client directed to the same backend server.  
-- **Protocol scope:** Supports HTTP and HTTPS only; use **Network Load Balancer (NLB)** for other protocols.  
+```{mermaid}
+flowchart TB
+  A[Client]
+  ALB[Application Load Balancer<br>(Layer 7)]
+  NLB[Network Load Balancer<br>(Layer 4)]
+  TL[Transport Layer<br>(TCP / UDP)]
+  BE[Backend Targets]
 
+  A -->|HTTP / HTTPS| ALB
+  A -->|TCP / UDP| NLB
+  ALB -->|forwards application traffic| TL
+  NLB -->|forwards transport traffic| TL
+  TL --> BE
+```
 
 ### 8.6 NLB
 
-- **Protocol support:** Works with TCP, UDP, and TLS. Operates at the connection layer, so it does not understand HTTP/HTTPS.  
-- **Flow hash routing:** Routes traffic based on protocol, source/destination IP and port, and TCP sequence number.  
-- **Sticky sessions:** Based on the client’s source IP address (not cookies like ALB).  
-- **TLS offloading:** Can terminate TLS to reduce backend server load.  
-- **High performance:** Instantly handles millions of requests per second (no warm-up needed).  
-- **Static and Elastic IPs:** Supports direct client connections via fixed IP addresses—useful for DNS-restricted or firewall-rule scenarios.  
-- **Source IP preservation:** Passes the client’s real IP address to the backend (unlike ALB, which shows the LB’s IP).  
-
-![](./images/different_ELBs.png)
+- ALB operates at the application layer and routes HTTP/HTTPS traffic.
+- NLB operates at the transport layer and routes TCP/UDP traffic.
+- The transport layer is where connection handling and packet forwarding happen.
 
 ---
 
@@ -223,6 +283,19 @@ But this doesn’t really solve the problem.
 #### ELB and Auto Scaling Integration  
 
 The **ELB service** integrates seamlessly with **EC2 Auto Scaling**. As soon as a new EC2 instance is added to or removed from the EC2 Auto Scaling group, ELB is notified. However, before it can send traffic to a new EC2 instance, it needs to validate that the application running on that EC2 instance is available.  
+
+```{mermaid}
+flowchart LR
+  alb[Application Load Balancer]
+  tg[Target Group]
+  ec2[EC2 Instance]
+  asg[EC2 Auto Scaling Group]
+
+  alb -->|routes traffic| tg
+  tg -->|forwards to| ec2
+  alb -->|sends unhealthy notification| asg
+  asg -->|replaces unhealthy instance| ec2
+```
 
 This validation is done via the **health checks feature of ELB**. Monitoring is an important part of load balancers, as it should route traffic to only healthy EC2 instances. That’s why ELB supports two types of health checks:  
 
@@ -413,5 +486,3 @@ How many EC2 instances should the ASG create?
 - If you are routing to targets based on a rule that uses the path of the request, you are using `Application Load Balancer`
 - If you are running low-latency apps, real time games or IoT applications, use `Network Load Balancer` (if routing is NOT based on content-based routing)
 - An application can be scaled `Vertically` by adding more firepower (compute capacity) to the existing machine OR by scaling `horizontally` by adding more EC2 instances of similar compute capacity
-
-Source: [A github source for Week 4 Quiz](https://github.com/salimt/Courses-/blob/master/AWS%20Cloud%20Solutions%20Architect%20Professional/c01-%20AWS%20Cloud%20Technical%20Essentials/w4-%20Monitoring%20and%20Optimizing%20Solutions%20on%20AWS/Week%204%20Quiz%20_%20Coursera.pdf)
