@@ -189,7 +189,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="notation-in-nines">8.1 Notation in Nines:</h2>
 <blockquote class="blockquote">
 <ul>
-<li>❓ How do you design for cost <em>and</em> performance without trade-offs?</li>
+<li>❓ How much downtime is your system optimized for?</li>
 </ul>
 </blockquote>
 <p><img src="./images/notation_in_nines.png" class="img-fluid"></p>
@@ -391,16 +391,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="application-load-balancer">8.5 APPLICATION LOAD BALANCER</h3>
 <pre class="{mermaid}"><code>flowchart TB
   A[Client]
-  ALB[Application Load Balancer&lt;br&gt;(Layer 7)]
-  NLB[Network Load Balancer&lt;br&gt;(Layer 4)]
-  TL[Transport Layer&lt;br&gt;(TCP / UDP)]
-  BE[Backend Targets]
+  ALB[Application Load Balancer&lt;br&gt;(Layer 7 - HTTP/HTTPS)]
+  NLB[Network Load Balancer&lt;br&gt;(Layer 4 - TCP/UDP)]
+  BE[Backend Targets&lt;br&gt;(EC2 / Containers / IP / Lambda)]
 
   A --&gt;|HTTP / HTTPS| ALB
   A --&gt;|TCP / UDP| NLB
-  ALB --&gt;|forwards application traffic| TL
-  NLB --&gt;|forwards transport traffic| TL
-  TL --&gt; BE</code></pre>
+  ALB --&gt;|HTTP-based routing| BE
+  NLB --&gt;|TCP/UDP forwarding| BE</code></pre>
 </section>
 <section id="nlb" class="level3">
 <h3 class="anchored" data-anchor-id="nlb">8.6 NLB</h3>
