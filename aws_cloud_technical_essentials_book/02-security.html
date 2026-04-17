@@ -616,17 +616,16 @@ flowchart LR
 
     AppUser --&gt; App
 
-    App --&gt;|"1. Sign-in"| UserPool
-    UserPool --&gt;|"2. JWT (ID token)"| App
+    App --&gt;|"1 Sign-in"| UserPool
+    UserPool --&gt;|"2 JWT (ID token)"| App
 
-    App --&gt;|"3. Present JWT"| IdentityPool
-    IdentityPool --&gt;|"4. AssumeRoleWithWebIdentity"| STS
-    STS --&gt;|"5. Temporary AWS Credentials"| IdentityPool
+    App --&gt;|"3 Present JWT"| IdentityPool
+    IdentityPool --&gt;|"4 AssumeRoleWithWebIdentity"| STS
+    STS --&gt;|"5 Temporary AWS Credentials"| IdentityPool
     IdentityPool --&gt;|"6 Temporary AWS Credentials"| App
 
-    App --&gt;|"7. Signed requests"| AppRole
-    AppRole -.-&gt;|"8. Access"| S3
-
+    App --&gt;|"7 Signed requests"| AppRole
+    AppRole -.-&gt;|"8 Access"| S3
 </pre>
 </div>
 <p></p></figure><p></p>
