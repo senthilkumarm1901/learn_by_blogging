@@ -22,6 +22,9 @@ I recently completed a tutorial by Vaibhav Mehra on FreeCodeCamp in [YouTube](ht
 
 I learned quite a few things from that. I have compiled my notes from the course below.
 
+> * The codes used in this article are experimented and updated here: 
+> * https://github.com/senthilkumarm1901/agentic_frameworks_exploration/tree/main/langgraph_exploration
+
 ---
 
 ## Intro - A TL;DR Version
@@ -47,7 +50,7 @@ It then demonstrates agent integration with LLMs:
 - Drafter Agent: Human-in-the-loop document drafting and saving.
 - RAG Agent: Retrieval-Augmented Generation using PDF documents, embeddings, and ChromaDB for answering questions based on document content.
 
-> While the actual tutorial used OpenAI, I modified it to run locally using Ollama models - llama3.1:8b-instruct-q8_0 for LLM and nomic-embed-text for embedding
+> While the actual tutorial used OpenAI, <br>I modified it to run locally using Ollama models - llama3.1:8b-instruct-q8_0 for LLM and nomic-embed-text for embedding
 
 
 ---
@@ -1703,7 +1706,7 @@ Overall, while Tesla faced challenges during the first half of 2024, its strong 
 
 In this blog post, I’ve kept all tools local - Llama 3.1 8B Instruct int_8 model, Ollama Embedding, ChromaDB,etc.,  (unlike the original tutorial, which relied on the OpenAI APIs). This way, we can learn and practice locally without external dependencies.
 
-LangGraph is a flexible framework. At its core, it treats AI agentic tasks as graphs/workflows, which is the foundation of its flexibility. Each node in the workflow can execute Python functions, meaning you can seamlessly integrate any agentic framework.
+LangGraph is a flexible framework. At its core, it treats AI agentic tasks as graphs/workflows. Each node in the workflow can execute Python functions, meaning you can seamlessly integrate any agentic framework.
 
 Here’s an excellent example that combines LangGraph + Strands Agent + MCP:
 
@@ -1724,4 +1727,4 @@ Source: [Amazon Blog Post](https://aws.amazon.com/blogs/machine-learning/build-a
 > - The headings above match the video titles from the course. 
 > - These are notes where many of the lines would have been directly taken from the course material. 
 > - Sources are attributed to all pics for clarity
-> - I used ample help from ChatGPT to produce these learning notes from the course material. 
+> - I used ample help from GH CoPilot Assistant to produce these learning notes from the course material. 
