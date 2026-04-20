@@ -548,6 +548,7 @@ print(result)
 ```
 
 ![](multiple_inputs_graph.png)
+
 ---
 
 ## V. Graph 3 - Sequential Graph
