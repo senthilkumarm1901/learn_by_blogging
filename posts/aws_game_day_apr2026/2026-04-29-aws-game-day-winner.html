@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2026-04-29">
+<meta name="description" content="This blog explains the security lessons my team and I learnt by resolving 3 AWS security breach scenarios in the AWS Game Day event conducted.">
+
+<title>What I Learned from Solving the Quests in a AWS Security Game Day Event – Learn by Blogging</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-44d439249bacb078cfa464a9d8f3ac0a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">What I Learned from Solving the Quests in a AWS Security Game Day Event</h1>
+                  <div>
+        <div class="description">
+          This blog explains the security lessons my team and I learnt by resolving 3 AWS security breach scenarios in the AWS Game Day event conducted.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Cloud/AWS</div>
+                <div class="quarto-category">Cloud/AWS/Security</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 29, 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-3-aws-security-quests" id="toc-the-3-aws-security-quests" class="nav-link active" data-scroll-target="#the-3-aws-security-quests">The 3 AWS Security Quests</a></li>
+  <li><a href="#quest-1---forensics-analysis" id="toc-quest-1---forensics-analysis" class="nav-link" data-scroll-target="#quest-1---forensics-analysis">Quest 1 - <strong>Forensics Analysis</strong></a></li>
+  <li><a href="#quest-2---data-classification-protection" id="toc-quest-2---data-classification-protection" class="nav-link" data-scroll-target="#quest-2---data-classification-protection">Quest 2 - Data Classification &amp; Protection</a></li>
+  <li><a href="#quest-3---credentials-management" id="toc-quest-3---credentials-management" class="nav-link" data-scroll-target="#quest-3---credentials-management">Quest 3 - Credentials Management</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<p><img src="./eternals_team_win.png" class="img-fluid"> &gt; * My Team - Eternals - won the event! &gt; * Thanks to my company Toyota Connected India and AWS for organizing the event (Apr’26)</p>
+<section id="the-3-aws-security-quests" class="level2">
+<h2 class="anchored" data-anchor-id="the-3-aws-security-quests">The 3 AWS Security Quests</h2>
+<ul>
+<li><strong>Forensics Analysis</strong>: Identify, cordon off and remediate the compromised instances
+<ul>
+<li>AWS Services: EC2 Instances, ALB, ASG, Security Groups, CloudShell (to run the commands)</li>
+</ul></li>
+<li><strong>Data Classification &amp; Protection</strong>: PII leak detection &amp; automated response
+<ul>
+<li>AWS Services: Lambda, Macie and EventBridge</li>
+</ul></li>
+<li><strong>Credentials Management</strong>: Identity Compromise &amp; Remediation
+<ul>
+<li>AWS Services: CloudTrail, S3, IAM, Lambda</li>
+</ul></li>
+</ul>
+<p>The Methodology we adopted that helped in our success:</p>
+<ul>
+<li>Pre-event Preparation: Before the event day, we were given the problem statements. I ran it by an LLM provider to come up with plans in “mermaid chart” format for the 3 quests.
+<ul>
+<li>The mermaid chart plans are shown in the subsequent portion of the blog</li>
+</ul></li>
+<li>During the event, logged into the AWS Console. Entered AWS CloudShell and logged in to the provided KiroCLI</li>
+<li>In each terminal of the KiroCLI, gave a mermaid chart with brief explanation of each quest so that the LLM in KiroCLI can understand the quest.</li>
+<li>The talked to KiroCLI which came up with a plan as per the quest and the mermaid charts.</li>
+<li>Approved the AWS CLI commands suggested by KiroCLI as and when required. Suggested new approaches if need be.</li>
+</ul>
+<hr>
+</section>
+<section id="quest-1---forensics-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="quest-1---forensics-analysis">Quest 1 - <strong>Forensics Analysis</strong></h2>
+<section id="problem-statement-from-aws" class="level4">
+<h4 class="anchored" data-anchor-id="problem-statement-from-aws">Problem Statement from AWS</h4>
+<p>Unicorn Instances have been compromised! The user will have to identify the compromised instance and then cordon it to run analysis. They will use AWS CloudShell and the command line to determine where the instances were compromised and fix any issues.</p>
+<p><strong>Services used:</strong></p>
+<ol type="1">
+<li>EC2 → May have to create or delete certain instance</li>
+<li>ALB → May need to enable access log. Change the listener rule</li>
+<li>WAF → may need to check sampled request.</li>
+<li>Security group → May need to modify inbound or outbound rule.</li>
+<li>Auto scaling group → Add or remove instance.</li>
+</ol>
+</section>
+<section id="the-preparation-plan" class="level4">
+<h4 class="anchored" data-anchor-id="the-preparation-plan">The Preparation Plan</h4>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TB
+    %% ── Styles ──
+    classDef titleStyle fill:#1a1a2e,stroke:#e94560,color:#fff,font-weight:bold,font-size:16px
+    classDef problemStyle fill:#2d2d44,stroke:#e94560,color:#fff,font-weight:bold
+    classDef phaseStyle fill:#0f3460,stroke:#16213e,color:#fff,font-weight:bold,font-size:13px
+    classDef ec2Style fill:#ff6f00,stroke:#e65100,color:#fff,font-weight:bold
+    classDef albStyle fill:#7b1fa2,stroke:#4a148c,color:#fff,font-weight:bold
+    classDef wafStyle fill:#d32f2f,stroke:#b71c1c,color:#fff,font-weight:bold
+    classDef sgStyle fill:#1565c0,stroke:#0d47a1,color:#fff,font-weight:bold
+    classDef asgStyle fill:#2e7d32,stroke:#1b5e20,color:#fff,font-weight:bold
+    classDef shellStyle fill:#00838f,stroke:#006064,color:#fff,font-weight:bold
+    classDef actionStyle fill:#37474f,stroke:#263238,color:#e0e0e0,font-size:11px
+    classDef noteStyle fill:#fff3e0,stroke:#ff9800,color:#333,font-style:italic
+
+    %% ── Title &amp; Problem ──
+    TITLE["🔬 FORENSICS ANALYSIS&lt;br/&gt;Unicorn Instances&lt;br&gt;Compromised!"]:::titleStyle
+    PROBLEM["🚨 Problem:&lt;br&gt;Identify compromised&lt;br&gt;instance &lt;br&gt; → Cordon it &lt;br/&gt; → Run analysis via &lt;br&gt; AWS CloudShell CLI &lt;br&gt; → Fix issues"]:::problemStyle
+
+    TITLE --&gt; PROBLEM
+
+    %% ── IR Lifecycle Phases ──
+    PROBLEM --&gt; DETECT
+    DETECT["🔍 PHASE 1: DETECT&lt;br/&gt;Identify&lt;br/&gt;the Compromise"]:::phaseStyle
+    CONTAIN["🔒 PHASE 2: CONTAIN&lt;br/&gt;Isolate &amp; Cordon Off"]:::phaseStyle
+    INVESTIGATE["🕵️ PHASE 3: INVESTIGATE&lt;br/&gt;Analyze the Attack"]:::phaseStyle
+    REMEDIATE["🔧 PHASE 4: REMEDIATE&lt;br/&gt;Fix &amp; Harden"]:::phaseStyle
+    RECOVER["✅ PHASE 5: RECOVER&lt;br/&gt;Restore Normal Operations"]:::phaseStyle
+
+    DETECT --&gt; CONTAIN --&gt; INVESTIGATE --&gt; REMEDIATE --&gt; RECOVER
+
+    %% ── DETECT Phase Services ──
+    DETECT --&gt; ALB_DETECT["⚖️ ALB&lt;br/&gt;Enable Access Logs&lt;br/&gt;→ Capture client IPs, &lt;br&gt;request paths,&lt;br/&gt;response codes to S3"]:::albStyle
+    DETECT --&gt; WAF_DETECT["🛡️ WAF&lt;br/&gt;Check Sampled Requests&lt;br/&gt;→ Inspect headers, body,&lt;br/&gt;source IPs to find &lt;br/&gt;the attack vector"]:::wafStyle
+    DETECT --&gt; EC2_DETECT["🖥️ EC2&lt;br/&gt;Identify Compromised Instance&lt;br/&gt;→ Check metadata,&lt;br/&gt; user-data,&lt;br/&gt;system logs, IAM roles"]:::ec2Style
+
+    %% ── CONTAIN Phase Services ──
+    CONTAIN --&gt; SG_CONTAIN["🔒 Security Group&lt;br/&gt;Quarantine Instance&lt;br/&gt;→ Restrict inbound:&lt;br/&gt; allow only forensic IP"]:::sgStyle
+    CONTAIN --&gt; ALB_CONTAIN["⚖️ ALB&lt;br/&gt;Change Listener Rules&lt;br/&gt;→ Redirect/block traffic to&lt;br/&gt;compromised instance"]:::albStyle
+    CONTAIN --&gt; ASG_CONTAIN["📈 Auto Scaling Group&lt;br/&gt;Detach Instance&lt;br/&gt;→ Remove from ASG to &lt;br/&gt;prevent auto-replacement&lt;br/&gt; &amp; evidence loss&lt;br/&gt;→ Suspend scaling processes"]:::asgStyle
+
+    %% ── INVESTIGATE Phase Services ──
+    INVESTIGATE --&gt; SHELL_INVESTIGATE["🐚 CloudShell&lt;br/&gt;CLI Forensic Workstation&lt;br/&gt;→ aws ec2 &lt;br&gt;describe-instances&lt;br/&gt;→ aws elbv2 &lt;br&gt;describe-target-health&lt;br/&gt;→ aws wafv2 &lt;br&gt;get-sampled-requests"]:::shellStyle
+    INVESTIGATE --&gt; EC2_INVESTIGATE["🖥️ EC2&lt;br/&gt;Deep Dive Analysis&lt;br/&gt;→ Snapshot EBS volume&lt;br&gt;(evidence)&lt;br/&gt;→ Review instance &lt;br&gt;metadata &amp; IMDS&lt;br/&gt;→ SSH in for live forensics"]:::ec2Style
+    INVESTIGATE --&gt; ALB_INVESTIGATE["⚖️ ALB&lt;br/&gt;Analyze Access Logs&lt;br/&gt;→ Identify&lt;br&gt;suspicious traffic patterns&lt;br/&gt;→ Brute-force attempts, &lt;br&gt;exploit payloads"]:::albStyle
+
+    %% ── REMEDIATE Phase Services ──
+    REMEDIATE --&gt; WAF_REMEDIATE["🛡️ WAF&lt;br/&gt;Tighten Rules&lt;br/&gt;→ Add IP blocklists&lt;br/&gt;→ Rate-based rules&lt;br/&gt;→ Geo-restrictions"]:::wafStyle
+    REMEDIATE --&gt; SG_REMEDIATE["🔒 Security Group&lt;br/&gt;Harden Rules&lt;br/&gt;→ Remove &lt;br&gt;0.0.0.0/0 SSH access&lt;br/&gt;→ Apply &lt;br&gt;least-privilege networking"]:::sgStyle
+    REMEDIATE --&gt; EC2_REMEDIATE["🖥️ EC2&lt;br/&gt;Terminate Compromised Instance&lt;br/&gt;→ Delete after &lt;br&gt;evidence captured&lt;br/&gt;→ Patch &lt;br&gt;AMI / launch template"]:::ec2Style
+
+    %% ── RECOVER Phase Services ──
+    RECOVER --&gt; ASG_RECOVER["📈 Auto Scaling Group&lt;br/&gt;Restore Capacity&lt;br/&gt;→ Launch clean &lt;br&gt;replacement instances&lt;br/&gt;→ Resume &lt;br&gt;scaling processes&lt;br/&gt;→ Adjust &lt;br&gt;desired/min/max"]:::asgStyle
+    RECOVER --&gt; ALB_RECOVER["⚖️ ALB&lt;br/&gt;Restore Routing&lt;br/&gt;→ Re-enable &lt;br&gt;listener rules&lt;br/&gt;→ Verify health &lt;br&gt;checks pass"]:::albStyle
+    RECOVER --&gt; DONE["🎯 Unicorn Rentals&lt;br/&gt;Back Online &amp; Hardened"]:::titleStyle
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="lessons-learned" class="level4">
+<h4 class="anchored" data-anchor-id="lessons-learned">Lessons Learned</h4>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    classDef titleStyle fill:#1b263b,stroke:#e63946,color:#fff,font-weight:bold,font-size:15px
+    classDef lessonStyle fill:#2a2a40,stroke:#e63946,color:#fff,font-weight:bold
+    classDef detailStyle fill:#37474f,stroke:#546e7a,color:#e0e0e0
+    classDef fixStyle fill:#005f73,stroke:#0a9396,color:#fff,font-weight:bold
+
+    TITLE["🔬 FORENSICS ANALYSIS&lt;br/&gt;&lt;br/&gt;Lessons Learned"]:::titleStyle
+
+    TITLE --&gt; L1
+    TITLE --&gt; L2
+    TITLE --&gt; L3
+    TITLE --&gt; L4
+    TITLE --&gt; L5
+
+    L1["❌ Lesson 1&lt;br/&gt;&lt;br/&gt;Never ship&lt;br/&gt;backdoors"]:::lessonStyle
+    L1 --&gt; L1D["The /backdoor endpoint&lt;br/&gt;used subprocess.run&lt;br/&gt;with shell=True.&lt;br/&gt;&lt;br/&gt;This is a textbook&lt;br/&gt;RCE vulnerability."]:::detailStyle
+
+    L2["❌ Lesson 2&lt;br/&gt;&lt;br/&gt;Separate ALB and&lt;br/&gt;instance Security Groups"]:::lessonStyle
+    L2 --&gt; L2D["Instances should never&lt;br/&gt;be directly reachable&lt;br/&gt;from the internet.&lt;br/&gt;&lt;br/&gt;ALB faces public traffic.&lt;br/&gt;Instances stay in&lt;br/&gt;private subnets only."]:::detailStyle
+
+    L3["❌ Lesson 3&lt;br/&gt;&lt;br/&gt;Enable ALB&lt;br/&gt;access logs"]:::lessonStyle
+    L3 --&gt; L3D["Access logs were disabled,&lt;br/&gt;making forensic analysis&lt;br/&gt;much harder.&lt;br/&gt;&lt;br/&gt;Always log to S3 —&lt;br/&gt;you can't investigate&lt;br/&gt;what you don't record."]:::detailStyle
+
+    L4["❌ Lesson 4&lt;br/&gt;&lt;br/&gt;Deploy WAF&lt;br/&gt;proactively"]:::lessonStyle
+    L4 --&gt; L4D["A basic WAF with&lt;br/&gt;AWS Managed Rules&lt;br/&gt;would have caught this.&lt;br/&gt;&lt;br/&gt;WAF is a first line&lt;br/&gt;of defense, not&lt;br/&gt;an afterthought."]:::detailStyle
+
+    L5["❌ Lesson 5&lt;br/&gt;&lt;br/&gt;Principle of&lt;br/&gt;Least Privilege"]:::lessonStyle
+    L5 --&gt; L5D["The Flask app ran with&lt;br/&gt;full OS-level access,&lt;br/&gt;allowing file encryption.&lt;br/&gt;&lt;br/&gt;Apps should run as&lt;br/&gt;restricted users with&lt;br/&gt;minimal permissions."]:::detailStyle
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="quest-2---data-classification-protection" class="level2">
+<h2 class="anchored" data-anchor-id="quest-2---data-classification-protection">Quest 2 - Data Classification &amp; Protection</h2>
+<section id="problem-statement-from-aws-1" class="level4">
+<h4 class="anchored" data-anchor-id="problem-statement-from-aws-1">Problem Statement from AWS</h4>
+<p>Personal identity information is being leaked from Unicorn Rentals! The player will have to create a custom identifier and then apply it to the unicorn files stored in S3. They will then need to determine the source of the leak and put a stop to it.</p>
+<p><strong>Services used:</strong></p>
+<ol type="1">
+<li>Lambda – Modify Python code</li>
+<li>Macie → Create job for custom data identifier</li>
+<li>EventBridge → create rule</li>
+</ol>
+</section>
+<section id="the-preparation-plan-1" class="level4">
+<h4 class="anchored" data-anchor-id="the-preparation-plan-1">The Preparation Plan</h4>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                    DATA CLASSIFICATION PIPELINE                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   S3 Bucket                                                     │
+│   (unicorn files with PII)                                      │
+│        │                                                        │
+│        ▼                                                        │
+│   Amazon Macie                                                  │
+│   ┌──────────────────────────┐                                  │
+│   │ • Custom Data Identifier │ ← You create this (regex-based)  │
+│   │ • Discovery Job          │ ← Scans S3 objects               │
+│   │ • Findings generated     │                                  │
+│   └──────────┬───────────────┘                                  │
+│              │ (finding event published)                        │
+│              ▼                                                  │
+│   Amazon EventBridge                                            │
+│   ┌──────────────────────────┐                                  │
+│   │ • Rule: match Macie      │                                  │
+│   │   finding events         │                                  │
+│   │ • Target: Lambda / SNS   │                                  │
+│   └──────────┬───────────────┘                                  │
+│              │ (triggers)                                       │
+│              ▼                                                  │
+│   AWS Lambda                                                    │
+│   ┌──────────────────────────┐                                  │
+│   │ • Python code (modified) │                                  │
+│   │ • Fix the PII leak       │                                  │
+│   │ • Quarantine / remediate │                                  │
+│   └──────────────────────────┘                                  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<p>We did not know about Amazon Macie:</p>
+<ul>
+<li>Amazon Macie is a <strong>fully managed data security and privacy service</strong> that uses <strong>machine learning and pattern matching</strong> to discover, classify, and protect sensitive data stored in <strong>Amazon S3</strong>. It’s purpose-built for finding PII, financial data, credentials, and other sensitive content at scale.</li>
+</ul>
+<p>How Macie fits the bigger picture for the problem</p>
+<pre><code>S3 Bucket (unicorn files)
+     │
+     ▼
+Macie Discovery Job
+(managed + custom identifiers)
+     │
+     ▼
+Findings → "File X contains PII type Y at location Z"
+     │
+     ▼
+EventBridge Rule → triggers alert / remediation</code></pre>
+<p><strong>Example EventBridge Rule Pattern for Macie</strong>:</p>
+<pre><code>{
+  "source": ["aws.macie"],
+  "detail-type": ["Macie Finding"],
+  "detail": {
+    "severity": {
+      "description": ["High"]
+    }
+  }
+}</code></pre>
+</section>
+<section id="lessons-learned-1" class="level4">
+<h4 class="anchored" data-anchor-id="lessons-learned-1">Lessons Learned</h4>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    classDef titleStyle fill:#1b263b,stroke:#e63946,color:#fff,font-weight:bold,font-size:15px
+    classDef lessonStyle fill:#2a2a40,stroke:#e63946,color:#fff,font-weight:bold
+    classDef detailStyle fill:#37474f,stroke:#546e7a,color:#e0e0e0
+    classDef fixStyle fill:#005f73,stroke:#0a9396,color:#fff,font-weight:bold
+
+    TITLE["🛡️ DATA CLASSIFICATION&lt;br/&gt; and PROTECTION&lt;br/&gt;&lt;br/&gt;Lessons Learned"]:::titleStyle
+
+    TITLE --&gt; L1
+    TITLE --&gt; L2
+    TITLE --&gt; L3
+    TITLE --&gt; L4
+    TITLE --&gt; L5
+
+    L1["❌ Lesson 1&lt;br/&gt;&lt;br/&gt;Never log or return&lt;br/&gt;PII in plaintext"]:::lessonStyle
+    L1 --&gt; L1D["Lambda was writing&lt;br/&gt;unredacted PII to logs&lt;br/&gt;and responses.&lt;br/&gt;&lt;br/&gt;Always mask or tokenize&lt;br/&gt;before output."]:::detailStyle
+
+    L2["❌ Lesson 2&lt;br/&gt;&lt;br/&gt;Enable Macie&lt;br/&gt;proactively"]:::lessonStyle
+    L2 --&gt; L2D["Data classification should&lt;br/&gt;be continuous, not a&lt;br/&gt;forensic afterthought.&lt;br/&gt;&lt;br/&gt;Scheduled Macie jobs catch&lt;br/&gt;leaks before customers do."]:::detailStyle
+
+    L3["❌ Lesson 3&lt;br/&gt;&lt;br/&gt;Define custom&lt;br/&gt;data identifiers early"]:::lessonStyle
+    L3 --&gt; L3D["AWS managed identifiers&lt;br/&gt;catch generic PII only.&lt;br/&gt;&lt;br/&gt;Business-specific patterns&lt;br/&gt;like Unicorn customer IDs&lt;br/&gt;need custom regex rules."]:::detailStyle
+
+    L4["❌ Lesson 4&lt;br/&gt;&lt;br/&gt;Automate response&lt;br/&gt;with EventBridge"]:::lessonStyle
+    L4 --&gt; L4D["No rule existed to alert&lt;br/&gt;on Macie findings.&lt;br/&gt;&lt;br/&gt;A simple EventBridge rule&lt;br/&gt;could trigger instant&lt;br/&gt;quarantine and notification."]:::detailStyle
+
+    L5["❌ Lesson 5&lt;br/&gt;&lt;br/&gt;Treat S3 as a&lt;br/&gt;data boundary"]:::lessonStyle
+    L5 --&gt; L5D["Every bucket holding&lt;br/&gt;customer data needs:&lt;br/&gt;&lt;br/&gt;→ Server-side encryption&lt;br/&gt;→ Access logging&lt;br/&gt;→ Versioning&lt;br/&gt;→ Lifecycle policy"]:::detailStyle
+
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="quest-3---credentials-management" class="level2">
+<h2 class="anchored" data-anchor-id="quest-3---credentials-management">Quest 3 - Credentials Management</h2>
+<section id="problem-statement-from-aws-2" class="level4">
+<h4 class="anchored" data-anchor-id="problem-statement-from-aws-2">Problem Statement from AWS</h4>
+<p>Credentials for Unicorn Rentals have been compromised. Players will have to identify that user that encrypted some of the Unicorn instances and update that users access.</p>
+<p><strong>Services used:</strong></p>
+<ol type="1">
+<li>CloudTrail.</li>
+<li>S3 → For website hosting. Check security of the static website, Bucket policy</li>
+<li>IAM role and user → may have to modify.</li>
+<li>Lambda → Minor Python code change</li>
+</ol>
+</section>
+<section id="the-preparation-plan-2" class="level4">
+<h4 class="anchored" data-anchor-id="the-preparation-plan-2">The Preparation Plan</h4>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TB
+    %% ── Styles ──
+    classDef titleStyle fill:#1b263b,stroke:#e63946,color:#fff,font-weight:bold,font-size:16px
+    classDef problemStyle fill:#2a2a40,stroke:#e63946,color:#fff,font-weight:bold
+    classDef phaseStyle fill:#003049,stroke:#1d3557,color:#fff,font-weight:bold,font-size:13px
+    classDef cloudtrailStyle fill:#6a040f,stroke:#370617,color:#fff,font-weight:bold
+    classDef s3Style fill:#ee9b00,stroke:#ca6702,color:#fff,font-weight:bold
+    classDef iamStyle fill:#005f73,stroke:#0a9396,color:#fff,font-weight:bold
+    classDef lambdaStyle fill:#7f5539,stroke:#9c6644,color:#fff,font-weight:bold
+    classDef actionStyle fill:#343a40,stroke:#212529,color:#e0e0e0,font-size:11px
+    classDef noteStyle fill:#fff3e0,stroke:#ff9800,color:#333,font-style:italic
+
+    %% ── Title &amp; Problem ──
+    TITLE["🔐 CREDENTIALS MANAGEMENT&lt;br/&gt;&lt;br/&gt;Unicorn Rentals&lt;br/&gt;Security Incident"]:::titleStyle
+    PROBLEM["🚨 Problem Statement:&lt;br/&gt;&lt;br/&gt;Credentials have been compromised.&lt;br/&gt;Identify the user who encrypted&lt;br/&gt;Unicorn instances and update /&lt;br/&gt;revoke that user's access"]:::problemStyle
+
+    TITLE --&gt; PROBLEM
+
+    %% ── Lifecycle Phases ──
+    PROBLEM --&gt; DETECT
+    DETECT["🔍 PHASE 1: DETECT&lt;br/&gt;&lt;br/&gt;Identify the&lt;br/&gt;Compromised Identity"]:::phaseStyle
+    ANALYZE["🧠 PHASE 2: ANALYZE&lt;br/&gt;&lt;br/&gt;Understand&lt;br/&gt;Scope &amp; Impact"]:::phaseStyle
+    CONTAIN["🔒 PHASE 3: CONTAIN&lt;br/&gt;&lt;br/&gt;Restrict &amp;&lt;br/&gt;Revoke Access"]:::phaseStyle
+    REMEDIATE["🔧 PHASE 4: REMEDIATE&lt;br/&gt;&lt;br/&gt;Fix Config&lt;br/&gt;&amp; Code"]:::phaseStyle
+    HARDEN["✅ PHASE 5: HARDEN&lt;br/&gt;&lt;br/&gt;Prevent&lt;br/&gt;Recurrence"]:::phaseStyle
+
+    DETECT --&gt; ANALYZE --&gt; CONTAIN --&gt; REMEDIATE --&gt; HARDEN
+
+    %% ── DETECT ──
+    DETECT --&gt; CT_DETECT["🔍 CloudTrail&lt;br/&gt;&lt;br/&gt;Review Event History&lt;br/&gt;&lt;br/&gt;→ Identify who performed&lt;br/&gt;encryption&lt;br/&gt;→ User / Role /&lt;br/&gt;IP / Timestamp"]:::cloudtrailStyle
+
+    %% ── ANALYZE ──
+    ANALYZE --&gt; CT_ANALYZE["🔍 CloudTrail&lt;br/&gt;&lt;br/&gt;Correlate API Calls&lt;br/&gt;&lt;br/&gt;→ KMS / EC2 / S3&lt;br/&gt;encryption actions&lt;br/&gt;→ Confirm&lt;br/&gt;blast radius"]:::cloudtrailStyle
+    ANALYZE --&gt; S3_ANALYZE["🪣 S3&lt;br/&gt;&lt;br/&gt;Review Static&lt;br/&gt;Website Setup&lt;br/&gt;&lt;br/&gt;→ Public access&lt;br/&gt;settings&lt;br/&gt;→ Bucket policy&lt;br/&gt;&amp; ACLs"]:::s3Style
+
+    %% ── CONTAIN ──
+    CONTAIN --&gt; IAM_CONTAIN["🔐 IAM&lt;br/&gt;&lt;br/&gt;Modify User /&lt;br/&gt;Role Access&lt;br/&gt;&lt;br/&gt;→ Revoke&lt;br/&gt;permissions&lt;br/&gt;→ Rotate&lt;br/&gt;credentials&lt;br/&gt;→ Disable&lt;br/&gt;compromised user"]:::iamStyle
+    CONTAIN --&gt; S3_CONTAIN["🪣 S3&lt;br/&gt;&lt;br/&gt;Restrict&lt;br/&gt;Bucket Access&lt;br/&gt;&lt;br/&gt;→ Tighten&lt;br/&gt;bucket policies&lt;br/&gt;→ Block&lt;br/&gt;public access"]:::s3Style
+
+    %% ── REMEDIATE ──
+    REMEDIATE --&gt; LAMBDA_REMEDIATE["⚡ Lambda&lt;br/&gt;&lt;br/&gt;Minor Python&lt;br/&gt;Code Change&lt;br/&gt;&lt;br/&gt;→ Remove&lt;br/&gt;insecure logic&lt;br/&gt;→ Patch workflow&lt;br/&gt;using credentials"]:::lambdaStyle
+    REMEDIATE --&gt; IAM_REMEDIATE["🔐 IAM&lt;br/&gt;&lt;br/&gt;Apply Least&lt;br/&gt;Privilege&lt;br/&gt;&lt;br/&gt;→ Refine&lt;br/&gt;policies&lt;br/&gt;→ Remove unused&lt;br/&gt;permissions"]:::iamStyle
+
+    %% ── HARDEN ──
+    HARDEN --&gt; CT_HARDEN["🔍 CloudTrail&lt;br/&gt;&lt;br/&gt;Ensure Trails&lt;br/&gt;Enabled&lt;br/&gt;&lt;br/&gt;→ Multi-region&lt;br/&gt;logging&lt;br/&gt;→ Long-term&lt;br/&gt;audit retention"]:::cloudtrailStyle
+    HARDEN --&gt; IAM_HARDEN["🔐 IAM&lt;br/&gt;&lt;br/&gt;Security&lt;br/&gt;Best Practices&lt;br/&gt;&lt;br/&gt;→ Enforce MFA&lt;br/&gt;→ Access key&lt;br/&gt;rotation&lt;br/&gt;→ Role-based&lt;br/&gt;access"]:::iamStyle
+    HARDEN --&gt; DONE["🎯 Unicorn Rentals&lt;br/&gt;&lt;br/&gt;Credentials Secured&lt;br/&gt;&amp; Monitored"]:::titleStyle
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="lessons-learned-2" class="level4">
+<h4 class="anchored" data-anchor-id="lessons-learned-2">Lessons Learned</h4>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    classDef titleStyle fill:#1b263b,stroke:#e63946,color:#fff,font-weight:bold,font-size:15px
+    classDef lessonStyle fill:#2a2a40,stroke:#e63946,color:#fff,font-weight:bold
+    classDef detailStyle fill:#37474f,stroke:#546e7a,color:#e0e0e0
+    classDef fixStyle fill:#005f73,stroke:#0a9396,color:#fff,font-weight:bold
+
+    TITLE["🔐 CREDENTIALS MANAGEMENT&lt;br/&gt;&lt;br/&gt;Lessons Learned"]:::titleStyle
+
+    TITLE --&gt; L1
+    TITLE --&gt; L2
+    TITLE --&gt; L3
+    TITLE --&gt; L4
+    TITLE --&gt; L5
+
+    L1["❌ Lesson 1&lt;br/&gt;&lt;br/&gt;Never hardcode&lt;br/&gt;credentials"]:::lessonStyle
+    L1 --&gt; L1D["Static access keys&lt;br/&gt;are a ticking time bomb.&lt;br/&gt;&lt;br/&gt;Rotate keys regularly.&lt;br/&gt;Use IAM roles instead."]:::detailStyle
+
+    L2["❌ Lesson 2&lt;br/&gt;&lt;br/&gt;Enable CloudTrail&lt;br/&gt;from Day 1"]:::lessonStyle
+    L2 --&gt; L2D["CloudTrail was used&lt;br/&gt;reactively for investigation.&lt;br/&gt;&lt;br/&gt;It should alert proactively&lt;br/&gt;on anomalous API calls."]:::detailStyle
+
+    L3["❌ Lesson 3&lt;br/&gt;&lt;br/&gt;Enforce least privilege&lt;br/&gt;on IAM"]:::lessonStyle
+    L3 --&gt; L3D["Compromised user had&lt;br/&gt;permission to encrypt&lt;br/&gt;EC2 instances.&lt;br/&gt;&lt;br/&gt;They should never&lt;br/&gt;have had that privilege."]:::detailStyle
+
+    L4["❌ Lesson 4&lt;br/&gt;&lt;br/&gt;Harden S3&lt;br/&gt;static websites"]:::lessonStyle
+    L4 --&gt; L4D["Bucket policies were&lt;br/&gt;overly permissive.&lt;br/&gt;&lt;br/&gt;Use OAC + CloudFront,&lt;br/&gt;not public bucket policies."]:::detailStyle
+
+    L5["❌ Lesson 5&lt;br/&gt;&lt;br/&gt;Audit Lambda&lt;br/&gt;execution roles"]:::lessonStyle
+    L5 --&gt; L5D["Lambda IAM role had&lt;br/&gt;broader permissions&lt;br/&gt;than code required.&lt;br/&gt;&lt;br/&gt;Tight scoping limits&lt;br/&gt;blast radius."]:::detailStyle
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<ul>
+<li>KiroCLI’s direct access to AWS services via simple english language was both amazing and scary.</li>
+<li>We may not enable KiroCLI in production. But seems like a good tool in dev and pre-prod stages</li>
+<li>I had generous help during the event from KiroCLI (maybe it is the event winner 🤔)</li>
+<li>I converted majority of the text in this blog to mermaid charts for easier readability (with the help of LLMs, again ;) )</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/senthilkumarm1901\.github\.io\/learn_by_blogging\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
