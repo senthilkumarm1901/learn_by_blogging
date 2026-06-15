@@ -415,4 +415,5 @@ Follow below links  for reading material on Agentic AI, each expanding on the l
 3. None of the above have skills explained well: [Equipping agents for the real world with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills") 
 4. Same Stuff as 1 but elaborated further with **Skills** and More Agentic Patterns; Anthropic gave version 2: [https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns…](https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns%20and%20Implementation%20Frameworks.pdf "https://resources.anthropic.com/hubfs/building%20effective%20ai%20agents-%20architecture%20patterns%20and%20implementation%20frameworks.pdf")
 5. [Hermes Agent Masterclass](https://www.dailydoseofds.com/p/hermes-agent-masterclass/ "https://www.dailydoseofds.com/p/hermes-agent-masterclass/") (the pics here are 👌)
-6. The Context Engineering 101 (in pic)
+6. The Context Engineering 101 (in pic):<br>
+<img src="./images/context_engineering_101.png" width="1500" alt="CE 101"/>
