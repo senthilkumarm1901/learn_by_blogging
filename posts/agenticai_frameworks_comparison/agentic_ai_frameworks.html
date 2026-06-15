@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2026-06-14">
+<meta name="description" content="What 40+ experiments taught us about when to use each framework — and what to steal from all three.">
+
+<title>4 Patterns × 3 Frameworks × 1 LLM: Building and Evaluating Agentic AI Patterns across LangGraph, Strands, and Hermes – Learn by Blogging</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-7ee132498c61da618cb63d6ce2648d66.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">4 Patterns × 3 Frameworks × 1 LLM: Building and Evaluating Agentic AI Patterns across LangGraph, Strands, and Hermes</h1>
+                  <div>
+        <div class="description">
+          What 40+ experiments taught us about when to use each framework — and what to steal from all three.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">AI/Agents</div>
+                <div class="quarto-category">AI/AgenticAI</div>
+                <div class="quarto-category">Tools/Langgraph</div>
+                <div class="quarto-category">Tools/Hermes</div>
+                <div class="quarto-category">Tools/Strands</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 14, 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="patterns-3-frameworks-1-llm" class="level3" data-align="center">
+<h3 class="anchored" data-anchor-id="patterns-3-frameworks-1-llm">4 Patterns × 3 Frameworks × 1 LLM:</h3>
+<section id="building-and-evaluating-agentic-ai-patterns-across-langgraph-strands-and-hermes" class="level4">
+<h4 class="anchored" data-anchor-id="building-and-evaluating-agentic-ai-patterns-across-langgraph-strands-and-hermes">Building and Evaluating Agentic AI Patterns across LangGraph, Strands, and Hermes</h4>
+<hr>
+<p><img src="./images/opening_image_2.png" width="1200" alt="AI Agentic Frameworks"></p>
+<p><br></p>
+<section id="author-senthil-kumar" class="level6">
+<h6 class="anchored" data-anchor-id="author-senthil-kumar"><strong>Author:</strong> Senthil Kumar</h6>
+</section>
+</section>
+</section>
+<section id="key-sections-of-this-talk" class="level2" data-align="center">
+<h2 class="anchored" data-anchor-id="key-sections-of-this-talk">Key Sections of this Talk</h2>
+</section>
+<ul>
+<li>I. The Entire Talk in 5 Min</li>
+<li><ol start="2" type="I">
+<li>The Agentic AI Patterns in Focus</li>
+</ol></li>
+<li><ol start="3" type="I">
+<li>Why LangGraph, Strands, and Hermes; Why Not Others?</li>
+</ol></li>
+<li><ol start="4" type="I">
+<li>What Does the Evaluation Say?</li>
+</ol></li>
+<li>V. Conclusion</li>
+<li><ol start="6" type="I">
+<li>Epilogue</li>
+</ol></li>
+<li><ol start="7" type="I">
+<li>GitHub Resource &amp; Useful References</li>
+</ol></li>
+</ul>
+<section id="i.-the-entire-talk-in-5-min" class="level2" data-align="center">
+<h2 class="anchored" data-anchor-id="i.-the-entire-talk-in-5-min">I. The Entire Talk in 5 Min</h2>
+</section>
+<p>This post compares three agent frameworks across four progressively harder patterns. The goal is not to crown a single universal winner, but to show which design choice helps most when the workload changes.</p>
+<section id="minute-executive-summary-13" class="level3">
+<h3 class="anchored" data-anchor-id="minute-executive-summary-13">5-Minute Executive Summary (1/3)</h3>
+<p><img src="./images/5_min_version_simple.png" width="1300" alt="Pattern 1"></p>
+</section>
+<section id="minute-executive-summary-23" class="level3">
+<h3 class="anchored" data-anchor-id="minute-executive-summary-23">5-Minute Executive Summary (2/3)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Pattern</th>
+<th>Key Capability</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>P1</td>
+<td>MCP tools</td>
+<td>AI Agent with 2 Numeric Tools</td>
+</tr>
+<tr class="even">
+<td>P2</td>
+<td>+RAG tool</td>
+<td>Same AI Agent with 2 Numeric Tools + 1 Semantic Retrieval Tool</td>
+</tr>
+<tr class="odd">
+<td>P3</td>
+<td>+Skills</td>
+<td>Same AI Agent with same tools + Skills</td>
+</tr>
+<tr class="even">
+<td>P4</td>
+<td>+Memory +chat</td>
+<td>Same AI Agent with memory &amp; terminal chat</td>
+</tr>
+</tbody>
+</table>
+<div data-align="center">
+<p><img src="./images/5_min_version_additive_patterns.png" width="1100" alt="Pattern 1"></p>
+</div>
+</section>
+<section id="minute-executive-summary-33" class="level3">
+<h3 class="anchored" data-anchor-id="minute-executive-summary-33">5-Minute Executive Summary (3/3)</h3>
+<p><img src="./images/5_min_version_detailed.png" width="1100" alt="Pattern 1"></p>
+</section>
+<section id="ii.-the-agentic-ai-patterns-in-focus" class="level2" data-align="center">
+<h2 class="anchored" data-anchor-id="ii.-the-agentic-ai-patterns-in-focus">II. The Agentic AI Patterns in Focus</h2>
+</section>
+<section id="additive-architecture-lens" class="level3" data-align="center">
+<h3 class="anchored" data-anchor-id="additive-architecture-lens">Additive Architecture Lens</h3>
+</section>
+<p>The four patterns below move from basic tool use to retrieval, skills, and multi-turn memory, so you can see how each framework behaves as the orchestration problem becomes more demanding.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Pattern</th>
+<th>Key Capability</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>P1</td>
+<td>MCP tools</td>
+<td>AI Agent with 2 Numeric Tools</td>
+</tr>
+<tr class="even">
+<td>P2</td>
+<td>+RAG tool</td>
+<td>Same AI Agent with 2 Numeric Tools + 1 Semantic Retrieval Tool</td>
+</tr>
+<tr class="odd">
+<td>P3</td>
+<td>+Skills</td>
+<td>Same AI Agent with same tools + Skills</td>
+</tr>
+<tr class="even">
+<td>P4</td>
+<td>+Memory +chat</td>
+<td>Same AI Agent with memory &amp; terminal chat</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>Progressive Design : * <em>Layer one new behavior at a time and measure impact</em></p>
+</blockquote>
+<p><img src="./images/pattern1.png" width="1100" alt="Pattern 1"></p>
+<p><img src="./images/pattern2.png" width="1200" alt="Pattern 2"></p>
+<p><img src="./images/pattern3.png" width="1300" alt="Pattern 3"></p>
+<p><img src="./images/pattern4.png" width="1300" alt="Pattern 4"></p>
+<p><img src="./images/the_4_patterns_summary.png" width="1500" alt="4 patterns summary"></p>
+<p><img src="./images/4_patterns_key_insights.png" width="1500" alt="4 patterns key insights"></p>
+<section id="iii.-why-langgraph-strands-and-hermes-why-not-others" class="level2" data-align="center">
+<h2 class="anchored" data-anchor-id="iii.-why-langgraph-strands-and-hermes-why-not-others">III. Why LangGraph, Strands, and Hermes; Why Not Others?</h2>
+</section>
+<p><img src="./images/Why_L_S_H.png" width="1500" alt="Pattern 4"></p>
+<section id="iv.-what-does-the-evaluation-say" class="level2" data-align="center">
+<h2 class="anchored" data-anchor-id="iv.-what-does-the-evaluation-say">IV. What Does the Evaluation Say?</h2>
+</section>
+<div data-align="center">
+<section id="evaluation-guidelines" class="level3">
+<h3 class="anchored" data-anchor-id="evaluation-guidelines">Evaluation Guidelines</h3>
+</section>
+<section id="patterns-3-frameworks-40-experiments" class="level3">
+<h3 class="anchored" data-anchor-id="patterns-3-frameworks-40-experiments"><a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/Final_Evaluation_Report.md">4 Patterns · 3 Frameworks · 40+ Experiments</a></h3>
+<p>These tables summarize the 40+ experiments in this post. The benchmark keeps the model, tools, and prompts fixed so the framework design is the main variable.</p>
+<blockquote class="blockquote">
+<p><strong>Core Question</strong>: <em>Which framework should you use — and when?</em> <br> <strong>Alt Question</strong>: <em>If you’re building a custom framework, what’s the best feature to borrow from each?</em></p>
+</blockquote>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 84%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Common Factor</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Model</td>
+<td><code>qwen3.5:35b-a3b-coding-nvfp4</code> (local Ollama — identical across all 3)</td>
+</tr>
+<tr class="even">
+<td>Tools</td>
+<td>Same MCP (Model Context Protocol) server across 3 frameworks</td>
+</tr>
+<tr class="odd">
+<td>Prompts</td>
+<td>Uniform across 3 frameworks</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="frameworks" class="level3">
+<h3 class="anchored" data-anchor-id="frameworks">Frameworks</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 6%">
+<col style="width: 35%">
+<col style="width: 39%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Framework</th>
+<th>Language</th>
+<th>Architecture</th>
+<th>Key Characteristic</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>LangGraph</strong></td>
+<td>Python</td>
+<td>Graph-based state machine</td>
+<td>Nodes → edges → conditional routing</td>
+</tr>
+<tr class="even">
+<td><strong>AWS Strands Agents</strong></td>
+<td>Python</td>
+<td>AWS-native agent SDK</td>
+<td>MCP subprocess isolation, event-driven</td>
+</tr>
+<tr class="odd">
+<td><strong>Hermes</strong></td>
+<td>Python</td>
+<td>Custom agent (evolved during experiments)</td>
+<td>Fixed orchestration loop, <code>uv</code>-based packaging</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="patterns-progressive-complexity" class="level3">
+<h3 class="anchored" data-anchor-id="patterns-progressive-complexity">Patterns (Progressive Complexity)</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Pattern</th>
+<th>What It Tests</th>
+<th>Key Challenge</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/pattern_1_report.md"><strong>P1</strong> Simple MCP Tools</a></td>
+<td>Basic tool calling + answer synthesis</td>
+<td>Can the agent call tools and synthesize a coherent answer?</td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/pattern_2_report.md"><strong>P2</strong> RAG + KB Search</a></td>
+<td>Vector DB retrieval + knowledge grounding</td>
+<td>Can the agent combine structured + unstructured knowledge?</td>
+</tr>
+<tr class="odd">
+<td><a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/pattern_3_report.md"><strong>P3</strong> Skills</a></td>
+<td>Skill-guided multi-tool orchestration</td>
+<td>Can the agent choose the right skill and follow its workflow?</td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/pattern_4_report.md"><strong>P4</strong> Multi-Turn Chat</a></td>
+<td>Cumulative conversation context</td>
+<td>How does cost scale with conversation depth?</td>
+</tr>
+</tbody>
+</table>
+</section>
+</div>
+<section id="executive-summary" class="level3" data-align="center">
+<h3 class="anchored" data-anchor-id="executive-summary">Executive Summary</h3>
+<p><strong>There is no universal winner in this benchmark.</strong> The right framework is pattern-dependent:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 13%">
+<col style="width: 55%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>If you need…</th>
+<th>Use…</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Simple tool orchestration</td>
+<td><strong>Hermes</strong></td>
+<td>Fastest, lightest (9.5s, 49 MB, 267 deps)</td>
+</tr>
+<tr class="even">
+<td>RAG-powered search</td>
+<td><strong>Strands</strong></td>
+<td>Lowest memory (44 MB), fastest RAG latency</td>
+</tr>
+<tr class="odd">
+<td>Complex multi-skill workflows</td>
+<td><strong>LangGraph</strong></td>
+<td>100% accuracy, best multi-skill orchestration</td>
+</tr>
+<tr class="even">
+<td>Multi-turn chatbot</td>
+<td><strong>Hermes</strong></td>
+<td>Flat O(1) LLM scaling — cost doesn’t grow with depth</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Framework</th>
+<th style="text-align: center;">Gold Medals (🥇)</th>
+<th style="text-align: center;">Silver (🥈)</th>
+<th style="text-align: center;">Bronze (🥉)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Hermes</strong></td>
+<td style="text-align: center;"><strong>2</strong> (P1, P4)</td>
+<td style="text-align: center;">2 (P2, P3)</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr>
+<section id="pattern-1-simple-mcp-tools" class="level3" data-align="center">
+<h3 class="anchored" data-anchor-id="pattern-1-simple-mcp-tools">Pattern 1: Simple MCP Tools</h3>
+<blockquote class="blockquote">
+<p><em>Can the agent call tools and synthesize a coherent answer?</em></p>
+</blockquote>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 18%">
+<col style="width: 20%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th style="text-align: center;">LangGraph</th>
+<th style="text-align: center;">Strands</th>
+<th style="text-align: center;">Hermes</th>
+<th style="text-align: center;">🏆</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Avg Latency</td>
+<td style="text-align: center;">12.4 s</td>
+<td style="text-align: center;">11.5 s</td>
+<td style="text-align: center;"><strong>9.5 s</strong></td>
+<td style="text-align: center;">Hermes</td>
+</tr>
+<tr class="even">
+<td>Avg Tokens</td>
+<td style="text-align: center;">3,140</td>
+<td style="text-align: center;">3,559</td>
+<td style="text-align: center;"><strong>3,092</strong></td>
+<td style="text-align: center;">Hermes</td>
+</tr>
+<tr class="odd">
+<td>Peak Memory</td>
+<td style="text-align: center;">58.6 MB</td>
+<td style="text-align: center;"><strong>41.1 MB</strong></td>
+<td style="text-align: center;">51.1 MB</td>
+<td style="text-align: center;">Strands</td>
+</tr>
+<tr class="even">
+<td>Packaging</td>
+<td style="text-align: center;">76.9 MB</td>
+<td style="text-align: center;">72.8 MB</td>
+<td style="text-align: center;"><strong>49.3 MB</strong></td>
+<td style="text-align: center;">Hermes</td>
+</tr>
+<tr class="odd">
+<td>Dependencies</td>
+<td style="text-align: center;">175</td>
+<td style="text-align: center;">142</td>
+<td style="text-align: center;"><strong>101</strong></td>
+<td style="text-align: center;">Hermes</td>
+</tr>
+<tr class="even">
+<td>Answer Quality</td>
+<td style="text-align: center;"><strong>100%</strong> (4/4)</td>
+<td style="text-align: center;">50% (2/4)</td>
+<td style="text-align: center;">75% (3/4)</td>
+<td style="text-align: center;">LangGraph</td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏆 Winner: Hermes</strong> — in this setup, it was the fastest and lightest option with the fewest dependencies.</p>
+</section>
+<blockquote class="blockquote">
+<ul>
+<li>⚠️ With same prompt, same tools and same LLM, across 3 frameworks, Strands returned raw tool output in 2/4 experiments.</li>
+<li>LangGraph was the only framework with perfect answer quality (100%)</li>
+<li>Improving answer quality in both Strands and Hermes was possible with explicit additional system prompt instructions like below</li>
+</ul>
+</blockquote>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>_SYNTHESIS_SUFFIX <span class="op">=</span> (</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"</span><span class="ch">\n\n</span><span class="st">IMPORTANT: After using tools, you MUST always provide a final "</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"natural-language answer that synthesizes the results. "</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Never end your response with just a tool call."</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+<section id="pattern-2-rag-knowledge-base-search" class="level3" data-align="center">
+<h3 class="anchored" data-anchor-id="pattern-2-rag-knowledge-base-search">Pattern 2: RAG + Knowledge Base Search</h3>
+<blockquote class="blockquote">
+<p><em>Can the agent combine structured data with vector-retrieved knowledge?</em></p>
+</blockquote>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 15%">
+<col style="width: 22%">
+<col style="width: 21%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th style="text-align: center;">LangGraph</th>
+<th style="text-align: center;">Strands</th>
+<th style="text-align: center;">Hermes</th>
+<th style="text-align: center;">🏆</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Avg Latency</td>
+<td style="text-align: center;">31,758 ms</td>
+<td style="text-align: center;"><strong>29,396 ms</strong></td>
+<td style="text-align: center;">32,849 ms</td>
+<td style="text-align: center;">Strands</td>
+</tr>
+<tr class="even">
+<td>Avg Tokens</td>
+<td style="text-align: center;"><strong>2,627</strong></td>
+<td style="text-align: center;">3,688</td>
+<td style="text-align: center;">2,898</td>
+<td style="text-align: center;">LangGraph</td>
+</tr>
+<tr class="odd">
+<td>Peak Memory</td>
+<td style="text-align: center;">133.6 MB</td>
+<td style="text-align: center;"><strong>44.0 MB</strong></td>
+<td style="text-align: center;">54.2 MB</td>
+<td style="text-align: center;">Strands</td>
+</tr>
+<tr class="even">
+<td>Packaging</td>
+<td style="text-align: center;">984.8 MB</td>
+<td style="text-align: center;">996.8 MB</td>
+<td style="text-align: center;"><strong>967.2 MB</strong></td>
+<td style="text-align: center;">Hermes</td>
+</tr>
+<tr class="odd">
+<td>Answer Quality</td>
+<td style="text-align: center;">100%</td>
+<td style="text-align: center;">100%</td>
+<td style="text-align: center;">100%</td>
+<td style="text-align: center;">Tie</td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏆 Winner: Strands</strong> — in this setup, it combined the fastest latency with the lowest memory (44 MB vs 134 MB LangGraph).</p>
+<blockquote class="blockquote">
+<ul>
+<li>The RAG stack added ~900 MB to the packaging of all frameworks.</li>
+<li>Strands’ and Hermes’ <strong>MCP subprocess isolation</strong> kept their memory lower by running embeddings in a separate process. LangGraph loaded everything <strong>in-process</strong> → 134 MB.</li>
+</ul>
+</blockquote>
+</section>
+<hr>
+<section id="pattern-3-agent-with-skills" class="level3" data-align="center">
+<h3 class="anchored" data-anchor-id="pattern-3-agent-with-skills">Pattern 3: Agent with Skills</h3>
+<p><em>Can the agent choose the right skill and follow its guided workflow?</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 25%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th style="text-align: center;">LangGraph</th>
+<th style="text-align: center;">Strands</th>
+<th style="text-align: center;">Hermes</th>
+<th style="text-align: center;">🏆</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Avg Latency</td>
+<td style="text-align: center;">40,093 ms</td>
+<td style="text-align: center;"><strong>34,684 ms</strong></td>
+<td style="text-align: center;">37,915 ms</td>
+<td style="text-align: center;">Strands</td>
+</tr>
+<tr class="even">
+<td>Avg Tokens</td>
+<td style="text-align: center;">9,499</td>
+<td style="text-align: center;">14,154</td>
+<td style="text-align: center;"><strong>8,031</strong></td>
+<td style="text-align: center;">Hermes</td>
+</tr>
+<tr class="odd">
+<td>Peak Memory</td>
+<td style="text-align: center;">134.6 MB</td>
+<td style="text-align: center;"><strong>45.6 MB</strong></td>
+<td style="text-align: center;">54.4 MB</td>
+<td style="text-align: center;">Strands</td>
+</tr>
+<tr class="even">
+<td><strong>Factual Accuracy</strong></td>
+<td style="text-align: center;"><strong>100%</strong> (4/4)</td>
+<td style="text-align: center;"><strong>100%</strong> (4/4)</td>
+<td style="text-align: center;"><strong>75%</strong> (3/4)</td>
+<td style="text-align: center;">LG / Strands</td>
+</tr>
+<tr class="odd">
+<td><strong>Skill Utilization</strong></td>
+<td style="text-align: center;"><strong>5/5</strong> correct</td>
+<td style="text-align: center;"><strong>5/5</strong> correct</td>
+<td style="text-align: center;"><strong>4/5</strong> (wrong skill)</td>
+<td style="text-align: center;">LG / Strands</td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏆 Winner: LangGraph</strong> — 100% factual accuracy, correct multi-skill orchestration.</p>
+<blockquote class="blockquote">
+<p>Hermes chose the <strong>wrong skill</strong> for the European GDP question, causing it to <strong>miss Russia</strong> — factual error (14.98T instead of 17.05T). Strands self-corrected name lookup failures (<code>UK</code>→<code>United Kingdom</code>).</p>
+</blockquote>
+</section>
+<hr>
+<section id="pattern-4-multi-turn-conversational-agent" class="level3" data-align="center">
+<h3 class="anchored" data-anchor-id="pattern-4-multi-turn-conversational-agent">Pattern 4: Multi-Turn Conversational Agent</h3>
+<blockquote class="blockquote">
+<p><em>How does cost scale as conversation history accumulates?</em></p>
+</blockquote>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 11%">
+<col style="width: 18%">
+<col style="width: 28%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th style="text-align: center;">LangGraph</th>
+<th style="text-align: center;">Strands</th>
+<th style="text-align: center;">Hermes</th>
+<th style="text-align: center;">🏆</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>LLM Call Growth (T1→T4)</td>
+<td style="text-align: center;">4→14 (3.5×)</td>
+<td style="text-align: center;">6→33 (5.5×)</td>
+<td style="text-align: center;"><strong>4→3 (0.75×)</strong></td>
+<td style="text-align: center;">Hermes</td>
+</tr>
+<tr class="even">
+<td>Token Growth (T1→T3)</td>
+<td style="text-align: center;">4.6×</td>
+<td style="text-align: center;">8.4×</td>
+<td style="text-align: center;"><strong>2.6×</strong></td>
+<td style="text-align: center;">Hermes</td>
+</tr>
+<tr class="odd">
+<td>T2-T4 Avg Latency</td>
+<td style="text-align: center;">62.8s</td>
+<td style="text-align: center;"><strong>24.5s</strong></td>
+<td style="text-align: center;">34.8s</td>
+<td style="text-align: center;">Strands</td>
+</tr>
+<tr class="even">
+<td>Context Test (“Same for Brazil”)</td>
+<td style="text-align: center;">✅ Pass</td>
+<td style="text-align: center;">⚠️ Partial (3-way)</td>
+<td style="text-align: center;">❌ <strong>Fail</strong> (did Brazil vs Japan; should have been Brazil vs India)</td>
+<td style="text-align: center;">LangGraph</td>
+</tr>
+<tr class="odd">
+<td>Error Recovery (T4)</td>
+<td style="text-align: center;">Correct from beginning</td>
+<td style="text-align: center;">Correct from beginning</td>
+<td style="text-align: center;">✅ Russia→Russian Fed.</td>
+<td style="text-align: center;">All 3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏆 Winner: Hermes</strong> — in this setup, it showed the flattest O(1) LLM scaling and the most token-efficient growth (2.6× vs Strands 8.4×).</p>
+</section>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 44%">
+<col style="width: 47%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Good at</th>
+<th>Bad at</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Hermes</strong></td>
+<td>Not <strong>wasting tokens</strong> re-processing history (2.6× growth)</td>
+<td><strong>Understanding</strong> what history implies (“Same for Brazil” → ❌)</td>
+</tr>
+<tr class="even">
+<td><strong>LangGraph</strong></td>
+<td><strong>Deep context reasoning</strong></td>
+<td><strong>Linear growth</strong> in (4→14) LLM calls</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Insight</strong>:</p>
+<ul>
+<li>The fix for both frameworks is the same - one preprocessing LLM call before the main loop.</li>
+<li>For Hermes, it resolves ambiguous references (“Same for Brazil” → “Compare India and Brazil”).</li>
+<li>For LangGraph, it compresses history into a bounded summary. Neither requires a rewrite — just a single added stage in the existing pipeline.</li>
+</ul>
+<p><img src="./images/Cross-pattern-winner-summary.png" width="1500" alt="Pattern 4"></p>
+<section id="v.-key-learnings" class="level2" data-align="center">
+<h2 class="anchored" data-anchor-id="v.-key-learnings">V. Key Learnings</h2>
+</section>
+<section id="there-are-no-bad-frameworks-only-untested-ones" class="level3">
+<h3 class="anchored" data-anchor-id="there-are-no-bad-frameworks-only-untested-ones">1. There are no bad frameworks — only untested ones</h3>
+<ul>
+<li>Identify the failed areas in that framework and rectify it</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 40%">
+<col style="width: 47%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Framework</th>
+<th>Best</th>
+<th>Worst</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>LangGraph</td>
+<td>100% accuracy across P1+P3</td>
+<td>134 MB memory, slowest latency</td>
+</tr>
+<tr class="even">
+<td>Strands</td>
+<td>44 MB memory, 18s warm turns</td>
+<td>33 LLM calls by Turn 4, very high - 124K tokens - consumption</td>
+</tr>
+<tr class="odd">
+<td>Hermes</td>
+<td>O(1) scaling, 2.6× token growth</td>
+<td>❌ Failed context test, missed Russia</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="know-what-youre-getting-into-architecture-reveals-weaknesses-before-your-users-do" class="level3">
+<h3 class="anchored" data-anchor-id="know-what-youre-getting-into-architecture-reveals-weaknesses-before-your-users-do">2. Know what you’re getting into — Architecture reveals weaknesses before your users do</h3>
+<p>Knowing the architectural choices baked into a framework’s philosophy helps unearth weaknesses <strong>before production</strong>, not after.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 36%">
+<col style="width: 55%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Framework</th>
+<th>Architecture Philosophy</th>
+<th>Weakness It Causes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>LangGraph</strong></td>
+<td>Graph-based state machine — re-evaluate at every node</td>
+<td>LLM calls grow linearly (4→14); memory loaded in-process (134 MB)</td>
+</tr>
+<tr class="even">
+<td><strong>Strands</strong></td>
+<td>Full context replay — every LLM call sees everything</td>
+<td>Tokens explode (9.9K→124K); Too high token consumption as turns increase</td>
+</tr>
+<tr class="odd">
+<td><strong>Hermes</strong></td>
+<td>Fixed orchestration loop — plan once, execute, answer</td>
+<td>Shallow reasoning over history; fails implicit references (“Same for Brazil” → ❌)</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>None of these showed up in Pattern 1. All of them showed up by Pattern 4. <strong>The architecture didn’t change — the workload revealed it.</strong></p>
+</blockquote>
+</section>
+<section id="treat-evaluation-as-a-product-feature-not-an-afterthought" class="level3">
+<h3 class="anchored" data-anchor-id="treat-evaluation-as-a-product-feature-not-an-afterthought">3. Treat evaluation as a product feature, not an afterthought</h3>
+<p>Standard metrics (latency, tokens, memory) tell you <strong>how fast</strong>. Designed tests tell you <strong>how wrong</strong>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 51%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>What We Measured</th>
+<th>What We Discovered</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Latency, tokens, memory</td>
+<td>Hermes is fastest, cheapest</td>
+<td>Standard metrics</td>
+</tr>
+<tr class="even">
+<td>“Same for Brazil”</td>
+<td>Hermes <strong>drops context entirely</strong></td>
+<td>Designed test</td>
+</tr>
+<tr class="odd">
+<td>“Most populous European country”</td>
+<td>Same model, different framework → different answer</td>
+<td>Designed test</td>
+</tr>
+<tr class="even">
+<td>European GDP total</td>
+<td>Hermes picked wrong skill → missed a country</td>
+<td>Designed test</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>Every ❌ in this evaluation was caught by a <strong>designed test</strong>, not a dashboard metric. If we’d only measured speed and cost, Hermes would look flawless.</p>
+</blockquote>
+</section>
+<section id="vi.-epilogue" class="level2" data-align="center">
+<h2 class="anchored" data-anchor-id="vi.-epilogue">VI. Epilogue</h2>
+</section>
+<section id="bonus-pattern-5--rag---wiki" class="level3">
+<h3 class="anchored" data-anchor-id="bonus-pattern-5--rag---wiki">Bonus Pattern 5: (-)RAG -&gt; (+)Wiki</h3>
+<blockquote class="blockquote">
+<p><em>Remove RAG; include Karpathy’s LLM Wiki pattern.</em></p>
+</blockquote>
+<p><img src="./images/pattern_5_vs_patter2_final_2.png" width="1200" alt="Pattern 5"></p>
+<p><img src="./images/the_5_patterns_summary_2.png" width="1500" alt="Pattern 5"></p>
+<p><img src="./images/patterns_key_insights_2.png" width="1500" alt="Pattern 5"></p>
+<p>For the next iteration:</p>
+<ul>
+<li>Try Workflow Patterns
+<ul>
+<li>Routing-Workflow</li>
+<li>Parallel-Workflow</li>
+<li>Sequential-Workflow</li>
+</ul></li>
+</ul>
+<p><img src="./images/workflow_patterns.png" width="1000" alt="Pattern 4"></p>
+<ul>
+<li>Try comparing with other agentic AI frameworks
+<ul>
+<li>There are still other good ones like: <code>temporal</code> (python/typescript), <code>pydantic ai</code> (python), <code>rig</code> (rust)</li>
+</ul></li>
+</ul>
+<p>Reproducibility note: These results reflect one local Ollama-based benchmark run with the same model, the same MCP tools, and the same prompts across all three frameworks. If you rerun them with a different model or different tool behavior, the rankings may change.</p>
+<hr>
+</section>
+<section id="vii.-github-resource" class="level2">
+<h2 class="anchored" data-anchor-id="vii.-github-resource">VII. Github Resource</h2>
+<ul>
+<li>The codebase, evaluation reports conducted are logged in github here: <a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration">senthilkumarm1901/agentic_frameworks_exploration</a></li>
+</ul>
+<section id="useful-reading-references" class="level3">
+<h3 class="anchored" data-anchor-id="useful-reading-references">Useful Reading References</h3>
+<p>Follow below links &nbsp;for reading material on Agentic AI, each expanding on the link above that. &nbsp;</p>
+<ol type="1">
+<li>&nbsp;Simple article first: <a href="https://www.anthropic.com/engineering/building-effective-agents" title="https://www.anthropic.com/engineering/building-effective-agents">Building Effective AI Agents</a></li>
+<li>Inspired by the above article and based on my day-to-day experience, I wrote an article on similar lines long ago: <a href="https://medium.com/@senthilkumar.m1901/single-llm-to-agentic-ai-genais-evolution-explained-c0670d8325f3?source=friends_link&amp;sk=d040821d89a7ce8c5e506fde3184c948" title="https://medium.com/@senthilkumar.m1901/single-llm-to-agentic-ai-genais-evolution-explained-c0670d8325f3?source=friends_link&amp;sk=d040821d89a7ce8c5e506fde3184c948">https://medium.com/<span class="citation" data-cites="senthilkumar.m1901/single-llm-to-agentic-ai-genais-evolution-explained-c0670d83">@senthilkumar.m1901/single-llm-to-agentic-ai-genais-evolution-explained-c0670d83</span>…</a></li>
+<li>None of the above have skills explained well: <a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" title="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">Equipping agents for the real world with Agent Skills</a>&nbsp;</li>
+<li>Same Stuff as 1 but elaborated further with <strong>Skills</strong> and More Agentic Patterns; Anthropic gave version 2: <a href="https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns%20and%20Implementation%20Frameworks.pdf" title="https://resources.anthropic.com/hubfs/building%20effective%20ai%20agents-%20architecture%20patterns%20and%20implementation%20frameworks.pdf">https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns…</a></li>
+<li><a href="https://www.dailydoseofds.com/p/hermes-agent-masterclass/" title="https://www.dailydoseofds.com/p/hermes-agent-masterclass/">Hermes Agent Masterclass</a> (the pics here are 👌)</li>
+<li>The Context Engineering 101 (in pic)</li>
+</ol>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/senthilkumarm1901\.github\.io\/learn_by_blogging\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
