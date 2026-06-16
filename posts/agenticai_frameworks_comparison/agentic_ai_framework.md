@@ -13,7 +13,7 @@ description: Same agentic AI patterns. Same tools. Three frameworks. Different p
 date: '2026-06-14'
 draft: false
 image: ./images/opening_image_2.png
-toc: false
+toc: true
 title: "4 Patterns × 3 Frameworks × 1 LLM: Building and Evaluating Agentic AI Patterns across LangGraph, Strands, and Hermes"
 output-file: agentic_ai_frameworks.html
 
