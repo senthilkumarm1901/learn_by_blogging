@@ -58,7 +58,7 @@ My quest in this blog is not to pick a favorite but to analyze 3 popular framewo
 * I. The Entire Blog in 5 Min
 * II. The Agentic AI Patterns in Focus
 * III. Why LangGraph, Strands, and Hermes; Why Not Others?
-* IV. What Does the Evaluation Say?
+* IV. Evaluation Analysis of the Patterns
 * V. Conclusion
 * VI. Epilogue
 * VII. GitHub Resource & Useful References
@@ -149,7 +149,7 @@ The four patterns below move from basic tool use to retrieval, skills, and multi
 
 
 
-### Evaluation Guidelines
+### Evaluation Analysis of the Patterns
 
 ### [4 Patterns · 3 Frameworks · 40+ Experiments](https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/Final_Evaluation_Report.md)
 
@@ -160,8 +160,7 @@ These tables summarize the 40+ experiments in this post. The benchmark keeps the
 
 ### A Recap of the Patterns
 
-<br>
-<br>
+
 
 
 | Common Factor        | Description                                                                  |
@@ -170,8 +169,7 @@ These tables summarize the 40+ experiments in this post. The benchmark keeps the
 | Tools | Same MCP (Model Context Protocol) server across 3 frameworks                                           |
 | Prompts | Uniform across 3 frameworks  - LangGraph, Strands, Hermes                                    |
 
-<br>
-<br>
+
 
 ### Patterns (Progressive Complexity)
 
@@ -186,8 +184,7 @@ These tables summarize the 40+ experiments in this post. The benchmark keeps the
 
 ### The Winner is ...
 
-<br>
-<br>
+
 
 **There is no universal winner in this benchmark.** The right framework is pattern-dependent:
 
@@ -199,14 +196,12 @@ These tables summarize the 40+ experiments in this post. The benchmark keeps the
 | Multi-turn chatbot            | **Hermes**    | Flat O(1) LLM scaling — cost doesn't grow with depth |
 
 
-<br>
-<br>
+
 
 However, **Hermes** seems to be really promising (cannot help it :); so you borrow the maximum from here!)
 
 
-<br>
-<br>
+
 
 [Full Evaluation Report](https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/Final_Evaluation_Report.md)
 
@@ -216,18 +211,15 @@ However, **Hermes** seems to be really promising (cannot help it :); so you borr
 
 ### Pattern 1: Simple MCP Tools
 
-<br>
-<br>
+
 
 > **The Test:** Can the agent reliably use external tools and return a clean, human-friendly answer?
 
-<br>
-<br>
+
 
 Instead of raw metrics, here’s how these frameworks *felt* during build and execution:
 
-<br>
-<br>
+
 
 | Feature | LangGraph | Strands | Hermes | Winner |
 | --- | --- | --- | --- | --- |
@@ -238,13 +230,11 @@ Instead of raw metrics, here’s how these frameworks *felt* during build and ex
 | **Dependencies** | 175 | 142 | **101** | **Hermes** 📦 |
 | **Accuracy** | **100%** | 50% | 75% | **LangGraph** 🎯 |
 
-<br>
-<br>
+
 
 #### 🏆 Verdict: Hermes wins on efficiency, LangGraph wins on reliability
 
-<br>
-<br>
+
 
 If you want a **fast, lightweight, low-cost agent**, Hermes clearly leads—smaller codebase, fewer tokens, fastest responses.
 
@@ -257,8 +247,7 @@ But there’s a catch: **Hermes and Strands often don’t finish cleanly.**
 - **LangGraph = predictable behavior:**  
   Only framework with **100% accuracy**, thanks to its enforced graph structure.
 
-<br>
-<br>
+
 
 #### 🛠️ Fix: Prompt Discipline Required
 
@@ -272,8 +261,7 @@ _SYNTHESIS_SUFFIX = (
 )
 ```
 
-<br>
-<br>
+
 
 👉 [Read the Full Pattern 1 Evolution Report](https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/pattern_1_report.md)
 
@@ -284,18 +272,15 @@ _SYNTHESIS_SUFFIX = (
 
 ### Pattern 2: RAG + Knowledge Base Search
 
-<br>
-<br>
+
 
 > **The Test:** Can the agent retrieve the right knowledge from a vector DB and combine it into a clean, accurate answer?
 
-<br>
-<br>
+
 
 Here’s how each framework handled the RAG workload:
 
-<br>
-<br>
+
 
 | Feature | LangGraph | Strands | Hermes | Winner |
 | --- | --- | --- | --- | --- |
@@ -305,13 +290,11 @@ Here’s how each framework handled the RAG workload:
 | **Code Weight** | 984.8 MB | 996.8 MB | **967.2 MB** | **Hermes** 🪶 |
 | **Accuracy** | **100%** | **100%** | **100%** | **Tie** 🎯 |
 
-<br>
-<br>
+
 
 #### 🏆 Verdict: Strands wins the systems battle, but all nail accuracy
 
-<br>
-<br>
+
 
 If your agent is **RAG-heavy (search + retrieval workflows)**, **Strands stands out**—fastest responses with significantly lower memory usage.
 
@@ -319,8 +302,7 @@ If your agent is **RAG-heavy (search + retrieval workflows)**, **Strands stands 
 
 At the same time, **all three frameworks achieved 100% accuracy**, making this a purely **systems-level comparison**, not a correctness problem.
 
-<br>
-<br>
+
 
 #### 🔍 What actually mattered
 
@@ -335,8 +317,7 @@ At the same time, **all three frameworks achieved 100% accuracy**, making this a
   Strands saves memory but spends more tokens  
   LangGraph is more concise (lowest token cost)
 
-<br>
-<br>
+
 
 👉 [Read the Full Pattern 2 Evolution Report](https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/pattern_2_report.md)
 
@@ -344,18 +325,15 @@ At the same time, **all three frameworks achieved 100% accuracy**, making this a
 
 ### Pattern 3: Agent with Skills
 
-<br>
-<br>
+
 
 > **The Test:** Can the agent pick the right skill path and execute a multi-step plan without breaking logic?
 
-<br>
-<br>
+
 
 Here’s how each framework handled guided orchestration:
 
-<br>
-<br>
+
 
 | Feature | LangGraph | Strands | Hermes | Winner |
 | --- | --- | --- | --- | --- |
@@ -365,13 +343,11 @@ Here’s how each framework handled guided orchestration:
 | **Skill Selection** | **5/5** | **5/5** | 4/5 | **LangGraph / Strands** 🛠️ |
 | **Accuracy** | **100%** | **100%** | 75% | **LangGraph / Strands** 🎯 |
 
-<br>
-<br>
+
 
 #### 🏆 Verdict: LangGraph wins on precision, Strands on efficiency
 
-<br>
-<br>
+
 
 If your workflow is **high-risk, multi-step orchestration**, **LangGraph is the safest choice**—it enforces structure and avoids logical mistakes.
 
@@ -383,8 +359,7 @@ If your workflow is **high-risk, multi-step orchestration**, **LangGraph is the 
 
 **Hermes** is lightweight and cheap—but this is where it starts to break.
 
-<br>
-<br>
+
 
 #### 🔍 What actually mattered
 
@@ -399,8 +374,7 @@ If your workflow is **high-risk, multi-step orchestration**, **LangGraph is the 
 - **Built-in Guardrails (LangGraph):**  
   Enforces deterministic execution → **no wrong paths, no missed steps, 100% accuracy**
 
-<br>
-<br>
+
 
 👉 [Read the Full Pattern 3 Evolution Report](https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/pattern_3_report.md)
 
@@ -408,18 +382,15 @@ If your workflow is **high-risk, multi-step orchestration**, **LangGraph is the 
 
 ### Pattern 4: Multi-Turn Conversational Agent
 
-<br>
-<br>
+
 
 > **The Test:** Can the agent handle long conversations without becoming slow, expensive, or context-blind?
 
-<br>
-<br>
+
 
 Here’s how the frameworks scaled across turns:
 
-<br>
-<br>
+
 
 | Feature | LangGraph | Strands | Hermes | Winner |
 | --- | --- | --- | --- | --- |
@@ -429,13 +400,11 @@ Here’s how the frameworks scaled across turns:
 | **Context Retention** | **✅ Perfect** | ⚠️ Partial | ❌ Failed | **LangGraph** 🧠 |
 | **Error Recovery** | Perfect | Perfect | Perfect | **Tie** 🛠️ |
 
-<br>
-<br>
+
 
 #### 🏆 Verdict: Hermes saves cost, LangGraph preserves intelligence
 
-<br>
-<br>
+
 
 If cost scaling is your concern, **Hermes is the clear winner**—lowest growth in LLM calls and tokens.
 
@@ -443,8 +412,7 @@ If cost scaling is your concern, **Hermes is the clear winner**—lowest growth 
 
 But this comes with a trade-off: **context awareness drops sharply.**
 
-<br>
-<br>
+
 
 #### 🔍 What actually mattered
 
@@ -459,8 +427,7 @@ But this comes with a trade-off: **context awareness drops sharply.**
   Retains full context and reasoning  
   but scales via **more LLM calls (brute force)**
 
-<br>
-<br>
+
 
 #### 🛠️ Practical Fix (No Framework Change Needed)
 
@@ -472,19 +439,16 @@ You can fix both issues with a small architectural addition:
 - **LangGraph:** Add **history compression step**  
   → summarize past chats to control LLM call growth
 
-<br>
-<br>
+
 
 
 👉 [Read the Full Pattern 4 Evolution Report](https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/pattern_4_report.md)
 
-<br>
-<br>
+
 
 --- 
 
-<br>
-<br>
+
 
 #### Appendix 
 
@@ -505,8 +469,7 @@ If you want to understand the LLM Call Spike numbers from turn 1 to 4 better, re
 
 ### 1. No bad frameworks — only untested ones
 
-<br>
-<br>
+
 
 | Framework | Best | Worst |
 | --- | --- | --- |
@@ -514,18 +477,15 @@ If you want to understand the LLM Call Spike numbers from turn 1 to 4 better, re
 | Strands | 44 MB memory, fast warm turns | 33 LLM calls by Turn 4, 124K tokens |
 | Hermes | O(1) scaling, 2.6× token growth | ❌ Failed context test, missed Russia |
 
-<br>
-<br>
+
 
 ---
 
-<br>
-<br>
+
 
 ### 2. Architecture reveals weaknesses before your users do
 
-<br>
-<br>
+
 
 | Framework | Architecture | Weakness It Creates |
 | --- | --- | --- |
@@ -533,29 +493,24 @@ If you want to understand the LLM Call Spike numbers from turn 1 to 4 better, re
 | **Strands** | Full context replay — every call sees everything | Tokens explode as turns increase |
 | **Hermes** | Fixed loop — plan once, execute, answer | Shallow history reasoning; fails implicit references |
 
-<br>
-<br>
+
 
 > None of these showed up in Pattern 1. All surfaced by Pattern 4.  
 > **The architecture didn't change — the workload revealed it.**
 
-<br>
-<br>
+
 
 ---
 
-<br>
-<br>
+
 
 ### 3. Evaluation is a product feature, not an afterthought
 
-<br>
-<br>
+
 
 Standard metrics tell you **how fast**. Designed tests tell you **how wrong**.
 
-<br>
-<br>
+
 
 | Measured | Discovered | How |
 | --- | --- | --- |
@@ -564,16 +519,14 @@ Standard metrics tell you **how fast**. Designed tests tell you **how wrong**.
 | "Most populous European country" | Same model, different framework → different answer | Designed test |
 | European GDP total | Hermes picked wrong skill → missed a country | Designed test |
 
-<br>
-<br>
+
 
 > Every ❌ was caught by a **designed test**, not a dashboard.  
 > If we'd only measured speed and cost, Hermes would look flawless.
 
 ### 1. No bad frameworks — only untested ones
 
-<br>
-<br>
+
 
 | Framework | Best | Worst |
 | --- | --- | --- |
@@ -581,18 +534,15 @@ Standard metrics tell you **how fast**. Designed tests tell you **how wrong**.
 | Strands | 44 MB memory, fast warm turns | 33 LLM calls by Turn 4, 124K tokens |
 | Hermes | O(1) scaling, 2.6× token growth | ❌ Failed context test, missed Russia |
 
-<br>
-<br>
+
 
 ---
 
-<br>
-<br>
+
 
 ### 2. Architecture reveals weaknesses before your users do
 
-<br>
-<br>
+
 
 | Framework | Architecture | Weakness It Creates |
 | --- | --- | --- |
@@ -600,29 +550,24 @@ Standard metrics tell you **how fast**. Designed tests tell you **how wrong**.
 | **Strands** | Full context replay — every call sees everything | Tokens explode as turns increase |
 | **Hermes** | Fixed loop — plan once, execute, answer | Shallow history reasoning; fails implicit references |
 
-<br>
-<br>
+
 
 > None of these showed up in Pattern 1. All surfaced by Pattern 4.  
 > **The architecture didn't change — the workload revealed it.**
 
-<br>
-<br>
+
 
 ---
 
-<br>
-<br>
+
 
 ### 3. Evaluation is a product feature, not an afterthought
 
-<br>
-<br>
+
 
 Standard metrics tell you **how fast**. Designed tests tell you **how wrong**.
 
-<br>
-<br>
+
 
 | Measured | Discovered | How |
 | --- | --- | --- |
@@ -631,14 +576,12 @@ Standard metrics tell you **how fast**. Designed tests tell you **how wrong**.
 | "Most populous European country" | Same model, different framework → different answer | Designed test |
 | European GDP total | Hermes picked wrong skill → missed a country | Designed test |
 
-<br>
-<br>
+
 
 > Every ❌ was caught by a **designed test**, not a dashboard.  
 > If we'd only measured speed and cost, Hermes would look flawless.
 
-<br>
-<br>
+
 
 ---
 
