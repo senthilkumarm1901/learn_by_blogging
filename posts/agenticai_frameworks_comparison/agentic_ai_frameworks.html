@@ -203,20 +203,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p><img src="./images/opening_image_2.png" width="1200" alt="AI Agentic Frameworks"></p>
+<p><img src="./images/opening_image_2.png" class="img-fluid" style="width:100.0%"></p>
 <p><br></p>
 <section id="author-senthil-kumar" class="level6">
 <h6 class="anchored" data-anchor-id="author-senthil-kumar"><strong>Author:</strong> Senthil Kumar</h6>
-</section></main></div>
 <hr>
 <p>This question has been posed to my team and me multiple times:&nbsp; <em>Which agentic AI framework do we choose?</em> <br>&nbsp; Almost immediately after we default to LangGraph, I would hear counter arguments flying across the room - too big, most modules not needed for us. Let us choose something lightweight like Temporal or the latest craze Hermes (at the time of writing).&nbsp; <br> Then, a Cloud Engineer would chime in: Ultimately, all production-grade agentic ai systems need to nestle and scale within our cloud. So, let us choose AWS Strands&nbsp;:). When I asked one of my colleagues to review this blog, he suggested “Pydantic AI”.&nbsp; <br> The options seem to be endless! <br> My quest in this blog is not to pick a favorite but to analyze 3 popular frameworks - LangGraph, Strands and Hermes - and show empirical evidence on where they shine, struggle and surprise, when all conditions stay common.</p>
 <hr>
-
-<section id="key-sections-of-this-talk" class="level2" data-align="center">
-<h2 data-anchor-id="key-sections-of-this-talk">Key Sections of this Talk</h2>
 </section>
+<section id="key-sections-of-this-blog" class="level2">
+<h2 class="anchored" data-anchor-id="key-sections-of-this-blog">Key Sections of this Blog</h2>
 <ul>
-<li>I. The Entire Talk in 5 Min</li>
+<li>I. The Entire Blog in 5 Min</li>
 <li><ol start="2" type="I">
 <li>The Agentic AI Patterns in Focus</li>
 </ol></li>
@@ -234,16 +232,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>GitHub Resource &amp; Useful References</li>
 </ol></li>
 </ul>
-<section id="i.-the-entire-talk-in-5-min" class="level2" data-align="center">
-<h2 data-anchor-id="i.-the-entire-talk-in-5-min">I. The Entire Talk in 5 Min</h2>
 </section>
+<section id="i.-the-entire-blog-in-5-min" class="level2">
+<h2 class="anchored" data-anchor-id="i.-the-entire-blog-in-5-min">I. The Entire Blog in 5 Min</h2>
 <p>This post compares three agent frameworks across four progressively harder patterns. The goal is not to crown a single universal winner, but to show which design choice helps most when the workload changes.</p>
 <section id="minute-executive-summary-13" class="level3">
-<h3 data-anchor-id="minute-executive-summary-13">5-Minute Executive Summary (1/3)</h3>
-<p><img src="./images/5_min_version_simple.png" width="1300" alt="Pattern 1"></p>
+<h3 class="anchored" data-anchor-id="minute-executive-summary-13">5-Minute Executive Summary (1/3)</h3>
+<p><img src="./images/5_min_version_simple.png" class="img-fluid" style="width:100.0%"></p>
 </section>
 <section id="minute-executive-summary-23" class="level3">
-<h3 data-anchor-id="minute-executive-summary-23">5-Minute Executive Summary (2/3)</h3>
+<h3 class="anchored" data-anchor-id="minute-executive-summary-23">5-Minute Executive Summary (2/3)</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -280,20 +278,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<div data-align="center">
-<p><img src="./images/5_min_version_additive_patterns.png" width="1100" alt="Pattern 1"></p>
-</div>
+<p><img src="./images/5_min_version_additive_patterns.png" class="img-fluid" style="width:100.0%"></p>
 </section>
 <section id="minute-executive-summary-33" class="level3">
-<h3 data-anchor-id="minute-executive-summary-33">5-Minute Executive Summary (3/3)</h3>
-<p><img src="./images/5_min_version_detailed.png" width="1100" alt="Pattern 1"></p>
+<h3 class="anchored" data-anchor-id="minute-executive-summary-33">5-Minute Executive Summary (3/3)</h3>
+<p><img src="./images/5_min_version_detailed.png" class="img-fluid" style="width:100.0%"></p>
 </section>
-<section id="ii.-the-agentic-ai-patterns-in-focus" class="level2" data-align="center">
-<h2 data-anchor-id="ii.-the-agentic-ai-patterns-in-focus">II. The Agentic AI Patterns in Focus</h2>
 </section>
-<section id="additive-architecture-lens" class="level3" data-align="center">
-<h3 data-anchor-id="additive-architecture-lens">Additive Architecture Lens</h3>
-</section>
+<section id="ii.-the-agentic-ai-patterns-in-focus" class="level2">
+<h2 class="anchored" data-anchor-id="ii.-the-agentic-ai-patterns-in-focus">II. The Agentic AI Patterns in Focus</h2>
+<section id="additive-architecture-lens" class="level3">
+<h3 class="anchored" data-anchor-id="additive-architecture-lens">Additive Architecture Lens</h3>
 <p>The four patterns below move from basic tool use to retrieval, skills, and multi-turn memory, so you can see how each framework behaves as the orchestration problem becomes more demanding.</p>
 <table class="caption-top table">
 <colgroup>
@@ -334,29 +329,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>Progressive Design : * <em>Layer one new behavior at a time and measure impact</em></p>
 </blockquote>
-<p><img src="./images/pattern1.png" width="1100" alt="Pattern 1"></p>
-<p><img src="./images/pattern2.png" width="1200" alt="Pattern 2"></p>
-<p><img src="./images/pattern3.png" width="1300" alt="Pattern 3"></p>
-<p><img src="./images/pattern4.png" width="1300" alt="Pattern 4"></p>
-<p><img src="./images/the_4_patterns_summary.png" width="1500" alt="4 patterns summary"></p>
-<p><img src="./images/4_patterns_key_insights.png" width="1500" alt="4 patterns key insights"></p>
-<section id="iii.-why-langgraph-strands-and-hermes-why-not-others" class="level2" data-align="center">
-<h2 data-anchor-id="iii.-why-langgraph-strands-and-hermes-why-not-others">III. Why LangGraph, Strands, and Hermes; Why Not Others?</h2>
+<p><img src="./images/pattern1.png" class="img-fluid" style="width:100.0%"></p>
+<p><img src="./images/pattern2.png" class="img-fluid" style="width:100.0%"></p>
+<p><img src="./images/pattern3.png" class="img-fluid" style="width:100.0%"></p>
+<p><img src="./images/pattern4.png" class="img-fluid" style="width:100.0%"></p>
+<p><img src="./images/the_4_patterns_summary.png" class="img-fluid" style="width:100.0%"></p>
+<p><img src="./images/4_patterns_key_insights.png" class="img-fluid" style="width:100.0%"></p>
 </section>
-<p><img src="./images/Why_L_S_H.png" width="1500" alt="Pattern 4"></p>
-<section id="iv.-what-does-the-evaluation-say" class="level2" data-align="center">
-<h2 data-anchor-id="iv.-what-does-the-evaluation-say">IV. What Does the Evaluation Say?</h2>
 </section>
-<div data-align="center">
+<section id="iii.-why-langgraph-strands-and-hermes-why-not-others" class="level2">
+<h2 class="anchored" data-anchor-id="iii.-why-langgraph-strands-and-hermes-why-not-others">III. Why LangGraph, Strands, and Hermes; Why Not Others?</h2>
+<p><img src="./images/Why_L_S_H.png" class="img-fluid" style="width:100.0%"></p>
+</section>
+<section id="iv.-what-does-the-evaluation-say" class="level2">
+<h2 class="anchored" data-anchor-id="iv.-what-does-the-evaluation-say">IV. What Does the Evaluation Say?</h2>
 <section id="evaluation-guidelines" class="level3">
-<h3 data-anchor-id="evaluation-guidelines">Evaluation Guidelines</h3>
+<h3 class="anchored" data-anchor-id="evaluation-guidelines">Evaluation Guidelines</h3>
 </section>
 <section id="patterns-3-frameworks-40-experiments" class="level3">
-<h3 data-anchor-id="patterns-3-frameworks-40-experiments"><a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/Final_Evaluation_Report.md">4 Patterns · 3 Frameworks · 40+ Experiments</a></h3>
+<h3 class="anchored" data-anchor-id="patterns-3-frameworks-40-experiments"><a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/Final_Evaluation_Report.md">4 Patterns · 3 Frameworks · 40+ Experiments</a></h3>
 <p>These tables summarize the 40+ experiments in this post. The benchmark keeps the model, tools, and prompts fixed so the framework design is the main variable.</p>
 <blockquote class="blockquote">
 <p><strong>Core Question</strong>: <em>Which framework should you use — and when?</em> <br> <strong>Alt Question</strong>: <em>If you’re building a custom framework, what’s the best feature to borrow from each?</em></p>
 </blockquote>
+</section>
+<section id="a-recap-of-the-patterns" class="level3">
+<h3 class="anchored" data-anchor-id="a-recap-of-the-patterns">A Recap of the Patterns</h3>
+<p><br> <br></p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 15%">
@@ -379,52 +378,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td>Prompts</td>
-<td>Uniform across 3 frameworks</td>
+<td>Uniform across 3 frameworks - LangGraph, Strands, Hermes</td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="frameworks" class="level3">
-<h3 data-anchor-id="frameworks">Frameworks</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 18%">
-<col style="width: 6%">
-<col style="width: 35%">
-<col style="width: 39%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Framework</th>
-<th>Language</th>
-<th>Architecture</th>
-<th>Key Characteristic</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>LangGraph</strong></td>
-<td>Python</td>
-<td>Graph-based state machine</td>
-<td>Nodes → edges → conditional routing</td>
-</tr>
-<tr class="even">
-<td><strong>AWS Strands Agents</strong></td>
-<td>Python</td>
-<td>AWS-native agent SDK</td>
-<td>MCP subprocess isolation, event-driven</td>
-</tr>
-<tr class="odd">
-<td><strong>Hermes</strong></td>
-<td>Python</td>
-<td>Custom agent (evolved during experiments)</td>
-<td>Fixed orchestration loop, <code>uv</code>-based packaging</td>
-</tr>
-</tbody>
-</table>
+<p><br> <br></p>
 </section>
 <section id="patterns-progressive-complexity" class="level3">
-<h3 data-anchor-id="patterns-progressive-complexity">Patterns (Progressive Complexity)</h3>
+<h3 class="anchored" data-anchor-id="patterns-progressive-complexity">Patterns (Progressive Complexity)</h3>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -457,9 +418,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-</div>
-<section id="executive-summary" class="level3" data-align="center">
-<h3 data-anchor-id="executive-summary">Executive Summary</h3>
+<section id="the-winner-is" class="level3">
+<h3 class="anchored" data-anchor-id="the-winner-is">The Winner is …</h3>
+<p><br> <br></p>
 <p><strong>There is no universal winner in this benchmark.</strong> The right framework is pattern-dependent:</p>
 <table class="caption-top table">
 <colgroup>
@@ -478,7 +439,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>Simple tool orchestration</td>
 <td><strong>Hermes</strong></td>
-<td>Fastest, lightest (9.5s, 49 MB, 267 deps)</td>
+<td>Fastest, lightest</td>
 </tr>
 <tr class="even">
 <td>RAG-powered search</td>
@@ -497,350 +458,417 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Framework</th>
-<th style="text-align: center;">Gold Medals (🥇)</th>
-<th style="text-align: center;">Silver (🥈)</th>
-<th style="text-align: center;">Bronze (🥉)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Hermes</strong></td>
-<td style="text-align: center;"><strong>2</strong> (P1, P4)</td>
-<td style="text-align: center;">2 (P2, P3)</td>
-<td style="text-align: center;">0</td>
-</tr>
-</tbody>
-</table>
-</section>
+<p><br> <br></p>
+<p>However, <strong>Hermes</strong> seems to be really promising (cannot help it :); so you borrow the maximum from here!)</p>
+<p><br> <br></p>
+<p><a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/Final_Evaluation_Report.md">Full Evaluation Report</a></p>
 <hr>
-<section id="pattern-1-simple-mcp-tools" class="level3" data-align="center">
-<h3 data-anchor-id="pattern-1-simple-mcp-tools">Pattern 1: Simple MCP Tools</h3>
+</section>
+<section id="pattern-1-simple-mcp-tools" class="level3">
+<h3 class="anchored" data-anchor-id="pattern-1-simple-mcp-tools">Pattern 1: Simple MCP Tools</h3>
+<p><br> <br></p>
 <blockquote class="blockquote">
-<p><em>Can the agent call tools and synthesize a coherent answer?</em></p>
+<p><strong>The Test:</strong> Can the agent reliably use external tools and return a clean, human-friendly answer?</p>
 </blockquote>
+<p><br> <br></p>
+<p>Instead of raw metrics, here’s how these frameworks <em>felt</em> during build and execution:</p>
+<p><br> <br></p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 23%">
-<col style="width: 23%">
-<col style="width: 18%">
 <col style="width: 20%">
-<col style="width: 15%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Metric</th>
-<th style="text-align: center;">LangGraph</th>
-<th style="text-align: center;">Strands</th>
-<th style="text-align: center;">Hermes</th>
-<th style="text-align: center;">🏆</th>
+<th>Feature</th>
+<th>LangGraph</th>
+<th>Strands</th>
+<th>Hermes</th>
+<th>Winner</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Avg Latency</td>
-<td style="text-align: center;">12.4 s</td>
-<td style="text-align: center;">11.5 s</td>
-<td style="text-align: center;"><strong>9.5 s</strong></td>
-<td style="text-align: center;">Hermes</td>
+<td><strong>Speed</strong></td>
+<td>12.4s</td>
+<td>11.5s</td>
+<td><strong>9.5s</strong></td>
+<td><strong>Hermes</strong> ⚡</td>
 </tr>
 <tr class="even">
-<td>Avg Tokens</td>
-<td style="text-align: center;">3,140</td>
-<td style="text-align: center;">3,559</td>
-<td style="text-align: center;"><strong>3,092</strong></td>
-<td style="text-align: center;">Hermes</td>
+<td><strong>Token Cost</strong></td>
+<td>3,140</td>
+<td>3,559</td>
+<td><strong>3,092</strong></td>
+<td><strong>Hermes</strong> 💸</td>
 </tr>
 <tr class="odd">
-<td>Peak Memory</td>
-<td style="text-align: center;">58.6 MB</td>
-<td style="text-align: center;"><strong>41.1 MB</strong></td>
-<td style="text-align: center;">51.1 MB</td>
-<td style="text-align: center;">Strands</td>
+<td><strong>Server Overhead</strong></td>
+<td>58.6 MB</td>
+<td><strong>41.1 MB</strong></td>
+<td>51.1 MB</td>
+<td><strong>Strands</strong> 🧠</td>
 </tr>
 <tr class="even">
-<td>Packaging</td>
-<td style="text-align: center;">76.9 MB</td>
-<td style="text-align: center;">72.8 MB</td>
-<td style="text-align: center;"><strong>49.3 MB</strong></td>
-<td style="text-align: center;">Hermes</td>
+<td><strong>Code Weight</strong></td>
+<td>76.9 MB</td>
+<td>72.8 MB</td>
+<td><strong>49.3 MB</strong></td>
+<td><strong>Hermes</strong> 🪶</td>
 </tr>
 <tr class="odd">
-<td>Dependencies</td>
-<td style="text-align: center;">175</td>
-<td style="text-align: center;">142</td>
-<td style="text-align: center;"><strong>101</strong></td>
-<td style="text-align: center;">Hermes</td>
+<td><strong>Dependencies</strong></td>
+<td>175</td>
+<td>142</td>
+<td><strong>101</strong></td>
+<td><strong>Hermes</strong> 📦</td>
 </tr>
 <tr class="even">
-<td>Answer Quality</td>
-<td style="text-align: center;"><strong>100%</strong> (4/4)</td>
-<td style="text-align: center;">50% (2/4)</td>
-<td style="text-align: center;">75% (3/4)</td>
-<td style="text-align: center;">LangGraph</td>
+<td><strong>Accuracy</strong></td>
+<td><strong>100%</strong></td>
+<td>50%</td>
+<td>75%</td>
+<td><strong>LangGraph</strong> 🎯</td>
 </tr>
 </tbody>
 </table>
-<p><strong>🏆 Winner: Hermes</strong> — in this setup, it was the fastest and lightest option with the fewest dependencies.</p>
-</section>
-<blockquote class="blockquote">
+<p><br> <br></p>
+<section id="verdict-hermes-wins-on-efficiency-langgraph-wins-on-reliability" class="level4">
+<h4 class="anchored" data-anchor-id="verdict-hermes-wins-on-efficiency-langgraph-wins-on-reliability">🏆 Verdict: Hermes wins on efficiency, LangGraph wins on reliability</h4>
+<p><br> <br></p>
+<p>If you want a <strong>fast, lightweight, low-cost agent</strong>, Hermes clearly leads—smaller codebase, fewer tokens, fastest responses.</p>
+<p><br></p>
+<p>But there’s a catch: <strong>Hermes and Strands often don’t finish cleanly.</strong></p>
 <ul>
-<li>⚠️ With same prompt, same tools and same LLM, across 3 frameworks, Strands returned raw tool output in 2/4 experiments.</li>
-<li>LangGraph was the only framework with perfect answer quality (100%)</li>
-<li>Improving answer quality in both Strands and Hermes was possible with explicit additional system prompt instructions like below</li>
+<li><strong>Lazy Agent Problem:</strong><br>
+Strands failed 50% of the time, Hermes 25%—dumping raw tool output instead of coherent answers.</li>
+<li><strong>LangGraph = predictable behavior:</strong><br>
+Only framework with <strong>100% accuracy</strong>, thanks to its enforced graph structure.</li>
 </ul>
-</blockquote>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>_SYNTHESIS_SUFFIX <span class="op">=</span> (</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"</span><span class="ch">\n\n</span><span class="st">IMPORTANT: After using tools, you MUST always provide a final "</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"natural-language answer that synthesizes the results. "</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Never end your response with just a tool call."</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><br> <br></p>
+</section>
+<section id="fix-prompt-discipline-required" class="level4">
+<h4 class="anchored" data-anchor-id="fix-prompt-discipline-required">🛠️ Fix: Prompt Discipline Required</h4>
+<p>To get Hermes/Strands closer to LangGraph-quality outputs, you must <strong>force answer synthesis via prompt constraints</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>_SYNTHESIS_SUFFIX <span class="op">=</span> (</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"</span><span class="ch">\n\n</span><span class="st">IMPORTANT: After using tools, you MUST always provide a final "</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"natural-language answer that synthesizes the results. "</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Never end your response with just a tool call."</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><br> <br></p>
+<p>👉 <a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/pattern_1_report.md">Read the Full Pattern 1 Evolution Report</a></p>
 <hr>
-<section id="pattern-2-rag-knowledge-base-search" class="level3" data-align="center">
-<h3 data-anchor-id="pattern-2-rag-knowledge-base-search">Pattern 2: RAG + Knowledge Base Search</h3>
+</section>
+</section>
+<section id="pattern-2-rag-knowledge-base-search" class="level3">
+<h3 class="anchored" data-anchor-id="pattern-2-rag-knowledge-base-search">Pattern 2: RAG + Knowledge Base Search</h3>
+<p><br> <br></p>
 <blockquote class="blockquote">
-<p><em>Can the agent combine structured data with vector-retrieved knowledge?</em></p>
+<p><strong>The Test:</strong> Can the agent retrieve the right knowledge from a vector DB and combine it into a clean, accurate answer?</p>
 </blockquote>
+<p><br> <br></p>
+<p>Here’s how each framework handled the RAG workload:</p>
+<p><br> <br></p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 24%">
-<col style="width: 15%">
-<col style="width: 22%">
-<col style="width: 21%">
-<col style="width: 15%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Metric</th>
-<th style="text-align: center;">LangGraph</th>
-<th style="text-align: center;">Strands</th>
-<th style="text-align: center;">Hermes</th>
-<th style="text-align: center;">🏆</th>
+<th>Feature</th>
+<th>LangGraph</th>
+<th>Strands</th>
+<th>Hermes</th>
+<th>Winner</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Avg Latency</td>
-<td style="text-align: center;">31,758 ms</td>
-<td style="text-align: center;"><strong>29,396 ms</strong></td>
-<td style="text-align: center;">32,849 ms</td>
-<td style="text-align: center;">Strands</td>
+<td><strong>Speed</strong></td>
+<td>31.7s</td>
+<td><strong>29.4s</strong></td>
+<td>32.8s</td>
+<td><strong>Strands</strong> ⚡</td>
 </tr>
 <tr class="even">
-<td>Avg Tokens</td>
-<td style="text-align: center;"><strong>2,627</strong></td>
-<td style="text-align: center;">3,688</td>
-<td style="text-align: center;">2,898</td>
-<td style="text-align: center;">LangGraph</td>
+<td><strong>Token Cost</strong></td>
+<td><strong>2,627</strong></td>
+<td>3,688</td>
+<td>2,898</td>
+<td><strong>LangGraph</strong> 💸</td>
 </tr>
 <tr class="odd">
-<td>Peak Memory</td>
-<td style="text-align: center;">133.6 MB</td>
-<td style="text-align: center;"><strong>44.0 MB</strong></td>
-<td style="text-align: center;">54.2 MB</td>
-<td style="text-align: center;">Strands</td>
+<td><strong>Server Overhead</strong></td>
+<td>133.6 MB</td>
+<td><strong>44.0 MB</strong></td>
+<td>54.2 MB</td>
+<td><strong>Strands</strong> 🧠</td>
 </tr>
 <tr class="even">
-<td>Packaging</td>
-<td style="text-align: center;">984.8 MB</td>
-<td style="text-align: center;">996.8 MB</td>
-<td style="text-align: center;"><strong>967.2 MB</strong></td>
-<td style="text-align: center;">Hermes</td>
+<td><strong>Code Weight</strong></td>
+<td>984.8 MB</td>
+<td>996.8 MB</td>
+<td><strong>967.2 MB</strong></td>
+<td><strong>Hermes</strong> 🪶</td>
 </tr>
 <tr class="odd">
-<td>Answer Quality</td>
-<td style="text-align: center;">100%</td>
-<td style="text-align: center;">100%</td>
-<td style="text-align: center;">100%</td>
-<td style="text-align: center;">Tie</td>
+<td><strong>Accuracy</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>Tie</strong> 🎯</td>
 </tr>
 </tbody>
 </table>
-<p><strong>🏆 Winner: Strands</strong> — in this setup, it combined the fastest latency with the lowest memory (44 MB vs 134 MB LangGraph).</p>
-<blockquote class="blockquote">
-<ul>
-<li>The RAG stack added ~900 MB to the packaging of all frameworks.</li>
-<li>Strands’ and Hermes’ <strong>MCP subprocess isolation</strong> kept their memory lower by running embeddings in a separate process. LangGraph loaded everything <strong>in-process</strong> → 134 MB.</li>
-</ul>
-</blockquote>
+<p><br> <br></p>
+<section id="verdict-strands-wins-the-systems-battle-but-all-nail-accuracy" class="level4">
+<h4 class="anchored" data-anchor-id="verdict-strands-wins-the-systems-battle-but-all-nail-accuracy">🏆 Verdict: Strands wins the systems battle, but all nail accuracy</h4>
+<p><br> <br></p>
+<p>If your agent is <strong>RAG-heavy (search + retrieval workflows)</strong>, <strong>Strands stands out</strong>—fastest responses with significantly lower memory usage.</p>
+<p><br></p>
+<p>At the same time, <strong>all three frameworks achieved 100% accuracy</strong>, making this a purely <strong>systems-level comparison</strong>, not a correctness problem.</p>
+<p><br> <br></p>
 </section>
+<section id="what-actually-mattered" class="level4">
+<h4 class="anchored" data-anchor-id="what-actually-mattered">🔍 What actually mattered</h4>
+<ul>
+<li><p><strong>The “RAG Tax” (Code Size):</strong><br>
+All frameworks jumped to ~1GB due to embeddings + vector DB libraries.</p></li>
+<li><p><strong>Memory Efficiency (Big Differentiator):</strong><br>
+Strands and Hermes isolate heavy components into background processes → <strong>low RAM usage</strong><br>
+LangGraph loads everything in-process → <strong>high memory footprint</strong></p></li>
+<li><p><strong>Token Trade-off:</strong><br>
+Strands saves memory but spends more tokens<br>
+LangGraph is more concise (lowest token cost)</p></li>
+</ul>
+<p><br> <br></p>
+<p>👉 <a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/pattern_2_report.md">Read the Full Pattern 2 Evolution Report</a></p>
 <hr>
-<section id="pattern-3-agent-with-skills" class="level3" data-align="center">
-<h3 data-anchor-id="pattern-3-agent-with-skills">Pattern 3: Agent with Skills</h3>
-<p><em>Can the agent choose the right skill and follow its guided workflow?</em></p>
+</section>
+</section>
+<section id="pattern-3-agent-with-skills" class="level3">
+<h3 class="anchored" data-anchor-id="pattern-3-agent-with-skills">Pattern 3: Agent with Skills</h3>
+<p><br> <br></p>
+<blockquote class="blockquote">
+<p><strong>The Test:</strong> Can the agent pick the right skill path and execute a multi-step plan without breaking logic?</p>
+</blockquote>
+<p><br> <br></p>
+<p>Here’s how each framework handled guided orchestration:</p>
+<p><br> <br></p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 25%">
-<col style="width: 17%">
-<col style="width: 17%">
-<col style="width: 25%">
-<col style="width: 14%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Metric</th>
-<th style="text-align: center;">LangGraph</th>
-<th style="text-align: center;">Strands</th>
-<th style="text-align: center;">Hermes</th>
-<th style="text-align: center;">🏆</th>
+<th>Feature</th>
+<th>LangGraph</th>
+<th>Strands</th>
+<th>Hermes</th>
+<th>Winner</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Avg Latency</td>
-<td style="text-align: center;">40,093 ms</td>
-<td style="text-align: center;"><strong>34,684 ms</strong></td>
-<td style="text-align: center;">37,915 ms</td>
-<td style="text-align: center;">Strands</td>
+<td><strong>Speed</strong></td>
+<td>40.1s</td>
+<td><strong>34.7s</strong></td>
+<td>37.9s</td>
+<td><strong>Strands</strong> ⚡</td>
 </tr>
 <tr class="even">
-<td>Avg Tokens</td>
-<td style="text-align: center;">9,499</td>
-<td style="text-align: center;">14,154</td>
-<td style="text-align: center;"><strong>8,031</strong></td>
-<td style="text-align: center;">Hermes</td>
+<td><strong>Token Cost</strong></td>
+<td>9,499</td>
+<td>14,154</td>
+<td><strong>8,031</strong></td>
+<td><strong>Hermes</strong> 💸</td>
 </tr>
 <tr class="odd">
-<td>Peak Memory</td>
-<td style="text-align: center;">134.6 MB</td>
-<td style="text-align: center;"><strong>45.6 MB</strong></td>
-<td style="text-align: center;">54.4 MB</td>
-<td style="text-align: center;">Strands</td>
+<td><strong>Server Overhead</strong></td>
+<td>134.6 MB</td>
+<td><strong>45.6 MB</strong></td>
+<td>54.4 MB</td>
+<td><strong>Strands</strong> 🧠</td>
 </tr>
 <tr class="even">
-<td><strong>Factual Accuracy</strong></td>
-<td style="text-align: center;"><strong>100%</strong> (4/4)</td>
-<td style="text-align: center;"><strong>100%</strong> (4/4)</td>
-<td style="text-align: center;"><strong>75%</strong> (3/4)</td>
-<td style="text-align: center;">LG / Strands</td>
+<td><strong>Skill Selection</strong></td>
+<td><strong>5/5</strong></td>
+<td><strong>5/5</strong></td>
+<td>4/5</td>
+<td><strong>LangGraph / Strands</strong> 🛠️</td>
 </tr>
 <tr class="odd">
-<td><strong>Skill Utilization</strong></td>
-<td style="text-align: center;"><strong>5/5</strong> correct</td>
-<td style="text-align: center;"><strong>5/5</strong> correct</td>
-<td style="text-align: center;"><strong>4/5</strong> (wrong skill)</td>
-<td style="text-align: center;">LG / Strands</td>
+<td><strong>Accuracy</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>100%</strong></td>
+<td>75%</td>
+<td><strong>LangGraph / Strands</strong> 🎯</td>
 </tr>
 </tbody>
 </table>
-<p><strong>🏆 Winner: LangGraph</strong> — 100% factual accuracy, correct multi-skill orchestration.</p>
-<blockquote class="blockquote">
-<p>Hermes chose the <strong>wrong skill</strong> for the European GDP question, causing it to <strong>miss Russia</strong> — factual error (14.98T instead of 17.05T). Strands self-corrected name lookup failures (<code>UK</code>→<code>United Kingdom</code>).</p>
-</blockquote>
+<p><br> <br></p>
+<section id="verdict-langgraph-wins-on-precision-strands-on-efficiency" class="level4">
+<h4 class="anchored" data-anchor-id="verdict-langgraph-wins-on-precision-strands-on-efficiency">🏆 Verdict: LangGraph wins on precision, Strands on efficiency</h4>
+<p><br> <br></p>
+<p>If your workflow is <strong>high-risk, multi-step orchestration</strong>, <strong>LangGraph is the safest choice</strong>—it enforces structure and avoids logical mistakes.</p>
+<p><br></p>
+<p><strong>Strands</strong> is faster and far more memory-efficient, but comes with a <strong>heavy token cost</strong>.</p>
+<p><br></p>
+<p><strong>Hermes</strong> is lightweight and cheap—but this is where it starts to break.</p>
+<p><br> <br></p>
 </section>
+<section id="what-actually-mattered-1" class="level4">
+<h4 class="anchored" data-anchor-id="what-actually-mattered-1">🔍 What actually mattered</h4>
+<ul>
+<li><p><strong>Precision vs Shortcutting:</strong><br>
+Hermes chose the <strong>wrong skill path</strong> once → leading to a major factual error<br>
+(missed a country → wrong GDP output)</p></li>
+<li><p><strong>Self-healing vs Token Explosion:</strong><br>
+Strands showed strong resilience (auto-corrected failures like <code>UK → United Kingdom</code>)<br>
+but paid for it with <strong>very high token usage</strong></p></li>
+<li><p><strong>Built-in Guardrails (LangGraph):</strong><br>
+Enforces deterministic execution → <strong>no wrong paths, no missed steps, 100% accuracy</strong></p></li>
+</ul>
+<p><br> <br></p>
+<p>👉 <a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/pattern_3_report.md">Read the Full Pattern 3 Evolution Report</a></p>
 <hr>
-<section id="pattern-4-multi-turn-conversational-agent" class="level3" data-align="center">
-<h3 data-anchor-id="pattern-4-multi-turn-conversational-agent">Pattern 4: Multi-Turn Conversational Agent</h3>
+</section>
+</section>
+<section id="pattern-4-multi-turn-conversational-agent" class="level3">
+<h3 class="anchored" data-anchor-id="pattern-4-multi-turn-conversational-agent">Pattern 4: Multi-Turn Conversational Agent</h3>
+<p><br> <br></p>
 <blockquote class="blockquote">
-<p><em>How does cost scale as conversation history accumulates?</em></p>
+<p><strong>The Test:</strong> Can the agent handle long conversations without becoming slow, expensive, or context-blind?</p>
 </blockquote>
+<p><br> <br></p>
+<p>Here’s how the frameworks scaled across turns:</p>
+<p><br> <br></p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 32%">
-<col style="width: 11%">
-<col style="width: 18%">
-<col style="width: 28%">
-<col style="width: 9%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Metric</th>
-<th style="text-align: center;">LangGraph</th>
-<th style="text-align: center;">Strands</th>
-<th style="text-align: center;">Hermes</th>
-<th style="text-align: center;">🏆</th>
+<th>Feature</th>
+<th>LangGraph</th>
+<th>Strands</th>
+<th>Hermes</th>
+<th>Winner</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>LLM Call Growth (T1→T4)</td>
-<td style="text-align: center;">4→14 (3.5×)</td>
-<td style="text-align: center;">6→33 (5.5×)</td>
-<td style="text-align: center;"><strong>4→3 (0.75×)</strong></td>
-<td style="text-align: center;">Hermes</td>
+<td><strong>LLM Calls</strong> <em>(Turn 1 → 4)</em></td>
+<td>4 → 14 (3.5×)</td>
+<td>6 → 33 (5.5×)</td>
+<td><strong>4 → 8 (2×)</strong></td>
+<td><strong>Hermes</strong> 📉</td>
 </tr>
 <tr class="even">
-<td>Token Growth (T1→T3)</td>
-<td style="text-align: center;">4.6×</td>
-<td style="text-align: center;">8.4×</td>
-<td style="text-align: center;"><strong>2.6×</strong></td>
-<td style="text-align: center;">Hermes</td>
+<td><strong>Token Growth</strong></td>
+<td>4.6×</td>
+<td>8.4×</td>
+<td><strong>2.6×</strong></td>
+<td><strong>Hermes</strong> 💸</td>
 </tr>
 <tr class="odd">
-<td>T2-T4 Avg Latency</td>
-<td style="text-align: center;">62.8s</td>
-<td style="text-align: center;"><strong>24.5s</strong></td>
-<td style="text-align: center;">34.8s</td>
-<td style="text-align: center;">Strands</td>
+<td><strong>Chat Speed</strong></td>
+<td>62.8s</td>
+<td><strong>24.5s</strong></td>
+<td>34.8s</td>
+<td><strong>Strands</strong> ⚡</td>
 </tr>
 <tr class="even">
-<td>Context Test (“Same for Brazil”)</td>
-<td style="text-align: center;">✅ Pass</td>
-<td style="text-align: center;">⚠️ Partial (3-way)</td>
-<td style="text-align: center;">❌ <strong>Fail</strong> (did Brazil vs Japan; should have been Brazil vs India)</td>
-<td style="text-align: center;">LangGraph</td>
+<td><strong>Context Retention</strong></td>
+<td><strong>✅ Perfect</strong></td>
+<td>⚠️ Partial</td>
+<td>❌ Failed</td>
+<td><strong>LangGraph</strong> 🧠</td>
 </tr>
 <tr class="odd">
-<td>Error Recovery (T4)</td>
-<td style="text-align: center;">Correct from beginning</td>
-<td style="text-align: center;">Correct from beginning</td>
-<td style="text-align: center;">✅ Russia→Russian Fed.</td>
-<td style="text-align: center;">All 3</td>
+<td><strong>Error Recovery</strong></td>
+<td>Perfect</td>
+<td>Perfect</td>
+<td>Perfect</td>
+<td><strong>Tie</strong> 🛠️</td>
 </tr>
 </tbody>
 </table>
-<p><strong>🏆 Winner: Hermes</strong> — in this setup, it showed the flattest O(1) LLM scaling and the most token-efficient growth (2.6× vs Strands 8.4×).</p>
+<p><br> <br></p>
+<section id="verdict-hermes-saves-cost-langgraph-preserves-intelligence" class="level4">
+<h4 class="anchored" data-anchor-id="verdict-hermes-saves-cost-langgraph-preserves-intelligence">🏆 Verdict: Hermes saves cost, LangGraph preserves intelligence</h4>
+<p><br> <br></p>
+<p>If cost scaling is your concern, <strong>Hermes is the clear winner</strong>—lowest growth in LLM calls and tokens.</p>
+<p><br></p>
+<p>But this comes with a trade-off: <strong>context awareness drops sharply.</strong></p>
+<p><br> <br></p>
 </section>
+<section id="what-actually-mattered-2" class="level4">
+<h4 class="anchored" data-anchor-id="what-actually-mattered-2">🔍 What actually mattered</h4>
+<ul>
+<li><p><strong>Cheap but Forgetful (Hermes):</strong><br>
+Struggles with context. Missed simple follow-ups<br>
+(“Same for Brazil” → wrong comparison)</p></li>
+<li><p><strong>Fast but Expensive (Strands):</strong><br>
+Fastest responses, but <strong>token usage explodes</strong> with history replay</p></li>
+<li><p><strong>Accurate but Heavy (LangGraph):</strong><br>
+Retains full context and reasoning<br>
+but scales via <strong>more LLM calls (brute force)</strong></p></li>
+</ul>
+<p><br> <br></p>
+</section>
+<section id="practical-fix-no-framework-change-needed" class="level4">
+<h4 class="anchored" data-anchor-id="practical-fix-no-framework-change-needed">🛠️ Practical Fix (No Framework Change Needed)</h4>
+<p>You can fix both issues with a small architectural addition:</p>
+<ul>
+<li><p><strong>Hermes:</strong> Add <strong>intent clarification step</strong><br>
+→ resolves vague follow-ups before execution</p></li>
+<li><p><strong>LangGraph:</strong> Add <strong>history compression step</strong><br>
+→ summarize past chats to control LLM call growth</p></li>
+</ul>
+<p><br> <br></p>
+<p>👉 <a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/pattern_4_report.md">Read the Full Pattern 4 Evolution Report</a></p>
+<p><br> <br></p>
+<hr>
+<p><br> <br></p>
+</section>
+<section id="appendix" class="level4">
+<h4 class="anchored" data-anchor-id="appendix">Appendix</h4>
+<p>If you want to understand the LLM Call Spike numbers from turn 1 to 4 better, refer this github analysis here: <a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/Analysis_of_LLM_Call_Spike_in_Pattern_4.md">Analysis of LLM Call Spike in Pattern 4</a></p>
+<hr>
+</section>
+</section>
+<section id="a-summary-of-the-winners-debatable" class="level3">
+<h3 class="anchored" data-anchor-id="a-summary-of-the-winners-debatable">A Summary of the Winners (debatable!)</h3>
+<p><img src="./images/Cross-pattern-winner-summary.png" class="img-fluid" style="width:100.0%"></p>
+<hr>
+</section>
+</section>
+<section id="v.-key-learnings" class="level2">
+<h2 class="anchored" data-anchor-id="v.-key-learnings">V. Key Learnings</h2>
+<section id="no-bad-frameworks-only-untested-ones" class="level3">
+<h3 class="anchored" data-anchor-id="no-bad-frameworks-only-untested-ones">1. No bad frameworks — only untested ones</h3>
+<p><br> <br></p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 7%">
-<col style="width: 44%">
-<col style="width: 47%">
-</colgroup>
-<thead>
-<tr class="header">
-<th></th>
-<th>Good at</th>
-<th>Bad at</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Hermes</strong></td>
-<td>Not <strong>wasting tokens</strong> re-processing history (2.6× growth)</td>
-<td><strong>Understanding</strong> what history implies (“Same for Brazil” → ❌)</td>
-</tr>
-<tr class="even">
-<td><strong>LangGraph</strong></td>
-<td><strong>Deep context reasoning</strong></td>
-<td><strong>Linear growth</strong> in (4→14) LLM calls</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Key Insight</strong>:</p>
-<ul>
-<li>The fix for both frameworks is the same - one preprocessing LLM call before the main loop.</li>
-<li>For Hermes, it resolves ambiguous references (“Same for Brazil” → “Compare India and Brazil”).</li>
-<li>For LangGraph, it compresses history into a bounded summary. Neither requires a rewrite — just a single added stage in the existing pipeline.</li>
-</ul>
-<p><img src="./images/Cross-pattern-winner-summary.png" width="1500" alt="Pattern 4"></p>
-<section id="v.-key-learnings" class="level2" data-align="center">
-<h2 data-anchor-id="v.-key-learnings">V. Key Learnings</h2>
-</section>
-<section id="there-are-no-bad-frameworks-only-untested-ones" class="level3">
-<h3 data-anchor-id="there-are-no-bad-frameworks-only-untested-ones">1. There are no bad frameworks — only untested ones</h3>
-<ul>
-<li>Identify the failed areas in that framework and rectify it</li>
-</ul>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 11%">
-<col style="width: 40%">
-<col style="width: 47%">
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -852,13 +880,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td>LangGraph</td>
-<td>100% accuracy across P1+P3</td>
-<td>134 MB memory, slowest latency</td>
+<td>100% accuracy (P1+P3)</td>
+<td>134 MB memory, slowest</td>
 </tr>
 <tr class="even">
 <td>Strands</td>
-<td>44 MB memory, 18s warm turns</td>
-<td>33 LLM calls by Turn 4, very high - 124K tokens - consumption</td>
+<td>44 MB memory, fast warm turns</td>
+<td>33 LLM calls by Turn 4, 124K tokens</td>
 </tr>
 <tr class="odd">
 <td>Hermes</td>
@@ -867,58 +895,68 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+<p><br> <br></p>
+<hr>
+<p><br> <br></p>
 </section>
-<section id="know-what-youre-getting-into-architecture-reveals-weaknesses-before-your-users-do" class="level3">
-<h3 data-anchor-id="know-what-youre-getting-into-architecture-reveals-weaknesses-before-your-users-do">2. Know what you’re getting into — Architecture reveals weaknesses before your users do</h3>
-<p>Knowing the architectural choices baked into a framework’s philosophy helps unearth weaknesses <strong>before production</strong>, not after.</p>
+<section id="architecture-reveals-weaknesses-before-your-users-do" class="level3">
+<h3 class="anchored" data-anchor-id="architecture-reveals-weaknesses-before-your-users-do">2. Architecture reveals weaknesses before your users do</h3>
+<p><br> <br></p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 8%">
-<col style="width: 36%">
-<col style="width: 55%">
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>Framework</th>
-<th>Architecture Philosophy</th>
-<th>Weakness It Causes</th>
+<th>Architecture</th>
+<th>Weakness It Creates</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><strong>LangGraph</strong></td>
-<td>Graph-based state machine — re-evaluate at every node</td>
-<td>LLM calls grow linearly (4→14); memory loaded in-process (134 MB)</td>
+<td>Graph state machine — re-evaluates every node</td>
+<td>LLM calls grow linearly; high in-process memory</td>
 </tr>
 <tr class="even">
 <td><strong>Strands</strong></td>
-<td>Full context replay — every LLM call sees everything</td>
-<td>Tokens explode (9.9K→124K); Too high token consumption as turns increase</td>
+<td>Full context replay — every call sees everything</td>
+<td>Tokens explode as turns increase</td>
 </tr>
 <tr class="odd">
 <td><strong>Hermes</strong></td>
-<td>Fixed orchestration loop — plan once, execute, answer</td>
-<td>Shallow reasoning over history; fails implicit references (“Same for Brazil” → ❌)</td>
+<td>Fixed loop — plan once, execute, answer</td>
+<td>Shallow history reasoning; fails implicit references</td>
 </tr>
 </tbody>
 </table>
+<p><br> <br></p>
 <blockquote class="blockquote">
-<p>None of these showed up in Pattern 1. All of them showed up by Pattern 4. <strong>The architecture didn’t change — the workload revealed it.</strong></p>
+<p>None of these showed up in Pattern 1. All surfaced by Pattern 4.<br>
+<strong>The architecture didn’t change — the workload revealed it.</strong></p>
 </blockquote>
+<p><br> <br></p>
+<hr>
+<p><br> <br></p>
 </section>
-<section id="treat-evaluation-as-a-product-feature-not-an-afterthought" class="level3">
-<h3 data-anchor-id="treat-evaluation-as-a-product-feature-not-an-afterthought">3. Treat evaluation as a product feature, not an afterthought</h3>
-<p>Standard metrics (latency, tokens, memory) tell you <strong>how fast</strong>. Designed tests tell you <strong>how wrong</strong>.</p>
+<section id="evaluation-is-a-product-feature-not-an-afterthought" class="level3">
+<h3 class="anchored" data-anchor-id="evaluation-is-a-product-feature-not-an-afterthought">3. Evaluation is a product feature, not an afterthought</h3>
+<p><br> <br></p>
+<p>Standard metrics tell you <strong>how fast</strong>. Designed tests tell you <strong>how wrong</strong>.</p>
+<p><br> <br></p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 32%">
-<col style="width: 51%">
-<col style="width: 16%">
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>What We Measured</th>
-<th>What We Discovered</th>
+<th>Measured</th>
+<th>Discovered</th>
 <th>How</th>
 </tr>
 </thead>
@@ -930,7 +968,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>“Same for Brazil”</td>
-<td>Hermes <strong>drops context entirely</strong></td>
+<td>Hermes <strong>drops context</strong></td>
 <td>Designed test</td>
 </tr>
 <tr class="odd">
@@ -945,21 +983,153 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+<p><br> <br></p>
 <blockquote class="blockquote">
-<p>Every ❌ in this evaluation was caught by a <strong>designed test</strong>, not a dashboard metric. If we’d only measured speed and cost, Hermes would look flawless.</p>
+<p>Every ❌ was caught by a <strong>designed test</strong>, not a dashboard.<br>
+If we’d only measured speed and cost, Hermes would look flawless.</p>
 </blockquote>
 </section>
-<section id="vi.-epilogue" class="level2" data-align="center">
-<h2 data-anchor-id="vi.-epilogue">VI. Epilogue</h2>
+<section id="no-bad-frameworks-only-untested-ones-1" class="level3">
+<h3 class="anchored" data-anchor-id="no-bad-frameworks-only-untested-ones-1">1. No bad frameworks — only untested ones</h3>
+<p><br> <br></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Framework</th>
+<th>Best</th>
+<th>Worst</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>LangGraph</td>
+<td>100% accuracy (P1+P3)</td>
+<td>134 MB memory, slowest</td>
+</tr>
+<tr class="even">
+<td>Strands</td>
+<td>44 MB memory, fast warm turns</td>
+<td>33 LLM calls by Turn 4, 124K tokens</td>
+</tr>
+<tr class="odd">
+<td>Hermes</td>
+<td>O(1) scaling, 2.6× token growth</td>
+<td>❌ Failed context test, missed Russia</td>
+</tr>
+</tbody>
+</table>
+<p><br> <br></p>
+<hr>
+<p><br> <br></p>
 </section>
+<section id="architecture-reveals-weaknesses-before-your-users-do-1" class="level3">
+<h3 class="anchored" data-anchor-id="architecture-reveals-weaknesses-before-your-users-do-1">2. Architecture reveals weaknesses before your users do</h3>
+<p><br> <br></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Framework</th>
+<th>Architecture</th>
+<th>Weakness It Creates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>LangGraph</strong></td>
+<td>Graph state machine — re-evaluates every node</td>
+<td>LLM calls grow linearly; high in-process memory</td>
+</tr>
+<tr class="even">
+<td><strong>Strands</strong></td>
+<td>Full context replay — every call sees everything</td>
+<td>Tokens explode as turns increase</td>
+</tr>
+<tr class="odd">
+<td><strong>Hermes</strong></td>
+<td>Fixed loop — plan once, execute, answer</td>
+<td>Shallow history reasoning; fails implicit references</td>
+</tr>
+</tbody>
+</table>
+<p><br> <br></p>
+<blockquote class="blockquote">
+<p>None of these showed up in Pattern 1. All surfaced by Pattern 4.<br>
+<strong>The architecture didn’t change — the workload revealed it.</strong></p>
+</blockquote>
+<p><br> <br></p>
+<hr>
+<p><br> <br></p>
+</section>
+<section id="evaluation-is-a-product-feature-not-an-afterthought-1" class="level3">
+<h3 class="anchored" data-anchor-id="evaluation-is-a-product-feature-not-an-afterthought-1">3. Evaluation is a product feature, not an afterthought</h3>
+<p><br> <br></p>
+<p>Standard metrics tell you <strong>how fast</strong>. Designed tests tell you <strong>how wrong</strong>.</p>
+<p><br> <br></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Measured</th>
+<th>Discovered</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Latency, tokens, memory</td>
+<td>Hermes is fastest, cheapest</td>
+<td>Standard metrics</td>
+</tr>
+<tr class="even">
+<td>“Same for Brazil”</td>
+<td>Hermes <strong>drops context</strong></td>
+<td>Designed test</td>
+</tr>
+<tr class="odd">
+<td>“Most populous European country”</td>
+<td>Same model, different framework → different answer</td>
+<td>Designed test</td>
+</tr>
+<tr class="even">
+<td>European GDP total</td>
+<td>Hermes picked wrong skill → missed a country</td>
+<td>Designed test</td>
+</tr>
+</tbody>
+</table>
+<p><br> <br></p>
+<blockquote class="blockquote">
+<p>Every ❌ was caught by a <strong>designed test</strong>, not a dashboard.<br>
+If we’d only measured speed and cost, Hermes would look flawless.</p>
+</blockquote>
+<p><br> <br></p>
+<hr>
+</section>
+</section>
+<section id="vi.-epilogue" class="level2">
+<h2 class="anchored" data-anchor-id="vi.-epilogue">VI. Epilogue</h2>
 <section id="bonus-pattern-5--rag---wiki" class="level3">
-<h3 data-anchor-id="bonus-pattern-5--rag---wiki">Bonus Pattern 5: (-)RAG -&gt; (+)Wiki</h3>
+<h3 class="anchored" data-anchor-id="bonus-pattern-5--rag---wiki">Bonus Pattern 5: (-)RAG -&gt; (+)Wiki</h3>
 <blockquote class="blockquote">
 <p><em>Remove RAG; include Karpathy’s LLM Wiki pattern.</em></p>
 </blockquote>
-<p><img src="./images/pattern_5_vs_patter2_final_2.png" width="1200" alt="Pattern 5"></p>
-<p><img src="./images/the_5_patterns_summary_2.png" width="1500" alt="Pattern 5"></p>
-<p><img src="./images/patterns_key_insights_2.png" width="1500" alt="Pattern 5"></p>
+<p><img src="./images/pattern_5_vs_patter2_final_2.png" class="img-fluid" style="width:100.0%"></p>
+<p><img src="./images/the_5_patterns_summary_2.png" class="img-fluid" style="width:100.0%"></p>
+<p><img src="./images/patterns_key_insights_2.png" class="img-fluid" style="width:100.0%"></p>
 <p>For the next iteration:</p>
 <ul>
 <li>Try Workflow Patterns
@@ -969,7 +1139,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Sequential-Workflow</li>
 </ul></li>
 </ul>
-<p><img src="./images/workflow_patterns.png" width="1000" alt="Pattern 4"></p>
+<p><img src="./images/workflow_patterns.png" class="img-fluid" style="width:100.0%"></p>
 <ul>
 <li>Try comparing with other agentic AI frameworks
 <ul>
@@ -979,13 +1149,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Reproducibility note: These results reflect one local Ollama-based benchmark run with the same model, the same MCP tools, and the same prompts across all three frameworks. If you rerun them with a different model or different tool behavior, the rankings may change.</p>
 <hr>
 </section>
+</section>
 <section id="vii.-github-resource" class="level2">
-<h2 data-anchor-id="vii.-github-resource">VII. Github Resource</h2>
+<h2 class="anchored" data-anchor-id="vii.-github-resource">VII. Github Resource</h2>
 <ul>
 <li>The codebase, evaluation reports conducted are logged in github here: <a href="https://github.com/senthilkumarm1901/agentic_frameworks_exploration">senthilkumarm1901/agentic_frameworks_exploration</a></li>
 </ul>
 <section id="useful-reading-references" class="level3">
-<h3 data-anchor-id="useful-reading-references">Useful Reading References</h3>
+<h3 class="anchored" data-anchor-id="useful-reading-references">Useful Reading References</h3>
 <p>Follow below links &nbsp;for reading material on Agentic AI, each expanding on the link above that. &nbsp;</p>
 <ol type="1">
 <li>&nbsp;Simple article first: <a href="https://www.anthropic.com/engineering/building-effective-agents" title="https://www.anthropic.com/engineering/building-effective-agents">Building Effective AI Agents</a></li>
@@ -993,14 +1164,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>None of the above have skills explained well: <a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" title="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">Equipping agents for the real world with Agent Skills</a>&nbsp;</li>
 <li>Same Stuff as 1 but elaborated further with <strong>Skills</strong> and More Agentic Patterns; Anthropic gave version 2: <a href="https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns%20and%20Implementation%20Frameworks.pdf" title="https://resources.anthropic.com/hubfs/building%20effective%20ai%20agents-%20architecture%20patterns%20and%20implementation%20frameworks.pdf">https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns…</a></li>
 <li><a href="https://www.dailydoseofds.com/p/hermes-agent-masterclass/" title="https://www.dailydoseofds.com/p/hermes-agent-masterclass/">Hermes Agent Masterclass</a> (the pics here are 👌)</li>
-<li>The Context Engineering 101 (in pic):<br> <img src="./images/context_engineering_101.png" width="1500" alt="CE 101"></li>
+<li>The Context Engineering 101 (in pic):</li>
 </ol>
+<p><img src="./images/context_engineering_101.png" class="img-fluid" style="width:100.0%"></p>
 
 
 </section>
 </section>
 
- <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -1403,7 +1575,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
 </script>
- <!-- /content -->
+</div> <!-- /content -->
 
 
 
