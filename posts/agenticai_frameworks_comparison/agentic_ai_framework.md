@@ -1,4 +1,3 @@
-
 ---
 author: Senthil Kumar
 badges: true
@@ -10,26 +9,13 @@ categories:
 - Tools/Hermes
 - Tools/Strands
 
-description: What 40+ experiments taught us about when to use each framework — and what to steal from all three.
+description: Same agentic AI patterns. Same tools. Three frameworks. Different philosophies. Uncovering the trade-offs in tool use, orchestration, memory, and complexity.
 date: '2026-06-14'
 draft: false
 image: ./images/opening_image_2.png
 toc: false
 title: "4 Patterns × 3 Frameworks × 1 LLM: Building and Evaluating Agentic AI Patterns across LangGraph, Strands, and Hermes"
 output-file: agentic_ai_frameworks.html
-
----
-
-
-<div align="center">
-
-
-
-### 4 Patterns × 3 Frameworks × 1 LLM:
-
-#### Building and Evaluating Agentic AI Patterns across LangGraph, Strands, and Hermes
-
-
 
 
 ---
