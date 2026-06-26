@@ -31,20 +31,44 @@ output-file: agentic_ai_frameworks.html
 ###### **Author:** Senthil Kumar
 
 
+---
 
+A better version of this blog is here: [medium.com/@senthilkumar.m1901](https://medium.com/@senthilkumar.m1901/4-patterns-3-frameworks-1-llm-building-and-evaluating-agentic-ai-patterns-across-langgraph-8f44f29ca519?source=friends_link&sk=591f5e74497a6cef51bbb08d17b8427b)
+
+![alt text](medium_blog.png)
 
 ---
 
-This question has been posed to my team and me multiple times: 
-*Which agentic AI framework do we choose?*
-<br> 
-Almost immediately after we default to LangGraph, I would hear counter arguments flying across the room - too big, most modules not needed for us. Let us choose something lightweight like Temporal or the latest craze Hermes (at the time of writing). 
 <br>
-Then, a Cloud Engineer would chime in: Ultimately, all production-grade agentic ai systems need to nestle and scale within our cloud. So, let us choose AWS Strands :). When I asked one of my colleagues to review this blog, he suggested "Pydantic AI". 
-<br>
-The options seem to be endless!
-<br>
-My quest in this blog is not to pick a favorite but to analyze 3 popular frameworks - LangGraph, Strands and Hermes - and show empirical evidence on where they shine, struggle and surprise, when all conditions stay common.
+
+❖ Same agentic AI patterns. Same tools. Three frameworks. Different philosophies. <br>
+❖ The intent of this empirical evaluation is to uncover the trade-offs in tool use, orchestration, memory, and complexity in the 3 framework libraries.
+
+---
+
+This question has been posed to my team and me multiple times:
+❖ Which agentic AI framework do we choose?
+
+Almost immediately, we used to default to LangGraph as the answer.
+
+But I started hearing counter-arguments flying across the room:
+❖ LangGraph too big, most modules not needed for us.
+❖ Let us choose something lightweight like Temporal or Hermes (the craze at the time of writing this!).
+
+Then, a Cloud Engineer would chime in: Ultimately, all production-grade agentic ai systems need to nestle and scale within our cloud. So, let us choose AWS Strands :).
+
+When I asked one of my colleagues to review this blog, he asked why wasn’t Pydantic AI in here!.
+
+So the quest in this blog is
+❖ not to pick a favorite but
+❖ to analyze the 3 preselected frameworks — LangGraph, Strands and Hermes —
+❖ across 4 simple agentic ai patterns and
+show empirical evidence on where they shine, struggle, and surprise,
+when all conditions stay common.
+
+I wished I had chosen more patterns and more frameworks for comparison. But the options seem endless!
+
+So restricted the topic to a 4 X 3 setup here.
 
 ---
 
@@ -71,26 +95,22 @@ My quest in this blog is not to pick a favorite but to analyze 3 popular framewo
 
 This post compares three agent frameworks across four progressively harder patterns. The goal is not to crown a single universal winner, but to show which design choice helps most when the workload changes.
 
-### 5-Minute Executive Summary (1/3)
+### WHAT are we Analyzing? — 4 Architecture Patterns
 
-![](./images/5_min_version_simple.png){width=100%}
+![](./images/WHAT.png){width=100%}
 
-### 5-Minute Executive Summary (2/3)
+### HOW are we analyzing? — With 3 Frameworks
 
-| Pattern | Key Capability | Description |
-|---|---|---|
-| P1 | MCP tools | AI Agent with 2 Numeric Tools |
-| P2 | +RAG tool | Same AI Agent with 2 Numeric Tools + 1 Semantic Retrieval Tool |
-| P3 | +Skills | Same AI Agent with same tools + Skills |
-| P4 | +Memory +chat | Same AI Agent with memory & terminal chat |
+![](./images/HOW.png){width=100%}
 
+### WHY are we analyzing? — To Unearth Key Architectural Findings
 
 
 ![](./images/5_min_version_additive_patterns.png){width=100%}
 
 
 
-### 5-Minute Executive Summary (3/3)
+### 5-Minute Executive Summary - Detailed
 
 ![](./images/5_min_version_detailed.png){width=100%}
 
@@ -99,11 +119,8 @@ This post compares three agent frameworks across four progressively harder patte
 ## II. The Agentic AI Patterns in Focus
 
 
-
-
     
 ### Additive Architecture Lens
-
 
 
 The four patterns below move from basic tool use to retrieval, skills, and multi-turn memory, so you can see how each framework behaves as the orchestration problem becomes more demanding.
@@ -147,8 +164,6 @@ The four patterns below move from basic tool use to retrieval, skills, and multi
 
 
 
-
-
 ### Evaluation Analysis of the Patterns
 
 ### [4 Patterns · 3 Frameworks · 40+ Experiments](https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/Final_Evaluation_Report.md)
@@ -157,6 +172,12 @@ These tables summarize the 40+ experiments in this post. The benchmark keeps the
 
 > **Core Question**: *Which framework should you use — and when?* <br>
 > **Alt Question**: *If you're building a custom framework, what's the best feature to borrow from each?*
+
+![alt text](table.png)
+
+### 2 Data Sources, 3 Tools, 1 MCP Server
+
+![alt text](DATA_TOOLS.png)
 
 ### A Recap of the Patterns
 
@@ -265,6 +286,9 @@ _SYNTHESIS_SUFFIX = (
 
 👉 [Read the Full Pattern 1 Evolution Report](https://github.com/senthilkumarm1901/agentic_frameworks_exploration/blob/main/eval/reports/pattern_1_report.md)
 
+
+> **NOTE**:
+> * After uniformly fixing all 3 Frameworks with a `suffix` prompt, all 3 frameworks had reliable 100% accuracy
 
 
 
