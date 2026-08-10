@@ -6,7 +6,7 @@ categories:
 - Architecture
 - Architect/Frameworks
 
-description: Notes, learnings and my opinions of a Path to Architect Workshop
+description: My opinions, notes, and learnings from a Path to Architect Workshop
 date: '2026-07-23'
 draft: false
 image: ./images/main_image_2.png
