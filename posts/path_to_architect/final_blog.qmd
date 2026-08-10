@@ -6,12 +6,12 @@ categories:
 - Architecture
 - Architect/Frameworks
 
-description: My opinions, notes, and learnings from a Path to Architect Workshop
+description: "Engineering places the bet. Architecture hedges the bet" - More such interesting notes and learnings from a Software Architect Workshop
 date: '2026-07-23'
 draft: false
 image: ./images/main_image_2.png
 toc: true
-title: "The Business Architect Learnings: Engineering places the bet. Architecture hedges the bet."
+title: "How to Think Like a Software Architect: Part 1 - The Business Architect Lens"
 output-file: path_to_architect.html
 
 ---
@@ -34,12 +34,12 @@ output-file: path_to_architect.html
 
 ## Agenda
 
-- I. What is Software Architecture - A Set of Hedging Techniques
-- II. The Five-Pillar Lens of Architecture Decisions
-- III. Where do you stand as an Architect? - The Leadership matrix, Explorer Reset, and the HIPPO effect
-- IV. Translating technical bets into business language
-- V. A Few More Frameworks to fine-tune Architecture Thinking
-- VI. Closing thoughts
+* I. What is Software Architecture - A Set of Hedging Techniques
+* II. The Five-Pillar Lens of Architecture Decisions
+* III. Where do you stand as an Architect? - The Leadership matrix, Explorer Reset, and the HIPPO effect
+* IV. Translating technical bets into business language
+* V. A Few More Frameworks to fine-tune Architecture Thinking
+* VI. Closing thoughts
 
 ---
 
@@ -146,7 +146,7 @@ flowchart TB
 - In Canary Release, only a certain small section of users are tested first before going fully into new version
 
 
-```
+```{mermaid}
 flowchart LR
   A[Change to ship] --> B{Granularity}
   B -->|Whole environment| C[Blue Green]
@@ -196,7 +196,8 @@ flowchart TB
     DE --> D1[Trade-off Options]
     DE --> D2[Finding the Seams]
 
-    B --> B1[ROI]
+    B --> B1[Risk Reduction]
+    B --> B3[Cost Reduction]
     B --> B2[Growth]
 
     E --> E1[Delivery]
@@ -246,7 +247,7 @@ The workshop describes growth across two dimensions.
 
 ```{mermaid}
 flowchart TB
-
+    
     I1[Self]
     I2[Team]
     I3[Org]
@@ -257,9 +258,15 @@ flowchart TB
     A3[Maverick]
     A4[Oracle]
 
-    I1 --> I2 --> I3 --> I4
+    subgraph IMP["IMPACT"]
+        direction TB
+        I1 --> I2 --> I3 --> I4
+    end
 
-    A1 --> A2 --> A3 --> A4
+    subgraph ARCH["ARCHETYPE"]
+        direction TB
+        A1 --> A2 --> A3 --> A4
+    end
 ```
 
 The most useful insight is the growth model.
