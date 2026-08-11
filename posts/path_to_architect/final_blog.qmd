@@ -313,19 +313,35 @@ Architects frequently lose stakeholder support because they stop at technical re
 ```{mermaid}
 flowchart TB
     A[Technical Decision]
-    B[ADR]
-    C[Trade Off]
-    D[ROI TCO NPV]
-    E[Run Grow Transform]
-    F[So What]
-    G[Executive Story]
+    B[1. ADR with Trade Off]
+    D[2. Cost Analysis - ROI, TCO, NPV]
+    E[3. Effort Prioritization - Run Grow Transform & RICE]
+    F[4. So What]
+    G[5. The Executive Pitch]
 
-    A --> B --> C --> D --> E --> F --> G
+    A --> B --> D --> E --> F --> G
 ```
 
-A few of the tools worth knowing in plain terms.
+A few of the tools that help in converting a decision to a durable outcome: 
 
-### ROI (Return on Investment)
+
+
+### 1. ADRs (Architecture Decision Records) with Trade-Offs Documented
+
+> _How do I prevent "Why did we do this" debates?_
+
+- 20‑minute investment capturing: what we decided, why, and what we traded away.
+- "The palest ink beats the best memory."
+
+### 2. Cost Analysis
+
+
+**The Holy Trinity (Risk, Cost, Growth)** — _What do executives actually fund?_
+
+- If your pitch doesn't hit Risk reduction, Cost optimization, or Growth in 30 seconds, you've lost.
+- Never pitch technology; pitch the solution to a painful business problem.
+
+#### ROI (Return on Investment)
 
 - Simple ratio of gain to cost.
 - Formula: (Gain minus Cost) divided by Cost.
@@ -333,21 +349,30 @@ A few of the tools worth knowing in plain terms.
 - Weakness: it hides timing. A slow 40 percent return can be worse than a fast 20 percent one. That is where [XIRR](https://support.zerodha.com/category/console/portfolio/console-holdings/articles/xirr-and-cagr-for-equity) is used
 - Reference: https://www.investopedia.com/terms/r/returnoninvestment.asp. 
 
-### TCO (Total Cost of Ownership)
+#### TCO (Total Cost of Ownership)
 
 - Sum of all direct and indirect costs over the life of a system.
 - Includes licensing, infrastructure, operations, support, migration, retirement.
 - Best for choosing between systems that look cheap upfront but expensive later, and vice versa.
 - Reference: https://www.gartner.com/en/information-technology/glossary/total-cost-of-ownership-tco.
 
-### NPV (Net Present Value)
+#### NPV (Net Present Value)
 
 - Value of a future cash flow expressed in today’s money.
 - It respects time. A dollar earned in three years is worth less than a dollar earned today.
 - Best for long-lived investments where cash flows arrive over years.
 - Reference: https://www.investopedia.com/terms/n/npv.asp.
 
-### RICE (Reach, Impact, Confidence, Effort)
+### 3. Effort Prioritization 
+
+#### Run / Grow / Transform 
+
+> _How should budget be distributed?_
+
+- 60% Run (things that keep the "lights on"), 20% Grow (new features), 20% Transform  (thought-provoking or trend-breaking innovation).
+- Don't let "Run" eat the entire budget silently.
+
+#### RICE (Reach, Impact, Confidence, Effort)
 
 - A prioritization framework from [Intercom’s product team](https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/).
 
@@ -365,6 +390,20 @@ A few of the tools worth knowing in plain terms.
 - Weakness: it works best for incremental improvements, less well for novel bets where reach is unknowable.
 
 
+### 4. The "So What?" Test
+
+> _How do I know if my argument has landed?_
+
+- Ask "So what?" repeatedly until you hit a dollar sign or a human consequence.
+- If you can't reach one, the proposal isn't ready.
+
+
+### 5. 5-Stage Executive Pitch
+
+- Burning Problem → Why Now (current state) → Proposed Solution → Trade‑off Map → The Ask 
+  - The Ask e.g.: what should the leadership do/ why should they take in this decision.
+- Skipping stages diminishes persuasive effect proportionally.
+
 ---
 
 
@@ -373,44 +412,20 @@ A few of the tools worth knowing in plain terms.
 
 ### How to Prioritize the Right Tasks
 
-**Portfolio Allocation (Run / Grow / Transform)** — _How should budget be distributed?_
-
-- 60% Run (things that keep the "lights on"), 20% Grow (new features), 20% Transform  (thought-provoking or trend-breaking innovation).
-- Don't let "Run" eat the entire budget silently.
-
-**MoSCoW Prioritization** — _How do I scope with clarity?_
+**MuSCoW Prioritization** — _How do I scope with clarity?_
 
 - Must / Should / Could / Won't.
 - Explicit "Won't" items are as valuable as "Must‑haves" for alignment.
 
-**The Holy Trinity (Risk, Cost, Growth)** — _What do executives actually fund?_
+**Trade‑Off Matrix** — _Can I have everything?_
 
-- If your pitch doesn't hit Risk reduction, Cost optimization, or Growth in 30 seconds, you've lost.
-- Never pitch technology; pitch the solution to a painful business problem.
-
-
-**The "So What?" Test** — _How do I know if my argument has landed?_
-
-- Ask "So what?" repeatedly until you hit a dollar sign or a human consequence.
-- If you can't reach one, the proposal isn't ready.
+- No. Performance, security, modifiability compete — you must choose.
+- Make the trade‑off explicit on paper before the deadline makes it for you.
 
 **Leading vs Lagging Indicators** — _How do tech metrics connect to business outcomes?_
 
 - Tech metrics (uptime, velocity) are leading; business metrics (churn, revenue) are lagging.
-- Knowing the leading and lagging indicators help in deciding when to pull the plug to an effort. 
-
-
-**Blue Ocean Thinking** — _How can tech create new market space?_
-
-- Don't just support the business in existing markets (Red Ocean).
-- Use technology to find uncontested spaces (Blue Ocean).
-
-> *An interesting video from 2024: [Nvidia is a market maker; not share taker](https://www.youtube.com/watch?v=5ltalI7LBSU)
-
-**ADRs (Architecture Decision Records)** — _How do I prevent "Why did we do this" debates?_
-
-- 20‑minute investment capturing: what we decided, why, and what we traded away.
-- "The palest ink beats the best memory."
+- Knowing the leading and lagging indicators help in deciding when to look for return for an effort
 
 **Non‑Functional Requirements (The Hidden 90%)** — _What actually pays the bills?_
 
@@ -436,10 +451,11 @@ A few of the tools worth knowing in plain terms.
 - Skeptic (does not believe in your view), 
 - Bystander (neither believes or nor disagrees - on the fence).
 
-> * The 50-30-20 split: 
-> * Ensure you give 50% of your attention to stakeholders highly interested in your work
-> * 30% of your attention on skeptics
-> * Gatekeepers and bystanders are most likely to be automatically won over if the majority agrees with you
+**The 50-30-20 split**:
+
+* Ensure you give 50% of your attention to stakeholders highly interested in your work
+* 30% of your attention on skeptics
+* The last 20% of your attention spend on Gatekeepers and bystanders are most likely to be automatically won over if the majority agrees with you.
 
 **Formal vs Informal Power** — _Who really decides?_
 
@@ -449,7 +465,17 @@ A few of the tools worth knowing in plain terms.
 
 ### Some more Thoughts on "Communication"
 
-**Three Communication Failures** — _What kills my message?_
+**U‑PSA Storytelling Framework** — _How do I make a story stick?_
+
+- U (Unusual) → Problem → Solution → Achievement.
+- Without U, PSA is intellectually correct but emotionally inert; U is the ignition.
+
+**Cumulative Unusual** — _How do I create an Aha moment from ordinary facts?_
+
+- 50 pushups/day is boring; 200,000 pushups in 10 years is unforgettable.
+- Temporal or scale compression transforms the ordinary into the unusual.
+
+**Clarity more important than being Complete** — _What kills my message?_
 
 - Completeness over clarity is a mistake: Clarity is a gift to the receiver; completeness is comfort for the sender.
 
@@ -458,15 +484,20 @@ A few of the tools worth knowing in plain terms.
 - Ethos (credibility), Logos (logic), Pathos (emotional stakes).
 - All three must work together; logic alone doesn't move decisions.
 
-**5‑Stage Pitch Architecture** — _How do I structure a persuasive pitch?_
+**Roadmap Translation** — _How do I connect code to the boardroom?_
 
-- Burning Problem → Why Now → Proposed Solution → Trade‑off Map → The Ask.
-- Skipping stages diminishes persuasive effect proportionally.
+- Don't pitch "Kubernetes"; pitch "20% cost reduction."
+- Same work, different frame — audience determines vocabulary.
 
-**The Compelling Close** — _How do I end a pitch?_
+**TED Talk Formula** — _What ratio drives persuasion?_
 
-- Reconnect to the burning problem, restate the ask simply, then stop talking.
-- Silence is where decisions are made.
+- Facts/Data: 25%, Credibility: 10%, Emotion: 65%.
+- Most technical communicators over‑index on facts and under‑index on emotion.
+
+**Power of Metaphors** — _How do I make technical concepts land?_
+
+- How much longer iPad lasts? - "10 hours of video watching" >> "4200 mAh battery."
+- Metaphors translate abstractions into the brain's native format — lived experience.
 
 ## VI. Closing Thoughts
 
