@@ -78,7 +78,7 @@ The structure of the blog:
 
 **How is it used?** Browsers, mobile apps, and services use this model to access backend capabilities without directly accessing their databases or internal logic.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 sequenceDiagram
     participant C as Client
@@ -98,7 +98,7 @@ sequenceDiagram
 
 **How is it used?** The client resolves a domain through DNS, then sends its request to the returned IP address and target port.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     U[User]:::client --> B[Browser]:::client
@@ -120,7 +120,7 @@ flowchart LR
 
 **How is it used?** Architects reduce latency by placing compute, caches, and content closer to users and by minimizing unnecessary network calls.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     U[User in India]:::client -->|Longer round trip| R1[Remote Region]:::compute
@@ -138,7 +138,7 @@ flowchart LR
 
 **How is it used?**: Clients establish a secure TLS connection before exchanging credentials, personal data, API payloads, or other sensitive content.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     C1[Client]:::client -->|HTTP: readable in transit| S1[Server]:::compute
@@ -165,7 +165,7 @@ flowchart TD
 
 **How is it used?** Organizations route outbound traffic through it for access control, filtering, auditing, caching, or controlled internet access.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     C[Client]:::client -->|Outbound request| P[Forward Proxy]:::control
@@ -189,7 +189,7 @@ A VPN serves a related client-side intermediary role, but it is not strictly a f
 
 **How is it used?** It forwards inbound requests while centralizing TLS termination, caching, compression, routing, and other edge concerns.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     C[Client]:::client --> RP[Reverse Proxy]:::control
@@ -209,7 +209,7 @@ flowchart LR
 
 **How is it used?** It performs health checks and routes requests using rules such as round robin, least connections, weights, or request attributes.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     U[Users]:::client --> LB[Load Balancer]:::control
@@ -241,7 +241,7 @@ A Layer 7 load balancer is a specialized reverse proxy focused on distributing r
     * Port
     * Protocol such as TCP or UDP
 
-```mermaid
+```{mermaid}
 flowchart LR
     C[Client] -->|IP + Port| L4[Layer 4 Load Balancer]
     L4 --> S1[Server 1]
@@ -263,7 +263,7 @@ Example: Traffic arriving on port 443 is distributed across 2 servers.
 
 It can route different requests to different backend services.
 
-```mermaid
+```{mermaid}
 flowchart LR
     C[Client] --> L7[Layer 7 Load Balancer]
     L7 -->|/users| U[User Service]
@@ -288,7 +288,7 @@ Example: /orders goes to the Order Service, while /images goes to the Image Serv
 
 **How is it used?** It routes requests to services and centralizes cross-cutting concerns such as authentication, authorization, rate limiting, observability, and protocol transformation.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     C[Web or Mobile Client]:::client --> G[API Gateway]:::control
@@ -320,7 +320,7 @@ flowchart TD
 
 #### Standard Request-Response
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 sequenceDiagram
     participant C as Client
@@ -332,7 +332,7 @@ sequenceDiagram
 
 #### WebSocket
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 sequenceDiagram
     participant C as Client
@@ -346,7 +346,7 @@ sequenceDiagram
 
 #### Server-Sent Events
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 sequenceDiagram
     participant C as Client
@@ -366,7 +366,7 @@ sequenceDiagram
 
 **How is it used?** REST models operations around resources and HTTP semantics. GraphQL resolves client-selected fields, including related data, through one query endpoint.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TB
     subgraph REST[REST]
@@ -411,7 +411,7 @@ query {
 
 **How is it used?** Polling is scheduled by the consumer; webhook delivery is initiated by the event producer and normally includes retries and duplicate protection.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 sequenceDiagram
     participant C as Consumer
@@ -438,7 +438,7 @@ sequenceDiagram
 
 **How is it used?** A caller sends a unique idempotency key. The server stores the first result and returns it for retries instead of applying the side effect again.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 sequenceDiagram
     participant C as Client
@@ -469,7 +469,7 @@ sequenceDiagram
 
 **How is it used?** The active node handles traffic while a passive node remains synchronized and ready for failover; capacity is increased mainly by upgrading the nodes.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     U[Traffic]:::client --> A[Active Server]:::compute
@@ -504,7 +504,7 @@ flowchart LR
 
 **How is it used?** A load balancer sends traffic to healthy nodes. Stateless services scale most easily; shared state is externalized to a database, cache, or storage service.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     U[Traffic]:::client --> LB[Load Balancer]:::control
@@ -531,7 +531,7 @@ flowchart TD
 
 **How is it used?** Teams take simple vertical gains while feasible, then distribute compute and externalize state when one machine becomes limiting or risky.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     A[Single Instance]:::compute --> B{Capacity bottleneck?}:::control
@@ -563,7 +563,7 @@ flowchart TD
 
 **How is it used?** Changes flow from the primary to replicas, improving read capacity and providing candidates for failover, with possible replication lag.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     W[Writes]:::client --> P[(Primary)]:::data
@@ -584,7 +584,7 @@ flowchart TD
 
 **How is it used?** A shard key and routing rule decide where each record lives. Good keys distribute load; poor keys create hot shards and difficult cross-shard queries.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     A[Application]:::compute --> R[Shard Router]:::control
@@ -605,7 +605,7 @@ flowchart TD
 
 **How is it used?** Frequently accessed, sensitive, or independently managed columns are separated so each workflow reads only the data it needs.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     U[(Wide Users Table)]:::data --> P{Split by access context}:::control
@@ -625,7 +625,7 @@ flowchart TD
 
 **How is it used?** Transactional models usually begin normalized; read-heavy paths may add denormalized views, projections, or documents maintained from source data.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     subgraph N[Normalized]
@@ -650,7 +650,7 @@ flowchart LR
 
 **How is it used?** Select a database from the workload's consistency, transaction, query, schema, and scaling requirements rather than applying one technology everywhere.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     S[Choose a Database]:::control --> Q1{Relational queries or<br/>multi-record transactions?}:::control
@@ -671,7 +671,7 @@ flowchart TD
 
 #### What do I mean by SQL DB "can coexist with" a NoSQL DB?
 
-```mermaid
+```{mermaid}
 flowchart LR
     APP[E-commerce Application]:::compute
 
@@ -696,7 +696,7 @@ An E-Commerce System can have SQL for transactional data, but a key-value store 
 
 > “I know the key. Give me its value.”
 
-```mermaid
+```{mermaid}
 flowchart LR
     K["Key<br/>product:P101"] --> V["Value<br/>Product data for P101"]
 ```
@@ -705,7 +705,7 @@ flowchart LR
 
 > “Find documents whose internal fields match these conditions.”
 
-```mermaid
+```{mermaid}
 flowchart LR
     Q["Query document fields<br/>category + model + price"] --> D["(Document Store)"]
     D --> P1[Matching Product Document]
@@ -756,7 +756,7 @@ A key-value store retrieves an opaque value by key; a document store understands
 
 A B-tree is a **balanced**, sorted tree structure that lets the database progressively narrow its search until it reaches the matching row location. It supports ordered values and comparisons such as =, , >, <=, and >=
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     Q["Query<br/>WHERE email = 'user@example.com'"]:::client
@@ -794,7 +794,7 @@ A table scan reads the book page by page; a B-tree index uses the sorted index a
 
 **How is it used?** Applications store an object under a key and keep its metadata or reference in a database. Clients commonly access objects through controlled HTTP endpoints or signed links.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     A[Application]:::compute --> O[(Object Storage)]:::data
@@ -821,7 +821,7 @@ flowchart TD
 
 **How is it used?** The application checks the cache first. On a miss, it reads the database, returns the value, and places a copy in the cache with an expiry policy.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 sequenceDiagram
     participant A as Application
@@ -846,7 +846,7 @@ sequenceDiagram
 
 **How is it used?** The edge serves cached content immediately. On a miss, it fetches from the origin, caches according to policy, and serves the response.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     U[User]:::client --> E[Nearby CDN Edge]:::control
@@ -874,7 +874,7 @@ flowchart LR
 
 **How is it used?** A CP design may reject or delay some requests to avoid inconsistent answers. An AP design continues responding but may temporarily return stale or conflicting data.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     CAP[CAP Theorem]:::control --> C[Consistency<br/>reads reflect the agreed state]:::data
@@ -897,7 +897,7 @@ flowchart TD
 
 **How is it used?** Producers enqueue work; consumers process it independently. Retries handle transient failures, while repeatedly failing messages move to a dead-letter queue.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     P[Producer]:::compute --> Q[(Message Queue)]:::control
@@ -921,7 +921,7 @@ flowchart LR
 
 **How is it used?** A limiter tracks usage by identity, token, IP, tenant, or route and either allows, delays, or rejects requests when the policy is exceeded.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     C[Client]:::client --> R[Rate Limiter<br/>Token Bucket or Sliding Window]:::control
@@ -943,7 +943,7 @@ flowchart LR
 
 **How is it used?** A monolith reduces distributed-system overhead. Microservices allow independent deployment and scaling but introduce network, observability, and data-consistency complexity.
 
-```mermaid
+```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TB
     subgraph M[Monolith]
