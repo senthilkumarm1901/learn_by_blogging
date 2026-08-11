@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2026-08-11">
+<meta name="description" content="Explaining the building blocks of Compositional System Design that Systems Thinkers need to know.">
+
+<title>How to Think Like a Software Architect: Part 2 - The Systems Thinker Perspective – Learn by Blogging</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-67daaa7896f33cc2219aa98eaadded8d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">How to Think Like a Software Architect: Part 2 - The Systems Thinker Perspective</h1>
+                  <div>
+        <div class="description">
+          Explaining the building blocks of <code>Compositional System Design</code> that Systems Thinkers need to know.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Architecture</div>
+                <div class="quarto-category">Architect/IT</div>
+                <div class="quarto-category">System Design</div>
+                <div class="quarto-category">Systems Thinking</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 11, 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-building-blocks-of-compositional-system-design---at-a-glance" id="toc-the-building-blocks-of-compositional-system-design---at-a-glance" class="nav-link active" data-scroll-target="#the-building-blocks-of-compositional-system-design---at-a-glance">📌 The Building Blocks of Compositional System Design - At A Glance</a></li>
+  <li><a href="#fundamental-communication-connectivity" id="toc-fundamental-communication-connectivity" class="nav-link" data-scroll-target="#fundamental-communication-connectivity">1. Fundamental Communication &amp; Connectivity</a>
+  <ul class="collapse">
+  <li><a href="#client-server-architecture" id="toc-client-server-architecture" class="nav-link" data-scroll-target="#client-server-architecture">1.1 Client-Server Architecture</a></li>
+  <li><a href="#how-a-client-finds-a-server-dns-and-ip-address" id="toc-how-a-client-finds-a-server-dns-and-ip-address" class="nav-link" data-scroll-target="#how-a-client-finds-a-server-dns-and-ip-address">1.2 How a Client Finds a Server: DNS and IP Address</a></li>
+  <li><a href="#why-distance-matters-latency" id="toc-why-distance-matters-latency" class="nav-link" data-scroll-target="#why-distance-matters-latency">1.3 Why Distance Matters: Latency</a></li>
+  <li><a href="#security-in-transit-http-vs-https" id="toc-security-in-transit-http-vs-https" class="nav-link" data-scroll-target="#security-in-transit-http-vs-https">1.4 Security in Transit: HTTP vs HTTPS</a></li>
+  </ul></li>
+  <li><a href="#traffic-management-proxies" id="toc-traffic-management-proxies" class="nav-link" data-scroll-target="#traffic-management-proxies">2. Traffic Management &amp; Proxies</a>
+  <ul class="collapse">
+  <li><a href="#want-to-hide-the-client-forward-proxy" id="toc-want-to-hide-the-client-forward-proxy" class="nav-link" data-scroll-target="#want-to-hide-the-client-forward-proxy">2.1 Want to Hide the Client? Forward Proxy</a></li>
+  <li><a href="#want-to-hide-the-server-reverse-proxy" id="toc-want-to-hide-the-server-reverse-proxy" class="nav-link" data-scroll-target="#want-to-hide-the-server-reverse-proxy">2.2 Want to Hide the Server? Reverse Proxy</a></li>
+  <li><a href="#want-to-distribute-traffic-load-balancer" id="toc-want-to-distribute-traffic-load-balancer" class="nav-link" data-scroll-target="#want-to-distribute-traffic-load-balancer">2.3 Want to Distribute Traffic? Load Balancer</a></li>
+  <li><a href="#the-traffic-cop-at-the-edge-of-backend-microservices-api-gateway" id="toc-the-traffic-cop-at-the-edge-of-backend-microservices-api-gateway" class="nav-link" data-scroll-target="#the-traffic-cop-at-the-edge-of-backend-microservices-api-gateway">2.4 The Traffic Cop at the Edge of Backend Microservices: API Gateway</a></li>
+  </ul></li>
+  <li><a href="#api-design-patterns" id="toc-api-design-patterns" class="nav-link" data-scroll-target="#api-design-patterns">3. API Design &amp; Patterns</a>
+  <ul class="collapse">
+  <li><a href="#standard-request-response-vs-websocket-vs-sse" id="toc-standard-request-response-vs-websocket-vs-sse" class="nav-link" data-scroll-target="#standard-request-response-vs-websocket-vs-sse">3.1 Standard Request-Response vs WebSocket vs SSE</a></li>
+  <li><a href="#api-designs-rest-vs-graphql" id="toc-api-designs-rest-vs-graphql" class="nav-link" data-scroll-target="#api-designs-rest-vs-graphql">3.2 API Designs: REST vs GraphQL</a></li>
+  <li><a href="#client-server-event-triggers-webhooks-vs-polling" id="toc-client-server-event-triggers-webhooks-vs-polling" class="nav-link" data-scroll-target="#client-server-event-triggers-webhooks-vs-polling">3.3 Client ↔︎ Server Event Triggers: Webhooks vs Polling</a></li>
+  <li><a href="#idempotency" id="toc-idempotency" class="nav-link" data-scroll-target="#idempotency">3.4 Idempotency</a></li>
+  </ul></li>
+  <li><a href="#scaling-strategies" id="toc-scaling-strategies" class="nav-link" data-scroll-target="#scaling-strategies">4. Scaling Strategies</a>
+  <ul class="collapse">
+  <li><a href="#vertical-scaling-for-active-passive-systems" id="toc-vertical-scaling-for-active-passive-systems" class="nav-link" data-scroll-target="#vertical-scaling-for-active-passive-systems">4.1 Vertical Scaling: For Active-Passive Systems</a></li>
+  <li><a href="#horizontal-scaling-for-active-active-systems" id="toc-horizontal-scaling-for-active-active-systems" class="nav-link" data-scroll-target="#horizontal-scaling-for-active-active-systems">4.2 Horizontal Scaling: For Active-Active Systems</a></li>
+  <li><a href="#should-systems-scale-up-first-then-scale-out" id="toc-should-systems-scale-up-first-then-scale-out" class="nav-link" data-scroll-target="#should-systems-scale-up-first-then-scale-out">4.3 Should Systems Scale Up First, Then Scale Out?</a></li>
+  </ul></li>
+  <li><a href="#database-storage" id="toc-database-storage" class="nav-link" data-scroll-target="#database-storage">5. Database &amp; Storage</a>
+  <ul class="collapse">
+  <li><a href="#replication-primary-and-read-replicas" id="toc-replication-primary-and-read-replicas" class="nav-link" data-scroll-target="#replication-primary-and-read-replicas">5.1 Replication: Primary and Read Replicas</a></li>
+  <li><a href="#sharding-horizontal-partitioning" id="toc-sharding-horizontal-partitioning" class="nav-link" data-scroll-target="#sharding-horizontal-partitioning">5.2 Sharding: Horizontal Partitioning</a></li>
+  <li><a href="#vertical-partitioning" id="toc-vertical-partitioning" class="nav-link" data-scroll-target="#vertical-partitioning">5.3 Vertical Partitioning</a></li>
+  <li><a href="#normalization-vs-denormalization" id="toc-normalization-vs-denormalization" class="nav-link" data-scroll-target="#normalization-vs-denormalization">5.4 Normalization vs Denormalization</a></li>
+  <li><a href="#sql-vs-nosql-database-decisioning" id="toc-sql-vs-nosql-database-decisioning" class="nav-link" data-scroll-target="#sql-vs-nosql-database-decisioning">5.5 SQL vs NoSQL Database Decisioning</a></li>
+  <li><a href="#database-indexing" id="toc-database-indexing" class="nav-link" data-scroll-target="#database-indexing">5.6 Database Indexing</a></li>
+  <li><a href="#blob-storage" id="toc-blob-storage" class="nav-link" data-scroll-target="#blob-storage">5.7 Blob Storage</a></li>
+  </ul></li>
+  <li><a href="#performance" id="toc-performance" class="nav-link" data-scroll-target="#performance">6. Performance</a>
+  <ul class="collapse">
+  <li><a href="#cache-aside-pattern" id="toc-cache-aside-pattern" class="nav-link" data-scroll-target="#cache-aside-pattern">6.1 Cache-Aside Pattern</a></li>
+  <li><a href="#edge-caching-in-a-content-delivery-network" id="toc-edge-caching-in-a-content-delivery-network" class="nav-link" data-scroll-target="#edge-caching-in-a-content-delivery-network">6.2 Edge Caching in a Content Delivery Network</a></li>
+  </ul></li>
+  <li><a href="#advanced-architecture-concepts" id="toc-advanced-architecture-concepts" class="nav-link" data-scroll-target="#advanced-architecture-concepts">7. Advanced Architecture Concepts</a>
+  <ul class="collapse">
+  <li><a href="#cap-theorem" id="toc-cap-theorem" class="nav-link" data-scroll-target="#cap-theorem">7.1 CAP Theorem</a></li>
+  <li><a href="#message-queues" id="toc-message-queues" class="nav-link" data-scroll-target="#message-queues">7.2 Message Queues</a></li>
+  <li><a href="#rate-limiting" id="toc-rate-limiting" class="nav-link" data-scroll-target="#rate-limiting">7.3 Rate Limiting</a></li>
+  <li><a href="#monolith-vs-microservices" id="toc-monolith-vs-microservices" class="nav-link" data-scroll-target="#monolith-vs-microservices">7.4 Monolith vs Microservices</a></li>
+  </ul></li>
+  <li><a href="#closing-thought" id="toc-closing-thought" class="nav-link" data-scroll-target="#closing-thought">Closing Thought</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<blockquote class="blockquote">
+<p>This is a concise guide to the building blocks behind scalable, reliable systems. The central idea is simple: a large system is composed from smaller patterns or blocks, which we are going to see in 7 sections.</p>
+</blockquote>
+<p>This learning blog is a structured consolidation of the learnings from the following sources * <strong>30 building blocks</strong> of System Design discussed in the video: ▶️ Watch: <a href="https://www.youtube.com/watch?v=s9Qh9fWeOAk">System Design was HARD until I Learned these 30 Concepts</a><br>
+* <strong>Companion reading:</strong> <a href="https://algomaster.io/learn/system-design/top-30-system-design-concepts">Top 30 System Design Concepts (AlgoMaster)</a> * ▶️ Motivational Watch for Systems Thinking: <a href="https://www.youtube.com/watch?v=t0GiTyz4syY">Lenny’s Podcast featuring CXO of Netflix on - Why Netflix is betting on systems thinkers in the AI era</a></p>
+<section id="the-building-blocks-of-compositional-system-design---at-a-glance" class="level2">
+<h2 class="anchored" data-anchor-id="the-building-blocks-of-compositional-system-design---at-a-glance">📌 The Building Blocks of Compositional System Design - At A Glance</h2>
+<p>The structure of the blog:</p>
+<ol type="1">
+<li>Fundamental Communication &amp; Connectivity: <em>How devices communicate with each other</em>
+<ul>
+<li>1.1 Client Server Architecture</li>
+<li>1.2 How a Client finds a Server: DNS and IP Address</li>
+<li>1.3 Why Distance Matters: Latency</li>
+<li>1.4 Security in Transit: HTTP vs HTTPS</li>
+</ul></li>
+<li>Traffic Management &amp; Proxies: <em>The intermediaries that sit between clients and servers</em>
+<ul>
+<li>2.1 Want to hide the Client?: Forward Proxy</li>
+<li>2.2 Want to hide the Server?: Reverse Proxy</li>
+<li>2.3 Want to distribute traffic?: Load Balancer</li>
+<li>2.4: The Traffic Cop at the edge of your Backend Microservices: API Gateway</li>
+</ul></li>
+<li>API Design &amp; Patterns: <em>How applications exchange data</em>
+<ul>
+<li>3.1 Standard Request-Response vs Websocket vs SSE<br>
+</li>
+<li>3.2 API Designs: REST vs GraphQL</li>
+<li>3.3 Client ↔︎ Server Event Trigger Mechanisms: Push (Webhooks) vs Pull (Polling)</li>
+<li>3.4 Idempotency</li>
+</ul></li>
+<li>Scaling Strategies: <em>How to handle more load</em>
+<ul>
+<li>4.1 Vertical Scaling: For Active-Passive Systems</li>
+<li>4.2 Horizontal Scaling: For Active-Active Systems</li>
+<li>4.3 Should systems scale UP first, then scale OUT?: The Common Evolution to Scaling</li>
+</ul></li>
+<li>Database &amp; Storage: <em>Where does the application data persist</em>
+<ul>
+<li>5.1 Replication (Primary + Read Replicas)</li>
+<li>5.2 Sharding (Horizontal Partitioning)</li>
+<li>5.3 Vertical Partioning</li>
+<li>5.4 Normalization - Optimized for Writing Speed; Denormalization - Optimized for Reading Speed</li>
+<li>5.5 SQL vs NoSQL DB Decisioning</li>
+<li>5.6 Database Indexing</li>
+<li>5.7 Blob Storage</li>
+</ul></li>
+<li>Performance: <em>Speed and Content Distribution</em>
+<ul>
+<li>6.1 Cache-aside Pattern</li>
+<li>6.2 Edge Caching in Content Delivery Network</li>
+</ul></li>
+<li>Advanced Architecture Concepts: <em>Other Key Concepts</em>
+<ul>
+<li>7.1 CAP Theorem</li>
+<li>7.2 Message Queues</li>
+<li>7.3 Rate Limiting</li>
+<li>7.4 Monolith vs Microservices</li>
+</ul></li>
+</ol>
+<hr>
+</section>
+<section id="fundamental-communication-connectivity" class="level2">
+<h2 class="anchored" data-anchor-id="fundamental-communication-connectivity">1. Fundamental Communication &amp; Connectivity</h2>
+<p><em>How devices communicate with each other.</em></p>
+<section id="client-server-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="client-server-architecture">1.1 Client-Server Architecture</h3>
+<p><strong>What it is:</strong> A client initiates a request, and a server processes it and returns a response. The server may apply business logic or interact with storage.</p>
+<p><strong>How is it used?</strong> Browsers, mobile apps, and services use this model to access backend capabilities without directly accessing their databases or internal logic.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    participant DB as Database
+    C-&gt;&gt;S: HTTP request
+    S-&gt;&gt;DB: Read or write
+    DB--&gt;&gt;S: Result
+    S--&gt;&gt;C: HTTP response
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it for nearly every web, mobile, or service-to-service application.</p>
+</section>
+<section id="how-a-client-finds-a-server-dns-and-ip-address" class="level3">
+<h3 class="anchored" data-anchor-id="how-a-client-finds-a-server-dns-and-ip-address">1.2 How a Client Finds a Server: DNS and IP Address</h3>
+<p><strong>What it is:</strong> An IP address identifies a network destination. DNS translates a human-readable domain name into the IP address a client can contact.</p>
+<p><strong>How is it used?</strong> The client resolves a domain through DNS, then sends its request to the returned IP address and target port.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    U[User]:::client --&gt; B[Browser]:::client
+    B --&gt;|Resolve example.com| DNS[DNS Resolver]:::control
+    DNS --&gt;|Return server IP| B
+    B --&gt;|Request to IP and port| S[Server]:::compute
+    S --&gt;|Response| B
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> DNS and IP addressing underpin every networked system, including public applications, private networks, service discovery, and failover routing.</p>
+</section>
+<section id="why-distance-matters-latency" class="level3">
+<h3 class="anchored" data-anchor-id="why-distance-matters-latency">1.3 Why Distance Matters: Latency</h3>
+<p><strong>What it is:</strong> Latency is the time taken for data to travel, wait, be processed, and return. Physical distance and network hops contribute directly to it.</p>
+<p><strong>How is it used?</strong> Architects reduce latency by placing compute, caches, and content closer to users and by minimizing unnecessary network calls.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    U[User in India]:::client --&gt;|Longer round trip| R1[Remote Region]:::compute
+    U --&gt;|Shorter round trip| R2[Nearby Region or Edge]:::compute
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Treat latency as a key design input for interactive, real-time, geographically distributed, or dependency-heavy systems.</p>
+</section>
+<section id="security-in-transit-http-vs-https" class="level3">
+<h3 class="anchored" data-anchor-id="security-in-transit-http-vs-https">1.4 Security in Transit: HTTP vs HTTPS</h3>
+<p><strong>What it is</strong>: HTTP carries web requests and responses. HTTPS adds Transport Layer Security (TLS) encryption, server authentication, and integrity protection while data travels across the network.</p>
+<p><strong>How is it used?</strong>: Clients establish a secure TLS connection before exchanging credentials, personal data, API payloads, or other sensitive content.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    C1[Client]:::client --&gt;|HTTP: readable in transit| S1[Server]:::compute
+    C2[Client]:::client --&gt;|HTTPS: TLS-encrypted| S2[Server]:::compute
+    A[Network Observer]:::risk -.-&gt;|Can inspect plaintext| C1
+    A -.-&gt;|Cannot read encrypted payload| C2
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef risk fill:#FFEBEE,stroke:#E53935,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use HTTPS for all production web and API communication, including internal service traffic where confidentiality or authenticity matters.</p>
+<hr>
+</section>
+</section>
+<section id="traffic-management-proxies" class="level2">
+<h2 class="anchored" data-anchor-id="traffic-management-proxies">2. Traffic Management &amp; Proxies</h2>
+<p><em>The intermediaries that sit between clients and servers.</em></p>
+<section id="want-to-hide-the-client-forward-proxy" class="level3">
+<h3 class="anchored" data-anchor-id="want-to-hide-the-client-forward-proxy">2.1 Want to Hide the Client? Forward Proxy</h3>
+<p><strong>What it is:</strong> A forward proxy acts on behalf of clients. Destination servers see the proxy rather than each original client.</p>
+<p><strong>How is it used?</strong> Organizations route outbound traffic through it for access control, filtering, auditing, caching, or controlled internet access.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    C[Client]:::client --&gt;|Outbound request| P[Forward Proxy]:::control
+    P --&gt;|Request on client's behalf| I[Internet Service]:::compute
+    I --&gt;|Response| P --&gt; C
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it when outbound client traffic needs centralized privacy, policy enforcement, inspection, or routing.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A VPN serves a related client-side intermediary role, but it is not strictly a forward proxy because it creates an encrypted network tunnel rather than proxying application requests.</p>
+</div>
+</div>
+</section>
+<section id="want-to-hide-the-server-reverse-proxy" class="level3">
+<h3 class="anchored" data-anchor-id="want-to-hide-the-server-reverse-proxy">2.2 Want to Hide the Server? Reverse Proxy</h3>
+<p><strong>What it is:</strong> A reverse proxy is the public-facing intermediary for one or more backend servers. Clients interact with the proxy instead of knowing server details.</p>
+<p><strong>How is it used?</strong> It forwards inbound requests while centralizing TLS termination, caching, compression, routing, and other edge concerns.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    C[Client]:::client --&gt; RP[Reverse Proxy]:::control
+    RP --&gt; S1[Backend A]:::compute
+    RP --&gt; S2[Backend B]:::compute
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it to expose backend applications through one controlled, secure, and stable endpoint.</p>
+</section>
+<section id="want-to-distribute-traffic-load-balancer" class="level3">
+<h3 class="anchored" data-anchor-id="want-to-distribute-traffic-load-balancer">2.3 Want to Distribute Traffic? Load Balancer</h3>
+<p><strong>What it is:</strong> A load balancer distributes incoming traffic across healthy server instances so no single instance handles all requests.</p>
+<p><strong>How is it used?</strong> It performs health checks and routes requests using rules such as round robin, least connections, weights, or request attributes.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    U[Users]:::client --&gt; LB[Load Balancer]:::control
+    LB --&gt; S1[Server 1]:::compute
+    LB --&gt; S2[Server 2]:::compute
+    LB --&gt; S3[Server 3]:::compute
+    S2 -. Health check fails .-&gt; LB
+    LB -. Stop routing .-&gt; S2
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A Layer 7 load balancer is a specialized reverse proxy focused on distributing requests across healthy backend instances; not every reverse proxy performs load balancing, and not every load balancer operates as a reverse proxy.</p>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it whenever multiple active instances share traffic or availability must survive an instance failure.</p>
+<section id="layer-4-load-balancer-nlb-vs-layer-7-load-balancer-alb" class="level4">
+<h4 class="anchored" data-anchor-id="layer-4-load-balancer-nlb-vs-layer-7-load-balancer-alb">Layer 4 Load Balancer (NLB) vs Layer 7 Load Balancer (ALB):</h4>
+<ul>
+<li>Layer 4 routes the connection; Layer 7 understands the request.</li>
+</ul>
+<p><strong>Layer 4: “Where should this connection go?”</strong></p>
+<ul>
+<li>Layer 4 looks only at network-level information:
+<ul>
+<li>Source/destination IP address</li>
+<li>Port</li>
+<li>Protocol such as TCP or UDP</li>
+</ul></li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    C[Client] --&gt;|IP + Port| L4[Layer 4 Load Balancer]
+    L4 --&gt; S1[Server 1]
+    L4 --&gt; S2[Server 2]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Example: Traffic arriving on port 443 is distributed across 2 servers.</p>
+<p><strong>Layer 7: “What is this request asking for?”</strong></p>
+<ul>
+<li>Layer 7 understands application-level information, especially HTTP:
+<ul>
+<li>URL path, such as /orders or /images</li>
+<li>Hostname</li>
+<li>HTTP headers</li>
+<li>Cookies</li>
+<li>Request method, such as GET or POST</li>
+</ul></li>
+</ul>
+<p>It can route different requests to different backend services.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    C[Client] --&gt; L7[Layer 7 Load Balancer]
+    L7 --&gt;|/users| U[User Service]
+    L7 --&gt;|/orders| O[Order Service]
+    L7 --&gt;|/images| I[Image Service]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Example: /orders goes to the Order Service, while /images goes to the Image Service.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Analogy</strong></p>
+<ul>
+<li><p>Layer 4 LB: <em>A building security guard checks the address and entrance, then directs you to an available lift without opening your letter.</em></p></li>
+<li><p>Layer 7 LB: <em>A receptionist reads the purpose of your visit and sends you to the correct department.</em></p></li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="the-traffic-cop-at-the-edge-of-backend-microservices-api-gateway" class="level3">
+<h3 class="anchored" data-anchor-id="the-traffic-cop-at-the-edge-of-backend-microservices-api-gateway">2.4 The Traffic Cop at the Edge of Backend Microservices: API Gateway</h3>
+<p><strong>What it is:</strong> An API gateway is the single front door to backend APIs. It combines reverse-proxy routing with API-specific controls.</p>
+<p><strong>How is it used?</strong> It routes requests to services and centralizes cross-cutting concerns such as authentication, authorization, rate limiting, observability, and protocol transformation.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    C[Web or Mobile Client]:::client --&gt; G[API Gateway]:::control
+    G --&gt; U[User Service]:::compute
+    G --&gt; O[Order Service]:::compute
+    G --&gt; P[Payment Service]:::compute
+    G -.-&gt; A[Auth and Authorization]:::control
+    G -.-&gt; R[Rate Limiting]:::control
+    G -.-&gt; L[Logging and Tracing]:::control
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it when multiple APIs need one governed entry point, especially in microservice or multi-client architectures.</p>
+<hr>
+</section>
+</section>
+<section id="api-design-patterns" class="level2">
+<h2 class="anchored" data-anchor-id="api-design-patterns">3. API Design &amp; Patterns</h2>
+<p><em>How applications exchange data.</em></p>
+<section id="standard-request-response-vs-websocket-vs-sse" class="level3">
+<h3 class="anchored" data-anchor-id="standard-request-response-vs-websocket-vs-sse">3.1 Standard Request-Response vs WebSocket vs SSE</h3>
+<p><strong>What it is:</strong> These are three communication models: short-lived client-initiated exchanges, persistent bidirectional messaging, and persistent server-to-client streaming.</p>
+<p><strong>How is it used?</strong> Choose based on who must initiate updates, whether two-way messaging is needed, and whether the connection should remain open.</p>
+<section id="standard-request-response" class="level4">
+<h4 class="anchored" data-anchor-id="standard-request-response">Standard Request-Response</h4>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C-&gt;&gt;S: HTTP request
+    S--&gt;&gt;C: HTTP response
+    Note over C,S: A new request is needed for new data
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="websocket" class="level4">
+<h4 class="anchored" data-anchor-id="websocket">WebSocket</h4>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C-&gt;&gt;S: HTTP upgrade request
+    S--&gt;&gt;C: 101 Switching Protocols
+    Note over C,S: Persistent bidirectional connection
+    C-&gt;&gt;S: Client message
+    S--&gt;&gt;C: Server message
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="server-sent-events" class="level4">
+<h4 class="anchored" data-anchor-id="server-sent-events">Server-Sent Events</h4>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C-&gt;&gt;S: GET stream
+    S--&gt;&gt;C: Event stream remains open
+    S--&gt;&gt;C: Event 1
+    S--&gt;&gt;C: Event 2
+    Note over C,S: Persistent one-way server push
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use request-response for ordinary APIs, WebSocket for continuous two-way interaction, and SSE for HTTP-native server-to-client feeds such as notifications or progress updates.</p>
+</section>
+</section>
+<section id="api-designs-rest-vs-graphql" class="level3">
+<h3 class="anchored" data-anchor-id="api-designs-rest-vs-graphql">3.2 API Designs: REST vs GraphQL</h3>
+<p><strong>What it is:</strong> REST exposes resources through multiple HTTP endpoints. GraphQL exposes a typed query interface through which clients request a specific response shape.</p>
+<p><strong>How is it used?</strong> REST models operations around resources and HTTP semantics. GraphQL resolves client-selected fields, including related data, through one query endpoint.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TB
+    subgraph REST[REST]
+        RC[Client]:::client --&gt;|GET users/1| RS[REST API]:::compute
+        RC --&gt;|GET users/1/orders| RS
+    end
+    subgraph GQL[GraphQL]
+        GC[Client]:::client --&gt;|One query with selected fields| GS[GraphQL API]:::compute
+    end
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use REST for clear resource-oriented APIs and straightforward HTTP behavior. Use GraphQL when clients need varied, connected, or precisely shaped data.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An example system where GraphQL is used: Facebook and Instagram</p>
+</div>
+</div>
+<pre><code>query {
+  feed {
+    posts {
+      author {
+        name
+        avatar
+      }
+      content
+      comments(first: 3) {
+        text
+      }
+    }
+  }
+}</code></pre>
+</section>
+<section id="client-server-event-triggers-webhooks-vs-polling" class="level3">
+<h3 class="anchored" data-anchor-id="client-server-event-triggers-webhooks-vs-polling">3.3 Client ↔︎ Server Event Triggers: Webhooks vs Polling</h3>
+<p><strong>What it is:</strong> Polling repeatedly asks whether something changed. A webhook sends an HTTP callback when an event occurs.</p>
+<p><strong>How is it used?</strong> Polling is scheduled by the consumer; webhook delivery is initiated by the event producer and normally includes retries and duplicate protection.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant C as Consumer
+    participant P as Provider
+    rect rgb(245, 245, 245)
+        Note over C,P: Polling
+        C-&gt;&gt;P: Anything new?
+        P--&gt;&gt;C: No
+        C-&gt;&gt;P: Anything new?
+        P--&gt;&gt;C: New event
+    end
+    rect rgb(227, 242, 253)
+        Note over C,P: Webhook
+        P-&gt;&gt;C: POST event to callback URL
+        C--&gt;&gt;P: 200 OK
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use polling when the provider cannot call back or the consumer controls timing. Use webhooks for efficient, near-real-time event notification between reachable services.</p>
+</section>
+<section id="idempotency" class="level3">
+<h3 class="anchored" data-anchor-id="idempotency">3.4 Idempotency</h3>
+<p><strong>What it is:</strong> An operation is idempotent when repeating it has the same intended effect as performing it once.</p>
+<p><strong>How is it used?</strong> A caller sends a unique idempotency key. The server stores the first result and returns it for retries instead of applying the side effect again.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    participant K as Key Store
+    C-&gt;&gt;S: Create payment, key 101
+    S-&gt;&gt;K: Check key 101
+    K--&gt;&gt;S: Not found
+    S-&gt;&gt;K: Store key and result
+    S--&gt;&gt;C: Payment result
+    C-&gt;&gt;S: Retry with key 101
+    S-&gt;&gt;K: Check key 101
+    K--&gt;&gt;S: Existing result
+    S--&gt;&gt;C: Same result, no duplicate charge
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it for payments, order creation, webhook handling, queue consumers, and any state-changing operation that may be retried.</p>
+<hr>
+</section>
+</section>
+<section id="scaling-strategies" class="level2">
+<h2 class="anchored" data-anchor-id="scaling-strategies">4. Scaling Strategies</h2>
+<p><em>How systems handle more load.</em></p>
+<section id="vertical-scaling-for-active-passive-systems" class="level3">
+<h3 class="anchored" data-anchor-id="vertical-scaling-for-active-passive-systems">4.1 Vertical Scaling: For Active-Passive Systems</h3>
+<p><strong>What it is:</strong> Vertical scaling increases the CPU, memory, storage, or network capacity of a machine. In active-passive setups, a similarly provisioned standby can take over after failure.</p>
+<p><strong>How is it used?</strong> The active node handles traffic while a passive node remains synchronized and ready for failover; capacity is increased mainly by upgrading the nodes.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    U[Traffic]:::client --&gt; A[Active Server]:::compute
+    A --&gt;|Replicate state| P[Passive Standby]:::data
+    A --&gt;|Scale up| B[More CPU, RAM or I/O]:::compute
+    A -. Failure .-&gt; P
+    P -. Promote to active .-&gt; U
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it for quick capacity gains or components that are difficult to distribute, while recognizing hardware limits and failover requirements.</p>
+<section id="amazon-rds-multi-az-with-one-standby-is-a-real-world-example-of-active-passive-systems" class="level4">
+<h4 class="anchored" data-anchor-id="amazon-rds-multi-az-with-one-standby-is-a-real-world-example-of-active-passive-systems">Amazon RDS Multi-AZ with one standby is a real-world example of Active-Passive Systems:</h4>
+<ul>
+<li>The primary database serves application traffic.</li>
+<li>A standby database is synchronously maintained in another Availability Zone.</li>
+<li>The standby does not serve read traffic in this configuration.</li>
+<li>If the primary fails, RDS promotes the standby</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Vertical scaling and active-passive are separate concepts.</li>
+<li>Active-passive describes availability and failover, while vertical scaling describes adding capacity to one machine.</li>
+<li>They can be combined, but one does not imply the other.</li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="horizontal-scaling-for-active-active-systems" class="level3">
+<h3 class="anchored" data-anchor-id="horizontal-scaling-for-active-active-systems">4.2 Horizontal Scaling: For Active-Active Systems</h3>
+<p><strong>What it is:</strong> Horizontal scaling adds more active instances and distributes work among them.</p>
+<p><strong>How is it used?</strong> A load balancer sends traffic to healthy nodes. Stateless services scale most easily; shared state is externalized to a database, cache, or storage service.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    U[Traffic]:::client --&gt; LB[Load Balancer]:::control
+    LB --&gt; A1[Active Instance 1]:::compute
+    LB --&gt; A2[Active Instance 2]:::compute
+    LB --&gt; A3[Active Instance 3]:::compute
+    A1 --&gt; S[(Shared State)]:::data
+    A2 --&gt; S
+    A3 --&gt; S
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it for growing traffic, active-active availability, elastic workloads, and services that can run safely across many instances.</p>
+</section>
+<section id="should-systems-scale-up-first-then-scale-out" class="level3">
+<h3 class="anchored" data-anchor-id="should-systems-scale-up-first-then-scale-out">4.3 Should Systems Scale Up First, Then Scale Out?</h3>
+<p><strong>What it is:</strong> Scaling up first and scaling out later is a common evolution, not a universal rule. The right path depends on cost, limits, availability, and state management.</p>
+<p><strong>How is it used?</strong> Teams take simple vertical gains while feasible, then distribute compute and externalize state when one machine becomes limiting or risky.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    A[Single Instance]:::compute --&gt; B{Capacity bottleneck?}:::control
+    B --&gt;|No| A
+    B --&gt;|Yes| C{Scale up still practical?}:::control
+    C --&gt;|Yes| D[Bigger Instance]:::compute --&gt; B
+    C --&gt;|No| E[Multiple Instances]:::compute
+    E --&gt; F{Service holds local state?}:::control
+    F --&gt;|Yes| G[Externalize State]:::data
+    F --&gt;|No| H[Scale Stateless Instances]:::compute
+    G --&gt; H
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use this as a decision framework, not a fixed sequence. Scale out earlier when resilience, elasticity, or rapid growth already justifies the complexity.</p>
+<hr>
+</section>
+</section>
+<section id="database-storage" class="level2">
+<h2 class="anchored" data-anchor-id="database-storage">5. Database &amp; Storage</h2>
+<p><em>Where application data persists.</em></p>
+<section id="replication-primary-and-read-replicas" class="level3">
+<h3 class="anchored" data-anchor-id="replication-primary-and-read-replicas">5.1 Replication: Primary and Read Replicas</h3>
+<p><strong>What it is:</strong> Replication maintains copies of data on multiple nodes. A common pattern sends writes to a primary and distributes reads across replicas.</p>
+<p><strong>How is it used?</strong> Changes flow from the primary to replicas, improving read capacity and providing candidates for failover, with possible replication lag.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    W[Writes]:::client --&gt; P[(Primary)]:::data
+    P --&gt;|Replicate| R1[(Read Replica 1)]:::data
+    P --&gt;|Replicate| R2[(Read Replica 2)]:::data
+    Q1[Reads]:::client --&gt; R1
+    Q2[Reads]:::client --&gt; R2
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it when read throughput, redundancy, or database failover matters and the application can manage replica freshness.</p>
+</section>
+<section id="sharding-horizontal-partitioning" class="level3">
+<h3 class="anchored" data-anchor-id="sharding-horizontal-partitioning">5.2 Sharding: Horizontal Partitioning</h3>
+<p><strong>What it is:</strong> Sharding splits rows across databases so each shard stores a different subset of the total data.</p>
+<p><strong>How is it used?</strong> A shard key and routing rule decide where each record lives. Good keys distribute load; poor keys create hot shards and difficult cross-shard queries.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    A[Application]:::compute --&gt; R[Shard Router]:::control
+    R --&gt;|Shard key range A| S1[(Shard 1)]:::data
+    R --&gt;|Shard key range B| S2[(Shard 2)]:::data
+    R --&gt;|Shard key range C| S3[(Shard 3)]:::data
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it when one database cannot accommodate the required data volume, write throughput, or operational load.</p>
+</section>
+<section id="vertical-partitioning" class="level3">
+<h3 class="anchored" data-anchor-id="vertical-partitioning">5.3 Vertical Partitioning</h3>
+<p><strong>What it is:</strong> Vertical partitioning splits a wide table by columns into smaller tables linked by a common key.</p>
+<p><strong>How is it used?</strong> Frequently accessed, sensitive, or independently managed columns are separated so each workflow reads only the data it needs.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    U[(Wide Users Table)]:::data --&gt; P{Split by access context}:::control
+    P --&gt; PR[(Profile Columns)]:::data
+    P --&gt; AU[(Authentication Columns)]:::data
+    P --&gt; BI[(Billing Columns)]:::data
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it for wide tables whose column groups have different access patterns, security controls, or storage needs.</p>
+</section>
+<section id="normalization-vs-denormalization" class="level3">
+<h3 class="anchored" data-anchor-id="normalization-vs-denormalization">5.4 Normalization vs Denormalization</h3>
+<p><strong>What it is:</strong> Normalization stores facts once in related tables to reduce duplication and update anomalies. Denormalization deliberately duplicates selected data to simplify and accelerate reads.</p>
+<p><strong>How is it used?</strong> Transactional models usually begin normalized; read-heavy paths may add denormalized views, projections, or documents maintained from source data.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph N[Normalized]
+        U[(Users)]:::data --- O[(Orders)]:::data
+        O --- P[(Products)]:::data
+        NW[Less duplication&lt;br/&gt;more joins]:::control
+    end
+    subgraph D[Denormalized]
+        OD[(Order View with&lt;br/&gt;user and product fields)]:::data
+        DW[Faster common reads&lt;br/&gt;more update coordination]:::control
+    end
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use normalization for consistent transactional writes. Use selective denormalization for stable, read-heavy access patterns where fewer joins materially help.</p>
+</section>
+<section id="sql-vs-nosql-database-decisioning" class="level3">
+<h3 class="anchored" data-anchor-id="sql-vs-nosql-database-decisioning">5.5 SQL vs NoSQL Database Decisioning</h3>
+<p><strong>What it is:</strong> SQL databases emphasize relational models, defined schemas, joins, and transactions. NoSQL is a family of models optimized for needs such as flexible documents, key access, graphs, or distributed scale.</p>
+<p><strong>How is it used?</strong> Select a database from the workload’s consistency, transaction, query, schema, and scaling requirements rather than applying one technology everywhere.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    S[Choose a Database]:::control --&gt; Q1{Relational queries or&lt;br/&gt;multi-record transactions?}:::control
+    Q1 --&gt;|Yes| SQL[SQL Database]:::data
+    Q1 --&gt;|No| Q2{Primary access pattern?}:::control
+    Q2 --&gt;|Key lookup| KV[Key-Value Store]:::data
+    Q2 --&gt;|Flexible aggregate| DOC[Document Store]:::data
+    Q2 --&gt;|Relationships| G[Graph Database]:::data
+    Q2 --&gt;|Time-ordered metrics| TS[Time-Series Database]:::data
+    SQL -. Can coexist with .-&gt; KV
+    SQL -. Can coexist with .-&gt; DOC
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use SQL for relational and transactional workloads. Use an appropriate NoSQL model when its access pattern, schema flexibility, or distribution characteristics better match the subsystem.</p>
+<section id="what-do-i-mean-by-sql-db-can-coexist-with-a-nosql-db" class="level4">
+<h4 class="anchored" data-anchor-id="what-do-i-mean-by-sql-db-can-coexist-with-a-nosql-db">What do I mean by SQL DB “can coexist with” a NoSQL DB?</h4>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    APP[E-commerce Application]:::compute
+
+    APP --&gt; SQL["(SQL Database)"]:::data
+    APP --&gt; KV["(Key-Value Store)"]:::data
+    APP --&gt; DOC["(Document Store)"]:::data
+
+    SQL --&gt; S1["Orders, Payments&lt;br/&gt;Transactional data"]:::note
+    KV --&gt; S2["Sessions, Cache&lt;br/&gt;Fast key lookups"]:::note
+    DOC --&gt; S3["Product Catalogue&lt;br/&gt;Flexible attributes"]:::note
+
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+    classDef note fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>An E-Commerce System can have SQL for transactional data, but a key-value store for sessions or caching.</p>
+</section>
+<section id="mental-model-between-key-value-store-and-document-store" class="level4">
+<h4 class="anchored" data-anchor-id="mental-model-between-key-value-store-and-document-store">Mental Model between Key-Value Store and Document Store</h4>
+<p><strong>Key-Value Store</strong></p>
+<blockquote class="blockquote">
+<p>“I know the key. Give me its value.”</p>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    K["Key&lt;br/&gt;product:P101"] --&gt; V["Value&lt;br/&gt;Product data for P101"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Document Store</strong></p>
+<blockquote class="blockquote">
+<p>“Find documents whose internal fields match these conditions.”</p>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    Q["Query document fields&lt;br/&gt;category + model + price"] --&gt; D["(Document Store)"]
+    D --&gt; P1[Matching Product Document]
+    D --&gt; P2[Matching Product Document]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>For example for a Product stored as one document:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"productId"</span><span class="fu">:</span> <span class="st">"P101"</span><span class="fu">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Toyota Roof Rack"</span><span class="fu">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"category"</span><span class="fu">:</span> <span class="st">"Accessories"</span><span class="fu">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"price"</span><span class="fu">:</span> <span class="dv">12500</span><span class="fu">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"compatibleModels"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"Innova"</span><span class="ot">,</span> <span class="st">"Fortuner"</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"dimensions"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"length"</span><span class="fu">:</span> <span class="dv">120</span><span class="fu">,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"width"</span><span class="fu">:</span> <span class="dv">90</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"features"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Weather resistant"</span><span class="ot">,</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Lockable"</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The Document Store query would look like this:</p>
+<pre><code>Find products where:
+category = "Accessories"
+AND compatibleModels contains "Fortuner"
+AND price &lt; 15000</code></pre>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A key-value store retrieves an opaque value by key; a document store understands and queries the fields inside each JSON-like value.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="database-indexing" class="level3">
+<h3 class="anchored" data-anchor-id="database-indexing">5.6 Database Indexing</h3>
+<p><strong>What it is</strong>: An index is a separate, organized data structure that helps the database locate rows without scanning the entire table.</p>
+<p><strong>How is it used?</strong> Indexes are primarily created on columns frequently used in:</p>
+<ul>
+<li>WHERE clauses to filter rows</li>
+<li>JOIN conditions to connect tables</li>
+<li>ORDER BY clauses to return sorted results</li>
+</ul>
+<p>A B-tree is a <strong>balanced</strong>, sorted tree structure that lets the database progressively narrow its search until it reaches the matching row location. It supports ordered values and comparisons such as =, , &gt;, &lt;=, and &gt;=</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    Q["Query&lt;br/&gt;WHERE email = 'user@example.com'"]:::client
+    Q --&gt; I{Index on email?}:::control
+
+    I --&gt;|No| F["Full Table Scan&lt;br/&gt;check every row"]:::compute
+    I --&gt;|Yes| B["B-Tree Lookup&lt;br/&gt;follow sorted branches"]:::control
+
+    B --&gt; P["Locate Row Pointer"]:::control
+    P --&gt; R["(Fetch Matching Row)"]:::data
+
+    W["INSERT / UPDATE / DELETE"]:::client
+    W -.-&gt;|Maintain index| B
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use</strong>: Index columns used frequently in important WHERE, JOIN, or ORDER BY query paths. Avoid indexing every column because indexes consume storage and must be updated whenever indexed data is inserted, changed, or deleted.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Simple Mental Model</strong>: A table scan reads the book page by page; a B-tree index uses the sorted index at the back to jump near the correct page.</p>
+</div>
+</div>
+</section>
+<section id="blob-storage" class="level3">
+<h3 class="anchored" data-anchor-id="blob-storage">5.7 Blob Storage</h3>
+<p><strong>What it is:</strong> Blob or object storage keeps large unstructured objects such as images, videos, documents, backups, datasets, and model artifacts.</p>
+<p><strong>How is it used?</strong> Applications store an object under a key and keep its metadata or reference in a database. Clients commonly access objects through controlled HTTP endpoints or signed links.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    A[Application]:::compute --&gt; O[(Object Storage)]:::data
+    O --&gt; I[Images]:::data
+    O --&gt; V[Videos]:::data
+    O --&gt; D[Documents]:::data
+    O --&gt; M[Models and Datasets]:::data
+
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it for durable, scalable file storage rather than relational querying or frequent in-place record updates.</p>
+<hr>
+</section>
+</section>
+<section id="performance" class="level2">
+<h2 class="anchored" data-anchor-id="performance">6. Performance</h2>
+<p><em>Speed and content distribution.</em></p>
+<section id="cache-aside-pattern" class="level3">
+<h3 class="anchored" data-anchor-id="cache-aside-pattern">6.1 Cache-Aside Pattern</h3>
+<p><strong>What it is:</strong> Cache-aside keeps frequently requested data in a fast cache while the database remains the source of truth.</p>
+<p><strong>How is it used?</strong> The application checks the cache first. On a miss, it reads the database, returns the value, and places a copy in the cache with an expiry policy.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant A as Application
+    participant C as Cache
+    participant D as Database
+    A-&gt;&gt;C: Get key
+    alt Cache hit
+        C--&gt;&gt;A: Value
+    else Cache miss
+        C--&gt;&gt;A: Not found
+        A-&gt;&gt;D: Read value
+        D--&gt;&gt;A: Value
+        A-&gt;&gt;C: Store value with TTL
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it for frequently read data where lower latency and reduced database load outweigh the risk and management of stale cache entries.</p>
+</section>
+<section id="edge-caching-in-a-content-delivery-network" class="level3">
+<h3 class="anchored" data-anchor-id="edge-caching-in-a-content-delivery-network">6.2 Edge Caching in a Content Delivery Network</h3>
+<p><strong>What it is:</strong> A CDN caches content across geographically distributed edge locations close to users.</p>
+<p><strong>How is it used?</strong> The edge serves cached content immediately. On a miss, it fetches from the origin, caches according to policy, and serves the response.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    U[User]:::client --&gt; E[Nearby CDN Edge]:::control
+    E --&gt;|Cache hit| U
+    E --&gt;|Cache miss| O[Origin]:::compute
+    O --&gt;|Content and cache policy| E
+    E --&gt;|Store and serve| U
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it for global delivery of static assets, downloads, media, and cacheable API responses where origin offload and low latency matter.</p>
+<hr>
+</section>
+</section>
+<section id="advanced-architecture-concepts" class="level2">
+<h2 class="anchored" data-anchor-id="advanced-architecture-concepts">7. Advanced Architecture Concepts</h2>
+<p><em>Other key concepts used to compose production systems.</em></p>
+<section id="cap-theorem" class="level3">
+<h3 class="anchored" data-anchor-id="cap-theorem">7.1 CAP Theorem</h3>
+<p><strong>What it is:</strong> CAP describes the choices a distributed data system faces during a network partition: preserve consistency or preserve availability while tolerating the partition.</p>
+<p><strong>How is it used?</strong> A CP design may reject or delay some requests to avoid inconsistent answers. An AP design continues responding but may temporarily return stale or conflicting data.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    CAP[CAP Theorem]:::control --&gt; C[Consistency&lt;br/&gt;reads reflect the agreed state]:::data
+    CAP --&gt; A[Availability&lt;br/&gt;requests receive a response]:::compute
+    CAP --&gt; P[Partition Tolerance&lt;br/&gt;continues across a network split]:::control
+    P --&gt; N{During a partition}:::control
+    N --&gt;|Favor consistency| CP[CP&lt;br/&gt;reject or delay requests&lt;br/&gt;to stay consistent]:::data
+    N --&gt;|Favor availability| AP[AP&lt;br/&gt;continue responding&lt;br/&gt;with possible stale data]:::compute
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use CAP reasoning when defining distributed data behavior under network failure, based on the business cost of stale data versus rejected or delayed requests.</p>
+</section>
+<section id="message-queues" class="level3">
+<h3 class="anchored" data-anchor-id="message-queues">7.2 Message Queues</h3>
+<p><strong>What it is:</strong> A message queue enables producers and consumers to communicate asynchronously without both being available or equally fast at the same time.</p>
+<p><strong>How is it used?</strong> Producers enqueue work; consumers process it independently. Retries handle transient failures, while repeatedly failing messages move to a dead-letter queue.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    P[Producer]:::compute --&gt; Q[(Message Queue)]:::control
+    Q --&gt; C[Consumer]:::compute
+    C --&gt;|Success| D[(Database or External API)]:::data
+    C --&gt;|Transient failure| R[Retry with Backoff]:::control
+    R --&gt; Q
+    C --&gt;|Fails after limit| DLQ[(Dead-Letter Queue)]:::risk
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+    classDef risk fill:#FFEBEE,stroke:#E53935,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use queues for deferred work, traffic buffering, failure isolation, background processing, and workflows that can tolerate asynchronous completion. Make consumers idempotent when duplicate delivery is possible.</p>
+</section>
+<section id="rate-limiting" class="level3">
+<h3 class="anchored" data-anchor-id="rate-limiting">7.3 Rate Limiting</h3>
+<p><strong>What it is:</strong> Rate limiting controls how many requests a caller can make within a period or available capacity.</p>
+<p><strong>How is it used?</strong> A limiter tracks usage by identity, token, IP, tenant, or route and either allows, delays, or rejects requests when the policy is exceeded.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    C[Client]:::client --&gt; R[Rate Limiter&lt;br/&gt;Token Bucket or Sliding Window]:::control
+    R --&gt;|Within limit| A[API]:::compute
+    R --&gt;|Limit exceeded| T[429 Too Many Requests]:::risk
+    T --&gt; C
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef risk fill:#FFEBEE,stroke:#E53935,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it for public APIs, authentication endpoints, shared services, costly operations, abuse prevention, and protection against traffic bursts.</p>
+</section>
+<section id="monolith-vs-microservices" class="level3">
+<h3 class="anchored" data-anchor-id="monolith-vs-microservices">7.4 Monolith vs Microservices</h3>
+<p><strong>What it is:</strong> A monolith packages application capabilities into one deployable unit. Microservices split capabilities into independently deployed services, commonly with clear ownership of data.</p>
+<p><strong>How is it used?</strong> A monolith reduces distributed-system overhead. Microservices allow independent deployment and scaling but introduce network, observability, and data-consistency complexity.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TB
+    subgraph M[Monolith]
+        MC[Client]:::client --&gt; MA[One Application&lt;br/&gt;Users, Orders, Payments]:::compute
+        MA --&gt; MDB[(Shared Database)]:::data
+    end
+    subgraph S[Microservices]
+        SC[Client]:::client --&gt; G[API Gateway]:::control
+        G --&gt; U[User Service]:::compute --&gt; UDB[(User DB)]:::data
+        G --&gt; O[Order Service]:::compute --&gt; ODB[(Order DB)]:::data
+        G --&gt; P[Payment Service]:::compute --&gt; PDB[(Payment DB)]:::data
+    end
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use a monolith when simplicity, rapid change, and cohesive deployment are strengths. Adopt microservices when independent ownership, release cadence, scaling, or fault isolation justifies the distributed complexity.</p>
+<hr>
+</section>
+</section>
+<section id="closing-thought" class="level2">
+<h2 class="anchored" data-anchor-id="closing-thought">Closing Thought</h2>
+<p>System design is compositional. A production architecture emerges by combining these building blocks around actual requirements, then making each trade-off explicit. The goal is not to use every pattern; it is to use the smallest set that solves the current problem without closing off the next sensible step.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/senthilkumarm1901\.github\.io\/learn_by_blogging\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
