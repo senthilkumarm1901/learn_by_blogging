@@ -181,7 +181,7 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#a-note-on-informal-power-the-hippo-effect" id="toc-a-note-on-informal-power-the-hippo-effect" class="nav-link" data-scroll-target="#a-note-on-informal-power-the-hippo-effect">A note on informal power: the HIPPO effect</a></li>
   </ul></li>
-  <li><a href="#iv.-translating-bets-into-business-language" id="toc-iv.-translating-bets-into-business-language" class="nav-link" data-scroll-target="#iv.-translating-bets-into-business-language">IV. Translating Bets into Business Language</a>
+  <li><a href="#iv.-translating-technical-bets-into-business-language" id="toc-iv.-translating-technical-bets-into-business-language" class="nav-link" data-scroll-target="#iv.-translating-technical-bets-into-business-language">IV. Translating Technical Bets into Business Language</a>
   <ul class="collapse">
   <li><a href="#adrs-architecture-decision-records-with-trade-offs-documented" id="toc-adrs-architecture-decision-records-with-trade-offs-documented" class="nav-link" data-scroll-target="#adrs-architecture-decision-records-with-trade-offs-documented">1. ADRs (Architecture Decision Records) with Trade-Offs Documented</a></li>
   <li><a href="#cost-analysis" id="toc-cost-analysis" class="nav-link" data-scroll-target="#cost-analysis">2. Cost Analysis</a></li>
@@ -263,50 +263,18 @@ ul.task-list li input[type="checkbox"] {
 <blockquote class="blockquote">
 <p>A good quote from the Workshop by <a href="https://www.linkedin.com/in/akumaran/">Anandan Kumaran</a>: * Engineering places the bet. Architecture hedges the bet. * Engineering commits to a solution. Architecture assumes uncertainty and creates fallback paths.</p>
 </blockquote>
-<section id="part-1---upstream-to-architecture-decisioning-is-the-idea-worth-building" class="level4">
-<h4 class="anchored" data-anchor-id="part-1---upstream-to-architecture-decisioning-is-the-idea-worth-building">Part 1 - Upstream to Architecture Decisioning: Is the idea worth building?</h4>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart LR
-  A[Idea] --&gt; B["Minimum Viable Effort&lt;br&gt;(smallest whole effort)"]
-  B --&gt; C{"Signal"}
-  C --&gt;|Happy or Money| D[Worth Building]
-  C --&gt;|Loss or None| E[Stop or Reframe]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<section id="part-1-of-architecture-decisioning-is-the-idea-worth-building" class="level4">
+<h4 class="anchored" data-anchor-id="part-1-of-architecture-decisioning-is-the-idea-worth-building">Part 1 of Architecture Decisioning: Is the idea worth building?</h4>
+<p><img src="./images/part_1_architecture_decisioning.png" class="img-fluid"></p>
 <ul>
 <li>A Minimum Viable Effort (MVE - a word play on MVP; MVE could be considered a subset of MVP) sits upstream of architecture. It reduces the size of the bet.</li>
 <li>MVE could be defined as: the absolute smallest action/step that can give a signal.</li>
 <li>In Agile Project Management world, it could be similar to <a href="https://www.wrike.com/agile-guide/faq/what-is-a-spike-story-in-agile/"><strong>a spike story</strong></a></li>
 </ul>
 </section>
-<section id="part-2---during-architecture-decisioning-if-we-build-it-how-do-we-survive-being-wrong" class="level4">
-<h4 class="anchored" data-anchor-id="part-2---during-architecture-decisioning-if-we-build-it-how-do-we-survive-being-wrong">Part 2 - During Architecture Decisioning: If we build it, how do we survive being wrong?</h4>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart LR
-  D[Worth Building] --&gt; G[Architectural Decisioning]
-  G --&gt;|Commit| H["Engineering&lt;br&gt;build the solution"]
-  G --&gt;|Design safety| I["Hedges&lt;br&gt;options, fallback, rollback"]
-  H --&gt; J{"Production reality"}
-  J --&gt;|Good| K[Proceed]
-  J --&gt;|Backfired| L["Automatic Rollback&lt;br&gt;previous good state"]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<section id="part-2-of-architecture-decisioning-if-we-build-it-how-do-we-survive-being-wrong" class="level4">
+<h4 class="anchored" data-anchor-id="part-2-of-architecture-decisioning-if-we-build-it-how-do-we-survive-being-wrong">Part 2 of Architecture Decisioning: If we build it, how do we survive being wrong?</h4>
+<p><img src="./images/part_2_architecture_decisioning.png" class="img-fluid"></p>
 <ul>
 <li>Architecture then reduces the blast radius of the bet.</li>
 <li>Engineering executes the bet once it is worth taking.</li>
@@ -320,26 +288,7 @@ ul.task-list li input[type="checkbox"] {
 <li>You keep the old blue version alive.</li>
 <li>If reality disagrees with your assumptions, you switch traffic rather than rebuilding under pressure.</li>
 </ul>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart LR
-    U[Users] --&gt; R[Router]
-    R --&gt; B[Blue]
-    R --&gt; G[Green]
-
-    G --&gt; D{Issue}
-
-    D --&gt;|No| P[Proceed]
-    D --&gt;|Yes| B
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<p><img src="./images/blue-green.png" class="img-fluid"></p>
 </section>
 <section id="surviving-wrong-decision-2-canary-releases-3-feature-flags" class="level4">
 <h4 class="anchored" data-anchor-id="surviving-wrong-decision-2-canary-releases-3-feature-flags">Surviving Wrong Decision: (2) Canary Releases &amp; (3) Feature Flags</h4>
@@ -347,54 +296,15 @@ ul.task-list li input[type="checkbox"] {
 <li><p><em>Not All Risk is the Same Risk</em></p></li>
 <li><p>Matching the hedging strategy to the risk: Replicas Handle Failure, Blue-Green Handles Regret</p></li>
 </ul>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart TB
-    A{Risk Type}
-
-    A --&gt; B[Failure]
-    A --&gt; C[Regret]
-
-    B --&gt; D[Replicas]
-    D --&gt; E[Capacity]
-    D --&gt; F[Availability]
-
-    C --&gt; G[Blue Green]
-    G --&gt; H[Old Version]
-    G --&gt; I[New Version]
-    G --&gt; J[Traffic Switch]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<p><img src="./images/types_of_risk.png" class="img-fluid"></p>
 <ul>
 <li><p>Blue-green is a coarse hedge. We flip all traffic from one full environment to another.</p></li>
 <li><p>Sometimes we want a smaller, more controlled bet. That is where <strong>canary releases</strong> and <strong>feature flags</strong> come in.</p></li>
 <li><p>In Feature Flags, for certain users, some features are turned ON for testing</p></li>
 <li><p>In Canary Release, only a certain small section of users are tested first before going fully into new version</p></li>
 </ul>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart LR
-  A[Change to ship] --&gt; B{Granularity}
-  B --&gt;|Whole environment| C[Blue Green]
-  B --&gt;|Slice of traffic| D[Canary]
-  B --&gt;|Single feature| E[Feature Flag]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<p><strong>Sources</strong>: - https://martinfowler.com/bliki/FeatureFlag.html - https://martinfowler.com/bliki/CanaryRelease.html</p>
+<p><img src="./images/granularity_of_deployment.png" class="img-fluid"></p>
+<p><strong>Sources</strong>: - <a href="https://martinfowler.com/bliki/FeatureFlag.html">FeatureFlag</a> - <a href="https://martinfowler.com/bliki/CanaryRelease.html">CanaryRelease</a></p>
 <hr>
 </section>
 </section>
@@ -415,76 +325,12 @@ ul.task-list li input[type="checkbox"] {
 <li>Design + Engineering = The compulsory hardwork while building the product</li>
 <li>Human Dynamics = The differentiator</li>
 </ul>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart TB
-    D[Decision]
-
-    D --&gt; Q[Quality]
-    D --&gt; DE[Design]
-    D --&gt; B[Business]
-    D --&gt; E[Engineering]
-    D --&gt; H[Human Dynamics]
-
-    Q --&gt; Q1[Reliability]
-    Q --&gt; Q2[Recovery]
-
-    DE --&gt; D1[Trade-off Options]
-    DE --&gt; D2[Finding the Seams]
-
-    B --&gt; B1[Risk Reduction]
-    B --&gt; B3[Cost Reduction]
-    B --&gt; B2[Growth]
-
-    E --&gt; E1[Delivery]
-    E --&gt; E2[Automation]
-
-    H --&gt; H1[Trust]
-    H --&gt; H2[Alignment]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<p><img src="./images/5-pillar-lens.png" class="img-fluid"></p>
 <p>As Architects, we must think negative:<br>
 * No pillar is allowed to “win” silently. Trade-offs across all five must be explicit. * Optimizing one pillar in isolation creates silent debt in another</p>
 <section id="what-each-pillar-is-and-isnt" class="level3">
 <h3 class="anchored" data-anchor-id="what-each-pillar-is-and-isnt">What Each Pillar Is and Isn’t</h3>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart LR
-  Q["Quality"]
-  QN -.-&gt; QNE["Quality !=&lt;br&gt;A gate you pass right before launch"]
-  QI -.-&gt; QIE["Quality =&lt;br&gt;A lifelong property where 90% of cost lives after launch"]
-
-  D["Design"]
-  DN -.-&gt; DNE["Design !=&lt;br&gt;Documentation that describes a system"]
-  DI -.-&gt; DIE["Design =&lt;br&gt;Keep tomorrow's decisions cheap and reversible"]
-
-  B["Business"]
-  BN -.-&gt; BNE["Business !=&lt;br&gt;A service desk that responds to requests about the Software App"]
-  BI -.-&gt; BIE["Business =&lt;br&gt;If it cannot be explained in money, it does not get funded"]
-
-  E["Engineering"]
-  EN -.-&gt; ENE["Engg !=&lt;br&gt;Success measured as features delivered"]
-  EI -.-&gt; EIE["Engg ==&lt;br&gt;Build the machine that builds the system"]
-
-  H["Human Dynamics&lt;br&gt;HD"]
-  HN -.-&gt; HNE["HD !=&lt;br&gt;Being likeable and getting along"]
-  HI -.-&gt; HIE["HD =&lt;br&gt;Knowing the path to win 'Yes' from stakeholders"]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<p><img src="./images/5-pillar-lens-2.png" class="img-fluid"></p>
 <hr>
 </section>
 </section>
@@ -495,38 +341,7 @@ ul.task-list li input[type="checkbox"] {
 <li>Impact (Self, Team, Org, Industry)</li>
 <li>Archetype (Explorer, Alchemist, Maverick, Oracle)</li>
 </ul>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart TB
-    
-    I1[Self]
-    I2[Team]
-    I3[Org]
-    I4[Industry]
-
-    A1[Explorer]
-    A2[Alchemist]
-    A3[Maverick]
-    A4[Oracle]
-
-    subgraph IMP["IMPACT"]
-        direction TB
-        I1 --&gt; I2 --&gt; I3 --&gt; I4
-    end
-
-    subgraph ARCH["ARCHETYPE"]
-        direction TB
-        A1 --&gt; A2 --&gt; A3 --&gt; A4
-    end
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<p><img src="./images/leadership-matrix.png" class="img-fluid"></p>
 <p>The most useful insight is the growth model.</p>
 <p>Every time impact expands beyond a threshold, an Orcale resets to an Explorer.</p>
 <div class="cell" data-layout-align="default">
@@ -566,29 +381,15 @@ ul.task-list li input[type="checkbox"] {
 <hr>
 </section>
 </section>
-<section id="iv.-translating-bets-into-business-language" class="level2">
-<h2 class="anchored" data-anchor-id="iv.-translating-bets-into-business-language">IV. Translating Bets into Business Language</h2>
+<section id="iv.-translating-technical-bets-into-business-language" class="level2">
+<h2 class="anchored" data-anchor-id="iv.-translating-technical-bets-into-business-language">IV. Translating Technical Bets into Business Language</h2>
+<p><em>How do I connect code to the boardroom?</em></p>
+<ul>
+<li>Don’t pitch “Kubernetes”; pitch “20% cost reduction.”</li>
+<li>Same work, different frame — audience determines vocabulary.</li>
+</ul>
 <p>Architects frequently lose stakeholder support because they stop at technical reasoning. The workshop repeatedly emphasizes business translation.</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart TB
-    A[Technical Decision]
-    B[1. ADR with Trade Off]
-    D[2. Cost Analysis - ROI, TCO, NPV]
-    E[3. Effort Prioritization - Run Grow Transform &amp; RICE]
-    F[4. So What]
-    G[5. The Executive Pitch]
-
-    A --&gt; B --&gt; D --&gt; E --&gt; F --&gt; G
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<p><img src="./images/bets_to_business_lang.png" class="img-fluid"></p>
 <p>A few of the tools that help in converting a decision to a durable outcome:</p>
 <section id="adrs-architecture-decision-records-with-trade-offs-documented" class="level3">
 <h3 class="anchored" data-anchor-id="adrs-architecture-decision-records-with-trade-offs-documented">1. ADRs (Architecture Decision Records) with Trade-Offs Documented</h3>
@@ -765,16 +566,12 @@ ul.task-list li input[type="checkbox"] {
 <li>Ethos (credibility), Logos (logic), Pathos (emotional stakes).</li>
 <li>All three must work together; logic alone doesn’t move decisions.</li>
 </ul>
-<p><strong>Roadmap Translation</strong> — <em>How do I connect code to the boardroom?</em></p>
-<ul>
-<li>Don’t pitch “Kubernetes”; pitch “20% cost reduction.”</li>
-<li>Same work, different frame — audience determines vocabulary.</li>
-</ul>
 <p><strong>TED Talk Formula</strong> — <em>What ratio drives persuasion?</em></p>
 <ul>
 <li>Facts/Data: 25%, Credibility: 10%, Emotion: 65%.</li>
 <li>Most technical communicators over‑index on facts and under‑index on emotion.</li>
 </ul>
+<p><img src="./images/ted_talk_formula.png" class="img-fluid"></p>
 <p><strong>Power of Metaphors</strong> — <em>How do I make technical concepts land?</em></p>
 <ul>
 <li>How much longer iPad lasts? - “10 hours of video watching” &gt;&gt; “4200 mAh battery.”</li>
