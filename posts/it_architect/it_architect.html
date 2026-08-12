@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2026-08-11">
 <meta name="description" content="Explaining the building blocks of Compositional System Design that Systems Thinkers need to know.">
 
-<title>How to Think Like a Software Architect: Part 2 - The Systems Thinker Perspective – Learn by Blogging</title>
+<title>Thinking Like a Technical Architect: A 101 Guide to System Design – Learn by Blogging</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -161,7 +161,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">How to Think Like a Software Architect: Part 2 - The Systems Thinker Perspective</h1>
+      <h1 class="title">Thinking Like a Technical Architect: A 101 Guide to System Design</h1>
                   <div>
         <div class="description">
           Explaining the building blocks of <code>Compositional System Design</code> that Systems Thinkers need to know.
@@ -206,34 +206,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#the-building-blocks-of-compositional-system-design---at-a-glance" id="toc-the-building-blocks-of-compositional-system-design---at-a-glance" class="nav-link active" data-scroll-target="#the-building-blocks-of-compositional-system-design---at-a-glance">📌 The Building Blocks of Compositional System Design - At A Glance</a></li>
-  <li><a href="#fundamental-communication-connectivity" id="toc-fundamental-communication-connectivity" class="nav-link" data-scroll-target="#fundamental-communication-connectivity">1. Fundamental Communication &amp; Connectivity</a>
+  <li><a href="#the-foundation-client-server-and-database" id="toc-the-foundation-client-server-and-database" class="nav-link" data-scroll-target="#the-foundation-client-server-and-database">1. The Foundation: Client, Server, and Database</a>
   <ul class="collapse">
-  <li><a href="#client-server-architecture" id="toc-client-server-architecture" class="nav-link" data-scroll-target="#client-server-architecture">1.1 Client-Server Architecture</a></li>
+  <li><a href="#clientserverdatabase-architecture" id="toc-clientserverdatabase-architecture" class="nav-link" data-scroll-target="#clientserverdatabase-architecture">1.1 Client–Server–Database Architecture</a></li>
   <li><a href="#how-a-client-finds-a-server-dns-and-ip-address" id="toc-how-a-client-finds-a-server-dns-and-ip-address" class="nav-link" data-scroll-target="#how-a-client-finds-a-server-dns-and-ip-address">1.2 How a Client Finds a Server: DNS and IP Address</a></li>
   <li><a href="#why-distance-matters-latency" id="toc-why-distance-matters-latency" class="nav-link" data-scroll-target="#why-distance-matters-latency">1.3 Why Distance Matters: Latency</a></li>
   <li><a href="#security-in-transit-http-vs-https" id="toc-security-in-transit-http-vs-https" class="nav-link" data-scroll-target="#security-in-transit-http-vs-https">1.4 Security in Transit: HTTP vs HTTPS</a></li>
   </ul></li>
-  <li><a href="#traffic-management-proxies" id="toc-traffic-management-proxies" class="nav-link" data-scroll-target="#traffic-management-proxies">2. Traffic Management &amp; Proxies</a>
+  <li><a href="#the-intermediaries-between-client-and-server" id="toc-the-intermediaries-between-client-and-server" class="nav-link" data-scroll-target="#the-intermediaries-between-client-and-server">2. The Intermediaries Between Client and Server</a>
   <ul class="collapse">
-  <li><a href="#want-to-hide-the-client-forward-proxy" id="toc-want-to-hide-the-client-forward-proxy" class="nav-link" data-scroll-target="#want-to-hide-the-client-forward-proxy">2.1 Want to Hide the Client? Forward Proxy</a></li>
-  <li><a href="#want-to-hide-the-server-reverse-proxy" id="toc-want-to-hide-the-server-reverse-proxy" class="nav-link" data-scroll-target="#want-to-hide-the-server-reverse-proxy">2.2 Want to Hide the Server? Reverse Proxy</a></li>
-  <li><a href="#want-to-distribute-traffic-load-balancer" id="toc-want-to-distribute-traffic-load-balancer" class="nav-link" data-scroll-target="#want-to-distribute-traffic-load-balancer">2.3 Want to Distribute Traffic? Load Balancer</a></li>
-  <li><a href="#the-traffic-cop-at-the-edge-of-backend-microservices-api-gateway" id="toc-the-traffic-cop-at-the-edge-of-backend-microservices-api-gateway" class="nav-link" data-scroll-target="#the-traffic-cop-at-the-edge-of-backend-microservices-api-gateway">2.4 The Traffic Cop at the Edge of Backend Microservices: API Gateway</a></li>
+  <li><a href="#apis-how-the-client-and-server-talk" id="toc-apis-how-the-client-and-server-talk" class="nav-link" data-scroll-target="#apis-how-the-client-and-server-talk">APIs: How the Client and Server Talk</a></li>
+  <li><a href="#standard-request-response-vs-websocket-vs-sse" id="toc-standard-request-response-vs-websocket-vs-sse" class="nav-link" data-scroll-target="#standard-request-response-vs-websocket-vs-sse">2.1 Standard Request-Response vs WebSocket vs SSE</a></li>
+  <li><a href="#api-designs-rest-vs-graphql" id="toc-api-designs-rest-vs-graphql" class="nav-link" data-scroll-target="#api-designs-rest-vs-graphql">2.2 API Designs: REST vs GraphQL</a></li>
+  <li><a href="#event-triggers-push-webhooks-vs-pull-polling" id="toc-event-triggers-push-webhooks-vs-pull-polling" class="nav-link" data-scroll-target="#event-triggers-push-webhooks-vs-pull-polling">2.3 Event Triggers: Push (Webhooks) vs Pull (Polling)</a></li>
+  <li><a href="#idempotency" id="toc-idempotency" class="nav-link" data-scroll-target="#idempotency">2.4 Idempotency</a></li>
+  <li><a href="#proxies-the-traffic-handlers" id="toc-proxies-the-traffic-handlers" class="nav-link" data-scroll-target="#proxies-the-traffic-handlers">Proxies: The Traffic Handlers</a></li>
+  <li><a href="#want-to-hide-the-client-forward-proxy" id="toc-want-to-hide-the-client-forward-proxy" class="nav-link" data-scroll-target="#want-to-hide-the-client-forward-proxy">2.5 Want to Hide the Client? Forward Proxy</a></li>
+  <li><a href="#want-to-hide-the-server-reverse-proxy" id="toc-want-to-hide-the-server-reverse-proxy" class="nav-link" data-scroll-target="#want-to-hide-the-server-reverse-proxy">2.6 Want to Hide the Server? Reverse Proxy</a></li>
+  <li><a href="#want-to-distribute-traffic-load-balancer" id="toc-want-to-distribute-traffic-load-balancer" class="nav-link" data-scroll-target="#want-to-distribute-traffic-load-balancer">2.7 Want to Distribute Traffic? Load Balancer</a></li>
+  <li><a href="#the-traffic-cop-at-the-edge-api-gateway" id="toc-the-traffic-cop-at-the-edge-api-gateway" class="nav-link" data-scroll-target="#the-traffic-cop-at-the-edge-api-gateway">2.8 The Traffic Cop at the Edge: API Gateway</a></li>
   </ul></li>
-  <li><a href="#api-design-patterns" id="toc-api-design-patterns" class="nav-link" data-scroll-target="#api-design-patterns">3. API Design &amp; Patterns</a>
+  <li><a href="#compute-the-servers-that-run-your-code" id="toc-compute-the-servers-that-run-your-code" class="nav-link" data-scroll-target="#compute-the-servers-that-run-your-code">3. Compute: The “Servers” That Run Your Code</a>
   <ul class="collapse">
-  <li><a href="#standard-request-response-vs-websocket-vs-sse" id="toc-standard-request-response-vs-websocket-vs-sse" class="nav-link" data-scroll-target="#standard-request-response-vs-websocket-vs-sse">3.1 Standard Request-Response vs WebSocket vs SSE</a></li>
-  <li><a href="#api-designs-rest-vs-graphql" id="toc-api-designs-rest-vs-graphql" class="nav-link" data-scroll-target="#api-designs-rest-vs-graphql">3.2 API Designs: REST vs GraphQL</a></li>
-  <li><a href="#client-server-event-triggers-webhooks-vs-polling" id="toc-client-server-event-triggers-webhooks-vs-polling" class="nav-link" data-scroll-target="#client-server-event-triggers-webhooks-vs-polling">3.3 Client ↔︎ Server Event Triggers: Webhooks vs Polling</a></li>
-  <li><a href="#idempotency" id="toc-idempotency" class="nav-link" data-scroll-target="#idempotency">3.4 Idempotency</a></li>
+  <li><a href="#virtual-machines" id="toc-virtual-machines" class="nav-link" data-scroll-target="#virtual-machines">3.1 Virtual Machines</a></li>
+  <li><a href="#containers" id="toc-containers" class="nav-link" data-scroll-target="#containers">3.2 Containers</a></li>
+  <li><a href="#serverless" id="toc-serverless" class="nav-link" data-scroll-target="#serverless">3.3 Serverless</a></li>
+  <li><a href="#monolith-vs-microservices" id="toc-monolith-vs-microservices" class="nav-link" data-scroll-target="#monolith-vs-microservices">3.4 Monolith vs Microservices</a></li>
   </ul></li>
-  <li><a href="#scaling-strategies" id="toc-scaling-strategies" class="nav-link" data-scroll-target="#scaling-strategies">4. Scaling Strategies</a>
+  <li><a href="#scaling-the-servers" id="toc-scaling-the-servers" class="nav-link" data-scroll-target="#scaling-the-servers">4. Scaling the Servers</a>
   <ul class="collapse">
   <li><a href="#vertical-scaling-for-active-passive-systems" id="toc-vertical-scaling-for-active-passive-systems" class="nav-link" data-scroll-target="#vertical-scaling-for-active-passive-systems">4.1 Vertical Scaling: For Active-Passive Systems</a></li>
   <li><a href="#horizontal-scaling-for-active-active-systems" id="toc-horizontal-scaling-for-active-active-systems" class="nav-link" data-scroll-target="#horizontal-scaling-for-active-active-systems">4.2 Horizontal Scaling: For Active-Active Systems</a></li>
   <li><a href="#should-systems-scale-up-first-then-scale-out" id="toc-should-systems-scale-up-first-then-scale-out" class="nav-link" data-scroll-target="#should-systems-scale-up-first-then-scale-out">4.3 Should Systems Scale Up First, Then Scale Out?</a></li>
   </ul></li>
-  <li><a href="#database-storage" id="toc-database-storage" class="nav-link" data-scroll-target="#database-storage">5. Database &amp; Storage</a>
+  <li><a href="#the-must-know-database-concepts" id="toc-the-must-know-database-concepts" class="nav-link" data-scroll-target="#the-must-know-database-concepts">5. The Must-Know Database Concepts</a>
   <ul class="collapse">
   <li><a href="#replication-primary-and-read-replicas" id="toc-replication-primary-and-read-replicas" class="nav-link" data-scroll-target="#replication-primary-and-read-replicas">5.1 Replication: Primary and Read Replicas</a></li>
   <li><a href="#sharding-horizontal-partitioning" id="toc-sharding-horizontal-partitioning" class="nav-link" data-scroll-target="#sharding-horizontal-partitioning">5.2 Sharding: Horizontal Partitioning</a></li>
@@ -243,17 +249,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#database-indexing" id="toc-database-indexing" class="nav-link" data-scroll-target="#database-indexing">5.6 Database Indexing</a></li>
   <li><a href="#blob-storage" id="toc-blob-storage" class="nav-link" data-scroll-target="#blob-storage">5.7 Blob Storage</a></li>
   </ul></li>
-  <li><a href="#performance" id="toc-performance" class="nav-link" data-scroll-target="#performance">6. Performance</a>
+  <li><a href="#speeding-up-communication-between-client-and-server" id="toc-speeding-up-communication-between-client-and-server" class="nav-link" data-scroll-target="#speeding-up-communication-between-client-and-server">6. Speeding Up Communication Between Client and Server</a>
   <ul class="collapse">
   <li><a href="#cache-aside-pattern" id="toc-cache-aside-pattern" class="nav-link" data-scroll-target="#cache-aside-pattern">6.1 Cache-Aside Pattern</a></li>
   <li><a href="#edge-caching-in-a-content-delivery-network" id="toc-edge-caching-in-a-content-delivery-network" class="nav-link" data-scroll-target="#edge-caching-in-a-content-delivery-network">6.2 Edge Caching in a Content Delivery Network</a></li>
   </ul></li>
-  <li><a href="#advanced-architecture-concepts" id="toc-advanced-architecture-concepts" class="nav-link" data-scroll-target="#advanced-architecture-concepts">7. Advanced Architecture Concepts</a>
+  <li><a href="#other-key-concepts" id="toc-other-key-concepts" class="nav-link" data-scroll-target="#other-key-concepts">7. Other Key Concepts</a>
   <ul class="collapse">
   <li><a href="#cap-theorem" id="toc-cap-theorem" class="nav-link" data-scroll-target="#cap-theorem">7.1 CAP Theorem</a></li>
   <li><a href="#message-queues" id="toc-message-queues" class="nav-link" data-scroll-target="#message-queues">7.2 Message Queues</a></li>
   <li><a href="#rate-limiting" id="toc-rate-limiting" class="nav-link" data-scroll-target="#rate-limiting">7.3 Rate Limiting</a></li>
-  <li><a href="#monolith-vs-microservices" id="toc-monolith-vs-microservices" class="nav-link" data-scroll-target="#monolith-vs-microservices">7.4 Monolith vs Microservices</a></li>
   </ul></li>
   <li><a href="#closing-thought" id="toc-closing-thought" class="nav-link" data-scroll-target="#closing-thought">Closing Thought</a></li>
   </ul>
@@ -267,81 +272,89 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <blockquote class="blockquote">
-<p>This is a concise guide to the building blocks behind scalable, reliable systems. The central idea is simple: a large system is composed from smaller patterns or blocks, which we are going to see in 7 sections.</p>
+<p>This is a concise guide to the building blocks behind scalable, reliable systems. The central idea is simple: a large system is composed from smaller patterns or blocks. We build them up here in the order a request actually flows, from client to server to database and back.</p>
 </blockquote>
-<p>This learning blog is a structured consolidation of the learnings from the following sources</p>
+<p>This learning blog is a structured consolidation of the learnings from the following sources:</p>
 <ul>
-<li><strong>30 building blocks</strong> of System Design discussed in the video: ▶️ Watch: <a href="https://www.youtube.com/watch?v=s9Qh9fWeOAk">System Design was HARD until I Learned these 30 Concepts</a><br>
-</li>
+<li><strong>30 building blocks</strong> of System Design discussed in the video: ▶️ Watch: <a href="https://www.youtube.com/watch?v=s9Qh9fWeOAk">System Design was HARD until I Learned these 30 Concepts</a></li>
 <li><strong>Companion reading:</strong> <a href="https://algomaster.io/learn/system-design/top-30-system-design-concepts">Top 30 System Design Concepts (AlgoMaster)</a></li>
 <li>▶️ Motivational Watch for Systems Thinking: <a href="https://www.youtube.com/watch?v=t0GiTyz4syY">Lenny’s Podcast featuring CXO of Netflix on - Why Netflix is betting on systems thinkers in the AI era</a></li>
 </ul>
 <hr>
-<p><img src="./images/main_blog_image_2.png" class="img-fluid"></p>
+<p><img src="./images/main_blog_image_3.png" class="img-fluid"></p>
 <section id="the-building-blocks-of-compositional-system-design---at-a-glance" class="level2">
 <h2 class="anchored" data-anchor-id="the-building-blocks-of-compositional-system-design---at-a-glance">📌 The Building Blocks of Compositional System Design - At A Glance</h2>
-<p>The structure of the blog:</p>
+<p>The structure of the blog follows how a request travels through a system:</p>
 <ol type="1">
-<li>Fundamental Communication &amp; Connectivity: <em>How devices communicate with each other</em>
+<li><strong>The Foundation: Client, Server, and Database</strong> — <em>How a request travels and where it goes</em>
 <ul>
-<li>1.1 Client Server Architecture</li>
-<li>1.2 How a Client finds a Server: DNS and IP Address</li>
+<li>1.1 Client–Server–Database Architecture</li>
+<li>1.2 How a Client Finds a Server: DNS and IP Address</li>
 <li>1.3 Why Distance Matters: Latency</li>
 <li>1.4 Security in Transit: HTTP vs HTTPS</li>
 </ul></li>
-<li>Traffic Management &amp; Proxies: <em>The intermediaries that sit between clients and servers</em>
+<li><strong>The Intermediaries Between Client and Server</strong> — <em>The APIs and proxies that sit in the middle</em>
 <ul>
-<li>2.1 Want to hide the Client?: Forward Proxy</li>
-<li>2.2 Want to hide the Server?: Reverse Proxy</li>
-<li>2.3 Want to distribute traffic?: Load Balancer</li>
-<li>2.4: The Traffic Cop at the edge of your Backend Microservices: API Gateway</li>
-</ul></li>
-<li>API Design &amp; Patterns: <em>How applications exchange data</em>
+<li>APIs — <em>how the client and server talk</em>
 <ul>
-<li>3.1 Standard Request-Response vs Websocket vs SSE<br>
-</li>
-<li>3.2 API Designs: REST vs GraphQL</li>
-<li>3.3 Client ↔︎ Server Event Trigger Mechanisms: Push (Webhooks) vs Pull (Polling)</li>
-<li>3.4 Idempotency</li>
+<li>2.1 Standard Request-Response vs WebSocket vs SSE</li>
+<li>2.2 API Designs: REST vs GraphQL</li>
+<li>2.3 Event Triggers: Push (Webhooks) vs Pull (Polling)</li>
+<li>2.4 Idempotency</li>
 </ul></li>
-<li>Scaling Strategies: <em>How to handle more load</em>
+<li>Proxies — <em>the traffic handlers</em>
+<ul>
+<li>2.5 Want to Hide the Client? Forward Proxy</li>
+<li>2.6 Want to Hide the Server? Reverse Proxy</li>
+<li>2.7 Want to Distribute Traffic? Load Balancer</li>
+<li>2.8 The Traffic Cop at the Edge: API Gateway</li>
+</ul></li>
+</ul></li>
+<li><strong>Compute: The “Servers” That Run Your Code</strong> — <em>Where and how application code runs</em>
+<ul>
+<li>3.1 Virtual Machines</li>
+<li>3.2 Containers</li>
+<li>3.3 Serverless</li>
+<li>3.4 Monolith vs Microservices</li>
+</ul></li>
+<li><strong>Scaling the Servers</strong> — <em>How to handle more load</em>
 <ul>
 <li>4.1 Vertical Scaling: For Active-Passive Systems</li>
 <li>4.2 Horizontal Scaling: For Active-Active Systems</li>
-<li>4.3 Should systems scale UP first, then scale OUT?: The Common Evolution to Scaling</li>
+<li>4.3 Should Systems Scale UP First, Then Scale OUT?</li>
 </ul></li>
-<li>Database &amp; Storage: <em>Where does the application data persist</em>
+<li><strong>The Must-Know Database Concepts</strong> — <em>Where the application data persists</em>
 <ul>
 <li>5.1 Replication (Primary + Read Replicas)</li>
 <li>5.2 Sharding (Horizontal Partitioning)</li>
-<li>5.3 Vertical Partioning</li>
-<li>5.4 Normalization - Optimized for Writing Speed; Denormalization - Optimized for Reading Speed</li>
+<li>5.3 Vertical Partitioning</li>
+<li>5.4 Normalization vs Denormalization</li>
 <li>5.5 SQL vs NoSQL DB Decisioning</li>
 <li>5.6 Database Indexing</li>
 <li>5.7 Blob Storage</li>
 </ul></li>
-<li>Performance: <em>Speed and Content Distribution</em>
+<li><strong>Speeding Up Communication Between Client and Server</strong> — <em>Performance and content distribution</em>
 <ul>
-<li>6.1 Cache-aside Pattern</li>
-<li>6.2 Edge Caching in Content Delivery Network</li>
+<li>6.1 Cache-Aside Pattern</li>
+<li>6.2 Edge Caching in a Content Delivery Network</li>
 </ul></li>
-<li>Advanced Architecture Concepts: <em>Other Key Concepts</em>
+<li><strong>Other Key Concepts</strong> — <em>Distributed system realities</em>
 <ul>
 <li>7.1 CAP Theorem</li>
 <li>7.2 Message Queues</li>
 <li>7.3 Rate Limiting</li>
-<li>7.4 Monolith vs Microservices</li>
 </ul></li>
 </ol>
 <hr>
 </section>
-<section id="fundamental-communication-connectivity" class="level2">
-<h2 class="anchored" data-anchor-id="fundamental-communication-connectivity">1. Fundamental Communication &amp; Connectivity</h2>
-<p><em>How devices communicate with each other.</em></p>
-<section id="client-server-architecture" class="level3">
-<h3 class="anchored" data-anchor-id="client-server-architecture">1.1 Client-Server Architecture</h3>
-<p><strong>What it is:</strong> A client initiates a request, and a server processes it and returns a response. The server may apply business logic or interact with storage.</p>
-<p><strong>How is it used?</strong> Browsers, mobile apps, and services use this model to access backend capabilities without directly accessing their databases or internal logic.</p>
+<section id="the-foundation-client-server-and-database" class="level2">
+<h2 class="anchored" data-anchor-id="the-foundation-client-server-and-database">1. The Foundation: Client, Server, and Database</h2>
+<p><em>How a request travels and where it goes.</em></p>
+<p>Every system starts with the same shape: a <strong>client</strong> asks, a <strong>server</strong> does the work, and a <strong>database</strong> remembers. Get this triangle right and everything else in this guide is just a refinement of it.</p>
+<section id="clientserverdatabase-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="clientserverdatabase-architecture">1.1 Client–Server–Database Architecture</h3>
+<p><strong>What it is:</strong> A client initiates a request, a server processes it (applying business logic), and a database persists or returns the data. The client never touches the database directly; it always goes through the server.</p>
+<p><strong>How is it used?</strong> Browsers, mobile apps, and other services use this model to access backend capabilities without knowing the internal logic or storage.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -362,7 +375,7 @@ sequenceDiagram
 </div>
 </div>
 </div>
-<p><strong>When to use:</strong> Use it for nearly every web, mobile, or service-to-service application.</p>
+<p><strong>When to use:</strong> Use it for nearly every web, mobile, or service-to-service application. It is the default starting point for any design.</p>
 </section>
 <section id="how-a-client-finds-a-server-dns-and-ip-address" class="level3">
 <h3 class="anchored" data-anchor-id="how-a-client-finds-a-server-dns-and-ip-address">1.2 How a Client Finds a Server: DNS and IP Address</h3>
@@ -418,8 +431,8 @@ flowchart LR
 </section>
 <section id="security-in-transit-http-vs-https" class="level3">
 <h3 class="anchored" data-anchor-id="security-in-transit-http-vs-https">1.4 Security in Transit: HTTP vs HTTPS</h3>
-<p><strong>What it is</strong>: HTTP carries web requests and responses. HTTPS adds Transport Layer Security (TLS) encryption, server authentication, and integrity protection while data travels across the network.</p>
-<p><strong>How is it used?</strong>: Clients establish a secure TLS connection before exchanging credentials, personal data, API payloads, or other sensitive content.</p>
+<p><strong>What it is:</strong> HTTP carries web requests and responses in plain text. HTTPS wraps HTTP in a TLS-encrypted tunnel, adding confidentiality, server authentication, and integrity while data travels across the network.</p>
+<p><strong>How is it used?</strong> A TLS handshake sets up encryption once, then all traffic on that connection is protected from intermediaries.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -445,11 +458,221 @@ flowchart TD
 <hr>
 </section>
 </section>
-<section id="traffic-management-proxies" class="level2">
-<h2 class="anchored" data-anchor-id="traffic-management-proxies">2. Traffic Management &amp; Proxies</h2>
-<p><em>The intermediaries that sit between clients and servers.</em></p>
+<section id="the-intermediaries-between-client-and-server" class="level2">
+<h2 class="anchored" data-anchor-id="the-intermediaries-between-client-and-server">2. The Intermediaries Between Client and Server</h2>
+<p><em>The APIs and proxies that sit in the middle.</em></p>
+<p>Once a client can reach a server, two questions follow. First, <strong>how do they actually talk</strong> — the API pattern. Second, <strong>who sits in between them</strong> to route, protect, and distribute that traffic — the proxies. This section covers both, in that order.</p>
+<hr>
+<section id="apis-how-the-client-and-server-talk" class="level3">
+<h3 class="anchored" data-anchor-id="apis-how-the-client-and-server-talk">APIs: How the Client and Server Talk</h3>
+</section>
+<section id="standard-request-response-vs-websocket-vs-sse" class="level3">
+<h3 class="anchored" data-anchor-id="standard-request-response-vs-websocket-vs-sse">2.1 Standard Request-Response vs WebSocket vs SSE</h3>
+<p><strong>What it is:</strong> Three communication models that differ on two axes — <strong>who can initiate</strong> a message, and <strong>how long the connection stays open</strong>.</p>
+<p><strong>How is it used?</strong> Choose based on whether the server needs to push data, whether messaging must be two-way, and whether the connection should stay open.</p>
+<section id="standard-request-response" class="level4">
+<h4 class="anchored" data-anchor-id="standard-request-response">Standard Request-Response</h4>
+<p>The client asks, the server answers, the connection closes. Every new piece of data needs a new request. This powers most web pages and REST APIs.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C-&gt;&gt;S: HTTP request
+    S--&gt;&gt;C: HTTP response
+    Note over C,S: A new request is needed for new data
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="websocket" class="level4">
+<h4 class="anchored" data-anchor-id="websocket">WebSocket</h4>
+<p>A single, persistent, <strong>two-way</strong> connection. Once established, either side can send a message at any time without a new request.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C-&gt;&gt;S: HTTP upgrade request
+    S--&gt;&gt;C: 101 Switching Protocols
+    Note over C,S: Persistent bidirectional connection
+    C-&gt;&gt;S: Client message
+    S--&gt;&gt;C: Server message
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Example:</strong> Chat systems, multiplayer games, and collaborative editors (like a shared document) rely on WebSockets, because both the user and the server need to push updates instantly.</p>
+</div>
+</div>
+</section>
+<section id="server-sent-events-sse" class="level4">
+<h4 class="anchored" data-anchor-id="server-sent-events-sse">Server-Sent Events (SSE)</h4>
+<p>An <strong>extension of the standard request-response model</strong>: the client makes one ordinary HTTP request, but the server keeps the response open and streams events over it. Traffic flows <strong>one way only</strong>, server to client, and the browser auto-reconnects.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C-&gt;&gt;S: GET stream (one normal HTTP request)
+    S--&gt;&gt;C: Event stream remains open
+    S--&gt;&gt;C: Event 1
+    S--&gt;&gt;C: Event 2
+    Note over C,S: Persistent one-way server push
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Example:</strong> Live notifications, stock tickers, and “generating…” progress updates suit SSE, because the server pushes but the client rarely needs to reply.</p>
+</div>
+</div>
+<p><strong>When to use:</strong> Use request-response for ordinary APIs, WebSocket for continuous two-way interaction (chat, gaming), and SSE for HTTP-native one-way server feeds (notifications, live progress).</p>
+</section>
+</section>
+<section id="api-designs-rest-vs-graphql" class="level3">
+<h3 class="anchored" data-anchor-id="api-designs-rest-vs-graphql">2.2 API Designs: REST vs GraphQL</h3>
+<p><strong>What it is:</strong> These are two ways to design the request-response API itself. REST exposes resources through multiple HTTP endpoints. GraphQL exposes a single typed query endpoint through which clients request the exact response shape they want.</p>
+<p><strong>How is it used?</strong> REST models operations around resources and HTTP semantics, and may need several calls to assemble one view. GraphQL resolves client-selected fields, including related data, in one query.</p>
+<p><img src="./images/graphql_vs_restapi.png" class="img-fluid"></p>
+<p><strong>When to use:</strong> Use REST for clear resource-oriented APIs and straightforward HTTP behavior. Use GraphQL when clients need varied, connected, or precisely shaped data.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>An example system where GraphQL is used: Facebook and Instagram.</strong> A feed screen needs deeply nested, connected data (posts → author → comments), but a mobile screen should fetch only what it can display.</p>
+</div>
+</div>
+<pre><code>query {
+  feed {
+    posts {
+      author {
+        name
+        avatar
+      }
+      content
+      comments(first: 3) {
+        text
+      }
+    }
+  }
+}</code></pre>
+</section>
+<section id="event-triggers-push-webhooks-vs-pull-polling" class="level3">
+<h3 class="anchored" data-anchor-id="event-triggers-push-webhooks-vs-pull-polling">2.3 Event Triggers: Push (Webhooks) vs Pull (Polling)</h3>
+<p><strong>What it is:</strong> Two ways for one side to learn that “something happened.” Polling repeatedly asks whether something changed. A webhook sends an HTTP callback when an event occurs.</p>
+<p><strong>How is it used?</strong> Polling is scheduled by the consumer. Webhook delivery is initiated by the event producer and normally includes retries and duplicate protection.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant C as Consumer
+    participant P as Provider
+    rect rgb(245, 245, 245)
+        Note over C,P: Polling
+        C-&gt;&gt;P: Anything new?
+        P--&gt;&gt;C: No
+        C-&gt;&gt;P: Anything new?
+        P--&gt;&gt;C: New event
+    end
+    rect rgb(227, 242, 253)
+        Note over C,P: Webhook
+        P-&gt;&gt;C: POST event to callback URL
+        C--&gt;&gt;P: 200 OK
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use polling when the provider cannot call back or the consumer controls timing. Use webhooks for efficient, near-real-time event notification between reachable services (payments, CI/CD).</p>
+</section>
+<section id="idempotency" class="level3">
+<h3 class="anchored" data-anchor-id="idempotency">2.4 Idempotency</h3>
+<p><strong>What it is:</strong> An operation is idempotent when repeating it has the same intended effect as performing it once.</p>
+<p><strong>How is it used?</strong> A caller sends a unique idempotency key. The server stores the first result and returns it for retries instead of applying the side effect again.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    participant K as Key Store
+    C-&gt;&gt;S: Create payment, key 101
+    S-&gt;&gt;K: Check key 101
+    K--&gt;&gt;S: Not found
+    S-&gt;&gt;K: Store key and result
+    S--&gt;&gt;C: Payment result
+    C-&gt;&gt;S: Retry with key 101
+    S-&gt;&gt;K: Check key 101
+    K--&gt;&gt;S: Existing result
+    S--&gt;&gt;C: Same result, no duplicate charge
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use it for payments, order creation, webhook handling, queue consumers, and any state-changing operation that may be retried.</p>
+<hr>
+</section>
+<section id="proxies-the-traffic-handlers" class="level3">
+<h3 class="anchored" data-anchor-id="proxies-the-traffic-handlers">Proxies: The Traffic Handlers</h3>
+<p>Now that the client and server can talk, we place intermediaries between them to route, protect, and distribute that traffic.</p>
+</section>
 <section id="want-to-hide-the-client-forward-proxy" class="level3">
-<h3 class="anchored" data-anchor-id="want-to-hide-the-client-forward-proxy">2.1 Want to Hide the Client? Forward Proxy</h3>
+<h3 class="anchored" data-anchor-id="want-to-hide-the-client-forward-proxy">2.5 Want to Hide the Client? Forward Proxy</h3>
 <p><strong>What it is:</strong> A forward proxy acts on behalf of clients. Destination servers see the proxy rather than each original client.</p>
 <p><strong>How is it used?</strong> Organizations route outbound traffic through it for access control, filtering, auditing, caching, or controlled internet access.</p>
 <div class="cell" data-layout-align="default">
@@ -488,7 +711,7 @@ Note
 </div>
 </section>
 <section id="want-to-hide-the-server-reverse-proxy" class="level3">
-<h3 class="anchored" data-anchor-id="want-to-hide-the-server-reverse-proxy">2.2 Want to Hide the Server? Reverse Proxy</h3>
+<h3 class="anchored" data-anchor-id="want-to-hide-the-server-reverse-proxy">2.6 Want to Hide the Server? Reverse Proxy</h3>
 <p><strong>What it is:</strong> A reverse proxy is the public-facing intermediary for one or more backend servers. Clients interact with the proxy instead of knowing server details.</p>
 <p><strong>How is it used?</strong> It forwards inbound requests while centralizing TLS termination, caching, compression, routing, and other edge concerns.</p>
 <div class="cell" data-layout-align="default">
@@ -511,10 +734,10 @@ flowchart LR
 </div>
 </div>
 </div>
-<p><strong>When to use:</strong> Use it to expose backend applications through one controlled, secure, and stable endpoint.</p>
+<p><strong>When to use:</strong> Use it to expose backend applications through one controlled, secure, and stable endpoint. Popular examples include Nginx, HAProxy, and Envoy.</p>
 </section>
 <section id="want-to-distribute-traffic-load-balancer" class="level3">
-<h3 class="anchored" data-anchor-id="want-to-distribute-traffic-load-balancer">2.3 Want to Distribute Traffic? Load Balancer</h3>
+<h3 class="anchored" data-anchor-id="want-to-distribute-traffic-load-balancer">2.7 Want to Distribute Traffic? Load Balancer</h3>
 <p><strong>What it is:</strong> A load balancer distributes incoming traffic across healthy server instances so no single instance handles all requests.</p>
 <p><strong>How is it used?</strong> It performs health checks and routes requests using rules such as round robin, least connections, weights, or request attributes.</p>
 <div class="cell" data-layout-align="default">
@@ -555,18 +778,13 @@ Note
 </div>
 <p><strong>When to use:</strong> Use it whenever multiple active instances share traffic or availability must survive an instance failure.</p>
 <section id="layer-4-load-balancer-nlb-vs-layer-7-load-balancer-alb" class="level4">
-<h4 class="anchored" data-anchor-id="layer-4-load-balancer-nlb-vs-layer-7-load-balancer-alb">Layer 4 Load Balancer (NLB) vs Layer 7 Load Balancer (ALB):</h4>
-<ul>
-<li>Layer 4 routes the connection; Layer 7 understands the request.</li>
-</ul>
-<p><strong>Layer 4: “Where should this connection go?”</strong></p>
-<ul>
-<li>Layer 4 looks only at network-level information:
+<h4 class="anchored" data-anchor-id="layer-4-load-balancer-nlb-vs-layer-7-load-balancer-alb">Layer 4 Load Balancer (NLB) vs Layer 7 Load Balancer (ALB)</h4>
+<p>The simplest distinction: <strong>Layer 4 routes the connection; Layer 7 understands the request.</strong></p>
+<p><strong>Layer 4: “Where should this connection go?”</strong> It looks only at network-level information:</p>
 <ul>
 <li>Source/destination IP address</li>
 <li>Port</li>
 <li>Protocol such as TCP or UDP</li>
-</ul></li>
 </ul>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -584,16 +802,13 @@ Note
 </div>
 </div>
 <p>Example: Traffic arriving on port 443 is distributed across 2 servers.</p>
-<p><strong>Layer 7: “What is this request asking for?”</strong></p>
-<ul>
-<li>Layer 7 understands application-level information, especially HTTP:
+<p><strong>Layer 7: “What is this request asking for?”</strong> It understands application-level information, especially HTTP:</p>
 <ul>
 <li>URL path, such as /orders or /images</li>
 <li>Hostname</li>
 <li>HTTP headers</li>
 <li>Cookies</li>
 <li>Request method, such as GET or POST</li>
-</ul></li>
 </ul>
 <p>It can route different requests to different backend services.</p>
 <div class="cell" data-layout-align="default">
@@ -625,15 +840,16 @@ Tip
 <div class="callout-body-container callout-body">
 <p><strong>Analogy</strong></p>
 <ul>
-<li><p>Layer 4 LB: <em>A building security guard checks the address and entrance, then directs you to an available lift without opening your letter.</em></p></li>
-<li><p>Layer 7 LB: <em>A receptionist reads the purpose of your visit and sends you to the correct department.</em></p></li>
+<li>Layer 4 LB: <em>A building security guard checks the address and entrance, then directs you to an available lift without opening your letter.</em></li>
+<li>Layer 7 LB: <em>A receptionist reads the purpose of your visit and sends you to the correct department.</em></li>
 </ul>
+<p>In AWS terms, a Network Load Balancer (NLB) is Layer 4 and an Application Load Balancer (ALB) is Layer 7.</p>
 </div>
 </div>
 </section>
 </section>
-<section id="the-traffic-cop-at-the-edge-of-backend-microservices-api-gateway" class="level3">
-<h3 class="anchored" data-anchor-id="the-traffic-cop-at-the-edge-of-backend-microservices-api-gateway">2.4 The Traffic Cop at the Edge of Backend Microservices: API Gateway</h3>
+<section id="the-traffic-cop-at-the-edge-api-gateway" class="level3">
+<h3 class="anchored" data-anchor-id="the-traffic-cop-at-the-edge-api-gateway">2.8 The Traffic Cop at the Edge: API Gateway</h3>
 <p><strong>What it is:</strong> An API gateway is the single front door to backend APIs. It combines reverse-proxy routing with API-specific controls.</p>
 <p><strong>How is it used?</strong> It routes requests to services and centralizes cross-cutting concerns such as authentication, authorization, rate limiting, observability, and protocol transformation.</p>
 <div class="cell" data-layout-align="default">
@@ -664,102 +880,26 @@ flowchart TD
 <hr>
 </section>
 </section>
-<section id="api-design-patterns" class="level2">
-<h2 class="anchored" data-anchor-id="api-design-patterns">3. API Design &amp; Patterns</h2>
-<p><em>How applications exchange data.</em></p>
-<section id="standard-request-response-vs-websocket-vs-sse" class="level3">
-<h3 class="anchored" data-anchor-id="standard-request-response-vs-websocket-vs-sse">3.1 Standard Request-Response vs WebSocket vs SSE</h3>
-<p><strong>What it is:</strong> These are three communication models: short-lived client-initiated exchanges, persistent bidirectional messaging, and persistent server-to-client streaming.</p>
-<p><strong>How is it used?</strong> Choose based on who must initiate updates, whether two-way messaging is needed, and whether the connection should remain open.</p>
-<section id="standard-request-response" class="level4">
-<h4 class="anchored" data-anchor-id="standard-request-response">Standard Request-Response</h4>
+<section id="compute-the-servers-that-run-your-code" class="level2">
+<h2 class="anchored" data-anchor-id="compute-the-servers-that-run-your-code">3. Compute: The “Servers” That Run Your Code</h2>
+<p><em>Where and how application code runs.</em></p>
+<p>We have said “server” many times. But what is a server, really? It is just somewhere your code runs. You have three broad choices, trading <strong>control</strong> for <strong>less operational overhead</strong>, and one big decision about <strong>how you package the application</strong> (monolith vs microservices).</p>
+<section id="virtual-machines" class="level3">
+<h3 class="anchored" data-anchor-id="virtual-machines">3.1 Virtual Machines</h3>
+<p><strong>What it is:</strong> A virtual machine emulates a complete computer, including virtual hardware and its own operating system, running on top of a hypervisor.</p>
+<p><strong>How is it used?</strong> Applications run inside isolated operating-system environments. You control the OS, runtime, and application, and you manage patching and monitoring.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-sequenceDiagram
-    participant C as Client
-    participant S as Server
-    C-&gt;&gt;S: HTTP request
-    S--&gt;&gt;C: HTTP response
-    Note over C,S: A new request is needed for new data
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-</section>
-<section id="websocket" class="level4">
-<h4 class="anchored" data-anchor-id="websocket">WebSocket</h4>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-sequenceDiagram
-    participant C as Client
-    participant S as Server
-    C-&gt;&gt;S: HTTP upgrade request
-    S--&gt;&gt;C: 101 Switching Protocols
-    Note over C,S: Persistent bidirectional connection
-    C-&gt;&gt;S: Client message
-    S--&gt;&gt;C: Server message
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-</section>
-<section id="server-sent-events" class="level4">
-<h4 class="anchored" data-anchor-id="server-sent-events">Server-Sent Events</h4>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-sequenceDiagram
-    participant C as Client
-    participant S as Server
-    C-&gt;&gt;S: GET stream
-    S--&gt;&gt;C: Event stream remains open
-    S--&gt;&gt;C: Event 1
-    S--&gt;&gt;C: Event 2
-    Note over C,S: Persistent one-way server push
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<p><strong>When to use:</strong> Use request-response for ordinary APIs, WebSocket for continuous two-way interaction, and SSE for HTTP-native server-to-client feeds such as notifications or progress updates.</p>
-</section>
-</section>
-<section id="api-designs-rest-vs-graphql" class="level3">
-<h3 class="anchored" data-anchor-id="api-designs-rest-vs-graphql">3.2 API Designs: REST vs GraphQL</h3>
-<p><strong>What it is:</strong> REST exposes resources through multiple HTTP endpoints. GraphQL exposes a typed query interface through which clients request a specific response shape.</p>
-<p><strong>How is it used?</strong> REST models operations around resources and HTTP semantics. GraphQL resolves client-selected fields, including related data, through one query endpoint.</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart TB
-    subgraph REST[REST]
-        RC[Client]:::client --&gt;|GET users/1| RS[REST API]:::compute
-        RC --&gt;|GET users/1/orders| RS
-    end
-    subgraph GQL[GraphQL]
-        GC[Client]:::client --&gt;|One query with selected fields| GS[GraphQL API]:::compute
-    end
+flowchart TD
+    H[Physical Host]:::compute --&gt; HV[Hypervisor]:::control
+    HV --&gt; VM1[VM 1&lt;br/&gt;OS + Application]:::compute
+    HV --&gt; VM2[VM 2&lt;br/&gt;OS + Application]:::compute
 
-    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
     classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
 </pre>
 </div>
@@ -767,108 +907,104 @@ flowchart TB
 </div>
 </div>
 </div>
-<p><strong>When to use:</strong> Use REST for clear resource-oriented APIs and straightforward HTTP behavior. Use GraphQL when clients need varied, connected, or precisely shaped data.</p>
-<div class="callout callout-style-default callout-note callout-titled">
+<p><strong>When to use:</strong> Use VMs when applications need strong isolation, full OS control, legacy compatibility, or specialized runtime configuration.</p>
+</section>
+<section id="containers" class="level3">
+<h3 class="anchored" data-anchor-id="containers">3.2 Containers</h3>
+<p><strong>What it is:</strong> A container packages application code and its dependencies together, while sharing the host operating-system kernel. This makes it lighter and faster to start than a VM.</p>
+<p><strong>How is it used?</strong> A container image runs consistently across environments, while a container platform (such as Kubernetes) handles deployment, scaling, networking, and recovery.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    H[Host Operating System]:::compute --&gt; CR[Container Runtime]:::control
+    CR --&gt; C1[Container&lt;br/&gt;App + Dependencies]:::compute
+    CR --&gt; C2[Container&lt;br/&gt;App + Dependencies]:::compute
+    CR --&gt; C3[Container&lt;br/&gt;App + Dependencies]:::compute
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use containers for portable packaging, microservices, repeatable deployments, and independently scalable services.</p>
+</section>
+<section id="serverless" class="level3">
+<h3 class="anchored" data-anchor-id="serverless">3.3 Serverless</h3>
+<p><strong>What it is:</strong> A managed execution model where the platform provisions and scales the runtime for you. You provide only the code or packaged function; there is no server to manage.</p>
+<p><strong>How is it used?</strong> An event or request triggers your code; the platform allocates capacity, runs it, and scales it up or down (even to zero) based on demand. You pay for what you use.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    E[Event or Request]:::client --&gt; P[Managed Runtime]:::control
+    P --&gt; F[Application Code]:::compute
+    F --&gt; R[Response or Side Effect]:::client
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>When to use:</strong> Use serverless for event-driven processing, APIs, scheduled jobs, automation, and variable or bursty workloads.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>An example system where GraphQL is used: Facebook and Instagram</p>
-</div>
-</div>
-<pre><code>query {
-  feed {
-    posts {
-      author {
-        name
-        avatar
-      }
-      content
-      comments(first: 3) {
-        text
-      }
-    }
-  }
-}</code></pre>
-</section>
-<section id="client-server-event-triggers-webhooks-vs-polling" class="level3">
-<h3 class="anchored" data-anchor-id="client-server-event-triggers-webhooks-vs-polling">3.3 Client ↔︎ Server Event Triggers: Webhooks vs Polling</h3>
-<p><strong>What it is:</strong> Polling repeatedly asks whether something changed. A webhook sends an HTTP callback when an event occurs.</p>
-<p><strong>How is it used?</strong> Polling is scheduled by the consumer; webhook delivery is initiated by the event producer and normally includes retries and duplicate protection.</p>
+<p><strong>The control vs abstraction spectrum:</strong> VMs give the most runtime control, containers package the application consistently, and serverless offers the greatest infrastructure abstraction.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-sequenceDiagram
-    participant C as Consumer
-    participant P as Provider
-    rect rgb(245, 245, 245)
-        Note over C,P: Polling
-        C-&gt;&gt;P: Anything new?
-        P--&gt;&gt;C: No
-        C-&gt;&gt;P: Anything new?
-        P--&gt;&gt;C: New event
-    end
-    rect rgb(227, 242, 253)
-        Note over C,P: Webhook
-        P-&gt;&gt;C: POST event to callback URL
-        C--&gt;&gt;P: 200 OK
-    end
+<pre class="mermaid mermaid-js">flowchart LR
+    VM["Virtual Machine&lt;br/&gt;Manage OS + Runtime + App"] --&gt;|Less to manage| C["Container&lt;br/&gt;Manage Runtime + App"]
+    C --&gt;|Less to manage| S["Serverless&lt;br/&gt;Manage App Code only"]
 </pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
-<p><strong>When to use:</strong> Use polling when the provider cannot call back or the consumer controls timing. Use webhooks for efficient, near-real-time event notification between reachable services.</p>
+</div>
+</div>
 </section>
-<section id="idempotency" class="level3">
-<h3 class="anchored" data-anchor-id="idempotency">3.4 Idempotency</h3>
-<p><strong>What it is:</strong> An operation is idempotent when repeating it has the same intended effect as performing it once.</p>
-<p><strong>How is it used?</strong> A caller sends a unique idempotency key. The server stores the first result and returns it for retries instead of applying the side effect again.</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-sequenceDiagram
-    participant C as Client
-    participant S as Server
-    participant K as Key Store
-    C-&gt;&gt;S: Create payment, key 101
-    S-&gt;&gt;K: Check key 101
-    K--&gt;&gt;S: Not found
-    S-&gt;&gt;K: Store key and result
-    S--&gt;&gt;C: Payment result
-    C-&gt;&gt;S: Retry with key 101
-    S-&gt;&gt;K: Check key 101
-    K--&gt;&gt;S: Existing result
-    S--&gt;&gt;C: Same result, no duplicate charge
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<p><strong>When to use:</strong> Use it for payments, order creation, webhook handling, queue consumers, and any state-changing operation that may be retried.</p>
+<section id="monolith-vs-microservices" class="level3">
+<h3 class="anchored" data-anchor-id="monolith-vs-microservices">3.4 Monolith vs Microservices</h3>
+<p><strong>What it is:</strong> Two ways to organize the code that runs on your compute. A monolith packages all capabilities into one deployable unit. Microservices split capabilities into independently deployed services, each commonly owning its own data.</p>
+<p><strong>How is it used?</strong> A monolith reduces distributed-system overhead. Microservices allow independent deployment and scaling but introduce network, observability, and data-consistency complexity.</p>
+<p><img src="./images/monolith_vs_micro_services.png" class="img-fluid"></p>
+<p><strong>When to use:</strong> Use a monolith when simplicity, rapid change, and cohesive deployment are strengths. Adopt microservices when independent ownership, release cadence, scaling, or fault isolation justifies the distributed complexity. A common path is to start with a monolith and split out services only when the pain of coupling outweighs the cost of distribution.</p>
 <hr>
 </section>
 </section>
-<section id="scaling-strategies" class="level2">
-<h2 class="anchored" data-anchor-id="scaling-strategies">4. Scaling Strategies</h2>
-<p><em>How systems handle more load.</em></p>
+<section id="scaling-the-servers" class="level2">
+<h2 class="anchored" data-anchor-id="scaling-the-servers">4. Scaling the Servers</h2>
+<p><em>How to handle more load.</em></p>
+<p>Your compute works for 100 users. What about 10 million? Scaling is about growing capacity without everything falling over. There are two directions, and a common evolution between them.</p>
 <section id="vertical-scaling-for-active-passive-systems" class="level3">
 <h3 class="anchored" data-anchor-id="vertical-scaling-for-active-passive-systems">4.1 Vertical Scaling: For Active-Passive Systems</h3>
-<p><strong>What it is:</strong> Vertical scaling increases the CPU, memory, storage, or network capacity of a machine. In active-passive setups, a similarly provisioned standby can take over after failure.</p>
-<p><strong>How is it used?</strong> The active node handles traffic while a passive node remains synchronized and ready for failover; capacity is increased mainly by upgrading the nodes.</p>
+<p><strong>What it is:</strong> Vertical scaling increases the CPU, memory, storage, or network capacity of a single machine. In active-passive setups, a similarly provisioned standby waits to take over after failure.</p>
+<p><strong>How is it used?</strong> The active node handles traffic while a passive node stays synchronized and ready for failover. Capacity is increased mainly by upgrading the nodes.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -891,14 +1027,14 @@ flowchart LR
 </div>
 </div>
 </div>
-<p><strong>When to use:</strong> Use it for quick capacity gains or components that are difficult to distribute, while recognizing hardware limits and failover requirements.</p>
-<section id="amazon-rds-multi-az-with-one-standby-is-a-real-world-example-of-active-passive-systems" class="level4">
-<h4 class="anchored" data-anchor-id="amazon-rds-multi-az-with-one-standby-is-a-real-world-example-of-active-passive-systems">Amazon RDS Multi-AZ with one standby is a real-world example of Active-Passive Systems:</h4>
+<p><strong>When to use:</strong> Use it for quick capacity gains or components that are hard to distribute, while recognizing hardware limits and failover requirements.</p>
+<section id="a-real-world-example-of-an-active-passive-system-amazon-rds-multi-az-with-one-standby" class="level4">
+<h4 class="anchored" data-anchor-id="a-real-world-example-of-an-active-passive-system-amazon-rds-multi-az-with-one-standby">A real-world example of an active-passive system: Amazon RDS Multi-AZ with one standby</h4>
 <ul>
 <li>The primary database serves application traffic.</li>
 <li>A standby database is synchronously maintained in another Availability Zone.</li>
 <li>The standby does not serve read traffic in this configuration.</li>
-<li>If the primary fails, RDS promotes the standby</li>
+<li>If the primary fails, RDS promotes the standby.</li>
 </ul>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -984,9 +1120,10 @@ flowchart TD
 <hr>
 </section>
 </section>
-<section id="database-storage" class="level2">
-<h2 class="anchored" data-anchor-id="database-storage">5. Database &amp; Storage</h2>
-<p><em>Where application data persists.</em></p>
+<section id="the-must-know-database-concepts" class="level2">
+<h2 class="anchored" data-anchor-id="the-must-know-database-concepts">5. The Must-Know Database Concepts</h2>
+<p><em>Where the application data persists.</em></p>
+<p>Compute is temporary; data is forever. These are the storage patterns every architect should recognize.</p>
 <section id="replication-primary-and-read-replicas" class="level3">
 <h3 class="anchored" data-anchor-id="replication-primary-and-read-replicas">5.1 Replication: Primary and Read Replicas</h3>
 <p><strong>What it is:</strong> Replication maintains copies of data on multiple nodes. A common pattern sends writes to a primary and distributes reads across replicas.</p>
@@ -1012,7 +1149,7 @@ flowchart TD
 </div>
 </div>
 </div>
-<p><strong>When to use:</strong> Use it when read throughput, redundancy, or database failover matters and the application can manage replica freshness.</p>
+<p><strong>When to use:</strong> Use it when read throughput, redundancy, or database failover matters and the application can tolerate replica lag.</p>
 </section>
 <section id="sharding-horizontal-partitioning" class="level3">
 <h3 class="anchored" data-anchor-id="sharding-horizontal-partitioning">5.2 Sharding: Horizontal Partitioning</h3>
@@ -1065,37 +1202,13 @@ flowchart TD
 </div>
 </div>
 </div>
-<p><strong>When to use:</strong> Use it for wide tables whose column groups have different access patterns, security controls, or storage needs.</p>
+<p><strong>When to use:</strong> Use it for wide tables whose column groups have different access patterns, security controls, or storage needs. (Contrast with sharding, which splits by rows.)</p>
 </section>
 <section id="normalization-vs-denormalization" class="level3">
 <h3 class="anchored" data-anchor-id="normalization-vs-denormalization">5.4 Normalization vs Denormalization</h3>
 <p><strong>What it is:</strong> Normalization stores facts once in related tables to reduce duplication and update anomalies. Denormalization deliberately duplicates selected data to simplify and accelerate reads.</p>
 <p><strong>How is it used?</strong> Transactional models usually begin normalized; read-heavy paths may add denormalized views, projections, or documents maintained from source data.</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart LR
-    subgraph N[Normalized]
-        U[(Users)]:::data --- O[(Orders)]:::data
-        O --- P[(Products)]:::data
-        NW[Less duplication&lt;br/&gt;more joins]:::control
-    end
-    subgraph D[Denormalized]
-        OD[(Order View with&lt;br/&gt;user and product fields)]:::data
-        DW[Faster common reads&lt;br/&gt;more update coordination]:::control
-    end
-
-    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
-    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<p><img src="./images/normalized_vs_denormalized_db.png" class="img-fluid"></p>
 <p><strong>When to use:</strong> Use normalization for consistent transactional writes. Use selective denormalization for stable, read-heavy access patterns where fewer joins materially help.</p>
 </section>
 <section id="sql-vs-nosql-database-decisioning" class="level3">
@@ -1130,6 +1243,7 @@ flowchart TD
 <p><strong>When to use:</strong> Use SQL for relational and transactional workloads. Use an appropriate NoSQL model when its access pattern, schema flexibility, or distribution characteristics better match the subsystem.</p>
 <section id="what-do-i-mean-by-sql-db-can-coexist-with-a-nosql-db" class="level4">
 <h4 class="anchored" data-anchor-id="what-do-i-mean-by-sql-db-can-coexist-with-a-nosql-db">What do I mean by SQL DB “can coexist with” a NoSQL DB?</h4>
+<p>One application can use several databases together, each for the subsystem it suits best (called polyglot persistence).</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1155,14 +1269,11 @@ flowchart TD
 </div>
 </div>
 </div>
-<p>An E-Commerce System can have SQL for transactional data, but a key-value store for sessions or caching.</p>
+<p>An e-commerce system can use SQL for transactional data, but a key-value store for sessions or caching.</p>
 </section>
-<section id="mental-model-between-key-value-store-and-document-store" class="level4">
-<h4 class="anchored" data-anchor-id="mental-model-between-key-value-store-and-document-store">Mental Model between Key-Value Store and Document Store</h4>
-<p><strong>Key-Value Store</strong></p>
-<blockquote class="blockquote">
-<p>“I know the key. Give me its value.”</p>
-</blockquote>
+<section id="mental-model-key-value-store-vs-document-store" class="level4">
+<h4 class="anchored" data-anchor-id="mental-model-key-value-store-vs-document-store">Mental Model: Key-Value Store vs Document Store</h4>
+<p><strong>Key-Value Store</strong> — <em>“I know the key. Give me its value.”</em></p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1176,10 +1287,7 @@ flowchart TD
 </div>
 </div>
 </div>
-<p><strong>Document Store</strong></p>
-<blockquote class="blockquote">
-<p>“Find documents whose internal fields match these conditions.”</p>
-</blockquote>
+<p><strong>Document Store</strong> — <em>“Find documents whose internal fields match these conditions.”</em></p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1195,7 +1303,7 @@ flowchart TD
 </div>
 </div>
 </div>
-<p>For example for a Product stored as one document:</p>
+<p>For example, a product stored as one document:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"productId"</span><span class="fu">:</span> <span class="st">"P101"</span><span class="fu">,</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Toyota Roof Rack"</span><span class="fu">,</span></span>
@@ -1211,7 +1319,7 @@ flowchart TD
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Lockable"</span></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The Document Store query would look like this:</p>
+<p>A document store query would look like:</p>
 <pre><code>Find products where:
 category = "Accessories"
 AND compatibleModels contains "Fortuner"
@@ -1233,14 +1341,14 @@ Tip
 </section>
 <section id="database-indexing" class="level3">
 <h3 class="anchored" data-anchor-id="database-indexing">5.6 Database Indexing</h3>
-<p><strong>What it is</strong>: An index is a separate, organized data structure that helps the database locate rows without scanning the entire table.</p>
+<p><strong>What it is:</strong> An index is a separate, organized data structure that helps the database locate rows without scanning the entire table.</p>
 <p><strong>How is it used?</strong> Indexes are primarily created on columns frequently used in:</p>
 <ul>
 <li>WHERE clauses to filter rows</li>
 <li>JOIN conditions to connect tables</li>
 <li>ORDER BY clauses to return sorted results</li>
 </ul>
-<p>A B-tree is a <strong>balanced</strong>, sorted tree structure that lets the database progressively narrow its search until it reaches the matching row location. It supports ordered values and comparisons such as =, , &gt;, &lt;=, and &gt;=</p>
+<p>A B-tree is a <strong>balanced</strong>, sorted tree structure that lets the database progressively narrow its search until it reaches the matching row location. It supports ordered values and comparisons such as =, &lt;, &gt;, &lt;=, and &gt;=.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1270,7 +1378,7 @@ flowchart TD
 </div>
 </div>
 </div>
-<p><strong>When to use</strong>: Index columns used frequently in important WHERE, JOIN, or ORDER BY query paths. Avoid indexing every column because indexes consume storage and must be updated whenever indexed data is inserted, changed, or deleted.</p>
+<p><strong>When to use:</strong> Index columns used frequently in important WHERE, JOIN, or ORDER BY query paths. Avoid indexing every column because indexes consume storage and must be updated whenever indexed data is inserted, changed, or deleted.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1281,7 +1389,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Simple Mental Model</strong>: A table scan reads the book page by page; a B-tree index uses the sorted index at the back to jump near the correct page.</p>
+<p><strong>Simple Mental Model:</strong> A table scan reads the book page by page; a B-tree index uses the sorted index at the back to jump near the correct page.</p>
 </div>
 </div>
 </section>
@@ -1314,9 +1422,10 @@ flowchart TD
 <hr>
 </section>
 </section>
-<section id="performance" class="level2">
-<h2 class="anchored" data-anchor-id="performance">6. Performance</h2>
-<p><em>Speed and content distribution.</em></p>
+<section id="speeding-up-communication-between-client-and-server" class="level2">
+<h2 class="anchored" data-anchor-id="speeding-up-communication-between-client-and-server">6. Speeding Up Communication Between Client and Server</h2>
+<p><em>Performance and content distribution.</em></p>
+<p>The request path works and the data persists. Now we make it fast, mainly by keeping frequently used data close and avoiding repeat work.</p>
 <section id="cache-aside-pattern" class="level3">
 <h3 class="anchored" data-anchor-id="cache-aside-pattern">6.1 Cache-Aside Pattern</h3>
 <p><strong>What it is:</strong> Cache-aside keeps frequently requested data in a fast cache while the database remains the source of truth.</p>
@@ -1378,12 +1487,12 @@ flowchart LR
 <hr>
 </section>
 </section>
-<section id="advanced-architecture-concepts" class="level2">
-<h2 class="anchored" data-anchor-id="advanced-architecture-concepts">7. Advanced Architecture Concepts</h2>
-<p><em>Other key concepts used to compose production systems.</em></p>
+<section id="other-key-concepts" class="level2">
+<h2 class="anchored" data-anchor-id="other-key-concepts">7. Other Key Concepts</h2>
+<p><em>Distributed system realities every architect eventually meets.</em></p>
 <section id="cap-theorem" class="level3">
 <h3 class="anchored" data-anchor-id="cap-theorem">7.1 CAP Theorem</h3>
-<p><strong>What it is:</strong> CAP describes the choices a distributed data system faces during a network partition: preserve consistency or preserve availability while tolerating the partition.</p>
+<p><strong>What it is:</strong> CAP describes the choice a distributed data system faces during a network partition: preserve consistency or preserve availability while tolerating the partition.</p>
 <p><strong>How is it used?</strong> A CP design may reject or delay some requests to avoid inconsistent answers. An AP design continues responding but may temporarily return stale or conflicting data.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -1408,7 +1517,7 @@ flowchart TD
 </div>
 </div>
 </div>
-<p><strong>When to use:</strong> Use CAP reasoning when defining distributed data behavior under network failure, based on the business cost of stale data versus rejected or delayed requests.</p>
+<p><strong>When to use:</strong> Use CAP reasoning when defining distributed data behavior under network failure, based on the business cost of stale data versus rejected or delayed requests. Banking leans CP; social feeds lean AP.</p>
 </section>
 <section id="message-queues" class="level3">
 <h3 class="anchored" data-anchor-id="message-queues">7.2 Message Queues</h3>
@@ -1466,47 +1575,14 @@ flowchart LR
 </div>
 </div>
 </div>
-<p><strong>When to use:</strong> Use it for public APIs, authentication endpoints, shared services, costly operations, abuse prevention, and protection against traffic bursts.</p>
-</section>
-<section id="monolith-vs-microservices" class="level3">
-<h3 class="anchored" data-anchor-id="monolith-vs-microservices">7.4 Monolith vs Microservices</h3>
-<p><strong>What it is:</strong> A monolith packages application capabilities into one deployable unit. Microservices split capabilities into independently deployed services, commonly with clear ownership of data.</p>
-<p><strong>How is it used?</strong> A monolith reduces distributed-system overhead. Microservices allow independent deployment and scaling but introduce network, observability, and data-consistency complexity.</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart TB
-    subgraph M[Monolith]
-        MC[Client]:::client --&gt; MA[One Application&lt;br/&gt;Users, Orders, Payments]:::compute
-        MA --&gt; MDB[(Shared Database)]:::data
-    end
-    subgraph S[Microservices]
-        SC[Client]:::client --&gt; G[API Gateway]:::control
-        G --&gt; U[User Service]:::compute --&gt; UDB[(User DB)]:::data
-        G --&gt; O[Order Service]:::compute --&gt; ODB[(Order DB)]:::data
-        G --&gt; P[Payment Service]:::compute --&gt; PDB[(Payment DB)]:::data
-    end
-
-    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
-    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
-    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
-    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<p><strong>When to use:</strong> Use a monolith when simplicity, rapid change, and cohesive deployment are strengths. Adopt microservices when independent ownership, release cadence, scaling, or fault isolation justifies the distributed complexity.</p>
+<p><strong>When to use:</strong> Use it for public APIs, authentication endpoints, shared services, costly operations, abuse prevention, and protection against traffic bursts. It is often enforced at the API gateway.</p>
 <hr>
 </section>
 </section>
 <section id="closing-thought" class="level2">
 <h2 class="anchored" data-anchor-id="closing-thought">Closing Thought</h2>
 <p>System design is compositional. A production architecture emerges by combining these building blocks around actual requirements, then making each trade-off explicit. The goal is not to use every pattern; it is to use the smallest set that solves the current problem without closing off the next sensible step.</p>
+<p>That is what it means to think like a technical architect: not memorizing components, but knowing how they compose, and why you chose this combination over another.</p>
 
 
 </section>
