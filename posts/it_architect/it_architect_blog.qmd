@@ -13,71 +13,80 @@ date: '2026-08-11'
 draft: false
 image: ./images/main_blog_image.png
 toc: true
-title: "How to Think Like a Software Architect: Part 2 - The Systems Thinker Perspective"
+title: "Thinking Like a Technical Architect: A 101 Guide to System Design"
 output-file: it_architect.html
 ---
 
-> This is a concise guide to the building blocks behind scalable, reliable systems. The central idea is simple: a large system is composed from smaller patterns or blocks, which we are going to see in 7 sections.
+> This is a concise guide to the building blocks behind scalable, reliable systems. The central idea is simple: a large system is composed from smaller patterns or blocks. We build them up here in the order a request actually flows, from client to server to database and back.
 
+This learning blog is a structured consolidation of the learnings from the following sources:
 
-This learning blog is a structured consolidation of the learnings from the following sources
-
-* **30 building blocks** of System Design discussed in the video: ▶️ Watch: [System Design was HARD until I Learned these 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk)  
-* **Companion reading:** [Top 30 System Design Concepts (AlgoMaster)](https://algomaster.io/learn/system-design/top-30-system-design-concepts) 
+* **30 building blocks** of System Design discussed in the video: ▶️ Watch: [System Design was HARD until I Learned these 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk)
+* **Companion reading:** [Top 30 System Design Concepts (AlgoMaster)](https://algomaster.io/learn/system-design/top-30-system-design-concepts)
 * ▶️ Motivational Watch for Systems Thinking: [Lenny's Podcast featuring CXO of Netflix on - Why Netflix is betting on systems thinkers in the AI era](https://www.youtube.com/watch?v=t0GiTyz4syY)
-
-
-## 📌 The Building Blocks of Compositional System Design - At A Glance
-
-The structure of the blog: 
-
-1. Fundamental Communication & Connectivity: *How devices communicate with each other*
-    * 1.1 Client Server Architecture
-    * 1.2 How a Client finds a Server: DNS and IP Address
-    * 1.3 Why Distance Matters: Latency
-    * 1.4 Security in Transit: HTTP vs HTTPS
-2. Traffic Management & Proxies: *The intermediaries that sit between clients and servers*
-    * 2.1 Want to hide the Client?: Forward Proxy
-    * 2.2 Want to hide the Server?: Reverse Proxy
-    * 2.3 Want to distribute traffic?: Load Balancer
-    * 2.4: The Traffic Cop at the edge of your Backend Microservices: API Gateway
-3. API Design & Patterns: *How applications  exchange data*
-    * 3.1 Standard Request-Response vs Websocket vs SSE  
-    * 3.2 API Designs: REST vs GraphQL
-    * 3.3 Client ↔ Server Event Trigger Mechanisms: Push (Webhooks) vs Pull (Polling)
-    * 3.4 Idempotency
-4. Scaling Strategies: *How to handle more load*
-    * 4.1 Vertical Scaling: For Active-Passive Systems
-    * 4.2 Horizontal Scaling: For Active-Active Systems
-    * 4.3 Should systems scale UP first, then scale OUT?: The Common Evolution to Scaling
-5. Database & Storage: *Where does the application data persist*
-    * 5.1 Replication (Primary + Read Replicas)
-    * 5.2 Sharding (Horizontal Partitioning) 
-    * 5.3 Vertical Partioning
-    * 5.4 Normalization - Optimized for Writing Speed; Denormalization - Optimized for Reading Speed
-    * 5.5 SQL vs NoSQL DB Decisioning 
-    * 5.6 Database Indexing 
-    * 5.7 Blob Storage 
-6. Performance: *Speed and Content Distribution*
-    * 6.1 Cache-aside Pattern
-    * 6.2 Edge Caching in Content Delivery Network 
-7. Advanced Architecture Concepts: *Other Key Concepts*
-    * 7.1 CAP Theorem 
-    * 7.2 Message Queues 
-    * 7.3 Rate Limiting
-    * 7.4 Monolith vs Microservices
 
 ---
 
-## 1. Fundamental Communication & Connectivity
+![](./images/main_blog_image_3.png)
 
-*How devices communicate with each other.*
+## 📌 The Building Blocks of Compositional System Design - At A Glance
 
-### 1.1 Client-Server Architecture
+The structure of the blog follows how a request travels through a system:
 
-**What it is:** A client initiates a request, and a server processes it and returns a response. The server may apply business logic or interact with storage.
+1. **The Foundation: Client, Server, and Database** — *How a request travels and where it goes*
+    * 1.1 Client–Server–Database Architecture
+    * 1.2 How a Client Finds a Server: DNS and IP Address
+    * 1.3 Why Distance Matters: Latency
+    * 1.4 Security in Transit: HTTP vs HTTPS
+2. **The Intermediaries Between Client and Server** — *The APIs and proxies that sit in the middle*
+    * APIs — *how the client and server talk*
+        * 2.1 Standard Request-Response vs WebSocket vs SSE
+        * 2.2 API Designs: REST vs GraphQL
+        * 2.3 Event Triggers: Push (Webhooks) vs Pull (Polling)
+        * 2.4 Idempotency
+    * Proxies — *the traffic handlers*
+        * 2.5 Want to Hide the Client? Forward Proxy
+        * 2.6 Want to Hide the Server? Reverse Proxy
+        * 2.7 Want to Distribute Traffic? Load Balancer
+        * 2.8 The Traffic Cop at the Edge: API Gateway
+3. **Compute: The "Servers" That Run Your Code** — *Where and how application code runs*
+    * 3.1 Virtual Machines
+    * 3.2 Containers
+    * 3.3 Serverless
+    * 3.4 Monolith vs Microservices
+4. **Scaling the Servers** — *How to handle more load*
+    * 4.1 Vertical Scaling: For Active-Passive Systems
+    * 4.2 Horizontal Scaling: For Active-Active Systems
+    * 4.3 Should Systems Scale UP First, Then Scale OUT?
+5. **The Must-Know Database Concepts** — *Where the application data persists*
+    * 5.1 Replication (Primary + Read Replicas)
+    * 5.2 Sharding (Horizontal Partitioning)
+    * 5.3 Vertical Partitioning
+    * 5.4 Normalization vs Denormalization
+    * 5.5 SQL vs NoSQL DB Decisioning
+    * 5.6 Database Indexing
+    * 5.7 Blob Storage
+6. **Speeding Up Communication Between Client and Server** — *Performance and content distribution*
+    * 6.1 Cache-Aside Pattern
+    * 6.2 Edge Caching in a Content Delivery Network
+7. **Other Key Concepts** — *Distributed system realities*
+    * 7.1 CAP Theorem
+    * 7.2 Message Queues
+    * 7.3 Rate Limiting
 
-**How is it used?** Browsers, mobile apps, and services use this model to access backend capabilities without directly accessing their databases or internal logic.
+---
+
+## 1. The Foundation: Client, Server, and Database
+
+*How a request travels and where it goes.*
+
+Every system starts with the same shape: a **client** asks, a **server** does the work, and a **database** remembers. Get this triangle right and everything else in this guide is just a refinement of it.
+
+### 1.1 Client–Server–Database Architecture
+
+**What it is:** A client initiates a request, a server processes it (applying business logic), and a database persists or returns the data. The client never touches the database directly; it always goes through the server.
+
+**How is it used?** Browsers, mobile apps, and other services use this model to access backend capabilities without knowing the internal logic or storage.
 
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
@@ -91,7 +100,7 @@ sequenceDiagram
     S-->>C: HTTP response
 ```
 
-**When to use:** Use it for nearly every web, mobile, or service-to-service application.
+**When to use:** Use it for nearly every web, mobile, or service-to-service application. It is the default starting point for any design.
 
 ### 1.2 How a Client Finds a Server: DNS and IP Address
 
@@ -135,9 +144,9 @@ flowchart LR
 
 ### 1.4 Security in Transit: HTTP vs HTTPS
 
-**What it is**: HTTP carries web requests and responses. HTTPS adds Transport Layer Security (TLS) encryption, server authentication, and integrity protection while data travels across the network.
+**What it is:** HTTP carries web requests and responses in plain text. HTTPS wraps HTTP in a TLS-encrypted tunnel, adding confidentiality, server authentication, and integrity while data travels across the network.
 
-**How is it used?**: Clients establish a secure TLS connection before exchanging credentials, personal data, API payloads, or other sensitive content.
+**How is it used?** A TLS handshake sets up encryption once, then all traffic on that connection is protected from intermediaries.
 
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
@@ -156,170 +165,25 @@ flowchart TD
 
 ---
 
-## 2. Traffic Management & Proxies
+## 2. The Intermediaries Between Client and Server
 
-*The intermediaries that sit between clients and servers.*
+*The APIs and proxies that sit in the middle.*
 
-### 2.1 Want to Hide the Client? Forward Proxy
-
-**What it is:** A forward proxy acts on behalf of clients. Destination servers see the proxy rather than each original client.
-
-**How is it used?** Organizations route outbound traffic through it for access control, filtering, auditing, caching, or controlled internet access.
-
-```{mermaid}
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart LR
-    C[Client]:::client -->|Outbound request| P[Forward Proxy]:::control
-    P -->|Request on client's behalf| I[Internet Service]:::compute
-    I -->|Response| P --> C
-
-    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
-    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
-    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
-```
-
-**When to use:** Use it when outbound client traffic needs centralized privacy, policy enforcement, inspection, or routing. 
-
-::: {.callout-note}
-A VPN serves a related client-side intermediary role, but it is not strictly a forward proxy because it creates an encrypted network tunnel rather than proxying application requests.
-:::
-
-### 2.2 Want to Hide the Server? Reverse Proxy
-
-**What it is:** A reverse proxy is the public-facing intermediary for one or more backend servers. Clients interact with the proxy instead of knowing server details.
-
-**How is it used?** It forwards inbound requests while centralizing TLS termination, caching, compression, routing, and other edge concerns.
-
-```{mermaid}
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart LR
-    C[Client]:::client --> RP[Reverse Proxy]:::control
-    RP --> S1[Backend A]:::compute
-    RP --> S2[Backend B]:::compute
-
-    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
-    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
-    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
-```
-
-**When to use:** Use it to expose backend applications through one controlled, secure, and stable endpoint.
-
-### 2.3 Want to Distribute Traffic? Load Balancer
-
-**What it is:** A load balancer distributes incoming traffic across healthy server instances so no single instance handles all requests.
-
-**How is it used?** It performs health checks and routes requests using rules such as round robin, least connections, weights, or request attributes.
-
-```{mermaid}
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart TD
-    U[Users]:::client --> LB[Load Balancer]:::control
-    LB --> S1[Server 1]:::compute
-    LB --> S2[Server 2]:::compute
-    LB --> S3[Server 3]:::compute
-    S2 -. Health check fails .-> LB
-    LB -. Stop routing .-> S2
-
-    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
-    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
-    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
-```
-
-::: {.callout-note}
-A Layer 7 load balancer is a specialized reverse proxy focused on distributing requests across healthy backend instances; not every reverse proxy performs load balancing, and not every load balancer operates as a reverse proxy.
-:::
-
-**When to use:** Use it whenever multiple active instances share traffic or availability must survive an instance failure.
-
-#### Layer 4 Load Balancer (NLB) vs Layer 7 Load Balancer (ALB):
-
-* Layer 4 routes the connection; Layer 7 understands the request.
-
-**Layer 4: “Where should this connection go?”**
-
-* Layer 4 looks only at network-level information:
-    * Source/destination IP address
-    * Port
-    * Protocol such as TCP or UDP
-
-```{mermaid}
-flowchart LR
-    C[Client] -->|IP + Port| L4[Layer 4 Load Balancer]
-    L4 --> S1[Server 1]
-    L4 --> S2[Server 2]
-```
-
-Example: Traffic arriving on port 443 is distributed across 2 servers.
-
-**Layer 7: “What is this request asking for?”**
-
-
-* Layer 7 understands application-level information, especially HTTP:
-    * URL path, such as /orders or /images
-    * Hostname
-    * HTTP headers
-    * Cookies
-    * Request method, such as GET or POST
-
-
-It can route different requests to different backend services.
-
-```{mermaid}
-flowchart LR
-    C[Client] --> L7[Layer 7 Load Balancer]
-    L7 -->|/users| U[User Service]
-    L7 -->|/orders| O[Order Service]
-    L7 -->|/images| I[Image Service]
-```
-
-Example: /orders goes to the Order Service, while /images goes to the Image Service.
-
-::: {.callout-tip}
-**Analogy**
-
-* Layer 4 LB: *A building security guard checks the address and entrance, then directs you to an available lift without opening your letter.*
-
-* Layer 7 LB: *A receptionist reads the purpose of your visit and sends you to the correct department.*
-
-:::
-
-### 2.4 The Traffic Cop at the Edge of Backend Microservices: API Gateway
-
-**What it is:** An API gateway is the single front door to backend APIs. It combines reverse-proxy routing with API-specific controls.
-
-**How is it used?** It routes requests to services and centralizes cross-cutting concerns such as authentication, authorization, rate limiting, observability, and protocol transformation.
-
-```{mermaid}
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart TD
-    C[Web or Mobile Client]:::client --> G[API Gateway]:::control
-    G --> U[User Service]:::compute
-    G --> O[Order Service]:::compute
-    G --> P[Payment Service]:::compute
-    G -.-> A[Auth and Authorization]:::control
-    G -.-> R[Rate Limiting]:::control
-    G -.-> L[Logging and Tracing]:::control
-
-    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
-    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
-    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
-```
-
-**When to use:** Use it when multiple APIs need one governed entry point, especially in microservice or multi-client architectures.
+Once a client can reach a server, two questions follow. First, **how do they actually talk** — the API pattern. Second, **who sits in between them** to route, protect, and distribute that traffic — the proxies. This section covers both, in that order.
 
 ---
 
-## 3. API Design & Patterns
+### APIs: How the Client and Server Talk
 
-*How applications exchange data.*
+### 2.1 Standard Request-Response vs WebSocket vs SSE
 
-### 3.1 Standard Request-Response vs WebSocket vs SSE
+**What it is:** Three communication models that differ on two axes — **who can initiate** a message, and **how long the connection stays open**.
 
-**What it is:** These are three communication models: short-lived client-initiated exchanges, persistent bidirectional messaging, and persistent server-to-client streaming.
-
-**How is it used?** Choose based on who must initiate updates, whether two-way messaging is needed, and whether the connection should remain open.
+**How is it used?** Choose based on whether the server needs to push data, whether messaging must be two-way, and whether the connection should stay open.
 
 #### Standard Request-Response
+
+The client asks, the server answers, the connection closes. Every new piece of data needs a new request. This powers most web pages and REST APIs.
 
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
@@ -333,6 +197,8 @@ sequenceDiagram
 
 #### WebSocket
 
+A single, persistent, **two-way** connection. Once established, either side can send a message at any time without a new request.
+
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 sequenceDiagram
@@ -345,47 +211,44 @@ sequenceDiagram
     S-->>C: Server message
 ```
 
-#### Server-Sent Events
+::: {.callout-tip}
+**Example:** Chat systems, multiplayer games, and collaborative editors (like a shared document) rely on WebSockets, because both the user and the server need to push updates instantly.
+:::
+
+#### Server-Sent Events (SSE)
+
+An **extension of the standard request-response model**: the client makes one ordinary HTTP request, but the server keeps the response open and streams events over it. Traffic flows **one way only**, server to client, and the browser auto-reconnects.
 
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 sequenceDiagram
     participant C as Client
     participant S as Server
-    C->>S: GET stream
+    C->>S: GET stream (one normal HTTP request)
     S-->>C: Event stream remains open
     S-->>C: Event 1
     S-->>C: Event 2
     Note over C,S: Persistent one-way server push
 ```
 
-**When to use:** Use request-response for ordinary APIs, WebSocket for continuous two-way interaction, and SSE for HTTP-native server-to-client feeds such as notifications or progress updates.
+::: {.callout-tip}
+**Example:** Live notifications, stock tickers, and "generating..." progress updates suit SSE, because the server pushes but the client rarely needs to reply.
+:::
 
-### 3.2 API Designs: REST vs GraphQL
+**When to use:** Use request-response for ordinary APIs, WebSocket for continuous two-way interaction (chat, gaming), and SSE for HTTP-native one-way server feeds (notifications, live progress).
 
-**What it is:** REST exposes resources through multiple HTTP endpoints. GraphQL exposes a typed query interface through which clients request a specific response shape.
+### 2.2 API Designs: REST vs GraphQL
 
-**How is it used?** REST models operations around resources and HTTP semantics. GraphQL resolves client-selected fields, including related data, through one query endpoint.
+**What it is:** These are two ways to design the request-response API itself. REST exposes resources through multiple HTTP endpoints. GraphQL exposes a single typed query endpoint through which clients request the exact response shape they want.
 
-```{mermaid}
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart TB
-    subgraph REST[REST]
-        RC[Client]:::client -->|GET users/1| RS[REST API]:::compute
-        RC -->|GET users/1/orders| RS
-    end
-    subgraph GQL[GraphQL]
-        GC[Client]:::client -->|One query with selected fields| GS[GraphQL API]:::compute
-    end
+**How is it used?** REST models operations around resources and HTTP semantics, and may need several calls to assemble one view. GraphQL resolves client-selected fields, including related data, in one query.
 
-    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
-    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
-```
+![](./images/graphql_vs_restapi.png)
 
 **When to use:** Use REST for clear resource-oriented APIs and straightforward HTTP behavior. Use GraphQL when clients need varied, connected, or precisely shaped data.
 
 ::: {.callout-note}
-An example system where GraphQL is used: Facebook and Instagram
+**An example system where GraphQL is used: Facebook and Instagram.** A feed screen needs deeply nested, connected data (posts → author → comments), but a mobile screen should fetch only what it can display.
 :::
 
 ```
@@ -405,12 +268,11 @@ query {
 }
 ```
 
+### 2.3 Event Triggers: Push (Webhooks) vs Pull (Polling)
 
-### 3.3 Client ↔ Server Event Triggers: Webhooks vs Polling
+**What it is:** Two ways for one side to learn that "something happened." Polling repeatedly asks whether something changed. A webhook sends an HTTP callback when an event occurs.
 
-**What it is:** Polling repeatedly asks whether something changed. A webhook sends an HTTP callback when an event occurs.
-
-**How is it used?** Polling is scheduled by the consumer; webhook delivery is initiated by the event producer and normally includes retries and duplicate protection.
+**How is it used?** Polling is scheduled by the consumer. Webhook delivery is initiated by the event producer and normally includes retries and duplicate protection.
 
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
@@ -431,9 +293,9 @@ sequenceDiagram
     end
 ```
 
-**When to use:** Use polling when the provider cannot call back or the consumer controls timing. Use webhooks for efficient, near-real-time event notification between reachable services.
+**When to use:** Use polling when the provider cannot call back or the consumer controls timing. Use webhooks for efficient, near-real-time event notification between reachable services (payments, CI/CD).
 
-### 3.4 Idempotency
+### 2.4 Idempotency
 
 **What it is:** An operation is idempotent when repeating it has the same intended effect as performing it once.
 
@@ -460,15 +322,253 @@ sequenceDiagram
 
 ---
 
-## 4. Scaling Strategies
+### Proxies: The Traffic Handlers
 
-*How systems handle more load.*
+Now that the client and server can talk, we place intermediaries between them to route, protect, and distribute that traffic.
+
+### 2.5 Want to Hide the Client? Forward Proxy
+
+**What it is:** A forward proxy acts on behalf of clients. Destination servers see the proxy rather than each original client.
+
+**How is it used?** Organizations route outbound traffic through it for access control, filtering, auditing, caching, or controlled internet access.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    C[Client]:::client -->|Outbound request| P[Forward Proxy]:::control
+    P -->|Request on client's behalf| I[Internet Service]:::compute
+    I -->|Response| P --> C
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+```
+
+**When to use:** Use it when outbound client traffic needs centralized privacy, policy enforcement, inspection, or routing.
+
+::: {.callout-note}
+A VPN serves a related client-side intermediary role, but it is not strictly a forward proxy because it creates an encrypted network tunnel rather than proxying application requests.
+:::
+
+### 2.6 Want to Hide the Server? Reverse Proxy
+
+**What it is:** A reverse proxy is the public-facing intermediary for one or more backend servers. Clients interact with the proxy instead of knowing server details.
+
+**How is it used?** It forwards inbound requests while centralizing TLS termination, caching, compression, routing, and other edge concerns.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    C[Client]:::client --> RP[Reverse Proxy]:::control
+    RP --> S1[Backend A]:::compute
+    RP --> S2[Backend B]:::compute
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+```
+
+**When to use:** Use it to expose backend applications through one controlled, secure, and stable endpoint. Popular examples include Nginx, HAProxy, and Envoy.
+
+### 2.7 Want to Distribute Traffic? Load Balancer
+
+**What it is:** A load balancer distributes incoming traffic across healthy server instances so no single instance handles all requests.
+
+**How is it used?** It performs health checks and routes requests using rules such as round robin, least connections, weights, or request attributes.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    U[Users]:::client --> LB[Load Balancer]:::control
+    LB --> S1[Server 1]:::compute
+    LB --> S2[Server 2]:::compute
+    LB --> S3[Server 3]:::compute
+    S2 -. Health check fails .-> LB
+    LB -. Stop routing .-> S2
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+```
+
+::: {.callout-note}
+A Layer 7 load balancer is a specialized reverse proxy focused on distributing requests across healthy backend instances; not every reverse proxy performs load balancing, and not every load balancer operates as a reverse proxy.
+:::
+
+**When to use:** Use it whenever multiple active instances share traffic or availability must survive an instance failure.
+
+#### Layer 4 Load Balancer (NLB) vs Layer 7 Load Balancer (ALB)
+
+The simplest distinction: **Layer 4 routes the connection; Layer 7 understands the request.**
+
+**Layer 4: "Where should this connection go?"** It looks only at network-level information:
+
+* Source/destination IP address
+* Port
+* Protocol such as TCP or UDP
+
+```{mermaid}
+flowchart LR
+    C[Client] -->|IP + Port| L4[Layer 4 Load Balancer]
+    L4 --> S1[Server 1]
+    L4 --> S2[Server 2]
+```
+
+Example: Traffic arriving on port 443 is distributed across 2 servers.
+
+**Layer 7: "What is this request asking for?"** It understands application-level information, especially HTTP:
+
+* URL path, such as /orders or /images
+* Hostname
+* HTTP headers
+* Cookies
+* Request method, such as GET or POST
+
+It can route different requests to different backend services.
+
+```{mermaid}
+flowchart LR
+    C[Client] --> L7[Layer 7 Load Balancer]
+    L7 -->|/users| U[User Service]
+    L7 -->|/orders| O[Order Service]
+    L7 -->|/images| I[Image Service]
+```
+
+Example: /orders goes to the Order Service, while /images goes to the Image Service.
+
+::: {.callout-tip}
+**Analogy**
+
+* Layer 4 LB: *A building security guard checks the address and entrance, then directs you to an available lift without opening your letter.*
+* Layer 7 LB: *A receptionist reads the purpose of your visit and sends you to the correct department.*
+
+In AWS terms, a Network Load Balancer (NLB) is Layer 4 and an Application Load Balancer (ALB) is Layer 7.
+:::
+
+### 2.8 The Traffic Cop at the Edge: API Gateway
+
+**What it is:** An API gateway is the single front door to backend APIs. It combines reverse-proxy routing with API-specific controls.
+
+**How is it used?** It routes requests to services and centralizes cross-cutting concerns such as authentication, authorization, rate limiting, observability, and protocol transformation.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    C[Web or Mobile Client]:::client --> G[API Gateway]:::control
+    G --> U[User Service]:::compute
+    G --> O[Order Service]:::compute
+    G --> P[Payment Service]:::compute
+    G -.-> A[Auth and Authorization]:::control
+    G -.-> R[Rate Limiting]:::control
+    G -.-> L[Logging and Tracing]:::control
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+```
+
+**When to use:** Use it when multiple APIs need one governed entry point, especially in microservice or multi-client architectures.
+
+---
+
+## 3. Compute: The "Servers" That Run Your Code
+
+*Where and how application code runs.*
+
+We have said "server" many times. But what is a server, really? It is just somewhere your code runs. You have three broad choices, trading **control** for **less operational overhead**, and one big decision about **how you package the application** (monolith vs microservices).
+
+### 3.1 Virtual Machines
+
+**What it is:** A virtual machine emulates a complete computer, including virtual hardware and its own operating system, running on top of a hypervisor.
+
+**How is it used?** Applications run inside isolated operating-system environments. You control the OS, runtime, and application, and you manage patching and monitoring.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    H[Physical Host]:::compute --> HV[Hypervisor]:::control
+    HV --> VM1[VM 1<br/>OS + Application]:::compute
+    HV --> VM2[VM 2<br/>OS + Application]:::compute
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+```
+
+**When to use:** Use VMs when applications need strong isolation, full OS control, legacy compatibility, or specialized runtime configuration.
+
+### 3.2 Containers
+
+**What it is:** A container packages application code and its dependencies together, while sharing the host operating-system kernel. This makes it lighter and faster to start than a VM.
+
+**How is it used?** A container image runs consistently across environments, while a container platform (such as Kubernetes) handles deployment, scaling, networking, and recovery.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    H[Host Operating System]:::compute --> CR[Container Runtime]:::control
+    CR --> C1[Container<br/>App + Dependencies]:::compute
+    CR --> C2[Container<br/>App + Dependencies]:::compute
+    CR --> C3[Container<br/>App + Dependencies]:::compute
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+```
+
+**When to use:** Use containers for portable packaging, microservices, repeatable deployments, and independently scalable services.
+
+### 3.3 Serverless
+
+**What it is:** A managed execution model where the platform provisions and scales the runtime for you. You provide only the code or packaged function; there is no server to manage.
+
+**How is it used?** An event or request triggers your code; the platform allocates capacity, runs it, and scales it up or down (even to zero) based on demand. You pay for what you use.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    E[Event or Request]:::client --> P[Managed Runtime]:::control
+    P --> F[Application Code]:::compute
+    F --> R[Response or Side Effect]:::client
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+```
+
+**When to use:** Use serverless for event-driven processing, APIs, scheduled jobs, automation, and variable or bursty workloads.
+
+::: {.callout-tip}
+**The control vs abstraction spectrum:** VMs give the most runtime control, containers package the application consistently, and serverless offers the greatest infrastructure abstraction.
+
+```{mermaid}
+flowchart LR
+    VM["Virtual Machine<br/>Manage OS + Runtime + App"] -->|Less to manage| C["Container<br/>Manage Runtime + App"]
+    C -->|Less to manage| S["Serverless<br/>Manage App Code only"]
+```
+:::
+
+### 3.4 Monolith vs Microservices
+
+**What it is:** Two ways to organize the code that runs on your compute. A monolith packages all capabilities into one deployable unit. Microservices split capabilities into independently deployed services, each commonly owning its own data.
+
+**How is it used?** A monolith reduces distributed-system overhead. Microservices allow independent deployment and scaling but introduce network, observability, and data-consistency complexity.
+
+![](./images/monolith_vs_micro_services.png)
+
+**When to use:** Use a monolith when simplicity, rapid change, and cohesive deployment are strengths. Adopt microservices when independent ownership, release cadence, scaling, or fault isolation justifies the distributed complexity. A common path is to start with a monolith and split out services only when the pain of coupling outweighs the cost of distribution.
+
+---
+
+## 4. Scaling the Servers
+
+*How to handle more load.*
+
+Your compute works for 100 users. What about 10 million? Scaling is about growing capacity without everything falling over. There are two directions, and a common evolution between them.
 
 ### 4.1 Vertical Scaling: For Active-Passive Systems
 
-**What it is:** Vertical scaling increases the CPU, memory, storage, or network capacity of a machine. In active-passive setups, a similarly provisioned standby can take over after failure.
+**What it is:** Vertical scaling increases the CPU, memory, storage, or network capacity of a single machine. In active-passive setups, a similarly provisioned standby waits to take over after failure.
 
-**How is it used?** The active node handles traffic while a passive node remains synchronized and ready for failover; capacity is increased mainly by upgrading the nodes.
+**How is it used?** The active node handles traffic while a passive node stays synchronized and ready for failover. Capacity is increased mainly by upgrading the nodes.
 
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
@@ -484,18 +584,18 @@ flowchart LR
     classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
 ```
 
-**When to use:** Use it for quick capacity gains or components that are difficult to distribute, while recognizing hardware limits and failover requirements.
+**When to use:** Use it for quick capacity gains or components that are hard to distribute, while recognizing hardware limits and failover requirements.
 
-#### Amazon RDS Multi-AZ with one standby is a real-world example of Active-Passive Systems:
+#### A real-world example of an active-passive system: Amazon RDS Multi-AZ with one standby
 
 * The primary database serves application traffic.
 * A standby database is synchronously maintained in another Availability Zone.
 * The standby does not serve read traffic in this configuration.
-* If the primary fails, RDS promotes the standby
+* If the primary fails, RDS promotes the standby.
 
 ::: {.callout-note}
-* Vertical scaling and active-passive are separate concepts. 
-* Active-passive describes availability and failover, while vertical scaling describes adding capacity to one machine. 
+* Vertical scaling and active-passive are separate concepts.
+* Active-passive describes availability and failover, while vertical scaling describes adding capacity to one machine.
 * They can be combined, but one does not imply the other.
 :::
 
@@ -523,8 +623,6 @@ flowchart TD
 ```
 
 **When to use:** Use it for growing traffic, active-active availability, elastic workloads, and services that can run safely across many instances.
-
-
 
 ### 4.3 Should Systems Scale Up First, Then Scale Out?
 
@@ -554,9 +652,11 @@ flowchart TD
 
 ---
 
-## 5. Database & Storage
+## 5. The Must-Know Database Concepts
 
-*Where application data persists.*
+*Where the application data persists.*
+
+Compute is temporary; data is forever. These are the storage patterns every architect should recognize.
 
 ### 5.1 Replication: Primary and Read Replicas
 
@@ -577,7 +677,7 @@ flowchart TD
     classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
 ```
 
-**When to use:** Use it when read throughput, redundancy, or database failover matters and the application can manage replica freshness.
+**When to use:** Use it when read throughput, redundancy, or database failover matters and the application can tolerate replica lag.
 
 ### 5.2 Sharding: Horizontal Partitioning
 
@@ -618,7 +718,7 @@ flowchart TD
     classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
 ```
 
-**When to use:** Use it for wide tables whose column groups have different access patterns, security controls, or storage needs.
+**When to use:** Use it for wide tables whose column groups have different access patterns, security controls, or storage needs. (Contrast with sharding, which splits by rows.)
 
 ### 5.4 Normalization vs Denormalization
 
@@ -626,22 +726,7 @@ flowchart TD
 
 **How is it used?** Transactional models usually begin normalized; read-heavy paths may add denormalized views, projections, or documents maintained from source data.
 
-```{mermaid}
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart LR
-    subgraph N[Normalized]
-        U[(Users)]:::data --- O[(Orders)]:::data
-        O --- P[(Products)]:::data
-        NW[Less duplication<br/>more joins]:::control
-    end
-    subgraph D[Denormalized]
-        OD[(Order View with<br/>user and product fields)]:::data
-        DW[Faster common reads<br/>more update coordination]:::control
-    end
-
-    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
-    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
-```
+![](./images/normalized_vs_denormalized_db.png)
 
 **When to use:** Use normalization for consistent transactional writes. Use selective denormalization for stable, read-heavy access patterns where fewer joins materially help.
 
@@ -672,6 +757,8 @@ flowchart TD
 
 #### What do I mean by SQL DB "can coexist with" a NoSQL DB?
 
+One application can use several databases together, each for the subsystem it suits best (called polyglot persistence).
+
 ```{mermaid}
 flowchart LR
     APP[E-commerce Application]:::compute
@@ -689,22 +776,18 @@ flowchart LR
     classDef note fill:#F5F5F5,stroke:#616161,stroke-width:1px;
 ```
 
-An E-Commerce System can have SQL for transactional data, but a key-value store for sessions or caching.
+An e-commerce system can use SQL for transactional data, but a key-value store for sessions or caching.
 
-#### Mental Model between Key-Value Store and Document Store
+#### Mental Model: Key-Value Store vs Document Store
 
-**Key-Value Store**
-
-> “I know the key. Give me its value.”
+**Key-Value Store** — *"I know the key. Give me its value."*
 
 ```{mermaid}
 flowchart LR
     K["Key<br/>product:P101"] --> V["Value<br/>Product data for P101"]
 ```
 
-**Document Store**
-
-> “Find documents whose internal fields match these conditions.”
+**Document Store** — *"Find documents whose internal fields match these conditions."*
 
 ```{mermaid}
 flowchart LR
@@ -713,7 +796,7 @@ flowchart LR
     D --> P2[Matching Product Document]
 ```
 
-For example for a Product stored as one document: 
+For example, a product stored as one document:
 
 ```json
 {
@@ -733,21 +816,22 @@ For example for a Product stored as one document:
 }
 ```
 
-The Document Store query would look like this: 
+A document store query would look like:
+
 ```
 Find products where:
 category = "Accessories"
 AND compatibleModels contains "Fortuner"
 AND price < 15000
 ```
+
 ::: {.callout-tip}
 A key-value store retrieves an opaque value by key; a document store understands and queries the fields inside each JSON-like value.
 :::
 
-
 ### 5.6 Database Indexing
 
-**What it is**: An index is a separate, organized data structure that helps the database locate rows without scanning the entire table.
+**What it is:** An index is a separate, organized data structure that helps the database locate rows without scanning the entire table.
 
 **How is it used?** Indexes are primarily created on columns frequently used in:
 
@@ -755,7 +839,7 @@ A key-value store retrieves an opaque value by key; a document store understands
 * JOIN conditions to connect tables
 * ORDER BY clauses to return sorted results
 
-A B-tree is a **balanced**, sorted tree structure that lets the database progressively narrow its search until it reaches the matching row location. It supports ordered values and comparisons such as =, , >, <=, and >=
+A B-tree is a **balanced**, sorted tree structure that lets the database progressively narrow its search until it reaches the matching row location. It supports ordered values and comparisons such as =, <, >, <=, and >=.
 
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
@@ -778,16 +862,11 @@ flowchart TD
     classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
 ```
 
-**When to use**:
-Index columns used frequently in important WHERE, JOIN, or ORDER BY query paths. Avoid indexing every column because indexes consume storage and must be updated whenever indexed data is inserted, changed, or deleted.
-
+**When to use:** Index columns used frequently in important WHERE, JOIN, or ORDER BY query paths. Avoid indexing every column because indexes consume storage and must be updated whenever indexed data is inserted, changed, or deleted.
 
 ::: {.callout-tip}
-**Simple Mental Model**:
-A table scan reads the book page by page; a B-tree index uses the sorted index at the back to jump near the correct page.
+**Simple Mental Model:** A table scan reads the book page by page; a B-tree index uses the sorted index at the back to jump near the correct page.
 :::
-
-
 
 ### 5.7 Blob Storage
 
@@ -812,9 +891,11 @@ flowchart TD
 
 ---
 
-## 6. Performance
+## 6. Speeding Up Communication Between Client and Server
 
-*Speed and content distribution.*
+*Performance and content distribution.*
+
+The request path works and the data persists. Now we make it fast, mainly by keeping frequently used data close and avoiding repeat work.
 
 ### 6.1 Cache-Aside Pattern
 
@@ -865,13 +946,13 @@ flowchart LR
 
 ---
 
-## 7. Advanced Architecture Concepts
+## 7. Other Key Concepts
 
-*Other key concepts used to compose production systems.*
+*Distributed system realities every architect eventually meets.*
 
 ### 7.1 CAP Theorem
 
-**What it is:** CAP describes the choices a distributed data system faces during a network partition: preserve consistency or preserve availability while tolerating the partition.
+**What it is:** CAP describes the choice a distributed data system faces during a network partition: preserve consistency or preserve availability while tolerating the partition.
 
 **How is it used?** A CP design may reject or delay some requests to avoid inconsistent answers. An AP design continues responding but may temporarily return stale or conflicting data.
 
@@ -890,7 +971,7 @@ flowchart TD
     classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
 ```
 
-**When to use:** Use CAP reasoning when defining distributed data behavior under network failure, based on the business cost of stale data versus rejected or delayed requests.
+**When to use:** Use CAP reasoning when defining distributed data behavior under network failure, based on the business cost of stale data versus rejected or delayed requests. Banking leans CP; social feeds lean AP.
 
 ### 7.2 Message Queues
 
@@ -936,38 +1017,12 @@ flowchart LR
     classDef risk fill:#FFEBEE,stroke:#E53935,stroke-width:1px;
 ```
 
-**When to use:** Use it for public APIs, authentication endpoints, shared services, costly operations, abuse prevention, and protection against traffic bursts.
-
-### 7.4 Monolith vs Microservices
-
-**What it is:** A monolith packages application capabilities into one deployable unit. Microservices split capabilities into independently deployed services, commonly with clear ownership of data.
-
-**How is it used?** A monolith reduces distributed-system overhead. Microservices allow independent deployment and scaling but introduce network, observability, and data-consistency complexity.
-
-```{mermaid}
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart TB
-    subgraph M[Monolith]
-        MC[Client]:::client --> MA[One Application<br/>Users, Orders, Payments]:::compute
-        MA --> MDB[(Shared Database)]:::data
-    end
-    subgraph S[Microservices]
-        SC[Client]:::client --> G[API Gateway]:::control
-        G --> U[User Service]:::compute --> UDB[(User DB)]:::data
-        G --> O[Order Service]:::compute --> ODB[(Order DB)]:::data
-        G --> P[Payment Service]:::compute --> PDB[(Payment DB)]:::data
-    end
-
-    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
-    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
-    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
-    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
-```
-
-**When to use:** Use a monolith when simplicity, rapid change, and cohesive deployment are strengths. Adopt microservices when independent ownership, release cadence, scaling, or fault isolation justifies the distributed complexity.
+**When to use:** Use it for public APIs, authentication endpoints, shared services, costly operations, abuse prevention, and protection against traffic bursts. It is often enforced at the API gateway.
 
 ---
 
 ## Closing Thought
 
 System design is compositional. A production architecture emerges by combining these building blocks around actual requirements, then making each trade-off explicit. The goal is not to use every pattern; it is to use the smallest set that solves the current problem without closing off the next sensible step.
+
+That is what it means to think like a technical architect: not memorizing components, but knowing how they compose, and why you chose this combination over another.
