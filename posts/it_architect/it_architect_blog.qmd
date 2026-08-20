@@ -33,11 +33,13 @@ This learning blog is a structured consolidation of the learnings from the follo
 
 The structure of the blog follows how a request travels through a system:
 
-1. **The Foundation: Client, Server, and Database** — *How a request travels and where it goes*
+1. **The Foundation: Client, Server, and Database** — *How a request travels, where it goes, and how it stays secure*
     * 1.1 Client–Server–Database Architecture
     * 1.2 How a Client Finds a Server: DNS and IP Address
     * 1.3 Why Distance Matters: Latency
-    * 1.4 Security in Transit: HTTP vs HTTPS
+    * 1.4 Encryption on the Wire (Security in Transit): HTTPS
+    * 1.5 Encryption Beyond the Wire: End2End Encryption
+    * 1.6 Encryption at Rest: Client-Side Encryption and Server-side Encryption
 2. **The Intermediaries Between Client and Server** — *The APIs and proxies that sit in the middle*
     * APIs — *how the client and server talk*
         * 2.1 Standard Request-Response vs WebSocket vs SSE
@@ -142,7 +144,7 @@ flowchart LR
 
 **When to use:** Treat latency as a key design input for interactive, real-time, geographically distributed, or dependency-heavy systems.
 
-### 1.4 Security in Transit: HTTP vs HTTPS
+### 1.4 Encryption on the Wire (Security in Transit): HTTPS
 
 **What it is:** HTTP carries web requests and responses in plain text. HTTPS wraps HTTP in a TLS-encrypted tunnel, adding confidentiality, server authentication, and integrity while data travels across the network.
 
@@ -163,6 +165,96 @@ flowchart TD
 
 **When to use:** Use HTTPS for all production web and API communication, including internal service traffic where confidentiality or authenticity matters.
 
+### 1.5 Encryption Beyond the Wire: End2End Encryption
+
+**What it is:** End-to-end encryption (E2EE) encrypts a message on the sender's device with a key only the recipient can use, so it stays encrypted the entire way and even the server that relays it only ever sees ciphertext.
+
+**How is it used?** The sender encrypts before sending; the message travels (over HTTPS) as ciphertext through the server, which stores and forwards it without being able to read it; the recipient decrypts on their device.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    A[Sender<br/>encrypts with recipient key]:::secure -->|Ciphertext over HTTPS| S[Server<br/>stores and forwards<br/>cannot read content]:::control
+    S -->|Ciphertext over HTTPS| B[Recipient<br/>decrypts on device]:::secure
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef secure fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px;
+```
+
+::: {.callout-note} **HTTPS and E2EE are not the same thing.** HTTPS secures each _hop_ (client ↔ server), but the server can still read the plaintext. E2EE secures the _payload_ end to end, so the server only handles ciphertext. Systems like WhatsApp and Signal use both together: HTTPS for transport, E2EE for message content. :::
+
+**When to use:** Use E2EE when message content must remain private from everyone in the middle, including the service operator, such as private messaging, secure calls, or sensitive document exchange. Use HTTPS alone when protecting data in transit is enough and the server legitimately needs to read the payload.
+
+**An eCommerce Checkout**: 
+::: {.callout-note} **A good example where HTTPS alone is needed and not E2EE**: **An e-commerce checkout**. A typical checkout in an e-commerce site has payment card details, recipient address and other order details. This CANNOT be E2E encrypted. The server needs to read the intended recipient and his address. Here, HTTPS protects the payload during transit but let's server decrypt and understand it :::
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    U[Shopper<br/>submits order]:::client -->|HTTPS: encrypted in transit| S[E-commerce Server<br/>reads address, cart, payment<br/>to process the order]:::compute
+    S --> DB[(Order Database)]:::data
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+```
+
+### 1.6 Encryption at Rest
+
+**What it is:** Encryption at rest protects data while it is **stored** — on disk, in a database, in blob storage, or in backups. Even if someone steals the physical drive or a raw database file, the contents are unreadable without the key. (This is different from 1.4 and 1.5, which protect data _in transit_.)
+
+**How is it used?** Data is encrypted before it is written to storage and decrypted when read back. The key question is **who does the encrypting and holds the keys** — the server, or the client. That split gives us the two variants below.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    D[Data to store]:::compute --> ENC
+    ENC --> DISK[(Stored as ciphertext<br/>in<br/>disk / DB / backups)]:::data
+
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef ENC fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+```
+
+#### Server-Side Encryption (the server holds the keys)
+
+The client sends plaintext (over HTTPS); the **server or storage service** encrypts it before writing and decrypts it on read. Convenient and common, but the server _can_ read the data.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    C::client -->|Plaintext over HTTPS| S[Server / Storage Service<br/>encrypts + holds keys]:::control
+    S --> D[(Encrypted at rest)]:::data
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+```
+
+#### Client-Side Encryption (the client holds the keys)
+
+The **client** encrypts the data _before_ sending it, so the server only ever stores ciphertext and cannot read it. Stronger privacy, but the client manages the keys.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    C[Client<br/>encrypts + holds keys]:::secure -->|Ciphertext over HTTPS| S[Server / Storage Service<br/>cannot read]:::control
+    S --> D[(Encrypted at rest)]:::data
+
+    classDef secure fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+```
+
+::: {.callout-note} **Quick placement of all the "encryption" terms in this section:**
+
+- **1.4 HTTPS** → protects data _in transit_ (each hop); server can read it.
+- **1.5 E2EE** → protects data _in transit_ end to end; server _cannot_ read it.
+- **1.6 Encryption at rest** → protects _stored_ data. **Server-side encryption (SSE)** = server holds keys and can read; **client-side encryption (CSE)** = client holds keys, server cannot read. 
+
+SSE is the default for almost everything; client-side encryption is for zero-trust situations where the storage provider must never see your plaintext (password vaults, regulated data):::
+
+
 ---
 
 ## 2. The Intermediaries Between Client and Server
@@ -177,7 +269,10 @@ Once a client can reach a server, two questions follow. First, **how do they act
 
 ### 2.1 Standard Request-Response vs WebSocket vs SSE
 
-**What it is:** Three communication models that differ on two axes — **who can initiate** a message, and **how long the connection stays open**.
+**What it is:** Three communication models that differ on two axes 
+
+* **who can initiate** a message, and 
+* **how long the connection stays open**.
 
 **How is it used?** Choose based on whether the server needs to push data, whether messaging must be two-way, and whether the connection should stay open.
 
@@ -214,6 +309,33 @@ sequenceDiagram
 ::: {.callout-tip}
 **Example:** Chat systems, multiplayer games, and collaborative editors (like a shared document) rely on WebSockets, because both the user and the server need to push updates instantly.
 :::
+
+#### Interesting Note: How Do Millions of Live WebSocket Connections Actually Work for Whatsapp?
+
+_(best placed as a callout under 2.1 WebSocket, where the WebSocket example already appears)_
+
+::: {.callout-tip} **How does WhatsApp route a message across millions of open connections?**
+
+A WebSocket is a _persistent_ connection, so at any moment WhatsApp is holding hundreds of millions of them, spread across a large fleet of chat servers. Each server physically holds only the connections for the users assigned to it.
+
+That creates one hard problem: when User A (connected to Server 1) messages User B, the system must know **which server currently holds B's live connection.**
+
+The answer is a **connection (session) registry** — a fast, shared, in-memory lookup of `user → server`. The flow is:
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    CS1[Chat Server 1<br/>holds User A]:::compute -->|Where is User B?| REG[(Connection Registry<br/>user → server)]:::special
+    REG -->|B is on Server 2| CS1
+    CS1 -->|Route message| CS2[Chat Server 2<br/>holds User B]:::compute
+    CS2 --> B[Phone B]:::client
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef special fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px;
+```
+
+This registry is what lets a fleet of stateful connection servers behave like one system.
 
 #### Server-Sent Events (SSE)
 
