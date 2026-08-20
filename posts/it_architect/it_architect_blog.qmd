@@ -181,12 +181,18 @@ flowchart LR
     classDef secure fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px;
 ```
 
-::: {.callout-note} **HTTPS and E2EE are not the same thing.** HTTPS secures each _hop_ (client ↔ server), but the server can still read the plaintext. E2EE secures the _payload_ end to end, so the server only handles ciphertext. Systems like WhatsApp and Signal use both together: HTTPS for transport, E2EE for message content. :::
+::: {.callout-note} 
+**HTTPS and E2EE are not the same thing.** HTTPS secures each _hop_ (client ↔ server), but the server can still read the plaintext. E2EE secures the _payload_ end to end, so the server only handles ciphertext. Systems like WhatsApp and Signal use both together: HTTPS for transport, E2EE for message content. 
+:::
 
 **When to use:** Use E2EE when message content must remain private from everyone in the middle, including the service operator, such as private messaging, secure calls, or sensitive document exchange. Use HTTPS alone when protecting data in transit is enough and the server legitimately needs to read the payload.
 
-**An eCommerce Checkout**: 
-::: {.callout-note} **A good example where HTTPS alone is needed and not E2EE**: **An e-commerce checkout**. A typical checkout in an e-commerce site has payment card details, recipient address and other order details. This CANNOT be E2E encrypted. The server needs to read the intended recipient and his address. Here, HTTPS protects the payload during transit but let's server decrypt and understand it :::
+
+
+::: {.callout-note} 
+**An eCommerce Checkout**: <br>
+**A good example where HTTPS alone is needed and not E2EE**: **An e-commerce checkout**. A typical checkout in an e-commerce site has payment card details, recipient address and other order details. This CANNOT be E2E encrypted. The server needs to read the intended recipient and his address. Here, HTTPS protects the payload during transit but let's server decrypt and understand it 
+:::
 
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
@@ -246,13 +252,16 @@ flowchart LR
     classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
 ```
 
-::: {.callout-note} **Quick placement of all the "encryption" terms in this section:**
+::: {.callout-note} 
+
+**Quick placement of all the "encryption" terms in this section:**
 
 - **1.4 HTTPS** → protects data _in transit_ (each hop); server can read it.
 - **1.5 E2EE** → protects data _in transit_ end to end; server _cannot_ read it.
 - **1.6 Encryption at rest** → protects _stored_ data. **Server-side encryption (SSE)** = server holds keys and can read; **client-side encryption (CSE)** = client holds keys, server cannot read. 
 
-SSE is the default for almost everything; client-side encryption is for zero-trust situations where the storage provider must never see your plaintext (password vaults, regulated data):::
+SSE is the default for almost everything; client-side encryption is for zero-trust situations where the storage provider must never see your plaintext (password vaults, regulated data)
+:::
 
 
 ---
@@ -312,9 +321,7 @@ sequenceDiagram
 
 #### Interesting Note: How Do Millions of Live WebSocket Connections Actually Work for Whatsapp?
 
-_(best placed as a callout under 2.1 WebSocket, where the WebSocket example already appears)_
-
-::: {.callout-tip} **How does WhatsApp route a message across millions of open connections?**
+**How does WhatsApp route a message across millions of open connections?**
 
 A WebSocket is a _persistent_ connection, so at any moment WhatsApp is holding hundreds of millions of them, spread across a large fleet of chat servers. Each server physically holds only the connections for the users assigned to it.
 
