@@ -211,7 +211,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#clientserverdatabase-architecture" id="toc-clientserverdatabase-architecture" class="nav-link" data-scroll-target="#clientserverdatabase-architecture">1.1 Client–Server–Database Architecture</a></li>
   <li><a href="#how-a-client-finds-a-server-dns-and-ip-address" id="toc-how-a-client-finds-a-server-dns-and-ip-address" class="nav-link" data-scroll-target="#how-a-client-finds-a-server-dns-and-ip-address">1.2 How a Client Finds a Server: DNS and IP Address</a></li>
   <li><a href="#why-distance-matters-latency" id="toc-why-distance-matters-latency" class="nav-link" data-scroll-target="#why-distance-matters-latency">1.3 Why Distance Matters: Latency</a></li>
-  <li><a href="#security-in-transit-http-vs-https" id="toc-security-in-transit-http-vs-https" class="nav-link" data-scroll-target="#security-in-transit-http-vs-https">1.4 Security in Transit: HTTP vs HTTPS</a></li>
+  <li><a href="#encryption-on-the-wire-security-in-transit-https" id="toc-encryption-on-the-wire-security-in-transit-https" class="nav-link" data-scroll-target="#encryption-on-the-wire-security-in-transit-https">1.4 Encryption on the Wire (Security in Transit): HTTPS</a></li>
+  <li><a href="#encryption-beyond-the-wire-end2end-encryption" id="toc-encryption-beyond-the-wire-end2end-encryption" class="nav-link" data-scroll-target="#encryption-beyond-the-wire-end2end-encryption">1.5 Encryption Beyond the Wire: End2End Encryption</a></li>
+  <li><a href="#encryption-at-rest" id="toc-encryption-at-rest" class="nav-link" data-scroll-target="#encryption-at-rest">1.6 Encryption at Rest</a></li>
   </ul></li>
   <li><a href="#the-intermediaries-between-client-and-server" id="toc-the-intermediaries-between-client-and-server" class="nav-link" data-scroll-target="#the-intermediaries-between-client-and-server">2. The Intermediaries Between Client and Server</a>
   <ul class="collapse">
@@ -281,17 +283,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>▶️ Motivational Watch for Systems Thinking: <a href="https://www.youtube.com/watch?v=t0GiTyz4syY">Lenny’s Podcast featuring CXO of Netflix on - Why Netflix is betting on systems thinkers in the AI era</a></li>
 </ul>
 <hr>
-<p><img src="./images/main_blog_image_3.png" class="img-fluid"></p>
+<p><img src="./images/main_blog_image_4.png" class="img-fluid"></p>
 <section id="the-building-blocks-of-compositional-system-design---at-a-glance" class="level2">
 <h2 class="anchored" data-anchor-id="the-building-blocks-of-compositional-system-design---at-a-glance">📌 The Building Blocks of Compositional System Design - At A Glance</h2>
 <p>The structure of the blog follows how a request travels through a system:</p>
 <ol type="1">
-<li><strong>The Foundation: Client, Server, and Database</strong> — <em>How a request travels and where it goes</em>
+<li><strong>The Foundation: Client, Server, and Database</strong> — <em>How a request travels, where it goes, and how it stays secure</em>
 <ul>
 <li>1.1 Client–Server–Database Architecture</li>
 <li>1.2 How a Client Finds a Server: DNS and IP Address</li>
 <li>1.3 Why Distance Matters: Latency</li>
-<li>1.4 Security in Transit: HTTP vs HTTPS</li>
+<li>1.4 Encryption on the Wire (Security in Transit): HTTPS</li>
+<li>1.5 Encryption Beyond the Wire: End2End Encryption</li>
+<li>1.6 Encryption at Rest: Client-Side Encryption and Server-side Encryption</li>
 </ul></li>
 <li><strong>The Intermediaries Between Client and Server</strong> — <em>The APIs and proxies that sit in the middle</em>
 <ul>
@@ -429,8 +433,8 @@ flowchart LR
 </div>
 <p><strong>When to use:</strong> Treat latency as a key design input for interactive, real-time, geographically distributed, or dependency-heavy systems.</p>
 </section>
-<section id="security-in-transit-http-vs-https" class="level3">
-<h3 class="anchored" data-anchor-id="security-in-transit-http-vs-https">1.4 Security in Transit: HTTP vs HTTPS</h3>
+<section id="encryption-on-the-wire-security-in-transit-https" class="level3">
+<h3 class="anchored" data-anchor-id="encryption-on-the-wire-security-in-transit-https">1.4 Encryption on the Wire (Security in Transit): HTTPS</h3>
 <p><strong>What it is:</strong> HTTP carries web requests and responses in plain text. HTTPS wraps HTTP in a TLS-encrypted tunnel, adding confidentiality, server authentication, and integrity while data travels across the network.</p>
 <p><strong>How is it used?</strong> A TLS handshake sets up encryption once, then all traffic on that connection is protected from intermediaries.</p>
 <div class="cell" data-layout-align="default">
@@ -455,7 +459,129 @@ flowchart TD
 </div>
 </div>
 <p><strong>When to use:</strong> Use HTTPS for all production web and API communication, including internal service traffic where confidentiality or authenticity matters.</p>
+</section>
+<section id="encryption-beyond-the-wire-end2end-encryption" class="level3">
+<h3 class="anchored" data-anchor-id="encryption-beyond-the-wire-end2end-encryption">1.5 Encryption Beyond the Wire: End2End Encryption</h3>
+<p><strong>What it is:</strong> End-to-end encryption (E2EE) encrypts a message on the sender’s device with a key only the recipient can use, so it stays encrypted the entire way and even the server that relays it only ever sees ciphertext.</p>
+<p><strong>How is it used?</strong> The sender encrypts before sending; the message travels (over HTTPS) as ciphertext through the server, which stores and forwards it without being able to read it; the recipient decrypts on their device.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    A[Sender&lt;br/&gt;encrypts with recipient key]:::secure --&gt;|Ciphertext over HTTPS| S[Server&lt;br/&gt;stores and forwards&lt;br/&gt;cannot read content]:::control
+    S --&gt;|Ciphertext over HTTPS| B[Recipient&lt;br/&gt;decrypts on device]:::secure
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef secure fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>::: {.callout-note} <strong>HTTPS and E2EE are not the same thing.</strong> HTTPS secures each <em>hop</em> (client ↔︎ server), but the server can still read the plaintext. E2EE secures the <em>payload</em> end to end, so the server only handles ciphertext. Systems like WhatsApp and Signal use both together: HTTPS for transport, E2EE for message content. :::</p>
+<p><strong>When to use:</strong> Use E2EE when message content must remain private from everyone in the middle, including the service operator, such as private messaging, secure calls, or sensitive document exchange. Use HTTPS alone when protecting data in transit is enough and the server legitimately needs to read the payload.</p>
+<p><strong>An eCommerce Checkout</strong>: ::: {.callout-note} <strong>A good example where HTTPS alone is needed and not E2EE</strong>: <strong>An e-commerce checkout</strong>. A typical checkout in an e-commerce site has payment card details, recipient address and other order details. This CANNOT be E2E encrypted. The server needs to read the intended recipient and his address. Here, HTTPS protects the payload during transit but let’s server decrypt and understand it :::</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    U[Shopper&lt;br/&gt;submits order]:::client --&gt;|HTTPS: encrypted in transit| S[E-commerce Server&lt;br/&gt;reads address, cart, payment&lt;br/&gt;to process the order]:::compute
+    S --&gt; DB[(Order Database)]:::data
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="encryption-at-rest" class="level3">
+<h3 class="anchored" data-anchor-id="encryption-at-rest">1.6 Encryption at Rest</h3>
+<p><strong>What it is:</strong> Encryption at rest protects data while it is <strong>stored</strong> — on disk, in a database, in blob storage, or in backups. Even if someone steals the physical drive or a raw database file, the contents are unreadable without the key. (This is different from 1.4 and 1.5, which protect data <em>in transit</em>.)</p>
+<p><strong>How is it used?</strong> Data is encrypted before it is written to storage and decrypted when read back. The key question is <strong>who does the encrypting and holds the keys</strong> — the server, or the client. That split gives us the two variants below.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    D[Data to store]:::compute --&gt; ENC
+    ENC --&gt; DISK[(Stored as ciphertext&lt;br/&gt;in&lt;br/&gt;disk / DB / backups)]:::data
+
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef ENC fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="server-side-encryption-the-server-holds-the-keys" class="level4">
+<h4 class="anchored" data-anchor-id="server-side-encryption-the-server-holds-the-keys">Server-Side Encryption (the server holds the keys)</h4>
+<p>The client sends plaintext (over HTTPS); the <strong>server or storage service</strong> encrypts it before writing and decrypts it on read. Convenient and common, but the server <em>can</em> read the data.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    C::client --&gt;|Plaintext over HTTPS| S[Server / Storage Service&lt;br/&gt;encrypts + holds keys]:::control
+    S --&gt; D[(Encrypted at rest)]:::data
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="client-side-encryption-the-client-holds-the-keys" class="level4">
+<h4 class="anchored" data-anchor-id="client-side-encryption-the-client-holds-the-keys">Client-Side Encryption (the client holds the keys)</h4>
+<p>The <strong>client</strong> encrypts the data <em>before</em> sending it, so the server only ever stores ciphertext and cannot read it. Stronger privacy, but the client manages the keys.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    C[Client&lt;br/&gt;encrypts + holds keys]:::secure --&gt;|Ciphertext over HTTPS| S[Server / Storage Service&lt;br/&gt;cannot read]:::control
+    S --&gt; D[(Encrypted at rest)]:::data
+
+    classDef secure fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef data fill:#FFF8E1,stroke:#FB8C00,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>::: {.callout-note} <strong>Quick placement of all the “encryption” terms in this section:</strong></p>
+<ul>
+<li><strong>1.4 HTTPS</strong> → protects data <em>in transit</em> (each hop); server can read it.</li>
+<li><strong>1.5 E2EE</strong> → protects data <em>in transit</em> end to end; server <em>cannot</em> read it.</li>
+<li><strong>1.6 Encryption at rest</strong> → protects <em>stored</em> data. <strong>Server-side encryption (SSE)</strong> = server holds keys and can read; <strong>client-side encryption (CSE)</strong> = client holds keys, server cannot read.</li>
+</ul>
+<p>SSE is the default for almost everything; client-side encryption is for zero-trust situations where the storage provider must never see your plaintext (password vaults, regulated data):::</p>
 <hr>
+</section>
 </section>
 </section>
 <section id="the-intermediaries-between-client-and-server" class="level2">
@@ -468,7 +594,11 @@ flowchart TD
 </section>
 <section id="standard-request-response-vs-websocket-vs-sse" class="level3">
 <h3 class="anchored" data-anchor-id="standard-request-response-vs-websocket-vs-sse">2.1 Standard Request-Response vs WebSocket vs SSE</h3>
-<p><strong>What it is:</strong> Three communication models that differ on two axes — <strong>who can initiate</strong> a message, and <strong>how long the connection stays open</strong>.</p>
+<p><strong>What it is:</strong> Three communication models that differ on two axes</p>
+<ul>
+<li><strong>who can initiate</strong> a message, and</li>
+<li><strong>how long the connection stays open</strong>.</li>
+</ul>
 <p><strong>How is it used?</strong> Choose based on whether the server needs to push data, whether messaging must be two-way, and whether the connection should stay open.</p>
 <section id="standard-request-response" class="level4">
 <h4 class="anchored" data-anchor-id="standard-request-response">Standard Request-Response</h4>
@@ -528,6 +658,36 @@ Tip
 <p><strong>Example:</strong> Chat systems, multiplayer games, and collaborative editors (like a shared document) rely on WebSockets, because both the user and the server need to push updates instantly.</p>
 </div>
 </div>
+</section>
+<section id="interesting-note-how-do-millions-of-live-websocket-connections-actually-work-for-whatsapp" class="level4">
+<h4 class="anchored" data-anchor-id="interesting-note-how-do-millions-of-live-websocket-connections-actually-work-for-whatsapp">Interesting Note: How Do Millions of Live WebSocket Connections Actually Work for Whatsapp?</h4>
+<p><em>(best placed as a callout under 2.1 WebSocket, where the WebSocket example already appears)</em></p>
+<p>::: {.callout-tip} <strong>How does WhatsApp route a message across millions of open connections?</strong></p>
+<p>A WebSocket is a <em>persistent</em> connection, so at any moment WhatsApp is holding hundreds of millions of them, spread across a large fleet of chat servers. Each server physically holds only the connections for the users assigned to it.</p>
+<p>That creates one hard problem: when User A (connected to Server 1) messages User B, the system must know <strong>which server currently holds B’s live connection.</strong></p>
+<p>The answer is a <strong>connection (session) registry</strong> — a fast, shared, in-memory lookup of <code>user → server</code>. The flow is:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    CS1[Chat Server 1&lt;br/&gt;holds User A]:::compute --&gt;|Where is User B?| REG[(Connection Registry&lt;br/&gt;user → server)]:::special
+    REG --&gt;|B is on Server 2| CS1
+    CS1 --&gt;|Route message| CS2[Chat Server 2&lt;br/&gt;holds User B]:::compute
+    CS2 --&gt; B[Phone B]:::client
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    classDef special fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>This registry is what lets a fleet of stateful connection servers behave like one system.</p>
 </section>
 <section id="server-sent-events-sse" class="level4">
 <h4 class="anchored" data-anchor-id="server-sent-events-sse">Server-Sent Events (SSE)</h4>
