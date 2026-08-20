@@ -260,7 +260,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#cap-theorem" id="toc-cap-theorem" class="nav-link" data-scroll-target="#cap-theorem">7.1 CAP Theorem</a></li>
   <li><a href="#message-queues" id="toc-message-queues" class="nav-link" data-scroll-target="#message-queues">7.2 Message Queues</a></li>
-  <li><a href="#rate-limiting" id="toc-rate-limiting" class="nav-link" data-scroll-target="#rate-limiting">7.3 Rate Limiting</a></li>
+  <li><a href="#pubsub---publishsubscribe" id="toc-pubsub---publishsubscribe" class="nav-link" data-scroll-target="#pubsub---publishsubscribe">7.3 Pub/Sub - Publish/Subscribe</a></li>
+  <li><a href="#rate-limiting" id="toc-rate-limiting" class="nav-link" data-scroll-target="#rate-limiting">7.4 Rate Limiting</a></li>
   </ul></li>
   <li><a href="#closing-thought" id="toc-closing-thought" class="nav-link" data-scroll-target="#closing-thought">Closing Thought</a></li>
   </ul>
@@ -345,7 +346,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Other Key Concepts</strong> — <em>Distributed system realities</em>
 <ul>
 <li>7.1 CAP Theorem</li>
-<li>7.2 Message Queues</li>
+<li>7.2 Message Queues (one publisher to one consumer)</li>
+<li>7.3 Pub/Sub - Publish/Subscribe (one publisher to many subscribers)</li>
 <li>7.3 Rate Limiting</li>
 </ul></li>
 </ol>
@@ -1744,8 +1746,47 @@ flowchart LR
 </div>
 <p><strong>When to use:</strong> Use queues for deferred work, traffic buffering, failure isolation, background processing, and workflows that can tolerate asynchronous completion. Make consumers idempotent when duplicate delivery is possible.</p>
 </section>
+<section id="pubsub---publishsubscribe" class="level3">
+<h3 class="anchored" data-anchor-id="pubsub---publishsubscribe">7.3 Pub/Sub - Publish/Subscribe</h3>
+<p><strong>What it is:</strong> A messaging pattern where publishers send messages to a named topic and any number of subscribers receive them, without publishers and subscribers knowing about each other. It is a one-to-many <em>broadcast</em>, in contrast to a queue’s typically one-to-one <em>work hand-off</em>.</p>
+<p><strong>How is it used?</strong> A publisher emits an event to a topic; the broker fans it out to every current subscriber of that topic, so many independent services can react to the same event at once.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    PUB::compute --&gt;|Publish event| T[(Topic)]:::control
+    T --&gt; S1[Subscriber A&lt;br/&gt;e.g. email service]:::compute
+    T --&gt; S2[Subscriber B&lt;br/&gt;e.g. analytics]:::compute
+    T --&gt; S3[Subscriber C&lt;br/&gt;e.g. audit log]:::compute
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Queue vs Pub/Sub, the one-line difference:</strong> a queue usually delivers each message to <em>one</em> consumer that does the work; pub/sub delivers each message to <em>every</em> subscriber interested in that topic. Use a queue to <em>distribute work</em>; use pub/sub to <em>broadcast an event</em>.</p>
+</div>
+</div>
+<p><strong>When to use:</strong> Use pub/sub when one event must trigger several independent reactions (order placed → notify user, update analytics, adjust inventory)</p>
+</section>
 <section id="rate-limiting" class="level3">
-<h3 class="anchored" data-anchor-id="rate-limiting">7.3 Rate Limiting</h3>
+<h3 class="anchored" data-anchor-id="rate-limiting">7.4 Rate Limiting</h3>
 <p><strong>What it is:</strong> Rate limiting controls how many requests a caller can make within a period or available capacity.</p>
 <p><strong>How is it used?</strong> A limiter tracks usage by identity, token, IP, tenant, or route and either allows, delays, or rejects requests when the policy is exceeded.</p>
 <div class="cell" data-layout-align="default">
