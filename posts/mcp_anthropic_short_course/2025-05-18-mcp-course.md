@@ -31,7 +31,13 @@ Source: Author's Personal Understanding
 > - These are notes where many of the lines would have been directly taken from course material. <br>
 > - Sources are attributed to all pics for clarity
 
-# 1. Introduction
+---
+
+> **📌 A note on freshness (added later):** These notes are based on the MCP spec as of **early-mid 2025** (course used ~`2025-03-26`). The protocol has since shipped **three** revisions — `2025-06-18`, `2025-11-25`, and the now-stable **`2026-07-28`**, which made the protocol **stateless** (no `initialize` handshake, no sessions). Where something has changed materially, I've added a **🔄 Update** callout inline. For anything authoritative, check the [latest spec](https://modelcontextprotocol.io/specification/2025-06-18).
+
+---
+
+# 1. Introduction: What MCP Actually Is
 
 - [The Model Context Protocol (MCP), introduced by Anthropic](https://modelcontextprotocol.io/introduction) is a standardized **protocol** for supplying structured, real-time **context** (such as tools and data) to large language **models** (LLMs).
 
@@ -54,7 +60,16 @@ The server processes the request and gathers the necessary information.
 The server sends a response back to the client.
 The client displays the response to the user. 
 ```
- 
+
+In **MCP specifically**, this Client - Server model undergoes a minor modification:
+
+> - **Host** — the LLM application the user interacts with (Claude Desktop, an IDE, an agent).
+> - **MCP Client** — a *connector inside the Host* that holds a **1:1 session with exactly one MCP Server**. It is **not** a browser or an app; a Host spins up one Client per Server it talks to.
+> - **MCP Server** — a lightweight program exposing Tools / Resources / Prompts.
+>
+> So a Host with 3 servers runs 3 clients. This triad - Host, MCP Client and MCP Server - is the single most important concept in MCP
+
+
 ## Flow of the Course
 
 **Steps of learning in this course**:
@@ -74,7 +89,7 @@ The client displays the response to the user.
 
 ---
 
-# 2. Why MCP
+# 2. Why MCP? From Custom Glue to a Standard
 
 ## **Without MCP**
 
@@ -82,8 +97,23 @@ The client displays the response to the user.
 
 Source: DeepLearning.ai MCP Course
 
-- MCP is similar to Rest APIs (that standardized way/protocol for Web Applications to interact with backend)
+- MCP is *similar in spirit* to REST APIs — a standardized way for applications to talk to a backend. The popular one-liner is **"USB-C for AI"**.
+- **But two differences matter:** 
+    - (1) MCP uses [**JSON-RPC 2.0**, not REST](https://nordicapis.com/json-rpc-vs-rest-when-should-api-developers-use-each/); 
+    - (2) MCP adds **capability discovery** and **server-initiated** interactions (e.g.: sampling - discussed in section 10.2 ) that REST does not have. 
 
+```{mermaid}
+flowchart LR
+    subgraph REST["REST (one-way)"]
+        C1[Client] -->|request| S1[Server]
+        S1 -.->|response only| C1
+    end
+    subgraph MCP["MCP (bidirectional)"]
+        C2[Client] -->|call tool| S2[Server]
+        S2 -.->|response| C2
+        S2 ==>|server-initiated:<br/>sampling / elicitation / roots| C2
+    end
+```
 
 ## **With MCP**
 
@@ -123,7 +153,7 @@ Source: DeepLearning.ai MCP Course
 ---
 
 
-# 3. MCP Client Server Architecture
+# 3. MCP Client Server Architecture: The Core Triad - Host, Client, Server
 
 ![](./images/mcp_client_server_arch.png)
 Source: DeepLearning.ai MCP Course
@@ -135,7 +165,7 @@ Source: DeepLearning.ai MCP Course
 ![](./images/how_does_mcp_client_server_arch_work.png)
 
 
-## Primitives of MCP
+## Primitives of MCP: What a MCP Server Exposes - Tools, Resources and Prompts
 
 Before we discuss the client-server architecture, let us discuss the **primitives** or **fundamental pieces** of the protocol
 
@@ -157,33 +187,129 @@ Source: DeepLearning.ai MCP Course
 
 ## MCP Communication Lifecycle
 
-![](./images/mcp_communication_lifecycle.png)
-Source: DeepLearning.ai MCP Course
+## 3.2 Communication Lifecycle: How Host ↔ Client ↔ Server ↔ Tool Talk
 
-![](./images/mcp_transports.png)
-Source: DeepLearning.ai MCP Course
+> **🔄 Fully updated for the `2026-07-28` spec.** The original course diagrams showed a **stateful** lifecycle (an `initialize` → `initialized` handshake, then message exchange, then termination). As of `2026-07-28`, MCP is **stateless**: there is **no handshake and no session**. I've redrawn everything below to match the current protocol; the old handshake is kept only as a "legacy" note.
 
-![](./images/stdio_exchange_for_local_communication.png)
-Source: DeepLearning.ai MCP Course
+The lifecycle has two layers worth separating:
 
-![](./images/remote_server_exchange.png)
-Source: DeepLearning.ai MCP Course
+- **The wire rule** — *how* a message is framed and sent (the **transport**: `stdio` or **Streamable HTTP**).
+- **The conversation** — *what* client and server say (discover → call tools → server asks back if needed).
 
-![](./images/streamable_http.png)
-Source: DeepLearning.ai MCP Course
+---
 
-## A Brief Note about A Demo Video in the Course
+### 3.2.1 The conversation (transport-independent)
 
-> *In the course, I saw a wonderful demo of how MCP servers and tools were used in Claude Desktop*
+In the modern protocol there is **no setup phase**. Every request is **self-describing** — it carries its own protocol version and capabilities in `_meta` — so the server can accept or reject each request on its own.
 
-- Before drafting the prompt in Claud Desktop (a tool similar to ChatGPT for the unfamiliar folks), the author shows how he has various mcp tools for SQL lite processing at his disposal. 
-- The Claude desktop uses "an MCP tool" (under the mcp server) called `list_tables` and then also does a `read_query` mcp tool for the question `what tables do I have and how many records aren  there`
-- There are several tool calls being made seamlessly one after the other
-- He is then asking for "Generate a visualization based on data in the products table"
-- The LLM responses in following steps:
-    - At first, the llm lists the tools that are at its disposal
-    - Then, runs `read_query` tool to fetch data of `products_table`
-    - It then creats a "javascript" visualization via an another tool 
+```mermaid
+sequenceDiagram
+    participant C as MCP Client
+    participant S as MCP Server
+
+    Note over C,S: No handshake. Every request is self-describing.
+
+    opt Optional up-front check
+        C->>S: server/discover
+        S-->>C: supported versions + capabilities + identity
+    end
+
+    C->>S: tools/list  (version + capabilities in _meta)
+    S-->>C: available tools
+
+    C->>S: tools/call  (e.g. read_query)
+    S-->>C: result
+
+    Note over C,S: Version mismatch? -> UnsupportedProtocolVersionError
+```
+
+- **No `initialize` handshake.** Each request declares its version in `_meta` (and, on HTTP, the `MCP-Protocol-Version` header). The server replies with `UnsupportedProtocolVersionError` if it can't speak that version.
+- **`server/discover` is optional.** Servers **MUST** implement it; a client **MAY** call it first to learn versions/capabilities up front, or just fire an RPC and handle the mismatch error.
+- **Why this matters:** because no request depends on a prior "session", any request can land on **any server instance** behind a plain load balancer.
+
+---
+
+### 3.2.2 When the server needs something back (MRTR)
+
+The one case that isn't plain request→response: the server needs the **client's LLM (sampling)**, the **user (elicitation)**, or **file scope (roots)**. Instead of holding a bidirectional stream open, the server returns an **`input_required`** result; the client supplies the input on a **retry**. This is **Multi Round-Trip Requests (MRTR)**.
+
+```{mermaid}
+sequenceDiagram
+    participant C as MCP Client
+    participant S as MCP Server
+
+    C->>S: tools/call (summarize a huge doc)
+    S-->>C: InputRequiredResult (needs an LLM completion)
+    C->>C: run the LLM (sampling)
+    C->>S: retry, now with the completion
+    S-->>C: final result
+```
+
+- **The idea survives, the plumbing changed.** Sampling / elicitation / roots (§10.2) are now delivered as structured round-trips, not push-over-an-open-stream.
+- **Net effect:** the server can still "call back", but nothing has to stay connected between calls.
+
+---
+
+### 3.2.3 Transports: how bytes actually move
+
+A **transport** handles the underlying mechanics of sending/receiving messages. Two are defined:
+
+| Transport | Use it for | Shape |
+|---|---|---|
+| **`stdio`** | Server running **locally** (most common for desktop) | Client launches server as a **subprocess**; JSON-RPC over stdin/stdout |
+| **Streamable HTTP** | **Remote** servers | A single HTTP endpoint; each message is its own POST |
+
+> **🔄 Update:** The old **HTTP+SSE** transport (2024-11-05) is **deprecated**. **Streamable HTTP** (introduced 2025-03-26) is the remote transport, and `2026-07-28` further simplified it — see below.
+
+---
+
+### 3.2.4 `stdio` — local servers
+
+```{mermaid}
+sequenceDiagram
+    participant C as MCP Client
+    participant S as MCP Server (subprocess)
+
+    C->>S: launch as subprocess
+    C->>S: write JSON-RPC to stdin (one msg per line)
+    S-->>C: write JSON-RPC to stdout (one msg per line)
+    S-->>C: stderr = logs only (not protocol)
+    C->>S: close stdin -> server exits
+```
+
+- **One subprocess, two pipes.** Client writes requests to the server's **stdin**; server writes responses to **stdout**. Messages are **newline-delimited** JSON-RPC (no embedded newlines).
+- **`stderr` is for logs**, not protocol. The client may capture or ignore it and **should not** treat output there as an error.
+- **Shutdown is just closing stdin** and waiting for the process to exit (force-kill only if it hangs).
+- **No header layer:** version, capabilities, and identity all ride **inline** in the message's `_meta`.
+
+---
+
+### 3.2.5 Streamable HTTP — remote servers
+
+```{mermaid}
+sequenceDiagram
+    participant C as MCP Client
+    participant S as MCP Server (remote)
+
+    Note over C,S: One endpoint (e.g. POST /mcp). No sessions, no GET stream.
+
+    C->>S: POST /mcp  (tools/list)
+    S-->>C: application/json  (or SSE stream for this one request)
+
+    C->>S: POST /mcp  (tools/call)
+    S-->>C: SSE stream: progress... then final result
+```
+
+- **One endpoint, POST-only.** Every JSON-RPC message is its **own POST** to a single MCP endpoint (e.g. `/mcp`). The server answers each with either a plain JSON body **or** an SSE stream **scoped to that one request** (for progress + final result).
+- **`2026-07-28` removed two things:** the separate **GET stream endpoint** and **protocol-level sessions** (`Mcp-Session-Id` is gone). That's what makes it **stateless** and horizontally scalable behind a round-robin load balancer.
+- **Routing on headers:** the method and tool names travel in `Mcp-Method` / `Mcp-Name` headers, so gateways can route/authorize without parsing the body.
+- **Server-to-client** work (sampling/elicitation/roots) uses **MRTR** (§3.2.2); long-lived change notifications use a `subscriptions/listen` request.
+- **Security basics:** validate the `Origin` header (DNS-rebinding defense); bind local servers to `127.0.0.1`; require auth on remote endpoints.
+
+---
+
+> **Legacy note (for context):** If you learned MCP in 2025, you'll remember the three-step **Initialization → Message Exchange → Termination** lifecycle with an `initialize`/`initialized` handshake and a session ID. Servers can still support those **legacy clients** in a "dual-era" mode, but the **modern default is stateless** — no handshake, no session.
+
 
 
 ## Code Examples
@@ -219,6 +345,7 @@ def list_docs()
 - `extract_info()`
 
 **Tool_Schema**
+
 - Create the tool schema in a json format
 - Tool mapping and tool execution functions
 
@@ -423,8 +550,11 @@ Source: DeepLearning.ai MCP Course
 
 ## 10.4 MCP Registry API
 
-- Like a Docker Registry or Python Package Manager, MCP would also have an official list of Servers and Clients held in a registy. That is useful to keep in server_config.json. It allows versioning. 
-- 
+- Like a Docker Registry or package manager, MCP now has an **official Registry (since Sept 2025)**, backed by Anthropic, GitHub, Microsoft, and PulseMCP.
+- Servers publish a **`server.json`** (name, where to run, args/env); namespaces are **DNS/GitHub-verified** (e.g. nobody but Microsoft can publish `io.github.microsoft/...`). It's a **catalog of metadata, not a host** — code still lives in npm/PyPI/containers.
+- Downstream directories (PulseMCP, Glama, mcp.so) consume this API and add curation/ratings on top.
+
+
 
 ![](./images/mcp_registry_api.png)
 Source: DeepLearning.ai MCP Course
@@ -442,3 +572,22 @@ Source: DeepLearning.ai MCP Course
 ## 10.5 Other Evolving Topics
 ![](./images/other_evolving_mcp_topics.png)
 Source: DeepLearning.ai MCP Course
+
+---
+
+> *Updated in Aug'26: Newly updated sections are below*
+
+# 11. Security & Trust
+
+# 11. Security & Trust (the part the course under-covered)
+
+MCP's power — letting an LLM discover and call arbitrary tools from arbitrary servers — is also its risk surface. 
+
+Key Issues the MCP implementation could face: 
+
+- **Tool poisoning / prompt injection via descriptions:** A server's tool *descriptions* are read by the model. A malicious or compromised server can smuggle instructions there. Treat server metadata as untrusted input.
+- **Confused-deputy:** Your Host holds credentials; a rogue server can try to get the Host to act on its behalf. Scope tokens tightly.
+- **Provenance > convenience:** Prefer servers from the **official Registry with verified namespaces** over pasting install commands from a forum post (see §10.4).
+- **Least privilege:** Only expose the tools/resources a task needs; watch out for **tool-count bloat**, which both inflates context and widens attack surface.
+
+> Rule of thumb: *"Would I run this server's code on my laptop with my API keys?"* If not, don't connect it.
