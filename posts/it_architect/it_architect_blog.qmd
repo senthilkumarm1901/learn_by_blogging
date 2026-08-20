@@ -73,7 +73,8 @@ The structure of the blog follows how a request travels through a system:
     * 6.2 Edge Caching in a Content Delivery Network
 7. **Other Key Concepts** — *Distributed system realities*
     * 7.1 CAP Theorem
-    * 7.2 Message Queues
+    * 7.2 Message Queues (one publisher to one consumer)
+    * 7.3 Pub/Sub - Publish/Subscribe (one publisher to many subscribers)
     * 7.3 Rate Limiting
 
 ---
@@ -1126,7 +1127,31 @@ flowchart LR
 
 **When to use:** Use queues for deferred work, traffic buffering, failure isolation, background processing, and workflows that can tolerate asynchronous completion. Make consumers idempotent when duplicate delivery is possible.
 
-### 7.3 Rate Limiting
+### 7.3 Pub/Sub - Publish/Subscribe
+
+**What it is:** A messaging pattern where publishers send messages to a named topic and any number of subscribers receive them, without publishers and subscribers knowing about each other. It is a one-to-many _broadcast_, in contrast to a queue's typically one-to-one _work hand-off_.
+
+**How is it used?** A publisher emits an event to a topic; the broker fans it out to every current subscriber of that topic, so many independent services can react to the same event at once.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    PUB::compute -->|Publish event| T[(Topic)]:::control
+    T --> S1[Subscriber A<br/>e.g. email service]:::compute
+    T --> S2[Subscriber B<br/>e.g. analytics]:::compute
+    T --> S3[Subscriber C<br/>e.g. audit log]:::compute
+
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+```
+
+::: {.callout-note} 
+**Queue vs Pub/Sub, the one-line difference:** a queue usually delivers each message to _one_ consumer that does the work; pub/sub delivers each message to _every_ subscriber interested in that topic. Use a queue to _distribute work_; use pub/sub to _broadcast an event_. 
+:::
+
+**When to use:** Use pub/sub when one event must trigger several independent reactions (order placed → notify user, update analytics, adjust inventory)
+
+### 7.4 Rate Limiting
 
 **What it is:** Rate limiting controls how many requests a caller can make within a period or available capacity.
 
