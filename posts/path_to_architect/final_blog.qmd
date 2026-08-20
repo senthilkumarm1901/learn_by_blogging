@@ -33,12 +33,58 @@ output-file: path_to_architect.html
 
 ## Agenda
 
-* I. What is Software Architecture - A Set of Hedging Techniques
-* II. The Five-Pillar Lens of Architecture Decisions
-* III. Where do you stand as an Architect? - The Leadership matrix, Explorer Reset, and the HIPPO effect
-* IV. Translating technical bets into business language
-* V. A Few More Frameworks to fine-tune Architecture Thinking
-* VI. Closing thoughts
+* First Things First - Understanding Requirements: The "Problem Framing" Frontend
+* What is Software Architecture - A Set of Hedging Techniques
+* The Five-Pillar Lens of Architecture Decisions
+* Where do you stand as an Architect? - The Leadership matrix, Explorer Reset, and the HIPPO effect
+* Translating technical bets into business language
+* A Few More Frameworks to fine-tune Architecture Thinking
+* Closing thoughts
+
+---
+
+## 0. Understanding Requirements: The "Problem Framing" Frontend to Architecture Decisions
+
+This section - Business Requirements Understanding - sits before architecture decisions. 
+
+Understanding requirements is a pre-requisite before
+
+* Part 1 - Sizing a bet (MVE-will be discussed later) or 
+* Part 2 - Hedge the bet taken (architecture) 
+
+
+```{mermaid}
+flowchart LR
+    A["Part 0: Frame the problem<br/>Requirements + Constraints"] --> B["Part 1: Is it worth building?<br/>MVE / Spike"]
+    B --> C["Part 2: Survive being wrong<br/>Architecture Hedging"]
+    C --> D["Engineering builds the bet"]
+```
+
+### From Business Requirements to Architecture decisions
+
+```{mermaid}
+flowchart TD
+    BR["Business Requirements<br/><br/><i>Why — goals, outcomes, ROI</i>"] --> SR["Stakeholder Requirements<br/><br/><i>Who needs what</i>"]
+    SR --> FR["Functional Requirements<br/><br/><i>What the system does</i>"]
+    SR --> NFR["Non-Functional Requirements<br/><br/><i>How well it must do it</i>"]
+    CON["Constraints<br/><br/><i>Budget, regulatory, tech, time</i>"] --> ASR
+    ASM["Assumptions<br/><br/><i>What we bet is true</i>"] --> ASR
+    FR --> ASR["Architecturally<br/><br/>Significant Requirements"]
+    NFR --> ASR
+    ASR --> DEC["Architecture Decisions"]
+```
+
+Before asking "is it worth building," an architect asks "do I understand what is being asked?" Requirements are not flat. They form a hierarchy:
+
+* Business Requirements — the why. The outcome the business is funding.
+* Functional Requirements — the what. The behavior the system must exhibit.
+* Non-Functional Requirements (Quality Attributes) — the how well. Latency, availability, security, scalability. Architecture is driven far more by NFRs than by features.
+* Constraints — the non-negotiables. Budget, compliance, existing stack, deadline.
+* Assumptions — the unstated bets. Documented, because every one of them can be wrong.
+
+> * The trap: treating every requirement as equally important. 
+> * The skill is isolating the Architecturally Significant Requirements — the small subset that, if wrong, is expensive to reverse. Those, and only those, drive the hedging in Part 2.
+
 
 ---
 
