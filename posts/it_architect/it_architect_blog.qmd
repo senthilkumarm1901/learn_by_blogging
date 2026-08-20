@@ -230,7 +230,7 @@ The client sends plaintext (over HTTPS); the **server or storage service** encry
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
-    C::client -->|Plaintext over HTTPS| S[Server / Storage Service<br/>encrypts + holds keys]:::control
+    C["Client"]:::client -->|Plaintext over HTTPS| S[Server / Storage Service<br/>encrypts + holds keys]:::control
     S --> D[(Encrypted at rest)]:::data
 
     classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
@@ -1136,7 +1136,7 @@ flowchart LR
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
-    PUB::compute -->|Publish event| T[(Topic)]:::control
+    PUB["Publisher"]::compute -->|Publish event| T[(Topic)]:::control
     T --> S1[Subscriber A<br/>e.g. email service]:::compute
     T --> S2[Subscriber B<br/>e.g. analytics]:::compute
     T --> S3[Subscriber C<br/>e.g. audit log]:::compute
