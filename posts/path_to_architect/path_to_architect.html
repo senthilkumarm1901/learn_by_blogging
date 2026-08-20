@@ -169,6 +169,10 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#agenda" id="toc-agenda" class="nav-link active" data-scroll-target="#agenda">Agenda</a></li>
+  <li><a href="#understanding-requirements-the-problem-framing-frontend-to-architecture-decisions" id="toc-understanding-requirements-the-problem-framing-frontend-to-architecture-decisions" class="nav-link" data-scroll-target="#understanding-requirements-the-problem-framing-frontend-to-architecture-decisions">0. Understanding Requirements: The “Problem Framing” Frontend to Architecture Decisions</a>
+  <ul class="collapse">
+  <li><a href="#from-business-requirements-to-architecture-decisions" id="toc-from-business-requirements-to-architecture-decisions" class="nav-link" data-scroll-target="#from-business-requirements-to-architecture-decisions">From Business Requirements to Architecture decisions</a></li>
+  </ul></li>
   <li><a href="#i.-the-first-princples-thinking-what-is-software-architecture" id="toc-i.-the-first-princples-thinking-what-is-software-architecture" class="nav-link" data-scroll-target="#i.-the-first-princples-thinking-what-is-software-architecture">I. The First Princples Thinking: What is Software Architecture?</a>
   <ul class="collapse">
   <li><a href="#architectural-thinking-hedging-strategies" id="toc-architectural-thinking-hedging-strategies" class="nav-link" data-scroll-target="#architectural-thinking-hedging-strategies">Architectural Thinking = Hedging Strategies</a></li>
@@ -176,10 +180,13 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#ii.-the-five-pillar-lens-of-product-architecture-decisions" id="toc-ii.-the-five-pillar-lens-of-product-architecture-decisions" class="nav-link" data-scroll-target="#ii.-the-five-pillar-lens-of-product-architecture-decisions">II. The Five-Pillar Lens of Product / Architecture Decisions</a>
   <ul class="collapse">
   <li><a href="#what-each-pillar-is-and-isnt" id="toc-what-each-pillar-is-and-isnt" class="nav-link" data-scroll-target="#what-each-pillar-is-and-isnt">What Each Pillar Is and Isn’t</a></li>
+  <li><a href="#the-quality-pillar-is-where-nfrs-live-and-get-measured" id="toc-the-quality-pillar-is-where-nfrs-live-and-get-measured" class="nav-link" data-scroll-target="#the-quality-pillar-is-where-nfrs-live-and-get-measured">The Quality Pillar is where NFRs live — and get <em>measured</em></a></li>
+  <li><a href="#constraints-assumptions-as-first-class-citizens" id="toc-constraints-assumptions-as-first-class-citizens" class="nav-link" data-scroll-target="#constraints-assumptions-as-first-class-citizens">Constraints &amp; Assumptions as First-Class Citizens</a></li>
   </ul></li>
   <li><a href="#iii.-leadership-matrix-and-the-hippo-effect" id="toc-iii.-leadership-matrix-and-the-hippo-effect" class="nav-link" data-scroll-target="#iii.-leadership-matrix-and-the-hippo-effect">III. Leadership Matrix and the HIPPO Effect</a>
   <ul class="collapse">
   <li><a href="#a-note-on-informal-power-the-hippo-effect" id="toc-a-note-on-informal-power-the-hippo-effect" class="nav-link" data-scroll-target="#a-note-on-informal-power-the-hippo-effect">A note on informal power: the HIPPO effect</a></li>
+  <li><a href="#conways-law-the-org-chart-becomes-the-architecture" id="toc-conways-law-the-org-chart-becomes-the-architecture" class="nav-link" data-scroll-target="#conways-law-the-org-chart-becomes-the-architecture">Conway’s Law: the org chart becomes the architecture</a></li>
   </ul></li>
   <li><a href="#iv.-translating-technical-bets-into-business-language" id="toc-iv.-translating-technical-bets-into-business-language" class="nav-link" data-scroll-target="#iv.-translating-technical-bets-into-business-language">IV. Translating Technical Bets into Business Language</a>
   <ul class="collapse">
@@ -220,22 +227,77 @@ ul.task-list li input[type="checkbox"] {
 <section id="agenda" class="level2">
 <h2 class="anchored" data-anchor-id="agenda">Agenda</h2>
 <ul>
-<li>I. What is Software Architecture - A Set of Hedging Techniques</li>
-<li><ol start="2" type="I">
+<li>First Things First - Understanding Requirements: The “Problem Framing” Frontend</li>
+<li>What is Software Architecture - A Set of Hedging Techniques</li>
 <li>The Five-Pillar Lens of Architecture Decisions</li>
-</ol></li>
-<li><ol start="3" type="I">
 <li>Where do you stand as an Architect? - The Leadership matrix, Explorer Reset, and the HIPPO effect</li>
-</ol></li>
-<li><ol start="4" type="I">
 <li>Translating technical bets into business language</li>
-</ol></li>
-<li>V. A Few More Frameworks to fine-tune Architecture Thinking</li>
-<li><ol start="6" type="I">
+<li>A Few More Frameworks to fine-tune Architecture Thinking</li>
 <li>Closing thoughts</li>
-</ol></li>
 </ul>
 <hr>
+</section>
+<section id="understanding-requirements-the-problem-framing-frontend-to-architecture-decisions" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-requirements-the-problem-framing-frontend-to-architecture-decisions">0. Understanding Requirements: The “Problem Framing” Frontend to Architecture Decisions</h2>
+<p>This section - Business Requirements Understanding - sits before architecture decisions.</p>
+<p>Understanding requirements is a pre-requisite before</p>
+<ul>
+<li>Part 1 - Sizing a bet (MVE-will be discussed later) or</li>
+<li>Part 2 - Hedge the bet taken (architecture)</li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A["Part 0: Frame the problem&lt;br/&gt;Requirements + Constraints"] --&gt; B["Part 1: Is it worth building?&lt;br/&gt;MVE / Spike"]
+    B --&gt; C["Part 2: Survive being wrong&lt;br/&gt;Architecture Hedging"]
+    C --&gt; D["Engineering builds the bet"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="from-business-requirements-to-architecture-decisions" class="level3">
+<h3 class="anchored" data-anchor-id="from-business-requirements-to-architecture-decisions">From Business Requirements to Architecture decisions</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    BR["Business Requirements&lt;br/&gt;&lt;br/&gt;&lt;i&gt;Why — goals, outcomes, ROI&lt;/i&gt;"] --&gt; SR["Stakeholder Requirements&lt;br/&gt;&lt;br/&gt;&lt;i&gt;Who needs what&lt;/i&gt;"]
+    SR --&gt; FR["Functional Requirements&lt;br/&gt;&lt;br/&gt;&lt;i&gt;What the system does&lt;/i&gt;"]
+    SR --&gt; NFR["Non-Functional Requirements&lt;br/&gt;&lt;br/&gt;&lt;i&gt;How well it must do it&lt;/i&gt;"]
+    CON["Constraints&lt;br/&gt;&lt;br/&gt;&lt;i&gt;Budget, regulatory, tech, time&lt;/i&gt;"] --&gt; ASR
+    ASM["Assumptions&lt;br/&gt;&lt;br/&gt;&lt;i&gt;What we bet is true&lt;/i&gt;"] --&gt; ASR
+    FR --&gt; ASR["Architecturally&lt;br/&gt;&lt;br/&gt;Significant Requirements"]
+    NFR --&gt; ASR
+    ASR --&gt; DEC["Architecture Decisions"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Before asking “is it worth building,” an architect asks “do I understand what is being asked?” Requirements are not flat. They form a hierarchy:</p>
+<ul>
+<li>Business Requirements — the why. The outcome the business is funding.</li>
+<li>Functional Requirements — the what. The behavior the system must exhibit.</li>
+<li>Non-Functional Requirements (Quality Attributes) — the how well. Latency, availability, security, scalability. Architecture is driven far more by NFRs than by features.</li>
+<li>Constraints — the non-negotiables. Budget, compliance, existing stack, deadline.</li>
+<li>Assumptions — the unstated bets. Documented, because every one of them can be wrong.</li>
+</ul>
+<blockquote class="blockquote">
+<ul>
+<li>The trap: treating every requirement as equally important.</li>
+<li>The skill is isolating the Architecturally Significant Requirements — the small subset that, if wrong, is expensive to reverse. Those, and only those, drive the hedging in Part 2.</li>
+</ul>
+</blockquote>
+<hr>
+</section>
 </section>
 <section id="i.-the-first-princples-thinking-what-is-software-architecture" class="level2">
 <h2 class="anchored" data-anchor-id="i.-the-first-princples-thinking-what-is-software-architecture">I. The First Princples Thinking: What is Software Architecture?</h2>
@@ -331,6 +393,24 @@ ul.task-list li input[type="checkbox"] {
 <section id="what-each-pillar-is-and-isnt" class="level3">
 <h3 class="anchored" data-anchor-id="what-each-pillar-is-and-isnt">What Each Pillar Is and Isn’t</h3>
 <p><img src="./images/5-pillar-lens-2.png" class="img-fluid"></p>
+</section>
+<section id="the-quality-pillar-is-where-nfrs-live-and-get-measured" class="level3">
+<h3 class="anchored" data-anchor-id="the-quality-pillar-is-where-nfrs-live-and-get-measured">The Quality Pillar is where NFRs live — and get <em>measured</em></h3>
+<p>A pillar you cannot measure is a slogan. Quality is not a launch gate. It is the home of NFRs (reliability, recovery, latency, security) that must be verified continuously, not declared once.</p>
+<ul>
+<li>“99.9% uptime” is a wish. A <strong>fitness function</strong> (an automated check on an architectural characteristic) makes it a property.</li>
+<li>NFRs are <strong>leading indicators</strong>. The outcomes they protect (churn, revenue, trust) are <strong>lagging</strong>. Fix the leading ones first.</li>
+<li>Every NFR needs an owner, a number, and a test. Without them, it becomes silent debt elsewhere.</li>
+</ul>
+</section>
+<section id="constraints-assumptions-as-first-class-citizens" class="level3">
+<h3 class="anchored" data-anchor-id="constraints-assumptions-as-first-class-citizens">Constraints &amp; Assumptions as First-Class Citizens</h3>
+<p>Trade-offs happen inside a box. Constraints are the walls. Assumptions hold them up. Write both down before building, not mid-build.</p>
+<ul>
+<li><strong>Constraints</strong> are non-negotiables: budget, compliance, existing stack, deadline, team topology. You cannot “choose” what a constraint already decided.</li>
+<li><strong>Assumptions</strong> are unstated bets: expected load, data volumes, third-party SLAs, “the team knows Kubernetes.” Each can be wrong. Each is a hedging candidate for Part 2.</li>
+<li>Make them explicit. An unwritten constraint becomes a production incident. An unwritten assumption becomes a post-mortem line item.</li>
+</ul>
 <hr>
 </section>
 </section>
@@ -366,6 +446,13 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="a-note-on-informal-power-the-hippo-effect">A note on informal power: the HIPPO effect</h3>
 <p>The workshop makes a strong distinction between formal power and informal power. Formal power comes from a title. Informal power comes from trust, tenure, and perceived seniority.</p>
 <p><strong>What formal title offers</strong>: The <a href="https://t2informatik.de/en/smartpedia/hippo-effect/">HIPPO effect</a> (Highest Paid Person’s Opinion) is a well-known name for what happens when power overrides evidence.</p>
+</section>
+<section id="conways-law-the-org-chart-becomes-the-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="conways-law-the-org-chart-becomes-the-architecture">Conway’s Law: the org chart becomes the architecture</h3>
+<p>The HIPPO effect shows how <em>people in the room</em> shape a single decision. Conway’s Law shows how the <em>shape of the organization</em> shapes the entire system — whether you intend it or not.</p>
+<blockquote class="blockquote">
+<p>Any organization that designs a system will produce a design whose structure is a copy of the organization’s communication structure. — Melvin Conway</p>
+</blockquote>
 <p>Why architects should care:</p>
 <ul>
 <li>Data does not automatically win. Room dynamics do.</li>
