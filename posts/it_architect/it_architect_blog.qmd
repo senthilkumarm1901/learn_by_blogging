@@ -1134,9 +1134,8 @@ flowchart LR
 **How is it used?** A publisher emits an event to a topic; the broker fans it out to every current subscriber of that topic, so many independent services can react to the same event at once.
 
 ```{mermaid}
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
-    PUB["Publisher"]::compute -->|Publish event| T[(Topic)]:::control
+    PUB["Publisher"]:::compute -->|Publish event| T[(Topic)]:::control
     T --> S1[Subscriber A<br/>e.g. email service]:::compute
     T --> S2[Subscriber B<br/>e.g. analytics]:::compute
     T --> S3[Subscriber C<br/>e.g. audit log]:::compute
