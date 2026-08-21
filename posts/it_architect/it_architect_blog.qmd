@@ -11,7 +11,7 @@ categories:
 description: Explaining the building blocks of `Compositional System Design` that Systems Thinkers need to know.
 date: '2026-08-11'
 draft: false
-image: ./images/main_blog_image.png
+image: ./images/main_blog_image_corrected.png
 toc: true
 title: "Thinking Like a Technical Architect: A 101 Guide to System Design"
 output-file: it_architect.html
@@ -27,7 +27,7 @@ This learning blog is a structured consolidation of the learnings from the follo
 
 ---
 
-![](./images/main_blog_image_4.png)
+![](./images/simplified_flow_main_image.png)
 
 ## 📌 The Building Blocks of Compositional System Design - At A Glance
 
@@ -1172,10 +1172,29 @@ flowchart LR
 
 **When to use:** Use it for public APIs, authentication endpoints, shared services, costly operations, abuse prevention, and protection against traffic bursts. It is often enforced at the API gateway.
 
+## A Recap
+
+![](./images/main_blog_image_4.png)
+
+Each step in the system design goes through this follow up question: "It works... so what breaks next?"
+
+The mental model of the flow: Buld the components → Let it talk → run the server → scale the server → data: one source of truth → make it fast → make it survive 
+
+| Step                  | You just achieved…                       | …which *causes* the next problem                          |
+| --------------------- | ---------------------------------------- | --------------------------------------------------------- |
+| **1. Foundation**     | The client can reach the server securely | But *how* do they exchange data?                          |
+| **2. Intermediaries** | A defined API + proxies routing traffic  | The API needs *somewhere to run*                          |
+| **3. Compute**        | Your code runs on a server               | One server has a *ceiling and a single point of failure*  |
+| **4. Scaling**        | Many servers share the load              | They can't all keep their own copy of the *truth*         |
+| **5. Database**       | One shared, durable source of truth      | Hitting it every time is *slow*                           |
+| **6. Performance**    | Caches/CDN make it fast                  | Now networks partition, queues back up, clients abuse you |
+| **7. Other Concepts** | CAP, queues, pub/sub, rate limiting      | The system survives the *real world*                      |
+
+
 ---
 
 ## Closing Thought
 
-System design is compositional. A production architecture emerges by combining these building blocks around actual requirements, then making each trade-off explicit. The goal is not to use every pattern; it is to use the smallest set that solves the current problem without closing off the next sensible step.
-
-That is what it means to think like a technical architect: not memorizing components, but knowing how they compose, and why you chose this combination over another.
+* System design is compositional. A production architecture emerges by combining these building blocks around actual requirements, then making each trade-off explicit. 
+* The goal is not to use every pattern; it is to use the smallest set that solves the current problem without closing off the next sensible step.
+* That is what it means to think like a technical architect: not memorizing components, but knowing how they compose, and why you chose this combination over another.
