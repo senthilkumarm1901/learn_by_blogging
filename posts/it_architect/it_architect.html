@@ -263,6 +263,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#pubsub---publishsubscribe" id="toc-pubsub---publishsubscribe" class="nav-link" data-scroll-target="#pubsub---publishsubscribe">7.3 Pub/Sub - Publish/Subscribe</a></li>
   <li><a href="#rate-limiting" id="toc-rate-limiting" class="nav-link" data-scroll-target="#rate-limiting">7.4 Rate Limiting</a></li>
   </ul></li>
+  <li><a href="#a-recap" id="toc-a-recap" class="nav-link" data-scroll-target="#a-recap">A Recap</a></li>
   <li><a href="#closing-thought" id="toc-closing-thought" class="nav-link" data-scroll-target="#closing-thought">Closing Thought</a></li>
   </ul>
 </nav>
@@ -284,7 +285,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>▶️ Motivational Watch for Systems Thinking: <a href="https://www.youtube.com/watch?v=t0GiTyz4syY">Lenny’s Podcast featuring CXO of Netflix on - Why Netflix is betting on systems thinkers in the AI era</a></li>
 </ul>
 <hr>
-<p><img src="./images/main_blog_image_4.png" class="img-fluid"></p>
+<p><img src="./images/simplified_flow_main_image.png" class="img-fluid"></p>
 <section id="the-building-blocks-of-compositional-system-design---at-a-glance" class="level2">
 <h2 class="anchored" data-anchor-id="the-building-blocks-of-compositional-system-design---at-a-glance">📌 The Building Blocks of Compositional System Design - At A Glance</h2>
 <p>The structure of the blog follows how a request travels through a system:</p>
@@ -1811,13 +1812,73 @@ flowchart LR
 </div>
 </div>
 <p><strong>When to use:</strong> Use it for public APIs, authentication endpoints, shared services, costly operations, abuse prevention, and protection against traffic bursts. It is often enforced at the API gateway.</p>
-<hr>
 </section>
+</section>
+<section id="a-recap" class="level2">
+<h2 class="anchored" data-anchor-id="a-recap">A Recap</h2>
+<p><img src="./images/main_blog_image_4.png" class="img-fluid"></p>
+<p>Each step in the system design goes through this follow up question: “It works… so what breaks next?”</p>
+<p>The mental model of the flow: Buld the components → Let it talk → run the server → scale the server → data: one source of truth → make it fast → make it survive</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 33%">
+<col style="width: 48%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>You just achieved…</th>
+<th>…which <em>causes</em> the next problem</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Foundation</strong></td>
+<td>The client can reach the server securely</td>
+<td>But <em>how</em> do they exchange data?</td>
+</tr>
+<tr class="even">
+<td><strong>2. Intermediaries</strong></td>
+<td>A defined API + proxies routing traffic</td>
+<td>The API needs <em>somewhere to run</em></td>
+</tr>
+<tr class="odd">
+<td><strong>3. Compute</strong></td>
+<td>Your code runs on a server</td>
+<td>One server has a <em>ceiling and a single point of failure</em></td>
+</tr>
+<tr class="even">
+<td><strong>4. Scaling</strong></td>
+<td>Many servers share the load</td>
+<td>They can’t all keep their own copy of the <em>truth</em></td>
+</tr>
+<tr class="odd">
+<td><strong>5. Database</strong></td>
+<td>One shared, durable source of truth</td>
+<td>Hitting it every time is <em>slow</em></td>
+</tr>
+<tr class="even">
+<td><strong>6. Performance</strong></td>
+<td>Caches/CDN make it fast</td>
+<td>Now networks partition, queues back up, clients abuse you</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Other Concepts</strong></td>
+<td>CAP, queues, pub/sub, rate limiting</td>
+<td>The system survives the <em>real world</em></td>
+</tr>
+</tbody>
+</table>
+<hr>
 </section>
 <section id="closing-thought" class="level2">
 <h2 class="anchored" data-anchor-id="closing-thought">Closing Thought</h2>
-<p>System design is compositional. A production architecture emerges by combining these building blocks around actual requirements, then making each trade-off explicit. The goal is not to use every pattern; it is to use the smallest set that solves the current problem without closing off the next sensible step.</p>
-<p>That is what it means to think like a technical architect: not memorizing components, but knowing how they compose, and why you chose this combination over another.</p>
+<ul>
+<li>System design is compositional. A production architecture emerges by combining these building blocks around actual requirements, then making each trade-off explicit.</li>
+<li>The goal is not to use every pattern; it is to use the smallest set that solves the current problem without closing off the next sensible step.</li>
+<li>That is what it means to think like a technical architect: not memorizing components, but knowing how they compose, and why you chose this combination over another.</li>
+</ul>
 
 
 </section>
