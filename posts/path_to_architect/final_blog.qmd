@@ -33,17 +33,22 @@ output-file: path_to_architect.html
 
 ## Agenda
 
-* First Things First - Understanding Requirements: The "Problem Framing" Frontend
-* What is Software Architecture - A Set of Hedging Techniques
-* The Five-Pillar Lens of Architecture Decisions
-* Where do you stand as an Architect? - The Leadership matrix, Explorer Reset, and the HIPPO effect
-* Translating technical bets into business language
-* A Few More Frameworks to fine-tune Architecture Thinking
-* Closing thoughts
+A walk through the real arc of an architecture decision:
+
+* **Frame the problem first.** - before designing or "architecting" anything.
+* **Ask if the bet is even worth placing** - "Is this even worth building?"
+* **Survive being wrong** - hedging with blue-green, canary, and feature flags.
+* **Balance five pillars** without letting one win silently.
+* **Know where you stand as an architect.** - Impact × Archetype matrix, Political Capital & HIPPO Effect
+* **Translate the technical bet into business language**
+* **Win the last mile** — communicate effectively so the decision lands.
+* **Closing thoughts.**
 
 ---
 
-## 0. Business Requirements Understanding: The "Problem Framing Frontend" to Architecture Decisions
+## 0. Frame the Problem First
+
+_The "Problem Framing" Frontend to Architecture_
 
 This section - Business Requirements Understanding - sits before architecture decisions. 
 
@@ -87,7 +92,7 @@ Requirements are not flat. They form a hierarchy:
 > * The trap: treating every requirement as equally important. 
 > * The skill is isolating the Architecturally Significant Requirements — the small subset that, if wrong, is expensive to reverse. Those, and only those, drive the hedging in Part 2.
 
-### How to Extract the Requirements - The `Phantom Sketch Artist` Technique
+### Extracting Requirements: The `Phantom Sketch Artist` Technique
 
 * Gregor Hohpe suggests ***sketching**** the requirements works better than ***asking*** for it. 
 * It makes people say "Oh, that's wrong" - which is a good thing as a wrong sketch brings out the real requiremnts out of people faster 
@@ -95,7 +100,7 @@ Requirements are not flat. They form a hierarchy:
 
 ---
 
-## I. The First Princples Thinking: What is Software Architecture?
+## I. What is Software Architecture? A Set of Hedging Strategies
 
 * The answer lies in the answer to two further drill down questions:
     * Is the idea worth building?
@@ -133,7 +138,7 @@ Requirements are not flat. They form a hierarchy:
 - Engineering executes the bet once it is worth taking. 
 
 
-#### Surviving Wrong Decision: (1) Blue-Green Deployment
+##### Surviving Wrong Decision: (1) Blue-Green Deployment
 
 Blue-green deployment is architectural hedging in its most practical form. [Martin Fowler’s original writeup](https://martinfowler.com/bliki/BlueGreenDeployment.html) remains the cleanest explanation.
 
@@ -143,7 +148,7 @@ Blue-green deployment is architectural hedging in its most practical form. [Mart
 
 ![](./images/blue-green.png)
 
-#### Surviving Wrong Decision: (2) Canary Releases & (3) Feature Flags
+##### Surviving Wrong Decision: (2) Canary Releases & (3) Feature Flags
 
 * *Not All Risk is the Same Risk*
 
@@ -198,7 +203,7 @@ As Architects, we must think negative:
 
 ![](./images/5-pillar-lens-2.png)
 
-### The Quality Pillar is where NFRs live — and get *measured*
+### The Quality Pillar is where NFRs live and get *measured*
 
 A pillar you cannot measure is a slogan. Quality is not a launch gate. It is the home of NFRs (reliability, recovery, latency, security) that must be verified continuously, not declared once.
 
@@ -216,13 +221,14 @@ Trade-offs happen inside a box. Constraints are the walls. Assumptions hold them
 
 ---
 
-## III. Leadership Matrix and the HIPPO Effect
+## III. Where Do You Stand as an Architect?
 
 The workshop describes growth across two dimensions.
 
 - Impact (Self, Team, Org, Industry)
 - Archetype (Explorer, Alchemist, Maverick, Oracle)
 
+**Leadership Matrix**:
 ![](./images/leadership-matrix.png)
 
 The most useful insight is the growth model.
@@ -240,7 +246,7 @@ stateDiagram-v2
 
 Growth is not becoming a bigger expert. Growth is becoming a beginner in a larger arena.
 
-### A note on informal power: `Political Capital` and the `HIPPO` effect
+### Informal Power: `Political Capital` and the `HIPPO` effect
 
 * The workshop makes a strong distinction between formal power and informal power. 
 * Formal power comes from a title. Informal power comes from trust, tenure, and perceived seniority.
@@ -249,19 +255,10 @@ Growth is not becoming a bigger expert. Growth is becoming a beginner in a large
 The [HIPPO effect](https://t2informatik.de/en/smartpedia/hippo-effect/) (Highest Paid Person’s Opinion) is a well-known name for what happens when power overrides evidence.
 
 
-### Conway's Law: the org chart becomes the architecture
-
-The HIPPO effect shows how *people in the room* shape a single decision. Conway's Law
-shows how the *shape of the organization* shapes the entire system — whether you intend
-it or not.
-
-> Any organization that designs a system will produce a design whose structure is a copy
-> of the organization's communication structure. — Melvin Conway
-
 Why architects should care:
 
 - Data does not automatically win. Room dynamics do.
-- A quiet, tenured engineer can veto a decision without saying no.
+- A quiet, tenured engineer ("informal power") can veto a decision without saying no.
 - A senior leader unfamiliar with the domain can steer a design purely by leaning in.
 
 Architects who track only formal decision-makers miss the actual decision surface. Related reading: [Bernard Marr on the HIPPO effect and data-driven decisions](https://www.forbes.com/sites/bernardmarr/2017/10/26/data-driven-decision-making-beware-of-the-hippo-effect/).
@@ -279,154 +276,78 @@ Architects who track only formal decision-makers miss the actual decision surfac
 _How do I connect code to the boardroom?_
 
 * Don't pitch "Kubernetes"; pitch "20% cost reduction."
-* Same work, different frame — audience determines vocabulary.
+* Same work, different framing — audience determines vocabulary.
 
-Architects frequently lose stakeholder support because they stop at technical reasoning. The workshop repeatedly emphasizes business translation.
+> * If a pitch doesn't hit one or more the holy trinity: **Risk reduction, Cost optimization, or Growth** in 30 seconds, it loses the audience
 
-![](./images/bets_to_business_lang.png)
+Architects frequently lose stakeholder support because they stop at technical reasoning. The workshop repeatedly emphasizes translating technical decisions to business funded outcomes.
+
+![](./images/bets_to_business_lang_2.png)
 
 A few of the tools that help in converting a decision to a durable outcome: 
 
+Four stages turn a technical decision into a funded outcome.
 
+### Stage 1 — Decide and Record (ADRs)
 
-### 1. ADRs (Architecture Decision Records) with Trade-Offs Documented
+_How do I prevent "why did we do this" debates?_
 
-> _How do I prevent "Why did we do this" debates?_
-
-- 20‑minute investment capturing: what we decided, why, and what we traded away.
+- A 20-minute record capturing what we decided, why, and what we traded away.
 - "The palest ink beats the best memory."
 
-### 2. Cost Analysis
+### Stage 2 — Price the Bet (ROI, TCO, NPV)
 
+_What is this decision worth in money?_
 
-**The Holy Trinity (Risk, Cost, Growth)** — _What do executives actually fund?_
+**ROI (Return on Investment)** — gain over cost, best for short horizons.
+- Formula: (Gain − Cost) / Cost.
+- Weakness: it hides timing. A slow 40% can lose to a fast 20%. [XIRR](https://support.zerodha.com/categorye/portfolio/console-holdings/articles/xirr-and-cagr-for-equity fixes the timing blindspot.
 
-- If your pitch doesn't hit Risk reduction, Cost optimization, or Growth in 30 seconds, you've lost.
-- Never pitch technology; pitch the solution to a painful business problem.
+**TCO (Total Cost of Ownership)** — the full lifetime cost.
+- Licensing, infra, ops, support, migration, retirement.
+- Best when something looks cheap upfront but expensive later.
 
-#### ROI (Return on Investment)
+**NPV (Net Present Value)** — future cash flow in today's money.
+- Respects time: a dollar in three years is worth less than a dollar today.
+- Best for long-lived investments.
 
-- Simple ratio of gain to cost.
-- Formula: (Gain minus Cost) divided by Cost.
-- Best for comparing options over a short horizon.
-- Weakness: it hides timing. A slow 40 percent return can be worse than a fast 20 percent one. That is where [XIRR](https://support.zerodha.com/category/console/portfolio/console-holdings/articles/xirr-and-cagr-for-equity) is used
-- [Reference](https://www.investopedia.com/terms/r/returnoninvestment.asp)
+### Stage 3 — Prioritize the Bets (Run/Grow/Transform, RICE)
 
-#### TCO (Total Cost of Ownership)
+_Given limited budget, which bets win?_
 
-- Sum of all direct and indirect costs over the life of a system.
-- Includes licensing, infrastructure, operations, support, migration, retirement.
-- Best for choosing between systems that look cheap upfront but expensive later, and vice versa.
+**Run / Grow / Transform** — the portfolio split.
+- Roughly 60% Run (lights on), 20% Grow (features), 20% Transform (trend-breaking bets).
+- Don't let "Run" eat the whole budget silently.
 
-
-#### NPV (Net Present Value)
-
-- Value of a future cash flow expressed in today’s money.
-- It respects time. A dollar earned in three years is worth less than a dollar earned today.
-- Best for long-lived investments where cash flows arrive over years.
-- [Reference](https://www.investopedia.com/terms/n/npv.asp)
-
-### 3. Effort Prioritization 
-
-#### Run / Grow / Transform 
-
-> _How should budget be distributed?_
-
-- 60% Run (things that keep the "lights on"), 20% Grow (new features), 20% Transform  (thought-provoking or trend-breaking innovation).
-- Don't let "Run" eat the entire budget silently.
-
-#### RICE (Reach, Impact, Confidence, Effort)
-
-- A prioritization framework from [Intercom’s product team](https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/).
+**RICE** — scores competing initiatives.
 
 ```
-(Reach x Impact x Confidence)
------------------------------
+(Reach x Impact x Confidence)  
+  ------------------------- 
            Effort
 ```
+- Best for comparing initiatives of different sizes and audiences.
+- Weakness: strong for incremental work, weak for novel bets where reach is unknowable.
 
-- Reach: how many people are affected in a defined period.
-- Impact: how much it affects each person.
-- Confidence: how sure the team is about the estimates.
-- Effort: person-months of work required.
-- Best for comparing initiatives with different sizes and audiences.
-- Weakness: it works best for incremental improvements, less well for novel bets where reach is unknowable.
+### Stage 4 — Pressure-Test, then Pitch
 
+_Is the argument ready, and how do I deliver it?_
 
-### 4. The "So What?" Test
+**The "So What?" test** — ask "so what?" until you hit a dollar sign or a human consequence. If you can't reach one, the proposal isn't ready.
 
-> _How do I know if my argument has landed?_
-
-- Ask "So what?" repeatedly until you hit a dollar sign or a human consequence.
-- If you can't reach one, the proposal isn't ready.
-
-
-### 5. 5-Stage Executive Pitch
-
-- Burning Problem → Why Now (current state) → Proposed Solution → Trade‑off Map → The Ask 
-  - The Ask e.g.: what should the leadership do/ why should they take in this decision.
-- Skipping stages diminishes persuasive effect proportionally.
+**The 5-stage executive pitch** — once the passes `So What` test is passed:
+Burning Problem → Why Now → Proposed Solution → Trade-off Map → The Ask.
+- The Ask = the specific decision you want leadership to make.
+- Skipping stages weakens the pitch proportionally.
 
 ---
 
 
-## V. A Few More Frameworks to fine-tune Architecture Thinking
+## V. The Architect's Last Mile: Communicating the Decision
 
+_Once you have the right decision, how do you make it land?_
 
-### How to Prioritize the Right Tasks
-
-**MuSCoW Prioritization** — _How do I scope with clarity?_
-
-- Must / Should / Could / Won't.
-- Explicit "Won't" items are as valuable as "Must‑haves" for alignment.
-
-**Trade‑Off Matrix** — _Can I have everything?_
-
-- No. Performance, security, modifiability compete — you must choose.
-- Make the trade‑off explicit on paper before the deadline makes it for you.
-
-**Leading vs Lagging Indicators** — _How do tech metrics connect to business outcomes?_
-
-- Tech metrics (uptime, velocity) are leading; business metrics (churn, revenue) are lagging.
-- Knowing the leading and lagging indicators help in deciding when to look for return for an effort
-
-**Non‑Functional Requirements (The Hidden 90%)** — _What actually pays the bills?_
-
-- Features get glory; NFRs (uptime, security, compliance, performance) determine survival.
-- If you don't define them, production incidents will.
-
-### The "People" Quotient in Architects 
-
-**Crisis as Leadership Moment** — _What separates senior response from junior response?_
-
-- Technical fix is table stakes; leadership response defines reputation.
-- Blame processes, not people. Own the narrative.
-
-**Principled Negotiation** — _How do I resolve conflict without politics?_
-
-- Separate people from problem; focus on interests, not positions.
-- Invent options for mutual gain; insist on objective criteria.
-
-**Stakeholder Typology** — _Who am I dealing with?_
-
-- Champion (highly interested in your view), 
-- Gatekeeper (guarded interest in your view), 
-- Skeptic (does not believe in your view), 
-- Bystander (neither believes or nor disagrees - on the fence).
-
-**The 50-30-20 split**:
-
-* Ensure you give 50% of your attention to stakeholders highly interested in your work
-* 30% of your attention on skeptics
-* The last 20% of your attention spend on Gatekeepers and bystanders are most likely to be automatically won over if the majority agrees with you.
-
-**Formal vs Informal Power** — _Who really decides?_
-
-- Formal = title and org chart; Informal = trust, expertise, track record.
-- Treating formal authority as the primary variable is one of the costliest errors.
-
-
-### Some more Thoughts on "Communication"
+![](./images/communicate_the_decision.png)
 
 **U‑PSA Storytelling Framework** — _How do I make a story stick?_
 
