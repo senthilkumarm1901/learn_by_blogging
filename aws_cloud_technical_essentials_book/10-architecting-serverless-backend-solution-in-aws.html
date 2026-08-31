@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+
+<title>10. Architecting a Serverless Web Backend – Learn by Blogging</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-67daaa7896f33cc2219aa98eaadded8d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="mermaid-theme" content="neutral">
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">10. Architecting a Serverless Web Backend</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Senthil Kumar </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>👈 <strong>Back to:</strong> <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">📝 Blog</a> | <a href="https://www.linkedin.com/in/senthilkumarm1901">💼 LinkedIn</a> | <a href="https://medium.com/@senthilkumar.m1901">✍️ Medium</a></p>
+<hr>
+<section id="how-to-architect-a-serverless-web-backend-solution-in-aws" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-architect-a-serverless-web-backend-solution-in-aws">How to Architect a Serverless Web Backend Solution in AWS</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ Given a workload, how do you decide <em>which</em> serverless services to combine — and how do you defend the ones you rejected?</li>
+<li>Hint: architecting is not “knowing services”. It is <strong>requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections</strong>.</li>
+</ul>
+</blockquote>
+<p><strong>Running example used throughout this chapter</strong></p>
+<blockquote class="blockquote">
+<p>An online retailer runs an on-prem <strong>monolithic order service</strong> (web servers + a MySQL database) that calls downstream inventory, accounting and fulfillment services. It crashes under spiky load, is tightly coupled, and has data inconsistencies.</p>
+<p><strong>Goal:</strong> re-architect it on AWS for <strong>auto-scaling, decoupling, low operational overhead, and cost/performance efficiency</strong>.</p>
+<p><em>In scope:</em> the web tier, the order service, and the database. <em>Out of scope:</em> payment processing and the downstream services themselves.</p>
+</blockquote>
+<hr>
+</section>
+<section id="the-method-nine-steps-to-a-serverless-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="the-method-nine-steps-to-a-serverless-architecture">10.1 The Method: nine steps to a serverless architecture</h2>
+<p>Every serverless design in this chapter follows the same reasoning chain. The valuable skill is the <strong>chain and the rejected options</strong>, not memorising service features — multiple valid solutions always exist.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A["Business need"] --&gt; B["Non-functional drivers&lt;br&gt;scale, latency, cost,&lt;br&gt;ops, resilience"]
+    B --&gt; C["Candidate AWS services"]
+    C --&gt; D["Compare trade-offs"]
+    D --&gt; E["Architecture decision"]
+    E --&gt; F["Justify why NOT&lt;br&gt;the alternatives"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Question the architect answers</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>What are the real architectural drivers?</td>
+<td><a href="#sec-drivers">10.2</a></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>How do clients get in?</td>
+<td><a href="#sec-frontdoor">10.3</a></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>What runs the business logic?</td>
+<td><a href="#sec-compute">10.4</a></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Where does state live?</td>
+<td><a href="#sec-data">10.5</a></td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>How do components stay decoupled?</td>
+<td><a href="#sec-decouple">10.6</a></td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>How do we absorb bursts and cut latency?</td>
+<td><a href="#sec-async">10.7</a></td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>How is every hop secured?</td>
+<td><a href="#sec-security">10.8</a></td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>How do we see what is happening?</td>
+<td><a href="#sec-observability">10.9</a></td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>How do we tune cost and performance?</td>
+<td><a href="#sec-optimize">10.10</a></td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Do the steps <em>in order</em>. Choosing compute before understanding drivers is how teams end up with a serverless monolith.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-drivers" class="level2">
+<h2 class="anchored" data-anchor-id="sec-drivers">10.2 Step 1 — Turn requirements into architectural drivers</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ How do you convert a customer’s complaints into design constraints?</li>
+</ul>
+</blockquote>
+<p>The customer’s words map cleanly onto architectural drivers:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Customer pain / want</th>
+<th>Architectural driver</th>
+<th>Implication</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Crashes under spiky demand</td>
+<td><strong>Scalability + elasticity</strong></td>
+<td>Prefer serverless / managed auto-scaling</td>
+</tr>
+<tr class="even">
+<td>Tightly coupled monolith, cascading failures</td>
+<td><strong>Decoupling + resilience</strong></td>
+<td>Event-driven, async, remove single points of failure</td>
+</tr>
+<tr class="odd">
+<td>Wants low maintenance</td>
+<td><strong>Operational efficiency</strong></td>
+<td>Managed services, no server fleet to run</td>
+</tr>
+<tr class="even">
+<td>Overprovisioning is wasteful</td>
+<td><strong>Cost efficiency</strong></td>
+<td>Pay-per-use, no idle resources</td>
+</tr>
+<tr class="odd">
+<td>Wants unified monitoring</td>
+<td><strong>Observability</strong></td>
+<td>Native CloudWatch integration everywhere</td>
+</tr>
+<tr class="even">
+<td>Simple order data, basic CRUD</td>
+<td><strong>Right-sized data store</strong></td>
+<td>NoSQL key-value, not an enterprise RDBMS</td>
+</tr>
+</tbody>
+</table>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    M["On-prem monolith&lt;br&gt;web servers + MySQL"] --&gt; P1["Spiky, unpredictable load"]
+    M --&gt; P2["Tight coupling&lt;br&gt;cascading failures"]
+    M --&gt; P3["High ops overhead"]
+    P1 --&gt; S1["Serverless + managed auto-scaling"]
+    P2 --&gt; S2["Event-driven decoupling"]
+    P3 --&gt; S3["Fully managed services"]
+    S1 --&gt; ARCH["Serverless event-driven backend"]
+    S2 --&gt; ARCH
+    S3 --&gt; ARCH
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Signals that point <em>towards</em> serverless</strong></p>
+<ul>
+<li>Spiky, unpredictable or low-average traffic (idle capacity would be wasted).</li>
+<li>Event-driven work that finishes quickly.</li>
+<li>Small team, no appetite for patching servers.</li>
+<li>Simple, well-understood data access patterns.</li>
+</ul>
+<p><strong>Signals that point <em>away</em> from serverless</strong> — see <a href="#sec-not-serverless">10.12</a>.</p>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Spiky demand + simple data + a low-ops preference is almost a textbook signal for <strong>serverless</strong>.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-frontdoor" class="level2">
+<h2 class="anchored" data-anchor-id="sec-frontdoor">10.3 Step 2 — Design the front door</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ What sits between the internet and your business logic?</li>
+</ul>
+</blockquote>
+<p><strong>Chosen: Amazon API Gateway.</strong> It fronts the backend so compute is never exposed directly to the open internet, and it absorbs the plumbing you would otherwise hand-write into a web server.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    C["Clients&lt;br&gt;web / mobile"] --&gt; AG["Amazon API Gateway"]
+    AG --&gt; A1["AuthN / AuthZ"]
+    AG --&gt; A2["Throttling &amp;&lt;br&gt;rate limiting"]
+    AG --&gt; A3["Request validation&lt;br&gt;&amp; transformation"]
+    AG --&gt; A4["CORS, stages,&lt;br&gt;canary releases"]
+    A1 --&gt; BE["Backend integration"]
+    A2 --&gt; BE
+    A3 --&gt; BE
+    A4 --&gt; BE
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>What API Gateway removes from your code: authentication, throttling, request validation, CORS, traffic management, versioning — all at scale, billed per call.</p>
+<p><strong>Decisions to make at the front door</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Decision</th>
+<th>Options</th>
+<th>Prefer when</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>API flavour</td>
+<td>REST API vs HTTP API vs WebSocket API</td>
+<td>HTTP API for simple, low-latency, low-cost proxying; REST API when you need request validation, API keys, usage plans, WAF</td>
+</tr>
+<tr class="even">
+<td>Authorisation</td>
+<td>IAM, Amazon Cognito, Lambda authorizer</td>
+<td>Cognito for end-user sign-in; IAM for service-to-service; Lambda authorizer for custom/3rd-party tokens</td>
+</tr>
+<tr class="odd">
+<td>Integration target</td>
+<td>Lambda, <strong>or a direct service integration</strong> to DynamoDB / SQS / Step Functions</td>
+<td>Skip Lambda entirely when the request needs no business logic</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Key nuance:</strong> API Gateway can integrate <strong>directly</strong> with DynamoDB or SQS <em>without</em> a Lambda in the middle. That removes a whole compute hop, its cold start, and its cost — this is the basis of the storage-first pattern in <a href="#sec-async">10.7</a>.</p>
+</blockquote>
+<section id="sec-compute-agnostic" class="level3">
+<h3 class="anchored" data-anchor-id="sec-compute-agnostic">10.3.1 The front door is compute-agnostic</h3>
+<blockquote class="blockquote">
+<ul>
+<li>❓ Can the frontend hit one endpoint without knowing whether Lambda or Fargate runs behind it?</li>
+</ul>
+</blockquote>
+<p><strong>Yes — and that is the entire point of an API façade.</strong> The client gets one stable HTTPS contract; the compute behind it is an implementation detail you can swap later without touching the frontend.</p>
+<p>The mechanics differ, though. Lambda is <em>invoked</em> by API Gateway. ECS/Fargate tasks are long-running containers in a VPC, so API Gateway must reach them <strong>through a load balancer</strong>.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    FE["Frontend&lt;br&gt;one stable HTTPS endpoint"] --&gt; APIGW["API Gateway"]
+    APIGW --&gt;|"Option A: HTTP integration"| ALB["Application Load Balancer&lt;br&gt;public"]
+    APIGW --&gt;|"Option B: private integration"| VL["VPC Link"]
+    VL --&gt; NLB["Internal NLB / ALB"]
+    ALB --&gt; F["ECS Fargate tasks"]
+    NLB --&gt; F
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Approach</th>
+<th>How it works</th>
+<th>Prefer when</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>HTTP proxy → <strong>public ALB</strong></td>
+<td>API Gateway forwards to an internet-facing ALB in front of Fargate</td>
+<td>Simplest — but the ALB is publicly reachable</td>
+</tr>
+<tr class="even">
+<td><strong>VPC Link → private NLB</strong> (REST API)</td>
+<td>API Gateway connects privately into your VPC to an internal NLB → Fargate</td>
+<td>You want Fargate kept <strong>private</strong>, never internet-exposed</td>
+</tr>
+<tr class="odd">
+<td><strong>VPC Link v2 → internal ALB</strong> (HTTP API)</td>
+<td>HTTP API’s VPC Link targets a private ALB</td>
+<td>Modern, cheaper HTTP APIs with private path-based routing</td>
+</tr>
+</tbody>
+</table>
+<p><strong>VPC Link is the key piece</strong> — it is what lets API Gateway (a managed, public-facing service) securely reach containers on <strong>private subnets</strong>, so Fargate tasks never need a public IP.</p>
+<p><strong>Mixing compute behind one API.</strong> Routing is per-route, so a single domain can fan out to different compute types:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    FE["Frontend"] --&gt; APIGW["API Gateway&lt;br&gt;single domain"]
+    APIGW --&gt;|"/orders"| F["Fargate on ECS"]
+    APIGW --&gt;|"/notify"| L["Lambda"]
+    APIGW --&gt;|"/legacy"| ALB2["ALB to EC2"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>The client calls <code>api.company.com/orders</code> and <code>api.company.com/notify</code> identically, while one route hits a container and the other a function. That makes <strong>strangler-fig migration</strong> possible: move endpoints off the monolith one at a time with <strong>zero frontend changes</strong>.</p>
+<p><strong>Caveats to flag before you commit</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Caveat</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>29-second integration timeout</strong></td>
+<td>API Gateway caps any integration at ~29 s. Long-running work must go async (queue + poll), exactly as Lambda’s 15-min cap forces</td>
+</tr>
+<tr class="even">
+<td><strong>Extra hop, extra cost</strong></td>
+<td>API Gateway → VPC Link → load balancer → task adds latency and components versus exposing the ALB directly</td>
+</tr>
+<tr class="odd">
+<td><strong>Two scaling models</strong></td>
+<td>Lambda scales per request automatically; Fargate scales via <strong>ECS service auto-scaling</strong> (task count). You now own container-tier capacity planning</td>
+</tr>
+<tr class="even">
+<td><strong>Idle cost</strong></td>
+<td>Fargate tasks run continuously — you pay at low traffic too (mitigate with a low minimum task count)</td>
+</tr>
+<tr class="odd">
+<td><strong>Sometimes unnecessary</strong></td>
+<td>If you only need a load-balanced HTTPS endpoint with no auth/throttling/keys/versioning, an <strong>ALB alone</strong> may be enough</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> API Gateway is the managed “front door”. Every feature it provides is a feature you do not have to build, secure, scale or patch — and because it is compute-agnostic, it becomes the <strong>seam</strong> along which you can later change your mind about compute.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-compute" class="level2">
+<h2 class="anchored" data-anchor-id="sec-compute">10.4 Step 3 — Choose the compute</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ Lambda, containers or EC2 — and how do you defend the rejection?</li>
+</ul>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    W["Order service compute"] --&gt; Q1{"Need OS or&lt;br&gt;infra-level control?"}
+    Q1 --&gt;|Yes| EC2["EC2 / Elastic Beanstalk&lt;br&gt;REJECTED: ops overhead,&lt;br&gt;idle cost under spiky load"]
+    Q1 --&gt;|No| Q2{"Team has container skills&lt;br&gt;and wants containers?"}
+    Q2 --&gt;|Yes| ECS["ECS / EKS on Fargate&lt;br&gt;REJECTED: viable, but&lt;br&gt;no container expertise"]
+    Q2 --&gt;|No| Q3{"Finishes in under 15 min&lt;br&gt;and is event-driven?"}
+    Q3 --&gt;|Yes| L["AWS Lambda - CHOSEN"]
+    Q3 --&gt;|No| ELSE["Fargate / Batch /&lt;br&gt;Step Functions orchestration"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Chosen: AWS Lambda</strong></p>
+<ul>
+<li>Fully serverless: scales to zero, pay-per-use, <strong>no idle resources</strong>.</li>
+<li>Native CloudWatch logging and metrics.</li>
+<li>Event-driven by nature — it runs on triggers, not continuously.</li>
+<li>The customer was already familiar with serverless and willing to rewrite the code.</li>
+</ul>
+<p><strong>Rejected — and why</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Rejected option</th>
+<th>Technically viable?</th>
+<th>Reason for rejection</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>EC2 / Elastic Beanstalk</td>
+<td>Yes</td>
+<td>Operational overhead (patching, scaling policies, AMIs); idle capacity is costly under spiky demand</td>
+</tr>
+<tr class="even">
+<td>ECS / EKS on Fargate</td>
+<td><strong>Yes — Fargate is serverless containers</strong></td>
+<td>Team had no container expertise and did not want to adopt containers. Adoption cost outweighed the fit</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Lambda constraints you must design around</strong></p>
+<ul>
+<li><strong>15-minute maximum execution.</strong> Anything longer needs Fargate, Batch, or decomposition behind Step Functions.</li>
+<li><strong>No OS access</strong>; the runtime and patching are AWS’s responsibility.</li>
+<li><strong>Stateless execution environments</strong> — reused for a while, then torn down (see <a href="#sec-init">10.10.1</a>).</li>
+<li><strong>Cold starts</strong> on the first invocation into a new environment.</li>
+<li><strong>Concurrency limits</strong> per account/region; a runaway Lambda can starve other functions unless you set reserved concurrency.</li>
+</ul>
+</blockquote>
+<p>For the wider compute landscape (EC2 families, containers, scaling), see <a href="../aws_cloud_technical_essentials_book/03-compute.html">03. Compute</a>.</p>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Reject a technically-valid option (Fargate) when <strong>team skills and adoption cost</strong> outweigh the technical fit. Constraints are never only technical.</p>
+</blockquote>
+<section id="sec-fargate" class="level3">
+<h3 class="anchored" data-anchor-id="sec-fargate">10.4.1 What changes if you pick Fargate instead of Lambda?</h3>
+<blockquote class="blockquote">
+<ul>
+<li>❓ If Fargate is chosen, must the monolith still be decomposed?</li>
+</ul>
+</blockquote>
+<p><strong>No — and this is one of the most under-appreciated points in serverless design.</strong></p>
+<p>Lambda’s constraints (15-minute cap, statelessness, event triggers, one deployable per function) <strong>implicitly force decomposition</strong>. Fargate has none of them: it runs a long-lived container with your existing process model, in-memory state and background threads, with the code largely untouched.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    Choice{"Chosen compute?"}
+    Choice --&gt;|Lambda| Force["Constraints force decomposition&lt;br&gt;15-min cap, stateless,&lt;br&gt;per-function deploy"]
+    Choice --&gt;|Fargate| Free["No such constraints&lt;br&gt;run the monolith as one container"]
+    Force --&gt; Micro["Multiple small functions"]
+    Free --&gt; Mono["Containerise the monolith as-is&lt;br&gt;re-platform / lift and shift"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>So “container vs function” and “monolith vs microservices” are two independent decisions.</strong> Lambda conflates them; Fargate un-conflates them.</p>
+<p><strong>What you gain by <em>not</em> splitting (yet)</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Benefit</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Fast, low-risk migration</td>
+<td>Wrap the existing code in a Dockerfile and run it. No rewrite</td>
+</tr>
+<tr class="even">
+<td>Immediate infrastructure wins</td>
+<td>Auto-scaling, managed infra, no patching, CloudWatch — <strong>without</strong> touching business logic</td>
+</tr>
+<tr class="odd">
+<td>In-process calls stay in-process</td>
+<td>Modules call each other as function calls (fast, transactional) instead of network hops</td>
+</tr>
+<tr class="even">
+<td>Smaller operational surface</td>
+<td>One service to deploy, monitor and trace — not eight services plus queues and discovery</td>
+</tr>
+<tr class="odd">
+<td>Deferred complexity</td>
+<td>You avoid the distributed-systems tax (eventual consistency, retries, partial failures) until it is actually justified</td>
+</tr>
+</tbody>
+</table>
+<p>Microservices are an organisational and scaling tool, <strong>not a default</strong>. A modular monolith on Fargate is a legitimate modern target.</p>
+<p><strong>What containerising does <em>not</em> fix</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    Mono["Monolith on Fargate"] --&gt; P1["Scales as ONE unit&lt;br&gt;scale everything even if&lt;br&gt;only orders is hot"]
+    Mono --&gt; P2["One deploy = whole app&lt;br&gt;small change, full redeploy risk"]
+    Mono --&gt; P3["Tight coupling remains&lt;br&gt;a bug in one module&lt;br&gt;kills the whole task"]
+    Mono --&gt; P4["Shared failure domain"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Containerising solves <strong>infrastructure and operations pain</strong>. It does <strong>not</strong> solve <strong>architectural coupling pain</strong> — and coupling/cascading failure was a <em>stated</em> problem in this use case. If independent scaling and blast-radius isolation are real drivers, lift-and-shift is a stepping stone, not the destination.</p>
+<p><strong>The pragmatic sequence</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A["1. Containerise the monolith&lt;br&gt;on Fargate - re-platform"] --&gt; B["2. Enforce internal modularity&lt;br&gt;modular monolith"]
+    B --&gt; C["3. Extract ONLY the hot or&lt;br&gt;high-change module when justified"]
+    C --&gt; D["4. Strangler-fig behind API Gateway&lt;br&gt;route by route"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Steps 3–4 are painless precisely because of the compute-agnostic façade in <a href="#sec-compute-agnostic">10.3.1</a>: carve out one endpoint into its own service <strong>only when a specific driver demands it</strong> — that module scales differently, changes often, or needs failure isolation.</p>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Choose Fargate + monolith to de-risk a migration, then decompose <strong>reactively, driven by evidence</strong> — not reflexively. Do not pay the distributed-systems tax before the business problem demands it.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-data" class="level2">
+<h2 class="anchored" data-anchor-id="sec-data">10.5 Step 4 — Choose the data store</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ NoSQL or relational — and what breaks if you get it wrong behind Lambda?</li>
+</ul>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    D["Order data store"] --&gt; Q1{"Complex SQL,&lt;br&gt;joins, transactions&lt;br&gt;across tables?"}
+    Q1 --&gt;|Yes| Q2{"Enterprise-scale&lt;br&gt;relational features?"}
+    Q2 --&gt;|Yes| AUR["Aurora Serverless v2&lt;br&gt;+ RDS Proxy"]
+    Q2 --&gt;|No| RDS["Amazon RDS&lt;br&gt;+ RDS Proxy"]
+    Q1 --&gt;|"No - simple CRUD lookups"| DDB["Amazon DynamoDB - CHOSEN"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Chosen: Amazon DynamoDB</strong> — serverless key-value NoSQL. The order record is a simple lookup by key, basic CRUD, no joins. It auto-scales storage and throughput, encrypts at rest, and needs no capacity planning in on-demand mode.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Factor</th>
+<th>DynamoDB</th>
+<th>Aurora Serverless v2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Data model</td>
+<td>Key-value / document (NoSQL)</td>
+<td>Relational (MySQL / PostgreSQL)</td>
+</tr>
+<tr class="even">
+<td>Queries</td>
+<td>Simple CRUD, no joins</td>
+<td>Complex SQL, joins, reporting</td>
+</tr>
+<tr class="odd">
+<td>Fit with Lambda</td>
+<td>Native HTTPS API, <strong>no connection management</strong></td>
+<td>Often needs <strong>RDS Proxy</strong> for connection pooling</td>
+</tr>
+<tr class="even">
+<td>Scaling</td>
+<td>Serverless, on-demand throughput</td>
+<td>Auto-scales capacity units</td>
+</tr>
+<tr class="odd">
+<td>Networking</td>
+<td>Regional endpoint, <strong>not inside your VPC</strong></td>
+<td>Deployed <strong>into</strong> your VPC subnets</td>
+</tr>
+<tr class="even">
+<td>Prefer when</td>
+<td>Simple, high-concurrency lookups</td>
+<td>Complex relational workloads</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The connection-exhaustion trap</strong></p>
+<p>Lambda scales horizontally to thousands of concurrent environments. Each environment holding an open database connection will exhaust a relational database’s connection limit almost immediately.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    subgraph Bad["Naive"]
+        L1["1000s of concurrent&lt;br&gt;Lambda environments"] --&gt;|1 connection each| DB1["RDS / Aurora&lt;br&gt;connection limit hit"]
+    end
+    subgraph Good["Two safe options"]
+        L2["Lambda"] --&gt;|pooled| PX["RDS Proxy"] --&gt; DB2["RDS / Aurora"]
+        L3["Lambda"] --&gt;|"stateless HTTPS API"| DDB["DynamoDB"]
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Design rules for DynamoDB</strong></p>
+<ul>
+<li><strong>Model the access patterns <em>before</em> creating the table.</strong> Unlike SQL, you cannot bolt on arbitrary queries later without pain.</li>
+<li>Use <strong>secondary indexes</strong> (LSI/GSI) to query non-key attributes.</li>
+<li>Choose a <strong>partition key with high cardinality</strong> to avoid hot partitions.</li>
+<li><strong>DynamoDB Streams</strong> turn every write into an event — the basis of step 5.</li>
+</ul>
+<p>More depth on picking a database and on DynamoDB’s placement relative to your VPC: <a href="../aws_cloud_technical_essentials_book/06-databases.html">06. Databases</a>.</p>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Prefer NoSQL when there are <strong>no joins</strong> and the access patterns are known up front. DynamoDB + Lambda sidesteps the connection-exhaustion problem entirely; if you truly need relational, budget for <strong>RDS Proxy</strong> as an extra moving part.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-decouple" class="level2">
+<h2 class="anchored" data-anchor-id="sec-decouple">10.6 Step 5 — Decouple with events</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ How do you add a new downstream consumer without touching the order code?</li>
+</ul>
+</blockquote>
+<section id="the-event-driven-building-block" class="level3">
+<h3 class="anchored" data-anchor-id="the-event-driven-building-block">10.6.1 The event-driven building block</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    Prod["Event producer"] --&gt; Router["Event router&lt;br&gt;filters and routes"]
+    Router --&gt; C1["Consumer A"]
+    Router --&gt; C2["Consumer B"]
+    Router --&gt; C3["Consumer C"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>An <strong>event</strong> is a record of a state change (“order placed”, “order shipped”). Producers and consumers are decoupled, so each can be scaled, updated and deployed independently. Lambda is a natural consumer because it runs on triggers.</p>
+</section>
+<section id="fan-out-dynamodb-streams-lambda-sns" class="level3">
+<h3 class="anchored" data-anchor-id="fan-out-dynamodb-streams-lambda-sns">10.6.2 Fan-out: DynamoDB Streams → Lambda → SNS</h3>
+<p><strong>Problem:</strong> notify fulfillment, accounting and inventory whenever an order changes — without hard-wiring them into the order logic.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    DDB["DynamoDB&lt;br&gt;order written"] --&gt; STR["DynamoDB Streams"]
+    STR --&gt; L["Lambda"]
+    L --&gt; SNS["SNS topic"]
+    SNS --&gt; F["Fulfillment"]
+    SNS --&gt; A["Accounting"]
+    SNS --&gt; I["Inventory"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Why it works:</strong> a new downstream service simply <strong>subscribes to the SNS topic</strong>. Zero changes to order-processing code.</li>
+<li><strong>Streams</strong> mean you react to the <em>data change itself</em>, so nothing can write an order and “forget” to publish an event.</li>
+<li><strong>SNS is push-based pub/sub</strong> to many subscriber types: SQS, Lambda, email, SMS, HTTPS endpoints, Kinesis Data Firehose.</li>
+</ul>
+</section>
+<section id="sns-vs-eventbridge" class="level3">
+<h3 class="anchored" data-anchor-id="sns-vs-eventbridge">10.6.3 SNS vs EventBridge</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Amazon SNS</th>
+<th>Amazon EventBridge</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Model</td>
+<td>Pub/sub fan-out to subscribers</td>
+<td>Event bus with rules</td>
+</tr>
+<tr class="even">
+<td>Filtering</td>
+<td>Basic message-attribute filtering</td>
+<td>Advanced content-based rules, schema registry</td>
+</tr>
+<tr class="odd">
+<td>Sources / targets</td>
+<td>AWS services + endpoints</td>
+<td>AWS services, <strong>SaaS partners</strong>, custom buses, 20+ target types</td>
+</tr>
+<tr class="even">
+<td>Cost &amp; complexity</td>
+<td>Lower</td>
+<td>Higher</td>
+</tr>
+<tr class="odd">
+<td>Prefer when</td>
+<td>Simple fan-out to known consumers</td>
+<td>Many sources, rich routing, cross-account/SaaS integration</td>
+</tr>
+</tbody>
+</table>
+<p>For this use case SNS wins: the consumers are known and the routing is trivial, so EventBridge would be <strong>overkill and more expensive</strong>.</p>
+<blockquote class="blockquote">
+<p><strong>SNS topic types:</strong> <strong>FIFO</strong> gives ordering + exactly-once delivery at roughly 300 publishes/sec.&nbsp;<strong>Standard</strong> gives much higher throughput with best-effort ordering (no guarantee). Encryption in transit is on by default; encryption at rest is opt-in.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Decouple at the <strong>data-change boundary</strong> (Streams), then fan out at the <strong>notification boundary</strong> (SNS). Adding consumers must never require redeploying the producer.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-async" class="level2">
+<h2 class="anchored" data-anchor-id="sec-async">10.7 Step 6 — Absorb bursts and cut latency</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ The architecture is decoupled, but users still wait. What now?</li>
+</ul>
+</blockquote>
+<section id="the-storage-first-async-pattern" class="level3">
+<h3 class="anchored" data-anchor-id="the-storage-first-async-pattern">10.7.1 The storage-first (async) pattern</h3>
+<p>Even after SNS decoupling, <strong>synchronous</strong> processing still made the caller wait while downstream work ran. The fix is to <strong>acknowledge the request as soon as it is durably stored</strong>, then process it asynchronously.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    U["User"] --&gt; API["API Gateway"]
+    API --&gt;|"buffer request"| SQS["SQS queue"]
+    API -.-&gt;|"fast 202 response"| U
+    SQS --&gt; L["Lambda&lt;br&gt;order logic"]
+    L --&gt; DDB["DynamoDB"]
+    DDB --&gt; STR["Streams"]
+    STR --&gt; L2["Lambda"]
+    L2 --&gt; SNS["SNS"]
+    SNS --&gt; DOWN["Downstream services"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li>The business logic is genuinely complex, so <strong>Lambda cannot be removed</strong>. Instead, insert <strong>SQS between API Gateway and Lambda</strong>.</li>
+<li>API Gateway writes straight to SQS via a direct service integration — the request is durable before any compute runs.</li>
+<li><strong>SQS is pull-based</strong>: messages persist in the queue until a consumer processes and deletes them (unlike SNS, which pushes once).</li>
+</ul>
+<p><strong>Use this pattern when</strong></p>
+<ul>
+<li>You want loose coupling between arrival and processing.</li>
+<li>Not everything must complete inside one transaction; some steps can be async.</li>
+<li>Downstream cannot handle the incoming TPS — the queue absorbs the burst and drains as resources allow.</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>Trade-off you must accept:</strong> the caller gets a fast response, but <strong>part of the transaction is still in flight</strong>. The client’s acknowledgement does <em>not</em> mean end-to-end completion. Design for eventual completion, and give the client a way to check status (an order-status endpoint, or a notification).</p>
+</blockquote>
+</section>
+<section id="sqs-essentials-an-architect-must-know" class="level3">
+<h3 class="anchored" data-anchor-id="sqs-essentials-an-architect-must-know">10.7.2 SQS essentials an architect must know</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>What it does</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Standard vs FIFO</td>
+<td>At-least-once + best-effort order vs exactly-once + strict order</td>
+<td>FIFO costs throughput; only pay for it if ordering is a real requirement</td>
+</tr>
+<tr class="even">
+<td>Max message size <strong>256 KB</strong></td>
+<td>Larger payloads must be stored in S3 and referenced</td>
+<td>Storage-first still applies — send a pointer, not a blob</td>
+</tr>
+<tr class="odd">
+<td>Retention <strong>1 min – 14 days</strong> (default 4 days)</td>
+<td>How long the buffer can hold work</td>
+<td>Sets the ceiling on how long an outage can last before data loss</td>
+</tr>
+<tr class="even">
+<td><strong>Visibility timeout</strong></td>
+<td>Hides an in-flight message from other consumers</td>
+<td>Must exceed the consumer’s processing time, or you get duplicate work</td>
+</tr>
+<tr class="odd">
+<td><strong>Long polling</strong> (wait up to 20 s)</td>
+<td>Consumer waits for work instead of polling empty</td>
+<td>Fewer empty receives = lower cost and less throttling</td>
+</tr>
+<tr class="even">
+<td><strong>Dead-letter queue (DLQ)</strong></td>
+<td>Captures repeatedly-failing messages</td>
+<td>Stops one poison message from stalling the whole buffer</td>
+</tr>
+<tr class="odd">
+<td>Batch size (Lambda trigger)</td>
+<td>How many messages one invocation pulls</td>
+<td>Caps load per cycle; the main throttle knob</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="deep-dive-pull-buffering-and-backpressure" class="level3">
+<h3 class="anchored" data-anchor-id="deep-dive-pull-buffering-and-backpressure">10.7.3 Deep dive — “pull buffering” and “backpressure”</h3>
+<p>Both terms describe how a queue protects a slower downstream system from a faster upstream one.</p>
+<p><strong>Push vs pull — who initiates delivery?</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    subgraph Push["SNS = PUSH"]
+        P["Producer"] --&gt; SNS["SNS"]
+        SNS --&gt;|"delivers immediately"| C1["Consumer has&lt;br&gt;no say in timing"]
+    end
+    subgraph Pull["SQS = PULL"]
+        Pr["Producer"] --&gt; SQS["SQS queue&lt;br&gt;messages wait"]
+        C2["Consumer"] --&gt;|"asks for work&lt;br&gt;when ready"| SQS
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>SNS <strong>pushes</strong>: 10,000 messages arriving at once are delivered at once. SQS <strong>pulls</strong>: messages sit in the queue and the consumer polls for a batch when it has capacity.</p>
+<p><strong>Pull buffering</strong> — the queue is a shock absorber between a spiky producer and a steady consumer.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    Spiky["Producer&lt;br&gt;bursty: 5000 orders/sec"] --&gt;|"writes fast"| Q["SQS queue&lt;br&gt;holds messages&lt;br&gt;up to 14 days"]
+    Q --&gt;|"consumer pulls at&lt;br&gt;its own safe rate"| Steady["Lambda consumer&lt;br&gt;processes ~500/sec"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>A flash sale fills the queue quickly; the consumer drains it at a rate it can safely handle; queue depth grows and then shrinks. Nothing is lost, nothing crashes. Without the buffer, that 5,000/sec burst would hit the consumer (or the database) directly.</p>
+<p><strong>Backpressure</strong> — the feedback effect: because the consumer only pulls what it can handle, excess load pushes back <em>into the queue</em> instead of forward into the fragile system.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    In["Incoming TPS&lt;br&gt;too high"] --&gt; Q["Queue absorbs excess&lt;br&gt;depth rises"]
+    Q -.-&gt;|"consumer sets the pace,&lt;br&gt;not the producer"| Slow["Downstream stays&lt;br&gt;within safe limits"]
+    Q --&gt;|"drains when&lt;br&gt;capacity frees up"| Slow
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Decoupling happens in <strong>layers</strong>. SNS solved <em>fan-out coupling</em>; SQS solved <em>latency and backpressure</em>. They answer different questions (push fan-out vs pull buffering) and are frequently used together. Whenever arrival rate can exceed processing rate, put a <strong>queue</strong> — not a pub/sub push — in the path.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-security" class="level2">
+<h2 class="anchored" data-anchor-id="sec-security">10.8 Step 7 — Secure every hop</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ Serverless removes servers, not security responsibilities. What is still yours?</li>
+</ul>
+</blockquote>
+<p>Under the shared responsibility model, AWS patches the runtime and the fleet; <strong>identity, data and application logic remain yours</strong>.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    subgraph Edge["Edge / entry"]
+        WAF["AWS WAF&lt;br&gt;on API Gateway"] --&gt; AUTH["Cognito / IAM /&lt;br&gt;Lambda authorizer"]
+        AUTH --&gt; VAL["Request validation&lt;br&gt;+ throttling"]
+    end
+    subgraph Identity["Identity"]
+        R1["One IAM execution role&lt;br&gt;PER Lambda function"] --&gt; R2["Least privilege:&lt;br&gt;only the exact table,&lt;br&gt;queue, topic ARNs"]
+    end
+    subgraph Data["Data"]
+        E1["Encryption in transit&lt;br&gt;TLS everywhere"]
+        E2["Encryption at rest&lt;br&gt;KMS: DynamoDB, SQS, SNS"]
+        E3["Secrets in Secrets Manager&lt;br&gt;or Parameter Store&lt;br&gt;NOT in env vars"]
+    end
+    VAL --&gt; Identity
+    Identity --&gt; Data
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Control</th>
+<th>Practice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Least privilege</strong></td>
+<td>Give each function its <strong>own</strong> execution role scoped to specific resource ARNs. Never reuse one “app role” across all functions.</td>
+</tr>
+<tr class="even">
+<td><strong>Edge protection</strong></td>
+<td>Put <strong>AWS WAF</strong> in front of API Gateway; enable request validation, throttling and usage plans to blunt abuse and cost-amplification attacks.</td>
+</tr>
+<tr class="odd">
+<td><strong>Authentication</strong></td>
+<td>Cognito user pools for end users; IAM auth for service-to-service; Lambda authorizers for custom tokens. Never rely on “unguessable” URLs.</td>
+</tr>
+<tr class="even">
+<td><strong>Secrets</strong></td>
+<td>Store in <strong>Secrets Manager</strong> / <strong>SSM Parameter Store</strong> (SecureString) and fetch at init. Lambda environment variables are visible to anyone with <code>GetFunction</code>.</td>
+</tr>
+<tr class="odd">
+<td><strong>Encryption at rest</strong></td>
+<td>Enable KMS encryption on DynamoDB, SQS, SNS and any S3 buckets. SNS/SQS at-rest encryption is opt-in.</td>
+</tr>
+<tr class="even">
+<td><strong>Private networking</strong></td>
+<td>If Lambda must sit in a VPC, use a <strong>gateway VPC endpoint</strong> for DynamoDB and <strong>interface endpoints</strong> for SQS/SNS so traffic never traverses the internet or a NAT gateway.</td>
+</tr>
+<tr class="odd">
+<td><strong>Input validation</strong></td>
+<td>Validate and sanitise every event payload. An event source is an untrusted boundary — injection risks do not disappear because there is no server.</td>
+</tr>
+<tr class="even">
+<td><strong>Failure isolation</strong></td>
+<td>Configure <strong>DLQs</strong> and Lambda <code>onFailure</code> destinations so failed events are captured, not silently retried forever.</td>
+</tr>
+<tr class="odd">
+<td><strong>Auditing</strong></td>
+<td><strong>CloudTrail</strong> for API activity; enable it before you need it.</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Security caveat on execution-environment reuse:</strong> never cache user data, request payloads or caller-scoped secrets <em>outside</em> the handler — a reused environment can leak them into another user’s invocation. See <a href="#sec-init">10.10.1</a>.</p>
+</blockquote>
+<p>Deeper coverage of IAM, roles and the shared responsibility model: <a href="../aws_cloud_technical_essentials_book/02-security.html">02. Security</a>.</p>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> In serverless, the blast radius of a single over-permissioned IAM role is the whole application. <strong>One function, one role, one job.</strong></p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-observability" class="level2">
+<h2 class="anchored" data-anchor-id="sec-observability">10.9 Step 8 — Make it observable</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ With no servers to SSH into, how do you debug a distributed, async flow?</li>
+</ul>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    APIGW["API Gateway"] --&gt; CW["Amazon CloudWatch&lt;br&gt;logs + metrics + alarms"]
+    LAM["Lambda"] --&gt; CW
+    SQS["SQS"] --&gt; CW
+    SNS["SNS"] --&gt; CW
+    DDB["DynamoDB"] --&gt; CW
+    LAM --&gt; XR["AWS X-Ray&lt;br&gt;distributed traces"]
+    APIGW --&gt; XR
+    CW --&gt; AL["Alarms to SNS&lt;br&gt;on-call notification"]
+    CW --&gt; DB2["Dashboards"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Every service in this architecture publishes to CloudWatch with near-zero configuration — that is a real architectural benefit of staying on managed services.</p>
+<p><strong>Signals worth alarming on</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Service</th>
+<th>Metric</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Lambda</td>
+<td><code>Errors</code>, <code>Throttles</code>, <code>Duration</code>, <code>ConcurrentExecutions</code></td>
+<td>Throttles mean you hit a concurrency ceiling; duration creeping towards the timeout is a latent outage</td>
+</tr>
+<tr class="even">
+<td>SQS</td>
+<td><code>ApproximateAgeOfOldestMessage</code>, <code>ApproximateNumberOfMessagesVisible</code></td>
+<td>Rising age = the consumer is losing the race; this is the earliest warning of backpressure turning into a backlog</td>
+</tr>
+<tr class="odd">
+<td>SQS DLQ</td>
+<td><code>ApproximateNumberOfMessagesVisible &gt; 0</code></td>
+<td>Any message in a DLQ is an unhandled business failure</td>
+</tr>
+<tr class="even">
+<td>API Gateway</td>
+<td><code>4XXError</code>, <code>5XXError</code>, <code>Latency</code>, <code>Count</code></td>
+<td>Separates client faults from backend faults</td>
+</tr>
+<tr class="odd">
+<td>DynamoDB</td>
+<td><code>ThrottledRequests</code>, <code>ConsumedRead/WriteCapacityUnits</code></td>
+<td>Hot partitions and capacity mis-sizing</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Practices</strong></p>
+<ul>
+<li><strong>AWS X-Ray</strong> to trace a single request across API Gateway → SQS → Lambda → DynamoDB.</li>
+<li><strong>Lambda Powertools</strong> for structured JSON logging, tracing and custom business metrics.</li>
+<li>Propagate a <strong>correlation ID</strong> from the front door through every message attribute — in an async flow it is the only way to reassemble one logical transaction.</li>
+</ul>
+<p>See <a href="../aws_cloud_technical_essentials_book/07-monitoring.html">07. Monitoring</a> for CloudWatch fundamentals.</p>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> In an async architecture, “the request succeeded” and “the work completed” are different events. Instrument <strong>both</strong>.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-optimize" class="level2">
+<h2 class="anchored" data-anchor-id="sec-optimize">10.10 Step 9 — Optimise cost and performance</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ The architecture works. Where are the cheap wins?</li>
+</ul>
+</blockquote>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Area</th>
+<th>Optimisation</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>DynamoDB</td>
+<td><strong>DAX</strong> in-memory cache</td>
+<td>Milliseconds → microseconds on reads, up to ~10x; DynamoDB-API compatible so <strong>no application changes</strong>; runs inside a VPC</td>
+</tr>
+<tr class="even">
+<td>DynamoDB</td>
+<td>Secondary indexes; on-demand vs provisioned capacity</td>
+<td>Match the read pattern; on-demand for spiky, provisioned + auto-scaling for steady</td>
+</tr>
+<tr class="odd">
+<td>Lambda</td>
+<td><strong>Lambda Power Tuning</strong> (a Step Functions state machine)</td>
+<td>Data-driven memory sizing — more memory means more CPU, so a function can be <strong>cheaper <em>and</em> faster</strong></td>
+</tr>
+<tr class="even">
+<td>Lambda</td>
+<td><strong>Lambda Layers</strong></td>
+<td>Share common code and dependencies across functions; smaller deployment packages</td>
+</tr>
+<tr class="odd">
+<td>Lambda</td>
+<td>Initialise SDK clients / connections <strong>outside the handler</strong></td>
+<td>Execution-environment reuse cuts init time and cost (see below)</td>
+</tr>
+<tr class="even">
+<td>Lambda</td>
+<td><strong>Lambda Powertools</strong></td>
+<td>Structured logging, tracing, custom metrics without boilerplate</td>
+</tr>
+<tr class="odd">
+<td>Lambda</td>
+<td>Right-size <strong>batch size</strong> and <strong>reserved / provisioned concurrency</strong></td>
+<td>Batching cuts invocation count; provisioned concurrency removes cold starts for latency-critical paths</td>
+</tr>
+<tr class="even">
+<td>Messaging</td>
+<td>Swap SNS → <strong>EventBridge</strong></td>
+<td>Only when you need advanced filtering, many more consumers, or SaaS targets</td>
+</tr>
+</tbody>
+</table>
+<p>Broader cost and resilience levers: <a href="../aws_cloud_technical_essentials_book/08-optimization.html">08. Optimization</a>.</p>
+<section id="sec-init" class="level3">
+<h3 class="anchored" data-anchor-id="sec-init">10.10.1 Deep dive — why initialise clients outside the handler</h3>
+<p><strong>The mental model.</strong> A Lambda function runs inside an <em>execution environment</em> (a micro-VM):</p>
+<ul>
+<li><strong>Cold start</strong> → AWS creates a new environment, loads your code, runs everything <strong>outside</strong> the handler once, then runs the handler.</li>
+<li><strong>Warm start</strong> → AWS reuses a live environment, skips the outside-handler code, and jumps straight into the handler.</li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    R["Request arrives"] --&gt; Q{"Warm environment&lt;br&gt;available?"}
+    Q --&gt;|"No - cold start"| C["Create environment&lt;br&gt;load code&lt;br&gt;run OUTSIDE-handler code once"]
+    C --&gt; H1["Run handler"]
+    Q --&gt;|"Yes - warm start"| H2["Run handler only&lt;br&gt;skip outside-handler code"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Key fact:</strong> code <em>outside</em> the handler runs <strong>once per environment</strong>; code <em>inside</em> the handler runs <strong>on every request</strong>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> boto3</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># OUTSIDE the handler - runs ONCE per execution environment (init phase)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>dynamodb <span class="op">=</span> boto3.resource(<span class="st">"dynamodb"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>table <span class="op">=</span> dynamodb.Table(<span class="st">"orders"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lambda_handler(event, context):</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># INSIDE the handler - runs on EVERY invocation</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> table.get_item(Key<span class="op">=</span>{<span class="st">"id"</span>: event[<span class="st">"id"</span>]})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Putting <code>boto3.resource(...)</code> <em>inside</em> the handler rebuilds the SDK client and re-establishes connections on every single request — repeating TCP/TLS handshakes, credential loading and connection-pool setup that could have been done once.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    subgraph Bad["Init INSIDE handler"]
+        A1["Req 1: init + work"] --&gt; A2["Req 2: init + work"] --&gt; A3["Req 3: init + work"]
+    end
+    subgraph Good["Init OUTSIDE handler"]
+        B0["init once"] --&gt; B1["Req 1: work"] --&gt; B2["Req 2: work"] --&gt; B3["Req 3: work"]
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Time:</strong> the client is created once and reused across all warm invocations → lower per-request latency.</li>
+<li><strong>Cost:</strong> Lambda bills by duration. A shorter handler is a cheaper handler, and you pay the init cost once instead of every request.</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Safe to keep outside the handler</th>
+<th>Never keep outside the handler</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Examples</td>
+<td>SDK clients, DB connection pools, static config, cached reference data, compiled regexes</td>
+<td>User data, request payloads, caller-scoped secrets, per-request state</td>
+</tr>
+<tr class="even">
+<td>Reason</td>
+<td>Stateless and expensive to build</td>
+<td>The environment is reused across <strong>different users</strong> — it can leak</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Put expensive, <strong>stateless</strong>, reusable setup outside the handler to exploit environment reuse; keep anything request- or user-specific inside the handler for correctness <em>and</em> security.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-reference" class="level2">
+<h2 class="anchored" data-anchor-id="sec-reference">10.11 The reference architecture, end to end</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    FE["Frontend clients"] --&gt; APIGW["API Gateway&lt;br&gt;auth, validation, throttling"]
+    APIGW --&gt; SQS["SQS&lt;br&gt;buffer / decouple"]
+    SQS --&gt; LAM["Lambda&lt;br&gt;order processing"]
+    LAM --&gt; DDB["DynamoDB&lt;br&gt;orders"]
+    LAM -.-&gt;|"failures"| DLQ["Dead-letter queue"]
+    DDB --&gt; STR["DynamoDB Streams"]
+    STR --&gt; LAM2["Lambda&lt;br&gt;publisher"]
+    LAM2 --&gt; SNS["SNS topic"]
+    SNS --&gt; D1["Fulfillment"]
+    SNS --&gt; D2["Accounting"]
+    SNS --&gt; D3["Inventory"]
+    APIGW --&gt; CW["CloudWatch + X-Ray&lt;br&gt;across all services"]
+    LAM --&gt; CW
+    DDB --&gt; CW
+    SNS --&gt; CW
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>How each driver is satisfied</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Driver</th>
+<th>Where it is met</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Scalability / elasticity</td>
+<td>Managed auto-scaling in API Gateway, Lambda, SQS, DynamoDB — nothing to pre-provision</td>
+</tr>
+<tr class="even">
+<td>Decoupling</td>
+<td>SQS (arrival vs processing), Streams (data change vs reaction), SNS (producer vs consumers)</td>
+</tr>
+<tr class="odd">
+<td>Low latency for the user</td>
+<td>Storage-first async: acknowledge on durable write, process afterwards</td>
+</tr>
+<tr class="even">
+<td>Resilience</td>
+<td>Queue retention + visibility timeout + DLQ; no single server to fail</td>
+</tr>
+<tr class="odd">
+<td>Operational efficiency</td>
+<td>No fleet, no patching, no capacity planning</td>
+</tr>
+<tr class="even">
+<td>Cost efficiency</td>
+<td>Pay-per-request everywhere; scales to zero when idle</td>
+</tr>
+<tr class="odd">
+<td>Observability</td>
+<td>Native CloudWatch metrics/logs + X-Ray traces across every hop</td>
+</tr>
+<tr class="even">
+<td>Security</td>
+<td>Per-function IAM roles, KMS at rest, TLS in transit, WAF + authorizers at the edge</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="sec-not-serverless" class="level2">
+<h2 class="anchored" data-anchor-id="sec-not-serverless">10.12 When <em>not</em> to architect it serverless</h2>
+<p>An honest architect states the boundary conditions of their own recommendation.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Symptom</th>
+<th>Why serverless struggles</th>
+<th>Better fit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Jobs run longer than 15 minutes</td>
+<td>Hard Lambda limit</td>
+<td>Fargate, AWS Batch, Step Functions decomposition</td>
+</tr>
+<tr class="even">
+<td>Steady, high, predictable utilisation 24×7</td>
+<td>Pay-per-request becomes more expensive than reserved capacity</td>
+<td>EC2 with Savings Plans / Reserved Instances</td>
+</tr>
+<tr class="odd">
+<td>Strict single-digit-millisecond latency, no tolerance for cold starts</td>
+<td>Cold starts and per-invocation overhead</td>
+<td>Provisioned concurrency, or always-on containers</td>
+</tr>
+<tr class="even">
+<td>Heavy relational joins, reporting, transactions</td>
+<td>DynamoDB modelling becomes contorted</td>
+<td>RDS / Aurora (+ RDS Proxy if fronted by Lambda)</td>
+</tr>
+<tr class="odd">
+<td>Needs specific OS, kernel modules, GPUs, licensed agents</td>
+<td>No OS access in Lambda</td>
+<td>EC2 or containers</td>
+</tr>
+<tr class="even">
+<td>Chatty request/response between many microservices</td>
+<td>Async messaging adds latency and complexity</td>
+<td>Synchronous service mesh / containers</td>
+</tr>
+<tr class="odd">
+<td>Existing monolith must move quickly with minimal rewrite</td>
+<td>Lambda forces decomposition first</td>
+<td><strong>Fargate + the monolith intact</strong> — see <a href="#sec-fargate">10.4.1</a></td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> “Technically works” ≠ “best fit”. Fit = technical + operational + team + cost constraints, all four.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-cheatsheet" class="level2">
+<h2 class="anchored" data-anchor-id="sec-cheatsheet">10.13 Architect’s cheat sheet</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    ROOT["Serverless backend&lt;br&gt;decision map"]
+
+    ROOT --&gt; C["Compute"]
+    C --&gt; C1["Lambda: event-driven, under 15 min"]
+    C --&gt; C2["Reject EC2 for ops + idle cost"]
+    C --&gt; C3["Reject Fargate if no container skills"]
+    C --&gt; C4["Fargate? then monolith may stay whole"]
+
+    ROOT --&gt; D["Data"]
+    D --&gt; D1["DynamoDB for simple CRUD, no joins"]
+    D --&gt; D2["Model access patterns FIRST"]
+    D --&gt; D3["Aurora + RDS Proxy only if relational"]
+
+    ROOT --&gt; M["Decoupling"]
+    M --&gt; M1["SNS = push fan-out"]
+    M --&gt; M2["SQS = pull buffer + backpressure"]
+    M --&gt; M3["Streams = react to data changes"]
+
+    ROOT --&gt; X["Cross-cutting"]
+    X --&gt; X1["API Gateway = managed front door"]
+    X --&gt; X2["CloudWatch + X-Ray everywhere"]
+    X --&gt; X3["Storage-first = async low latency"]
+    X --&gt; X4["One function, one IAM role"]
+    X --&gt; X5["VPC Link = private path to containers"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ol type="1">
+<li>Match <strong>requirements → drivers → services</strong>; always justify the rejected options.</li>
+<li><strong>Serverless</strong> fits spiky, low-ops, simple-data workloads.</li>
+<li><strong>Lambda:</strong> 15-minute cap, stateless, pay-per-use, no idle cost, cold starts.</li>
+<li><strong>Reject a valid option</strong> (Fargate) when adoption cost and team skills do not fit.</li>
+<li><strong>API Gateway</strong> is the managed front door — and it can call DynamoDB/SQS <strong>directly</strong>, with no Lambda.</li>
+<li>API Gateway is <strong>compute-agnostic</strong>: it reaches Fargate through a <strong>VPC Link → private NLB/ALB</strong>, so containers stay off the internet.</li>
+<li>API Gateway integrations time out at <strong>~29 seconds</strong> — longer work must go async, whatever the compute.</li>
+<li><strong>“Container vs function”</strong> and <strong>“monolith vs microservices”</strong> are two separate decisions; Lambda conflates them, Fargate does not.</li>
+<li>Containerising fixes <strong>ops pain</strong>, not <strong>coupling pain</strong>. Decompose reactively, on evidence.</li>
+<li><strong>DynamoDB</strong> for no-join CRUD; design access patterns up front; use secondary indexes.</li>
+<li><strong>DynamoDB + Lambda</strong> avoids relational connection exhaustion; otherwise add <strong>RDS Proxy</strong>.</li>
+<li><strong>SNS</strong> = push pub/sub fan-out; <strong>SQS</strong> = pull queue that persists and buffers.</li>
+<li><strong>Streams → Lambda → SNS</strong> lets you add consumers with zero changes to producer code.</li>
+<li><strong>Storage-first / async</strong> = fast user response, but the transaction completes downstream (eventual).</li>
+<li><strong>SNS FIFO</strong> = ordered/exactly-once (~300 TPS); <strong>Standard</strong> = higher TPS, best-effort ordering.</li>
+<li><strong>SQS:</strong> 256 KB max message, 14-day max retention, visibility timeout, long polling saves cost.</li>
+<li>Always attach a <strong>DLQ</strong>; a poison message must never stall the buffer.</li>
+<li><strong>EventBridge</strong> beats SNS only when you need rich filtering, many sources or SaaS targets — it costs more.</li>
+<li><strong>DAX</strong> gives microsecond DynamoDB reads with no code changes (VPC-hosted cache).</li>
+<li><strong>Lambda Power Tuning</strong> — right-size memory; more memory can be cheaper <em>and</em> faster.</li>
+<li>Initialise clients <strong>outside the handler</strong> for reuse — but never cache user data or secrets there.</li>
+<li><strong>One function, one IAM role, least privilege</strong> — the blast radius of a shared role is the whole app.</li>
+<li><strong>CloudWatch</strong> is the near-zero-config observability layer; add <strong>X-Ray</strong> and a correlation ID for async flows.</li>
+<li>Decoupling is <strong>layered</strong>: fan-out (SNS) and latency/backpressure (SQS) are different problems.</li>
+<li>Prefer <em>“prefer X when…”</em> over absolute rules — architecture is trade-offs, not commandments.</li>
+</ol>
+<hr>
+</section>
+<section id="sources" class="level2">
+<h2 class="anchored" data-anchor-id="sources">Sources</h2>
+<p><em>Inspired from course notes — “Architecting Solutions on AWS”, Week 1: Designing a Serverless Web Backend (AnyCompany order-service use case).</em></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/senthilkumarm1901\.github\.io\/learn_by_blogging\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
