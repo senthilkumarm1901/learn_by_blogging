@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+
+<title>11. Architecting Serverless Data Analytics Solutions – Learn by Blogging</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-67daaa7896f33cc2219aa98eaadded8d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="mermaid-theme" content="neutral">
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">11. Architecting Serverless Data Analytics Solutions</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Senthil Kumar </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>👈 <strong>Back to:</strong> <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">📝 Blog</a> | <a href="https://www.linkedin.com/in/senthilkumarm1901">💼 LinkedIn</a> | <a href="https://medium.com/@senthilkumar.m1901">✍️ Medium</a></p>
+<hr>
+<section id="how-to-architect-a-serverless-data-analytics-solution-in-aws" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-architect-a-serverless-data-analytics-solution-in-aws">How to Architect a Serverless Data Analytics Solution in AWS</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ Given a stream of raw events, how do you decide <em>which</em> analytics services to combine to turn it into insight — and how do you defend the ones you rejected?</li>
+<li>Hint: the same discipline as <a href="../aws_cloud_technical_essentials_book/10-architecting-serverless-backend-solution-in-aws.html">10. Architecting a Serverless Backend Solution</a> — <strong>requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections</strong>. What changes is the shape of the workload: it is now a <strong>data pipeline</strong> — ingest → store → query → visualise.</li>
+</ul>
+</blockquote>
+<p><strong>Running example used throughout this chapter</strong></p>
+<blockquote class="blockquote">
+<p>A software house sells <strong>online restaurant menus</strong> as static HTML pages hosted on <strong>Amazon S3</strong>, reached through <strong>QR codes</strong>. Restaurant admins generate menus and QR codes through an existing system.</p>
+<p>They now want two things:</p>
+<ol type="1">
+<li>An <strong>“order this item”</strong> feature wired to an existing third-party payment API.</li>
+<li>To collect <strong>clickstream data</strong> — which dishes are viewed, how customers navigate the menu — to optimise menu design.</li>
+</ol>
+<p><strong>Goal:</strong> design the <strong>analytics pipeline</strong> on AWS for <strong>serverless, usage-based billing, no servers to manage, encryption in transit and at rest, and durable backup in a second Region</strong>.</p>
+<p><em>In scope:</em> ingesting, storing, querying and visualising the clickstream. <em>Out of scope:</em> payment processing and the client-side JavaScript that emits the clicks.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>A note on service names.</strong> AWS renamed two services in this chapter in 2024: <strong>Kinesis Data Firehose → Amazon Data Firehose</strong>, and <strong>Kinesis Data Analytics → Amazon Managed Service for Apache Flink</strong>. This chapter uses the current names, with the old ones in brackets on first use, because most existing material still uses the old ones.</p>
+</blockquote>
+<hr>
+</section>
+<section id="the-method-four-pipeline-hops-plus-cross-cutting-concerns" class="level2">
+<h2 class="anchored" data-anchor-id="the-method-four-pipeline-hops-plus-cross-cutting-concerns">11.1 The Method: four pipeline hops plus cross-cutting concerns</h2>
+<p>Every analytics design reduces to the same four hops. The valuable skill is choosing the <strong>right service at each hop for the customer’s constraints</strong> — not knowing every service.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A["Business question&lt;br&gt;which dishes sell?"] --&gt; B["1. Ingest&lt;br&gt;get events in"]
+    B --&gt; C["2. Store&lt;br&gt;durable data lake"]
+    C --&gt; D["3. Query&lt;br&gt;turn data into answers"]
+    D --&gt; E["4. Visualise&lt;br&gt;dashboards for humans"]
+    X["Cross-cutting: security, observability,&lt;br&gt;repeatability, cost"] -.-&gt; B
+    X -.-&gt; C
+    X -.-&gt; D
+    X -.-&gt; E
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Question the architect answers</th>
+<th>Winning service (this case)</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>What are the real architectural drivers?</td>
+<td>—</td>
+<td><a href="#sec-drivers">11.2</a></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>How do events get in, safely and cheaply?</td>
+<td>API Gateway → <strong>Amazon Data Firehose</strong></td>
+<td><a href="#sec-ingest">11.3</a></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Where does the data land and stay durable?</td>
+<td><strong>Amazon S3</strong> data lake (+ CRR)</td>
+<td><a href="#sec-store">11.4</a></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>How do we ask questions of it?</td>
+<td><strong>Amazon Athena</strong></td>
+<td><a href="#sec-query">11.5</a></td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>How do humans see the answers?</td>
+<td><strong>Amazon QuickSight</strong></td>
+<td><a href="#sec-visualise">11.6</a></td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>How is every hop secured?</td>
+<td>TLS + SSE + least privilege</td>
+<td><a href="#sec-secure">11.7</a></td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>How do we know it is working?</td>
+<td>CloudWatch across the pipeline</td>
+<td><a href="#sec-observability">11.8</a></td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>How do we rebuild it per client?</td>
+<td>CloudFormation + retries</td>
+<td><a href="#sec-resilient">11.9</a></td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>How do we tune cost and performance?</td>
+<td>Compress, partition, columnar</td>
+<td><a href="#sec-optimize">11.10</a></td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> A data-analytics architecture is a <strong>pipeline of decoupled stages</strong>. Choose each stage for its own constraints; a good pipeline lets you swap any single stage later without rebuilding the rest.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-drivers" class="level2">
+<h2 class="anchored" data-anchor-id="sec-drivers">11.2 Step 1 — Turn requirements into architectural drivers</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ How do a customer’s wishes become design constraints for a pipeline?</li>
+</ul>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    R1["Serverless, usage-billed,&lt;br&gt;no EC2"] --&gt; D1["Managed services only"]
+    R2["HTTPS RESTful endpoint&lt;br&gt;from a JS library"] --&gt; D2["Managed API front door"]
+    R3["High-volume small&lt;br&gt;click events"] --&gt; D3["Streaming ingestion"]
+    R4["Durable + backup in&lt;br&gt;another Region"] --&gt; D4["S3 + Cross-Region Replication"]
+    R5["Encryption in transit&lt;br&gt;and at rest"] --&gt; D5["TLS + SSE everywhere"]
+    R6["Small / short-staffed team"] --&gt; D6["Low learning curve,&lt;br&gt;low maintenance"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Customer requirement</th>
+<th>Architectural driver</th>
+<th>Implication</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Serverless, usage-based billing, no EC2</td>
+<td><strong>Cost + operational efficiency</strong></td>
+<td>Pay-per-use managed services; scale to zero</td>
+</tr>
+<tr class="even">
+<td>HTTPS endpoint fed by a JS library</td>
+<td><strong>Managed ingress</strong></td>
+<td>API Gateway, not a hand-rolled web tier</td>
+</tr>
+<tr class="odd">
+<td>Continuous, high-volume, tiny click events</td>
+<td><strong>Streaming ingestion</strong></td>
+<td>Kinesis family, not batch/DB tooling</td>
+</tr>
+<tr class="even">
+<td>Durability + backup in another Region</td>
+<td><strong>Durability + DR</strong></td>
+<td>S3 (11 nines) + Cross-Region Replication</td>
+</tr>
+<tr class="odd">
+<td>Encryption in transit and at rest</td>
+<td><strong>Security / compliance</strong></td>
+<td>TLS + server-side encryption on every store</td>
+</tr>
+<tr class="even">
+<td>Short-staffed customer</td>
+<td><strong>Low operational burden</strong></td>
+<td>Avoid services with a steep learning curve (EMR, heavy Glue ETL)</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>A design lever worth noticing:</strong> <em>controlling how the data is produced simplifies the architecture</em>. Because the customer owns the JavaScript that emits clicks, they can emit <strong>clean, well-formed JSON</strong> up front — which removes the need for a heavy transformation/ETL stage on ingest. <strong>Shape the data at the source and you delete a whole pipeline stage.</strong></p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> “Short-staffed” is an architectural driver, not a footnote. It rules out powerful-but-heavy options (EMR, Spark, complex Glue ETL) before you even compare features.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-ingest" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ingest">11.3 Step 2 — Ingest the clickstream</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ What service pulls in a firehose of tiny, continuous events — without exposing infrastructure or writing plumbing?</li>
+</ul>
+</blockquote>
+<section id="choosing-the-ingestion-family" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-the-ingestion-family">11.3.1 Choosing the ingestion family</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    W["High-volume, small,&lt;br&gt;continuous click events"] --&gt; Q1{"Migrating a database?"}
+    Q1 --&gt;|Yes| DMS["AWS DMS&lt;br&gt;REJECTED: it moves DBs,&lt;br&gt;not event streams"]
+    Q1 --&gt;|No| Q2{"Buying 3rd-party&lt;br&gt;data catalogs?"}
+    Q2 --&gt;|Yes| DX["AWS Data Exchange&lt;br&gt;REJECTED: not for&lt;br&gt;user-generated events"]
+    Q2 --&gt;|No| Q3{"Team has big-data /&lt;br&gt;Spark expertise?"}
+    Q3 --&gt;|Yes| EMR["EMR + Spark Streaming&lt;br&gt;viable but bills by&lt;br&gt;cluster time; needs skill"]
+    Q3 --&gt;|No| KIN["Amazon Kinesis family - CHOSEN&lt;br&gt;built for streaming clickstream"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Chosen family: Amazon Kinesis</strong> — purpose-built to collect and process large volumes of small, continuous events (clickstreams, logs, IoT telemetry).</p>
+<p><strong>Rejected — and why</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Rejected option</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>AWS DMS</strong></td>
+<td>Designed to migrate databases, not ingest streaming events</td>
+</tr>
+<tr class="even">
+<td><strong>AWS Data Exchange</strong></td>
+<td>For subscribing to third-party data catalogs, not user-generated clickstream</td>
+</tr>
+<tr class="odd">
+<td><strong>EMR + Spark Streaming</strong></td>
+<td>Technically viable, but bills by <strong>cluster time</strong> and demands big-data expertise the short-staffed team lacks</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="choosing-within-the-streaming-family" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-within-the-streaming-family">11.3.2 Choosing <em>within</em> the streaming family</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    K["Kinesis family chosen"] --&gt; QA{"Need sub-second&lt;br&gt;latency?"}
+    QA --&gt;|Yes| KDS["Kinesis Data Streams&lt;br&gt;under 1s, but you code&lt;br&gt;producers + consumers"]
+    QA --&gt;|No| QB{"Need in-stream&lt;br&gt;transformation?"}
+    QB --&gt;|Yes| KDA["Managed Service for Apache Flink&lt;br&gt;real-time transforms;&lt;br&gt;unnecessary here"]
+    QB --&gt;|No| KDF["Amazon Data Firehose - CHOSEN&lt;br&gt;least code, auto-delivers to S3"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Chosen: Amazon Data Firehose</strong> (formerly Kinesis Data Firehose). The clickstream does <strong>not</strong> need sub-second processing, so Firehose wins on the driver that matters most here — <strong>least code, least operations</strong>. It captures, optionally batches/compresses/encrypts/converts, and <strong>auto-delivers straight to S3</strong>, scaling itself with no administration.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Service</th>
+<th>Latency</th>
+<th>Coding effort</th>
+<th>Fit here</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Amazon Data Firehose</strong></td>
+<td>Near-real-time (buffered)</td>
+<td>Minimal — managed delivery</td>
+<td><strong>Chosen</strong> — no sub-second need</td>
+</tr>
+<tr class="even">
+<td>Kinesis Data Streams</td>
+<td><strong>Sub-second</strong></td>
+<td>You build producers + consumers</td>
+<td>Rejected — latency not needed, more code</td>
+</tr>
+<tr class="odd">
+<td>Managed Service for Apache Flink</td>
+<td>Real-time</td>
+<td>Flink application</td>
+<td>Rejected — no in-stream transformation needed</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Key latency nuance:</strong> Firehose trades latency for simplicity. You configure a <strong>buffer interval and buffer size</strong>, and data lands once either threshold is hit — so delivery is <em>near</em>-real-time (typically seconds to a couple of minutes), not “slow”. If you genuinely need <strong>sub-second</strong> delivery, that is precisely when you drop down to <strong>Data Streams</strong> and accept the extra producer/consumer code.</p>
+</blockquote>
+</section>
+<section id="securing-the-front-door-api-gateway-vs-cognito" class="level3">
+<h3 class="anchored" data-anchor-id="securing-the-front-door-api-gateway-vs-cognito">11.3.3 Securing the front door: API Gateway vs Cognito</h3>
+<p>The JS library must POST over HTTPS <strong>without exposing the delivery stream publicly</strong>. Two paths:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    JS["Browser JS library&lt;br&gt;emits click events"] --&gt; CH{"How to reach&lt;br&gt;Firehose safely?"}
+    CH --&gt;|"Chosen: managed proxy"| AG["API Gateway&lt;br&gt;HTTPS endpoint, throttling, WAF"]
+    CH --&gt;|"Alternative: client credentials"| CG["Amazon Cognito identity pool&lt;br&gt;role scoped to PutRecord only"]
+    AG --&gt; KDF["Amazon Data Firehose&lt;br&gt;Direct PUT source"]
+    CG --&gt; KDF
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Path</th>
+<th>How it works</th>
+<th>Prefer when</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>API Gateway (chosen)</strong></td>
+<td>Public HTTPS endpoint proxies to the Firehose <strong>Direct PUT</strong> stream via an AWS service integration; the stream is never public</td>
+<td>You want the simplest integration <strong>and</strong> you want a throttling/WAF chokepoint</td>
+</tr>
+<tr class="even">
+<td><strong>Amazon Cognito</strong></td>
+<td>The browser gets temporary credentials from an identity pool, scoped to <strong>only <code>PutRecord</code></strong> on one stream, and calls Firehose directly</td>
+<td>You want to remove the API Gateway hop and its per-call cost, and you can refactor the client</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>⚠️ The Cognito trade-off is not just cost vs effort — it is cost vs abuse control.</strong> If the identity pool allows <strong>unauthenticated</strong> identities (the usual choice for an anonymous menu page), then <em>anyone</em> can obtain those credentials from the browser and call <code>PutRecord</code> directly. That means <strong>data poisoning</strong> of your clickstream and a <strong>cost-amplification</strong> attack on Firehose, Athena scans and S3 storage — with no throttling in front of it. API Gateway’s per-key throttling, usage plans and <strong>AWS WAF</strong> integration are exactly what you are giving up. Prefer Cognito only if you add rate controls elsewhere and can tolerate untrusted writes.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Implementation nuance:</strong> the enhanced (default) identity-pool flow issues credentials via <code>GetCredentialsForIdentity</code>; <code>AssumeRoleWithWebIdentity</code> is the older, classic flow. Either way, the win is that <strong>AWS SDKs apply exponential backoff and retries by default</strong> (see <a href="#sec-resilient">11.9</a>).</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Two independent choices at ingest — <strong>which streaming service</strong> (Firehose, for no-sub-second + least code) and <strong>how the client authenticates</strong> (API Gateway for simplicity <em>and</em> abuse control; Cognito to shave cost at the price of that control). Don’t conflate them.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-store" class="level2">
+<h2 class="anchored" data-anchor-id="sec-store">11.4 Step 3 — Store it in a data lake</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ Where do continuous, schema-flexible events land durably and cheaply?</li>
+</ul>
+</blockquote>
+<p><strong>Chosen: Amazon S3 as a data lake.</strong> It stores unlimited structured/semi-structured/unstructured data in native format, is designed for <strong>11 nines (99.999999999%) durability</strong>, and — unlike EBS/EFS — is <strong>decoupled from any compute instance</strong>, so the lake grows independently and any analytics service can read it directly.</p>
+<p>For the storage-class and durability fundamentals behind this section, see <a href="../aws_cloud_technical_essentials_book/05-storage.html">05. Storage</a>; for how a <em>data lake</em> differs from a database and a data warehouse, see <a href="../aws_cloud_technical_essentials_book/06-databases.html">06. Databases</a>.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    KDF["Amazon Data Firehose"] --&gt; S3["Amazon S3 data lake&lt;br&gt;raw clickstream JSON"]
+    S3 --&gt; CRR["S3 Cross-Region Replication&lt;br&gt;backup to 2nd Region"]
+    S3 --&gt; LC["S3 Lifecycle&lt;br&gt;tiering and archive"]
+    S3 -.-&gt;|read directly| ATH["Athena / QuickSight"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="storage-classes-and-lifecycle-matching-class-to-access-pattern" class="level3">
+<h3 class="anchored" data-anchor-id="storage-classes-and-lifecycle-matching-class-to-access-pattern">11.4.1 Storage classes and lifecycle — matching class to access pattern</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    O["Object in the lake"] --&gt; Q1{"Access pattern known?"}
+    Q1 --&gt;|"No / unpredictable"| IT["S3 Intelligent-Tiering&lt;br&gt;auto-moves tiers, no retrieval fee"]
+    Q1 --&gt;|"Yes - hot"| STD["S3 Standard"]
+    Q1 --&gt;|"Yes - infrequent"| IA["S3 Standard-IA"]
+    Q1 --&gt;|"Yes - archive"| GL["S3 Glacier classes&lt;br&gt;lowest cost, 11 nines"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Class</th>
+<th>Prefer when</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Intelligent-Tiering</strong></td>
+<td>Access pattern is <strong>unknown or changing</strong> (typical for a new data lake)</td>
+<td>Auto-tiers with <strong>no retrieval charge</strong>; objects <strong>&lt; 128 KB</strong> are never auto-tiered and stay billed at the frequent-access rate</td>
+</tr>
+<tr class="even">
+<td>Standard</td>
+<td>Hot, frequently queried data</td>
+<td>Default</td>
+</tr>
+<tr class="odd">
+<td>Standard-IA</td>
+<td>Known infrequent access</td>
+<td>Lower storage price, per-GB retrieval fee</td>
+</tr>
+<tr class="even">
+<td>Glacier classes</td>
+<td>Archival, rare access</td>
+<td>Lowest cost; ms-to-hours retrieval depending on class</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lifecycle policies</strong> move objects between classes automatically over time (e.g.&nbsp;hot → IA → Glacier), which is how you control cost at scale without manual work.</p>
+<blockquote class="blockquote">
+<p><strong>Watch the small-file trap:</strong> a clickstream naturally produces <em>many tiny objects</em>. That hurts twice — Intelligent-Tiering won’t tier objects under 128 KB, and Athena is slow and expensive over thousands of small files. Firehose’s buffering is your first defence; see <a href="#sec-optimize">11.10</a>.</p>
+</blockquote>
+</section>
+<section id="meeting-the-backup-requirement-cross-region-replication" class="level3">
+<h3 class="anchored" data-anchor-id="meeting-the-backup-requirement-cross-region-replication">11.4.2 Meeting the backup requirement: Cross-Region Replication</h3>
+<p>The customer’s <em>“backup in another Region”</em> requirement is met by <strong>S3 Cross-Region Replication (CRR)</strong> — automatic replication of objects, metadata and tags to a bucket in a second Region.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>CRR buys you</th>
+<th>Why it matters here</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Disaster recovery</td>
+<td>Survive a Region-level failure</td>
+</tr>
+<tr class="even">
+<td>Compliance</td>
+<td>Store copies at a required distance</td>
+</tr>
+<tr class="odd">
+<td>Lower-latency reads</td>
+<td>Serve geographically distant users</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Prerequisites and honest limits.</strong> CRR requires <strong>versioning enabled on both the source and destination buckets</strong> plus an IAM role that S3 assumes to replicate. Replication is <strong>asynchronous</strong>, so your RPO is <strong>not zero</strong> — objects land in the second Region after a delay. If you need a bounded guarantee, enable <strong>S3 Replication Time Control (RTC)</strong>, which carries an SLA to replicate 99.99% of objects within 15 minutes. Also note CRR replicates <em>new</em> writes; existing objects need <strong>batch replication</strong>.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> S3’s value in analytics is <strong>decoupling storage from compute</strong> — the lake becomes a shared substrate that Firehose writes to and Athena and QuickSight read from independently. For new pipelines with unknown query patterns, <strong>Intelligent-Tiering</strong> is the safe default; <strong>CRR (with versioning)</strong> is the one-switch answer to a cross-region backup requirement — as long as you state the asynchronous RPO out loud.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-query" class="level2">
+<h2 class="anchored" data-anchor-id="sec-query">11.5 Step 4 — Query the lake</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ How does a short-staffed team ask SQL questions of raw S3 data with no ETL and no servers?</li>
+</ul>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    Q["Query clickstream in S3"] --&gt; Q1{"Heavy transformation&lt;br&gt;or big-data processing?"}
+    Q1 --&gt;|Yes| GE["Glue ETL / Amazon EMR&lt;br&gt;powerful but learning curve&lt;br&gt;plus maintenance"]
+    Q1 --&gt;|No| Q2{"Interactive SQL over&lt;br&gt;many files?"}
+    Q2 --&gt;|Yes| ATH["Amazon Athena - CHOSEN&lt;br&gt;serverless SQL on S3,&lt;br&gt;pay per byte scanned"]
+    Q2 --&gt;|"No - one object at a time"| SEL["S3 Select&lt;br&gt;REJECTED: single-object only,&lt;br&gt;and closed to new customers"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Chosen: Amazon Athena.</strong> Serverless, standard SQL <strong>directly on S3</strong>, no data movement, no ETL servers, pay <strong>per query</strong>. You define an external table (schema-on-read) over the JSON/CSV/Parquet in S3 and query in seconds.</p>
+<p><strong>Rejected — and why</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Rejected option</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>S3 Select</strong></td>
+<td>Queries <strong>one object per request</strong> — unusable across many small clickstream files. AWS has also <strong>closed S3 Select to new customers</strong>, so it is not a forward-looking choice</td>
+</tr>
+<tr class="even">
+<td><strong>AWS Glue ETL / Amazon EMR</strong></td>
+<td>Powerful for heavy transforms and big-data processing, but carry a <strong>learning curve and maintenance</strong> the team can’t absorb</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>⚠️ Important clarification — you are rejecting Glue <em>ETL</em>, not Glue entirely.</strong> Athena stores its table and partition metadata in the <strong>AWS Glue Data Catalog</strong> by default, and Firehose’s Parquet/ORC conversion (see <a href="#sec-optimize">11.10</a>) <strong>requires</strong> a Glue Data Catalog table to supply the schema. So the Data Catalog is very much <em>in</em> this architecture — it is the <strong>Glue ETL jobs and crawlers-as-a-pipeline</strong> that are out of scope. Saying “no Glue” without that distinction confuses readers who then can’t get format conversion working.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>How Athena bills — and why it drives your S3 layout:</strong> Athena <strong>charges per amount of data scanned</strong> (with a <strong>10 MB minimum per query</strong>). That single fact makes storage layout an <em>architectural</em> decision, not a detail — see <a href="#sec-optimize">11.10</a>.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Athena is the natural query layer for an S3 data lake when the team wants SQL without infrastructure. Its pay-per-scan model means <strong>how you store the data determines what you pay to query it.</strong></p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-visualise" class="level2">
+<h2 class="anchored" data-anchor-id="sec-visualise">11.6 Step 5 — Visualise the insight</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ How do non-technical restaurant owners see “which dishes are viewed most” without SQL?</li>
+</ul>
+</blockquote>
+<p><strong>Chosen: Amazon QuickSight</strong> — a serverless BI service that sits on top of Athena/S3. Business users explore interactive dashboards, it scales through the <strong>SPICE</strong> in-memory engine, and readers can be billed per session rather than per seat.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    S3["S3 data lake"] --&gt; ATH["Athena"]
+    ATH --&gt; QS["Amazon QuickSight&lt;br&gt;dashboards + SPICE"]
+    QS --&gt; U1["Restaurant owner&lt;br&gt;menu-view charts"]
+    QS --&gt; U2["ML insights&lt;br&gt;anomaly detection, forecasting"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>QuickSight strength</th>
+<th>Why it fits</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Serverless, pay-per-session <strong>readers</strong></td>
+<td>No per-seat licences for the restaurant owners; matches usage-based billing</td>
+</tr>
+<tr class="even">
+<td>SPICE in-memory engine</td>
+<td>Fast dashboards without re-scanning S3 on every interaction</td>
+</tr>
+<tr class="odd">
+<td>ML insights</td>
+<td>Built-in anomaly detection and forecasting</td>
+</tr>
+<tr class="even">
+<td>Governance</td>
+<td>Row/column-level security, encryption at rest in SPICE</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Two pricing/edition caveats to state up front.</strong> (1) <strong>Pay-per-session applies to Readers</strong>; <strong>Authors and Admins are billed per user, per month</strong> — so “no named users” is only true for the consumers, not the dashboard builders. (2) The customer’s <strong>encryption-at-rest</strong> requirement effectively forces <strong>Enterprise edition</strong>, since SPICE encryption at rest, row/column-level security and private VPC connectivity are Enterprise features. That is a real line item, not a footnote.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> QuickSight closes the pipeline — raw clicks become a chart a restaurant owner acts on. Its <strong>pay-per-session reader</strong> model keeps the usage-billed promise intact for the many consumers, while the few authors are a fixed cost.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-secure" class="level2">
+<h2 class="anchored" data-anchor-id="sec-secure">11.7 Step 6 — Secure every stage</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ Serverless removes servers, not the security requirements. What stays yours across a pipeline?</li>
+</ul>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    subgraph Transit["In transit"]
+        T1["HTTPS to API Gateway"]
+        T2["TLS to Firehose and S3"]
+    end
+    subgraph Rest["At rest"]
+        R1["SSE-KMS on S3 buckets"]
+        R2["Encryption on Firehose delivery"]
+        R3["Encryption at rest in SPICE"]
+    end
+    subgraph Identity["Identity"]
+        I1["Client role scoped to&lt;br&gt;PutRecord on one stream"]
+        I2["IAM least privilege per stage"]
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Requirement</th>
+<th>Control</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Encryption in transit</strong></td>
+<td>HTTPS at API Gateway; TLS to Firehose and S3</td>
+</tr>
+<tr class="even">
+<td><strong>Encryption at rest</strong></td>
+<td>Server-side encryption on S3 (SSE-S3 or SSE-KMS), on Firehose delivery, and in SPICE</td>
+</tr>
+<tr class="odd">
+<td><strong>Least privilege</strong></td>
+<td>Scope every stage’s IAM role to the exact resource; a browser-facing role gets <strong>only <code>PutRecord</code></strong> on the one stream</td>
+</tr>
+<tr class="even">
+<td><strong>Bucket hygiene</strong></td>
+<td>Block Public Access on the lake bucket, bucket policy requiring <code>aws:SecureTransport</code>, versioning (also a CRR prerequisite)</td>
+</tr>
+<tr class="odd">
+<td><strong>Edge protection</strong></td>
+<td><strong>CloudFront + AWS WAF + AWS Shield</strong> in front of the static menu S3 site for DDoS protection and custom SSL</td>
+</tr>
+<tr class="even">
+<td><strong>Audit</strong></td>
+<td><strong>CloudTrail</strong> for API activity; <strong>CloudTrail data events</strong> on the lake bucket if object-level access must be auditable</td>
+</tr>
+</tbody>
+</table>
+<p>For IAM roles, least privilege and the shared responsibility model, see <a href="../aws_cloud_technical_essentials_book/02-security.html">02. Security</a>.</p>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> In a pipeline, security is <strong>per hop</strong>. Encrypt in transit <em>and</em> at rest at every stage, and scope each identity to the single action it needs — the browser-facing <code>PutRecord</code>-only role is the textbook example, and also the one with the abuse caveat from <a href="#sec-ingest">11.3.3</a>.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-observability" class="level2">
+<h2 class="anchored" data-anchor-id="sec-observability">11.8 Step 7 — Make the pipeline observable</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ A pipeline fails <em>silently</em>. How do you know clicks are still arriving and landing?</li>
+</ul>
+</blockquote>
+<p>This is the stage most analytics designs skip. A backend returns an error to a caller; a <strong>pipeline just stops producing data</strong>, and nobody notices until a dashboard looks wrong days later.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    AG["API Gateway"] --&gt; CW["Amazon CloudWatch&lt;br&gt;metrics, logs, alarms"]
+    KDF["Amazon Data Firehose"] --&gt; CW
+    S3["Amazon S3 + CRR"] --&gt; CW
+    ATH["Amazon Athena"] --&gt; CW
+    QS["QuickSight SPICE"] --&gt; CW
+    KDF -.-&gt;|"failed records"| ERR["S3 error output prefix"]
+    CW --&gt; AL["Alarms to SNS&lt;br&gt;on-call notification"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Signals worth alarming on</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Stage</th>
+<th>Metric</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>API Gateway</td>
+<td><code>4XXError</code>, <code>5XXError</code>, <code>Latency</code>, <code>Count</code></td>
+<td><code>Count</code> dropping to zero is your earliest “the clicks stopped” signal</td>
+</tr>
+<tr class="even">
+<td>Data Firehose</td>
+<td><code>DeliveryToS3.Success</code></td>
+<td>Below 1 means records are failing to land</td>
+</tr>
+<tr class="odd">
+<td>Data Firehose</td>
+<td><code>DeliveryToS3.DataFreshness</code></td>
+<td>Age of the oldest undelivered record — the pipeline’s backlog gauge</td>
+</tr>
+<tr class="even">
+<td>Data Firehose</td>
+<td><code>ThrottledRecords</code>, <code>IncomingRecords</code></td>
+<td>Throttling means you are hitting stream quotas</td>
+</tr>
+<tr class="odd">
+<td>S3 replication</td>
+<td><code>ReplicationLatency</code>, <code>OperationsPendingReplication</code></td>
+<td>Your cross-Region backup silently falling behind</td>
+</tr>
+<tr class="even">
+<td>Athena</td>
+<td><code>ProcessedBytes</code>, <code>QueryQueueTime</code>, failed queries</td>
+<td><code>ProcessedBytes</code> is also your <strong>cost</strong> meter — alarm on it</td>
+</tr>
+<tr class="odd">
+<td>QuickSight</td>
+<td>SPICE ingestion failures</td>
+<td>Dashboards quietly serving stale data</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Practices</strong></p>
+<ul>
+<li>Configure a <strong>Firehose S3 error output prefix</strong>. Records that fail conversion or delivery are written there instead of being lost — but only if you set it, and only if you alarm on it.</li>
+<li>Put a <strong>CloudWatch alarm on Athena <code>ProcessedBytes</code></strong>: in a pay-per-scan model, a runaway query is a runaway bill.</li>
+<li><strong>S3 Storage Lens</strong> for lake-level growth and small-object trends.</li>
+<li>Treat <strong>“<code>Count</code> at the front door is zero for N minutes”</strong> as a page-worthy alarm — it is the only end-to-end liveness check you have.</li>
+</ul>
+<p>See <a href="../aws_cloud_technical_essentials_book/07-monitoring.html">07. Monitoring</a> for CloudWatch fundamentals.</p>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> In a request/response backend, failure is loud. In a pipeline, failure is <strong>silence</strong>. Alarm on <em>absence</em> of data — freshness, delivery success and record count — not just on errors.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-resilient" class="level2">
+<h2 class="anchored" data-anchor-id="sec-resilient">11.9 Step 8 — Make it replicable and resilient</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ The customer has many restaurant clients. How do you stand up this pipeline again and again, identically?</li>
+</ul>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    TPL["CloudFormation template&lt;br&gt;Infrastructure as Code"] --&gt; C1["Client A stack"]
+    TPL --&gt; C2["Client B stack"]
+    TPL --&gt; C3["Client C stack"]
+    C1 --&gt; R1["SDK retries with&lt;br&gt;exponential backoff"]
+    C2 --&gt; R1
+    C3 --&gt; R1
+    R1 --&gt; KDF["Resilient calls to&lt;br&gt;API / Firehose"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>AWS CloudFormation (IaC):</strong> capture the whole environment as a template and replicate it per client account or Region — repeatable, versioned, no manual clicking. Use <code>DeletionPolicy: Retain</code> on data resources (buckets, catalogs) so a stack deletion never destroys the lake.</li>
+<li><strong>Error retries + exponential backoff:</strong> network components fail transiently; retrying with backoff raises reliability. <strong>AWS SDKs do this by default</strong> — a quiet argument for an SDK-based client over a hand-rolled <code>fetch()</code> sender. Always cap max delay and max retries, and add jitter to avoid synchronised retry storms.</li>
+</ul>
+<p>Broader cost and resilience levers: <a href="../aws_cloud_technical_essentials_book/08-optimization.html">08. Optimization</a>.</p>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> A one-off pipeline is a demo; a <strong>template</strong> is a product. IaC turns “architecture for this restaurant” into “architecture for every client,” and SDK-default backoff gives you resilience for free.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-optimize" class="level2">
+<h2 class="anchored" data-anchor-id="sec-optimize">11.10 Step 9 — Optimise cost and performance</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ The pipeline works. Where are the cheap wins — especially on Athena’s pay-per-scan bill?</li>
+</ul>
+</blockquote>
+<p>Because Athena <strong>charges by data scanned</strong>, the top three levers all <em>reduce bytes scanned</em>, commonly cutting cost and query time substantially:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    RAW["Raw JSON in S3&lt;br&gt;large scans, slow, costly"] --&gt; O1["1. Compress&lt;br&gt;smaller files"]
+    O1 --&gt; O2["2. Partition&lt;br&gt;e.g. year/month/day/hour"]
+    O2 --&gt; O3["3. Columnar format&lt;br&gt;Parquet / ORC"]
+    O3 --&gt; FAST["Less data scanned&lt;br&gt;cheaper and faster queries"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Optimisation</th>
+<th>What it does</th>
+<th>Why it works</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Compression</strong></td>
+<td>Shrinks file size</td>
+<td>Athena scans fewer bytes per query</td>
+</tr>
+<tr class="even">
+<td><strong>Partitioning</strong> (e.g.&nbsp;by time)</td>
+<td>Prunes irrelevant data</td>
+<td><code>WHERE month='02'</code> reads only February’s prefix, not the whole dataset</td>
+</tr>
+<tr class="odd">
+<td><strong>Columnar (Parquet/ORC)</strong></td>
+<td>Column-oriented storage</td>
+<td>Predicate pushdown and splitting → reads only the needed columns/blocks, in parallel</td>
+</tr>
+<tr class="even">
+<td><strong>Firehose format conversion</strong></td>
+<td>Firehose writes <strong>Parquet/ORC</strong> on delivery</td>
+<td>Data lands query-optimised — no separate ETL job</td>
+</tr>
+<tr class="odd">
+<td><strong>Firehose buffering</strong></td>
+<td>Fewer, larger objects</td>
+<td>Avoids the many-small-files penalty in Athena and Intelligent-Tiering</td>
+</tr>
+<tr class="even">
+<td><strong>CloudFront</strong> on the menu site</td>
+<td>Edge-caches static S3 content</td>
+<td>Lower latency and fewer origin requests</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>⚠️ Partitioning does not work by accident.</strong> Athena only prunes if the partitions are <strong>registered</strong>, and Firehose’s default S3 prefix is <code>YYYY/MM/DD/HH</code> — which is <strong>not</strong> Hive-style (<code>year=2026/month=02/</code>), so Athena will not discover it automatically. You have three options: use <strong>Firehose dynamic partitioning</strong> to write Hive-style prefixes; enable <strong>Athena partition projection</strong> (no catalog updates needed — usually the best fit for time-series clickstream); or run <code>MSCK REPAIR TABLE</code> / a Glue crawler on a schedule. Skip this and you will partition your data and still pay for full scans.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>And format conversion needs a schema.</strong> Firehose Parquet/ORC conversion reads the schema from an <strong>AWS Glue Data Catalog table</strong> — so create the table <em>before</em> you switch conversion on (see <a href="#sec-query">11.5</a>).</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Concrete cost intuition:</strong> an unpartitioned year of data is scanned <strong>in full</strong> for every <code>WHERE month=...</code> query. Partition by month and the same query reads roughly 1/12th — the bill moves in direct proportion.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> In pay-per-scan analytics, <strong>storage layout is a cost control</strong>. Compress, partition and go columnar — and let Firehose write Parquet with Hive-style prefixes on the way in, so the lake is born optimised.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-reference" class="level2">
+<h2 class="anchored" data-anchor-id="sec-reference">11.11 The reference architecture, end to end</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    JS["Browser JS library&lt;br&gt;click events"] --&gt; AG["API Gateway&lt;br&gt;HTTPS, throttling, WAF"]
+    AG --&gt; KDF["Amazon Data Firehose&lt;br&gt;Direct PUT, buffer, Parquet"]
+    KDF --&gt; S3["Amazon S3 data lake&lt;br&gt;Hive-style prefixes"]
+    KDF -.-&gt;|"failed records"| ERR["S3 error prefix"]
+    S3 --&gt; CRR["S3 CRR + versioning&lt;br&gt;backup Region"]
+    S3 --&gt; ATH["Amazon Athena&lt;br&gt;SQL on S3"]
+    GDC["Glue Data Catalog&lt;br&gt;schema + partitions"] -.-&gt; ATH
+    GDC -.-&gt; KDF
+    ATH --&gt; QS["Amazon QuickSight&lt;br&gt;SPICE dashboards"]
+    CF["CloudFront + WAF"] --&gt; MENU["S3 static menu site"]
+    IaC["CloudFormation"] -.-&gt;|provisions all| S3
+    CW["CloudWatch alarms across every hop"] -.-&gt; KDF
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>How each driver is satisfied</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Driver</th>
+<th>Where it is met</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Serverless / usage-billed</td>
+<td>API Gateway, Firehose, S3, Athena, QuickSight readers — pay-per-use, scale to zero</td>
+</tr>
+<tr class="even">
+<td>Streaming ingestion, no plumbing</td>
+<td>Firehose Direct PUT auto-delivers to S3</td>
+</tr>
+<tr class="odd">
+<td>Durability + cross-region backup</td>
+<td>S3 (11 nines) + CRR with versioning (async RPO; RTC for a 15-min SLA)</td>
+</tr>
+<tr class="even">
+<td>Encryption in transit + at rest</td>
+<td>HTTPS/TLS + SSE on S3 and Firehose + SPICE encryption (Enterprise edition)</td>
+</tr>
+<tr class="odd">
+<td>Low latency to answer</td>
+<td>Athena queries S3 directly; QuickSight SPICE cache</td>
+</tr>
+<tr class="even">
+<td>Low operational burden</td>
+<td>No EMR/Spark, no Glue ETL jobs; managed services end to end</td>
+</tr>
+<tr class="odd">
+<td>Cost efficiency</td>
+<td>Compress + partition + Parquet cut Athena scans; Intelligent-Tiering on the lake</td>
+</tr>
+<tr class="even">
+<td>Observability</td>
+<td>CloudWatch on delivery success, freshness, replication lag and bytes scanned</td>
+</tr>
+<tr class="odd">
+<td>Replicable per client</td>
+<td>CloudFormation templates with <code>DeletionPolicy: Retain</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="sec-not" class="level2">
+<h2 class="anchored" data-anchor-id="sec-not">11.12 When <em>not</em> to build it this way</h2>
+<p>An honest architect states the boundaries of their own recommendation.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Symptom</th>
+<th>Why this pipeline struggles</th>
+<th>Better fit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sub-second, real-time reactions needed</td>
+<td>Firehose buffers before delivering</td>
+<td><strong>Kinesis Data Streams</strong> + custom consumers</td>
+</tr>
+<tr class="even">
+<td>Heavy in-stream transformation / enrichment</td>
+<td>Firehose is delivery, not compute</td>
+<td><strong>Managed Service for Apache Flink</strong>, or Glue ETL</td>
+</tr>
+<tr class="odd">
+<td>Petabyte-scale, complex ML / what-if processing</td>
+<td>Athena is for interactive SQL</td>
+<td><strong>Amazon EMR</strong> (if the team has Spark skills)</td>
+</tr>
+<tr class="even">
+<td>Frequent low-latency lookups on individual records</td>
+<td>Athena scans; it is not a point-read store</td>
+<td><strong>DynamoDB</strong> — see <a href="../aws_cloud_technical_essentials_book/06-databases.html">06. Databases</a></td>
+</tr>
+<tr class="odd">
+<td>Predictable, heavy, concurrent BI workloads</td>
+<td>Per-scan pricing stops being cheaper</td>
+<td><strong>Amazon Redshift</strong> with a warehouse model</td>
+</tr>
+<tr class="even">
+<td>Team already deep in Spark/big-data</td>
+<td>Firehose + Athena underuses their skill</td>
+<td><strong>EMR</strong> end-to-end</td>
+</tr>
+<tr class="odd">
+<td>Untrusted, anonymous write clients with no rate limit</td>
+<td>Direct-to-Firehose credentials invite abuse</td>
+<td>Keep <strong>API Gateway</strong> with throttling + WAF</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> “Technically works” ≠ “best fit”. The Firehose + Athena pipeline is optimal for a <strong>short-staffed team, no-sub-second, SQL-shaped</strong> analytics need. Change any of those three and the winning services change.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-cheatsheet" class="level2">
+<h2 class="anchored" data-anchor-id="sec-cheatsheet">11.13 Architect’s cheat sheet</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    ROOT["Serverless data&lt;br&gt;analytics pipeline"]
+
+    ROOT --&gt; I["Ingest"]
+    I --&gt; I1["Kinesis family for streaming clickstream"]
+    I --&gt; I2["Data Firehose = least code, near-real-time"]
+    I --&gt; I3["Data Streams only if sub-second"]
+    I --&gt; I4["API Gateway = simplicity + throttling"]
+
+    ROOT --&gt; S["Store"]
+    S --&gt; S1["S3 lake, 11 nines, compute-decoupled"]
+    S --&gt; S2["Intelligent-Tiering for unknown access"]
+    S --&gt; S3["CRR needs versioning; RPO is not zero"]
+
+    ROOT --&gt; Q["Query + Show"]
+    Q --&gt; Q1["Athena = serverless SQL on S3"]
+    Q --&gt; Q2["Athena bills per byte scanned"]
+    Q --&gt; Q3["Glue Data Catalog IS used"]
+    Q --&gt; Q4["QuickSight readers pay per session"]
+
+    ROOT --&gt; X["Cross-cutting"]
+    X --&gt; X1["Compress + partition + Parquet"]
+    X --&gt; X2["Encrypt in transit AND at rest"]
+    X --&gt; X3["Alarm on absence of data"]
+    X --&gt; X4["CloudFormation per client"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ol type="1">
+<li>An analytics architecture is a <strong>pipeline</strong>: ingest → store → query → visualise. Choose each stage for its own constraints.</li>
+<li><strong>“Short-staffed” is a driver</strong> — it rules out EMR/Spark and heavy Glue ETL before feature comparison.</li>
+<li>Names moved in 2024: <strong>Kinesis Data Firehose → Amazon Data Firehose</strong>; <strong>Kinesis Data Analytics → Managed Service for Apache Flink</strong>.</li>
+<li><strong>Kinesis family</strong> is for high-volume, small, continuous events (clickstream, logs, IoT).</li>
+<li><strong>Data Firehose</strong> wins when there’s <strong>no sub-second need</strong> — least code, auto-delivers to S3, self-scaling.</li>
+<li><strong>Data Streams</strong> only when you need <strong>sub-second</strong> latency (and accept producer/consumer code).</li>
+<li><strong>Managed Service for Apache Flink</strong> only when you need <strong>in-stream transformation</strong>.</li>
+<li><strong>Rejections at ingest:</strong> DMS (DB migration), Data Exchange (3rd-party catalogs), EMR (skill + cluster-time cost).</li>
+<li><strong>API Gateway</strong> gives simplicity <em>and</em> a throttling/WAF chokepoint; <strong>Cognito</strong> removes that hop and its cost.</li>
+<li><strong>Cognito’s real cost is abuse control</strong>: unauthenticated identities let anyone <code>PutRecord</code> — data poisoning and bill amplification.</li>
+<li><strong>Shape data at the source</strong> (clean JSON from the JS library) to delete a transformation stage.</li>
+<li><strong>S3 = the data lake</strong>: 11 nines, unlimited, <strong>decoupled from compute</strong> (unlike EBS/EFS).</li>
+<li><strong>Intelligent-Tiering</strong> is the safe default for unknown access; objects <strong>&lt; 128 KB</strong> are never auto-tiered.</li>
+<li><strong>Lifecycle policies</strong> move data Standard → IA → Glacier to control cost automatically.</li>
+<li><strong>CRR</strong> answers cross-region backup, but needs <strong>versioning on both buckets</strong>, is <strong>asynchronous</strong>, and only covers new writes unless you run batch replication. <strong>RTC</strong> gives a 15-minute SLA.</li>
+<li><strong>Athena</strong> = serverless SQL directly on S3, schema-on-read, no ETL servers, pay-per-query.</li>
+<li><strong>Athena bills by bytes scanned</strong> (10 MB minimum per query) — so storage layout is a cost decision.</li>
+<li><strong>You reject Glue <em>ETL</em>, not the Glue Data Catalog</strong> — Athena and Firehose format conversion both depend on the catalog.</li>
+<li><strong>Compress + partition + columnar (Parquet/ORC)</strong> cut scans, cost and query time.</li>
+<li><strong>Partitions must be registered</strong> — use Firehose dynamic partitioning, Athena <strong>partition projection</strong>, or <code>MSCK REPAIR</code>. Firehose’s default <code>YYYY/MM/DD/HH</code> prefix is <em>not</em> Hive-style.</li>
+<li>Let <strong>Firehose write Parquet</strong> on delivery so the lake is born query-optimised — but create the Glue table first.</li>
+<li><strong>Buffer to avoid many small files</strong> — they hurt Athena performance and block Intelligent-Tiering.</li>
+<li><strong>QuickSight</strong>: <strong>readers</strong> pay-per-session, <strong>authors/admins</strong> are per-user monthly; SPICE encryption at rest means <strong>Enterprise edition</strong>.</li>
+<li><strong>Encrypt in transit and at rest</strong> at every hop; scope each IAM role to its single action.</li>
+<li><strong>Pipelines fail silently</strong> — alarm on <code>DeliveryToS3.Success</code>, <code>DataFreshness</code>, replication lag, and a front-door <code>Count</code> of zero.</li>
+<li>Alarm on <strong>Athena <code>ProcessedBytes</code></strong>: in pay-per-scan, a runaway query is a runaway bill.</li>
+<li><strong>CloudFront + WAF + Shield</strong> protect the static menu site at the edge.</li>
+<li><strong>CloudFormation</strong> turns a one-off pipeline into a repeatable per-client product; <code>DeletionPolicy: Retain</code> protects data.</li>
+<li><strong>SDK exponential backoff</strong> is on by default — free resilience; add jitter and cap retries.</li>
+<li>“Technically works” ≠ “best fit”: Firehose + Athena is optimal for <strong>short-staffed + no-sub-second + SQL-shaped</strong> analytics.</li>
+</ol>
+<hr>
+</section>
+<section id="sources" class="level2">
+<h2 class="anchored" data-anchor-id="sources">Sources</h2>
+<p><em>Inspired from course notes — “Architecting Solutions on AWS”, Week 2: Designing a Serverless Data Analytics Solution (software-house restaurant-menu clickstream use case).</em></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/senthilkumarm1901\.github\.io\/learn_by_blogging\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
