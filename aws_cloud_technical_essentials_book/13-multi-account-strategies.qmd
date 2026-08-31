@@ -1,0 +1,518 @@
+---
+title: "13. Architecting for Account Governance and Multi-Account Management"
+author: "Senthil Kumar"
+mermaid:
+  theme: neutral
+format:
+  html:
+    navbar:
+      right:
+        - text: "Blog"
+          href: "https://senthilkumarm1901.github.io/learn_by_blogging/blog.html"
+          target: _self
+        - text: "LinkedIn"
+          href: "https://www.linkedin.com/in/senthilkumarm1901"
+          target: _blank
+        - text: "Medium"
+          href: "https://medium.com/@senthilkumar.m1901"
+          target: _blank
+---
+
+
+👈 **Back to:** [📝 Blog](https://senthilkumarm1901.github.io/learn_by_blogging/blog.html) | [💼 LinkedIn](https://www.linkedin.com/in/senthilkumarm1901) | [✍️ Medium](https://medium.com/@senthilkumar.m1901)
+
+---
+
+## How to Architect Account Governance on AWS
+
+> * ❓ When one AWS account grows to hold everything — every client, every environment, every workload — how do you re-organise it so that security, billing and blast radius are all under control, without slowing teams down?
+> * Hint: same discipline as [10. Serverless Backend](10-architecting-serverless-backend-solution-in-aws.qmd), [11. Serverless Data Analytics](11-serverless-data-analytics.qmd) and [12. Hybrid Container Workloads](12-hybrid-container-workloads.qmd) — **requirements → architectural drivers → candidate services → trade-offs → decision**. What changes is that the "architecture" is now the **account structure itself**, and the services (Organizations, IAM roles, IAM Identity Center, Control Tower) exist to govern it.
+
+**Running example used throughout this chapter**
+
+> A **marketing agency** runs **all its customer websites in a single AWS account**. They log in as **root** and with unmanaged IAM users. The result: accidental changes affect unrelated clients, billing can't be split per client, tagging is inconsistent, and there are no security guardrails.
+>
+> **Goal:** move to a **multi-account** architecture with **centralised governance** — automatic account provisioning, single sign-on, a dedicated logging account, enforced tagging and security controls — while keeping day-to-day work simple.
+>
+> *In scope:* account structure, identity, central logging, guardrails and provisioning. *Out of scope:* the workloads themselves and per-application architecture.
+
+---
+
+## 13.1 The Method: govern accounts in five moves
+
+```{mermaid}
+flowchart LR
+    A["1. Separate<br>into accounts"] --> B["2. Organise<br>with OUs"]
+    B --> C["3. Authenticate<br>roles + SSO"]
+    C --> D["4. Log and monitor<br>centrally"]
+    D --> E["5. Automate and<br>guardrail"]
+```
+
+| Step | Question the architect answers | Winning service(s) | Section |
+| --- | --- | --- | --- |
+| 1 | Why split into multiple accounts? | Multi-account strategy | [13.2](#sec-drivers) |
+| 2 | How do we group and control them? | **AWS Organizations + OUs + SCPs** | [13.3](#sec-orgs) |
+| 3 | How do people move between accounts safely? | **IAM roles** + **IAM Identity Center** | [13.4](#sec-auth) |
+| 4 | How do we see everything centrally? | **CloudTrail, Config, VPC Flow Logs, GuardDuty, Security Hub** | [13.5](#sec-logging) |
+| 5 | How do we make it repeatable and safe by default? | **Control Tower, Service Catalog, CloudFormation, tag policies** | [13.6](#sec-automate) |
+
+> **Architect's takeaway:** Do these in order. Handing out accounts before you have an OU shape, an identity story and a logging account just multiplies the problem you started with.
+
+---
+
+## 13.2 Step 1 — Why a multi-account strategy? {#sec-drivers}
+
+> * ❓ What exactly does an account boundary buy you that an IAM policy cannot?
+
+### 13.2.1 The problem with one account
+
+```{mermaid}
+flowchart TD
+    ROOT["Single AWS account<br>root + IAM users"] --> P1["Accidental changes hit<br>unrelated clients"]
+    ROOT --> P2["Billing cannot be<br>split per client"]
+    ROOT --> P3["No security guardrails,<br>inconsistent tagging"]
+    ROOT --> P4["One blast radius:<br>an incident affects everything"]
+    ROOT --> P5["Shared service quotas<br>and API rate limits"]
+```
+
+A single account is a single **security, billing and blast-radius boundary**. Once more than one team, client or environment shares it, that boundary *is* the problem — not a convenience.
+
+### 13.2.2 What multiple accounts optimise
+
+Multiple accounts improve most **Well-Architected** pillars at once (operational excellence, security, reliability, cost).
+
+```{mermaid}
+flowchart TD
+    MA["Multi-account strategy"] --> B1["Group workloads by<br>business purpose and ownership"]
+    MA --> B2["Apply distinct security<br>controls per environment"]
+    MA --> B3["Constrain access to<br>sensitive data"]
+    MA --> B4["Promote innovation<br>sandbox and dev freedom"]
+    MA --> B5["Limit blast radius<br>of adverse events"]
+    MA --> B6["Manage costs<br>per-account billing"]
+    MA --> B7["Distribute service quotas<br>and API rate limits"]
+```
+
+| Driver | Why an account boundary solves it |
+| --- | --- |
+| **Ownership** | Align decision-making; isolate business units; ease acquisition/divestment (move accounts in or out intact) |
+| **Security by environment** | Prod vs non-prod get different policies by default, separated automatically |
+| **Sensitive data** | Coarse-grained, account-level isolation makes least privilege easy |
+| **Innovation** | Sandbox/dev accounts give builders freedom with guardrails and cost budgets |
+| **Blast radius** | Resources are isolated; an issue in one account is contained |
+| **Cost** | The account is the **default** unit of cost allocation; add cost-allocation tags for finer detail |
+| **Quotas/limits** | Most service quotas and API rate limits are **per account, per Region**, so separation distributes their impact |
+
+**Account freedom spectrum**
+
+```{mermaid}
+flowchart LR
+    SB["Sandbox<br>disconnected, most freedom,<br>no internal data"] --> DEV["Development<br>limited enterprise access,<br>dev data"]
+    DEV --> TEST["Test<br>tighter controls"]
+    TEST --> PROD["Production<br>most controlled"]
+```
+
+### 13.2.3 IT operating models
+
+The right account grouping also depends on **who operates what**.
+
+```{mermaid}
+flowchart TD
+    subgraph Trad["Traditional Ops"]
+        A1["App teams engineer apps"]
+        O1["Central Cloud Ops<br>operates apps and platform"]
+        P1["Platform team engineers platform"]
+    end
+    subgraph Cloud["CloudOps"]
+        A2["App teams engineer<br>and operate apps"]
+        P2["Platform team engineers<br>and operates platform"]
+    end
+    subgraph Dev["DevOps"]
+        A3["App teams engineer and operate<br>apps and app-specific platform"]
+        P3["Platform team engineers and<br>operates shared platform"]
+    end
+```
+
+- **Traditional Ops:** a central cloud-operations team runs both apps and platform.
+- **CloudOps:** app teams operate their own apps; the platform team runs the platform.
+- **DevOps:** app teams also operate app-specific platform capabilities.
+- **ITSM** is common across all three; only the *responsible parties* change.
+
+> **Architect's takeaway:** Don't split for its own sake. Split along the lines that matter — **ownership, environment, data sensitivity, blast radius and cost** — and give early-lifecycle work freer accounts behind guardrails.
+
+---
+
+## 13.3 Step 2 — Organise with AWS Organizations, OUs and SCPs {#sec-orgs}
+
+> * ❓ How do you govern dozens of accounts centrally instead of one-by-one?
+
+**AWS Organizations** groups accounts into **Organizational Units (OUs)**; **Service Control Policies (SCPs)** set the **maximum** permissions available at an OU or account level.
+
+```{mermaid}
+flowchart TD
+    ROOTA["Organization root"] --> MGMT["Management account"]
+    ROOTA --> CORP["Corporate OU"]
+    ROOTA --> WL["Workloads OU"]
+    WL --> CA["Customer A OU"]
+    WL --> CB["Customer B OU"]
+    CA --> DEV["Dev OU"]
+    CA --> QA["QA OU"]
+    CA --> PRD["Prod OU"]
+    SCP["SCP: only allow<br>t2.micro instances"] -.->|attached to OU| DEV
+```
+
+- Nest OUs by **client → environment** (Dev/QA/Prod), applying different SCPs at each level.
+- **SCP examples:** restrict allowed EC2 instance types; deny disabling CloudTrail or Config; deny leaving the organization; restrict which Regions can be used; require MFA for sensitive actions.
+
+**A real-world OU structure** — nested and multi-level:
+
+```{mermaid}
+flowchart TD
+    R["Organization root"] --> M["Management account"]
+    R --> L1["Corporate OU - L1"]
+    L1 --> SEC["Security OU - L2"]
+    L1 --> WLD["Workloads OU - L2"]
+    SEC --> ST["Security Tooling"]
+    SEC --> LA["Log Archive"]
+    WLD --> PPF["Prod Public-Facing OU - L3"]
+    WLD --> PIF["Prod Internal-Facing OU - L3"]
+    WLD --> SDLC["SDLC OU - L3"]
+    PPF --> CONF["Confidential Data"]
+    PPF --> PUB["Public Data"]
+    PIF --> INT["Internal Data"]
+    PIF --> RES["Restricted Data"]
+```
+
+### 13.3.1 Four SCP facts that catch people out
+
+> **🔴 SCPs do not apply to the management account.** An SCP attached to the root or to an OU containing the management account has **no effect on that account** — it always retains full permissions. This is precisely why AWS's guidance is to **run no workloads in the management account** and to treat it as a break-glass, billing and org-administration account only. If you assume the root-level SCP protects everything, the management account is your unguarded back door.
+
+> **⚠️ SCPs require "all features" to be enabled.** An organization created for **consolidated billing only** cannot use SCPs (or tag policies). Enabling all features is a one-way door and requires member-account consent — do it early.
+
+> **⚠️ An SCP is a ceiling, not a grant.** It **limits** what identities *can* be granted; it never grants anything. You still need IAM permissions policies to actually allow actions. An action is permitted only if **both** the SCP and the IAM policy allow it.
+
+> **⚠️ SCPs don't cover everything.** They do **not** affect **service-linked roles**, and they do not apply to principals outside your organization who access your resources through **resource-based policies**. Bucket policies and KMS key policies still need their own review.
+
+For IAM policy evaluation, roles and the shared responsibility model, see [02. Security](02-security.qmd).
+
+> **Architect's takeaway:** **Organizations + OUs** give you the shape; **SCPs** give you the guardrails. Design the OU tree around **ownership and data sensitivity**, attach SCPs at the highest level where the rule should apply — and remember the management account is exempt.
+
+---
+
+## 13.4 Step 3 — Authenticate across accounts {#sec-auth}
+
+> * ❓ How do people and services move between accounts **without duplicating credentials**?
+
+### 13.4.1 IAM roles: temporary credentials, no static keys
+
+An **IAM role** is an identity with permissions but **no long-term credentials**. Anyone (or any service) permitted to **assume** it receives **temporary** credentials for the session.
+
+```{mermaid}
+flowchart LR
+    U["IAM user, same account"] --> ROLE["IAM role<br>temporary credentials"]
+    UX["IAM user, different account"] --> ROLE
+    SVC["AWS service, e.g. EC2"] --> ROLE
+    FED["Federated user<br>SAML 2.0 or OIDC IdP"] --> ROLE
+```
+
+| Term | Meaning |
+| --- | --- |
+| **Service role** | A role a service assumes to act in your account on your behalf |
+| **Service-linked role** | Predefined, service-owned role with exactly the permissions that service needs |
+| **Permissions boundary** | Advanced control that caps the *maximum* permissions an identity can be granted (cannot be applied to service-linked roles) |
+| **Principal** | An entity that can act: root user, IAM user, or role |
+
+### 13.4.2 Delegation = trust policy + permissions policy
+
+Cross-account access is built from **two halves**, living in **two different accounts**:
+
+```{mermaid}
+flowchart LR
+    subgraph Trusting["Trusting account - owns resource"]
+        RL["IAM Role"]
+        TP["Trust policy:<br>WHO may assume"]
+        PP["Permissions policy:<br>WHAT the role can do"]
+        RL --- TP
+        RL --- PP
+    end
+    subgraph Trusted["Trusted account - has the users"]
+        US["IAM user"]
+        UP["Permissions policy:<br>allowed to assume the role"]
+        US --- UP
+    end
+    US -->|"sts:AssumeRole"| RL
+```
+
+- The **trust policy** (on the role, in the trusting account) names the **trusted principals**.
+- The **permissions policy** (on the user, in the trusted account) allows them to **assume** the role.
+- When a user assumes a role they **temporarily give up their own permissions** and take the role's; exiting restores them.
+- **External ID** protects against the **confused deputy** problem when you grant access to a **third party** (e.g. an SaaS vendor) — the vendor must present the agreed external ID to assume the role.
+
+> **⚠️ Wildcards in a trust policy — get this right.** The `Principal` element does **not** support *partial* wildcards: you cannot write `arn:aws:iam::123456789012:user/dev-*`. A bare `"Principal": "*"` **is** syntactically valid, which is exactly why it is dangerous — it means *any* AWS principal may attempt to assume the role. If you ever use it, it must be paired with strict `Condition` keys (such as `aws:PrincipalOrgID`). **IAM Access Analyzer** exists to find exactly this misconfiguration. Prefer naming the specific account or role ARN.
+
+### 13.4.3 Cross-account assume-role in action
+
+```{mermaid}
+flowchart LR
+    DS["Data Scientist<br>Data Science account"] -->|"1. assume role"| ROLE["ReadData role<br>Data Lake account"]
+    ROLE -->|"2. temporary creds"| DS
+    DS -->|"3. read, scoped"| S3["S3 buckets<br>raw data"]
+    TRUST["Trust: only Data Science<br>account principals"] -.-> ROLE
+    PERM["Permissions: read only<br>specific S3 buckets"] -.-> ROLE
+```
+
+No permanent credentials are shared; access is **temporary, scoped and auto-expiring**.
+
+### 13.4.4 Federation and single sign-on: IAM Identity Center
+
+For **workforce** users, **IAM Identity Center** (the successor to AWS SSO) is the recommended front door: one place for identities, one place for account access.
+
+```{mermaid}
+flowchart LR
+    IDP["Identity source<br>Active Directory, Okta, Entra ID,<br>or built-in directory"] --> IIC["IAM Identity Center"]
+    IIC -->|"permission sets"| ACC1["Account: Dev"]
+    IIC -->|"permission sets"| ACC2["Account: Prod"]
+    IIC -->|"SAML app assignments"| APP["SaaS applications"]
+    USER["Workforce user"] -->|"AWS access portal, one login"| IIC
+```
+
+Core features: **workforce identities**, **SAML application assignments**, **Identity Center-enabled applications**, **multi-account permission sets** (applied across many accounts at once), and the **AWS access portal** (one-click access with temporary credentials).
+
+> **Where does it live?** IAM Identity Center is enabled from the **management account**, but you should **delegate administration** to a member account (commonly Shared Services or Security Tooling) so day-to-day permission-set management does not require management-account access. A few operations still remain in the management account.
+
+> **Two things to fix on day one.** (1) Enforce **MFA** in IAM Identity Center. (2) Deal with **root users**: every member account still has one. Put MFA on it, remove its access keys, and — since Organizations now supports **centrally managing root access** — consider removing member-account root credentials entirely and using a privileged-action workflow instead. That directly addresses this customer's "we log in as root" problem.
+
+> **Architect's takeaway:** Use **IAM roles** for machine and cross-account access (temporary credentials, no static keys); use **IAM Identity Center** for humans (federated SSO, permission sets across accounts). Never duplicate IAM users per account.
+
+---
+
+## 13.5 Step 4 — Log and monitor centrally {#sec-logging}
+
+> * ❓ Several logging and monitoring services sound similar — what does each actually do?
+
+```{mermaid}
+flowchart TD
+    subgraph Logging["Central logging and monitoring"]
+        CT["CloudTrail<br>WHO did WHAT - API activity"]
+        CFG["AWS Config<br>HOW resources are configured<br>state, history, rules"]
+        VFL["VPC Flow Logs<br>network traffic to and from ENIs"]
+        GD["GuardDuty<br>threat detection"]
+    end
+    CT --> S3L["Central S3 in Log Archive account"]
+    VFL --> S3L
+    CFG --> S3L
+    GD --> SH["Security Hub<br>aggregated findings"]
+    CFG --> SH
+    SH --> ALERT["Alerts and remediation"]
+```
+
+| Service | Question it answers | Key nuance |
+| --- | --- | --- |
+| **CloudTrail** | *Who called which API, when?* | An **organization trail** from the management account logs **all** member accounts, and members **cannot modify or delete** it |
+| **AWS Config** | *How is each resource configured, now and historically?* | Continuous evaluation plus **Config rules** flag non-compliant resources; ideal for audit and change troubleshooting |
+| **VPC Flow Logs** | *What IP traffic hit my network interfaces?* | Collected **outside** the traffic path, so **no latency or throughput impact**; publishes to CloudWatch Logs or S3 |
+| **GuardDuty** | *Is anything malicious happening?* | Continuous analysis of CloudTrail, DNS and VPC flow logs plus optional EKS, RDS, Lambda and malware protection |
+| **Security Hub** | *What is my overall posture?* | Aggregates findings from GuardDuty, Config, Inspector and Macie against standards such as CIS and AWS Foundational Security Best Practices |
+
+> **CloudTrail vs Config — the classic confusion:** **CloudTrail = activity** (API *actions*). **Config = state** (resource *configuration* over time). You almost always want both.
+
+> **⚠️ CloudTrail is not "already on" in the way people assume.** Every account gets a free **90-day Event history** of management events, but that is not durable, not searchable at scale and not centralised. You need an actual **trail** delivering to S3 for retention. Note also that **data events** (S3 object-level, Lambda invocations) are **not** logged by default and are billed separately — turn them on deliberately where they matter.
+
+> **⚠️ Use delegated administrators.** GuardDuty, Config, Security Hub and IAM Access Analyzer should all be **delegated to the Security Tooling account** rather than operated from the management account. This keeps the management account minimal and gives your security team access without handing them the keys to billing and org structure.
+
+**Best practice:** concentrate CloudTrail data in a **dedicated Log Archive account** with a restrictive bucket policy, and make sure member accounts cannot delete it.
+
+See [07. Monitoring](07-monitoring.qmd) for CloudWatch and logging fundamentals.
+
+> **Architect's takeaway:** Centralise logs in a **dedicated, locked-down logging account**. **CloudTrail** for actions, **Config** for configuration state, **Flow Logs** for network, **GuardDuty** for threats, **Security Hub** to aggregate — layered, not interchangeable.
+
+---
+
+## 13.6 Step 5 — Automate provisioning and enforce guardrails {#sec-automate}
+
+> * ❓ How do you stamp out new accounts that are compliant *by default*, at scale?
+
+### 13.6.1 The account-provisioning stack
+
+```{mermaid}
+flowchart TD
+    CT["AWS Control Tower<br>landing zone orchestrator"] --> ORG["AWS Organizations<br>create accounts and OUs"]
+    CT --> SCP["Controls<br>preventive, detective, proactive"]
+    CT --> IIC["IAM Identity Center<br>SSO into accounts"]
+    CT --> LOG["Org CloudTrail<br>centralised logging"]
+    CT --> AF["Account Factory<br>via AWS Service Catalog"]
+    CF["CloudFormation and StackSets"] -.->|underpins all| CT
+```
+
+| Service | Role |
+| --- | --- |
+| **CloudFormation (IaC)** | Templates that model and provision resources; the substrate everything else uses |
+| **Control Tower** | Sets up and governs a **multi-account landing zone** in well under an hour; applies **controls**; detects **drift**; uses **CloudFormation StackSets** (one stack instance per account and Region) |
+| **Service Catalog** | Curated **portfolios** of approved products; **self-service** launch within **standardised** constraints. Control Tower's **Account Factory** is itself a Service Catalog product |
+
+> **⚠️ "Guardrails" are now called "controls" — and there are three types.** Control Tower's terminology changed, and a third category was added: **preventive** (implemented as SCPs — they stop the action), **detective** (implemented as Config rules — they report non-compliance after the fact), and **proactive** (implemented as **CloudFormation hooks** — they block non-compliant resources *before* provisioning). Material that mentions only "preventive and detective guardrails" predates the proactive category.
+
+### 13.6.2 Tag policies vs SCPs — use them together
+
+```{mermaid}
+flowchart TD
+    Q{"Goal?"} -->|"Standardise tag<br>keys and values on<br>existing resources"| TAG["Tag policy<br>enforces format;<br>does NOT block untagged creates"]
+    Q -->|"Prevent creating<br>UNtagged resources"| SCPT["SCP<br>explicit Deny when<br>a required tag is missing"]
+    TAG --> BOTH["Use BOTH together"]
+    SCPT --> BOTH
+```
+
+- A **tag policy** enforces a standard tag (e.g. `Environment=Production`) but **does not stop** someone launching a new, untagged resource.
+- To **block untagged creates**, use an **SCP** with an explicit `Deny` conditioned on `"Null": {"aws:RequestTag/Project": "true"}` — for example requiring `Project` and `CostCenter` on `ec2:RunInstances`.
+- Tag policies are often "enough" **if you provision via IaC**, because the tags are embedded in the templates.
+
+> **⚠️ Tag policy limits.** Like SCPs, tag policies need **all features enabled** in Organizations. They also only cover **supported resource types**, and compliance is evaluated on **tagging operations** — an unsupported resource, or one created without any tags at all, will not be caught. That asymmetry is exactly why the SCP is the enforcement half.
+
+### 13.6.3 Ongoing governance practices
+
+```{mermaid}
+flowchart TD
+    GOV["Governance practices"] --> G1["SCPs: restrict root, protect<br>CloudTrail and Config, limit Regions"]
+    GOV --> G2["Tag policies plus<br>cost-allocation tags"]
+    GOV --> G3["AWS Budgets per account<br>and per cost category"]
+    GOV --> G4["MFA on IAM Identity Center<br>and on every root user"]
+    GOV --> G5["Delegated admins for<br>security services"]
+```
+
+> **On cost alerting:** classic **CloudWatch billing alarms** only work against billing metrics published in **`us-east-1`**, and only from the payer account. **AWS Budgets** is the better tool for multi-account estates — it works per account, per OU, per tag or per **cost category**, and supports forecasted-spend alerts. Activate **cost-allocation tags** in the Billing console before you rely on them for reporting; they are not retroactive.
+
+For broader cost and resilience levers, see [08. Optimization](08-optimization.qmd).
+
+> **Architect's takeaway:** **Control Tower** (built on Organizations, Service Catalog, IAM Identity Center and CloudFormation) makes every new account **compliant by default**. Pair **tag policies** (standardise) with **SCPs** (enforce) — they solve different halves of the same problem.
+
+---
+
+## 13.7 The reference architecture, end to end {#sec-reference}
+
+```{mermaid}
+flowchart TD
+    subgraph Org["AWS Organization - all features enabled"]
+        MGMT["Management account<br>Control Tower, org CloudTrail, billing<br>NO workloads"]
+        subgraph SecOU["Security OU"]
+            LOGACC["Log Archive account<br>central CloudTrail and Config"]
+            TOOL["Security Tooling account<br>delegated admin: GuardDuty,<br>Config, Security Hub"]
+        end
+        SS["Shared Services account<br>delegated IAM Identity Center admin"]
+        subgraph WL["Workloads OU"]
+            subgraph CustA["Customer A OU"]
+                DEVA["Dev"]
+                PRDA["Prod"]
+            end
+        end
+    end
+    USER["Workforce"] -->|SSO portal| SS
+    SS -->|permission sets| DEVA
+    SS -->|permission sets| PRDA
+    MGMT -->|SCP guardrails| WL
+    DEVA -->|logs| LOGACC
+    PRDA -->|logs| LOGACC
+    TOOL -->|findings| SEChub["Security Hub"]
+```
+
+**How each requirement is satisfied**
+
+| Requirement | Where it is met |
+| --- | --- |
+| Isolate clients and environments | **Organizations + OUs** (Customer A → Dev/QA/Prod) |
+| No credential duplication | **IAM roles** plus **IAM Identity Center** permission sets |
+| Dedicated, tamper-resistant logging | **Log Archive account** and an **organization trail** members cannot delete |
+| Security guardrails | **SCPs** (restrict root, protect CloudTrail/Config, limit Regions) |
+| Automatic, compliant provisioning | **Control Tower Account Factory** + **Service Catalog** + **CloudFormation** |
+| Consistent tagging and cost control | **Tag policies + SCPs**, cost-allocation tags, **AWS Budgets** |
+| Threat detection and posture | **GuardDuty** and **Security Hub**, delegated to Security Tooling; **Config** for drift |
+| Root-user risk removed | MFA everywhere, plus **centrally managed root access** for member accounts |
+
+---
+
+## 13.8 When *not* to reach for these {#sec-not}
+
+An honest architect states the boundaries of their own recommendation.
+
+| Symptom | Reconsider | Better fit |
+| --- | --- | --- |
+| One team, one workload, no compliance driver | A full multi-account landing zone | A **single account** with strong IAM and tagging |
+| Only a handful of accounts, hands-on team | Control Tower | Plain **Organizations + SCPs**, scripted with CloudFormation |
+| An existing, heavily customised org structure | Control Tower landing zone | Organizations directly — Control Tower expects its own OU conventions |
+| Need to standardise tag **format** only, and you deploy via IaC | An SCP that denies untagged creates | A **tag policy** alone (less friction) |
+| Restricting the **management account** | Root-level SCP | Minimise what lives there; SCPs simply do not apply to it |
+| Machine-to-machine or cross-account access | IAM Identity Center | **IAM roles** with `sts:AssumeRole` |
+| Third-party/vendor access | A plain cross-account role | Role **plus external ID** (confused-deputy protection) |
+| Every account needs its own VPC and connectivity | Per-account VPCs and peering | **Transit Gateway** — see [12. Hybrid Container Workloads](12-hybrid-container-workloads.qmd) |
+| Too many accounts, nobody owns them | More accounts | Consolidate; account sprawl has real operational cost |
+
+> **Architect's takeaway:** Governance is not one service; it is a **layered stack** where each layer answers a different question. "Best fit" balances control against team velocity — over-restrictive SCPs get worked around, and that is worse than no SCP at all.
+
+---
+
+## 13.9 Architect's cheat sheet {#sec-cheatsheet}
+
+```{mermaid}
+flowchart TD
+    ROOT["Account governance<br>decision map"]
+
+    ROOT --> S["Structure"]
+    S --> S1["Account = security + billing + blast-radius boundary"]
+    S --> S2["Organizations + OUs group accounts"]
+    S --> S3["SCPs = a ceiling, not a grant"]
+    S --> S4["SCPs do NOT apply to the management account"]
+
+    ROOT --> A["Auth"]
+    A --> A1["IAM roles = temporary creds, no static keys"]
+    A --> A2["Delegation = trust policy + permissions policy"]
+    A --> A3["Principal has no PARTIAL wildcards"]
+    A --> A4["IAM Identity Center = workforce SSO"]
+
+    ROOT --> L["Logging"]
+    L --> L1["CloudTrail = activity, who did what"]
+    L --> L2["Config = configuration state and history"]
+    L --> L3["VPC Flow Logs = network traffic"]
+    L --> L4["GuardDuty + Security Hub = threats and posture"]
+
+    ROOT --> AU["Automate"]
+    AU --> AU1["Control Tower = landing zone + controls"]
+    AU --> AU2["Service Catalog = approved products"]
+    AU --> AU3["Tag policy standardises; SCP enforces"]
+```
+
+1. An **account** is the fundamental boundary for **security, access, billing and blast radius**.
+2. Split accounts by **ownership, environment, data sensitivity, blast radius and cost** — not arbitrarily.
+3. Multi-account improves **most Well-Architected pillars** at once.
+4. Most **service quotas and API rate limits are per account, per Region** — separation distributes their impact.
+5. **Sandbox → dev → test → prod:** give early-lifecycle work more freedom behind guardrails and budgets.
+6. Match **account groups to IT operating models** (Traditional Ops / CloudOps / DevOps).
+7. **AWS Organizations** groups accounts into **OUs**; nest by client → environment.
+8. **SCPs set the maximum** permissions — they **never grant**, only cap. Both SCP *and* IAM must allow an action.
+9. **🔴 SCPs do not apply to the management account** — so run no workloads there.
+10. SCPs and tag policies need **all features enabled**; consolidated-billing-only organizations cannot use them.
+11. SCPs do **not** affect **service-linked roles** or external principals arriving via resource-based policies.
+12. Typical SCPs: restrict **root**, prevent disabling **CloudTrail/Config**, deny leaving the org, limit **Regions**.
+13. **IAM roles** provide **temporary** credentials — no passwords or access keys to leak.
+14. **Delegation = trust policy (who) + permissions policy (what)**; the two halves live in different accounts.
+15. The `Principal` element supports **no partial wildcards**; a bare `"*"` is valid but dangerous — use conditions such as `aws:PrincipalOrgID`, and let **IAM Access Analyzer** catch mistakes.
+16. Assuming a role means you **temporarily drop** your own permissions.
+17. Use an **external ID** for third-party access — it defends against the **confused deputy** problem.
+18. **Federation** (SAML 2.0 / OIDC) maps external identities to IAM roles with temporary credentials.
+19. **IAM Identity Center** = workforce SSO: permission sets across many accounts, one access portal. **Delegate its administration** out of the management account.
+20. New org accounts get **`OrganizationAccountAccessRole`** for initial cross-account switching.
+21. Put **MFA** on IAM Identity Center *and* every root user; consider **centrally managed root access** to remove member-account root credentials.
+22. **CloudTrail = activity**, **Config = configuration state** — the most-confused pair; use both.
+23. The free **90-day Event history** is not a trail; **data events** are off by default and billed separately.
+24. An **organization trail** logs all member accounts and members cannot modify or delete it.
+25. **VPC Flow Logs** sit **outside** the traffic path — no performance impact.
+26. **GuardDuty** detects threats; **Security Hub** aggregates findings against standards. **Delegate both** to Security Tooling.
+27. Centralise logs in a **dedicated Log Archive account** that members cannot tamper with.
+28. **CloudFormation (IaC)** underpins governance — provision automatically, never by hand.
+29. **Control Tower** builds a governed **landing zone**, fights **drift**, and uses **StackSets**; its **Account Factory** is a Service Catalog product.
+30. Control Tower **"guardrails" are now "controls"**, in three flavours: **preventive** (SCP), **detective** (Config rule), **proactive** (CloudFormation hook).
+31. **Tag policy standardises tags; SCP blocks untagged creates** — use them **together**.
+32. Prefer **AWS Budgets** over CloudWatch billing alarms for multi-account cost control (billing metrics live only in `us-east-1`).
+
+---
+
+## Sources
+
+*Inspired from course notes — "Architecting Solutions on AWS", Week 4: Designing a Solution Following Account Governance and Management Best Practices (marketing-agency multi-account use case).*
