@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+
+<title>13. Architecting for Account Governance and Multi-Account Management – Foundational Questions. Visual Answers. Mastering AWS Fundamentals.</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./09-references-disclosure.html" rel="next">
+<link href="./12-hybrid-container-workloads.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-81dce849c25865aa69203cbf510b76f1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="mermaid-theme" content="neutral">
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./13-multi-account-strategies.html"><span class="chapter-title">13. Architecting for Account Governance and Multi-Account Management</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Foundational Questions. Visual Answers. Mastering AWS Fundamentals.</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Foundational Questions. Visual Answers. Mastering AWS Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-introduction.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">1. Introduction to AWS</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-security.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">02. Security</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-compute.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">03. Compute</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-networking.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">04. Networking</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-storage.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">05. Storage</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-databases.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">06. Databases</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-monitoring.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">07. Monitoring</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">08. Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-architecting-serverless-backend-solution-in-aws.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">10. Architecting a Serverless Web Backend</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-serverless-data-analytics.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">11. Architecting Serverless Data Analytics Solutions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-hybrid-container-workloads.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">12. Architecting Hybrid Container-Based Workloads</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-multi-account-strategies.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">13. Architecting for Account Governance and Multi-Account Management</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-references-disclosure.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Disclosure</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#how-to-architect-account-governance-on-aws" id="toc-how-to-architect-account-governance-on-aws" class="nav-link active" data-scroll-target="#how-to-architect-account-governance-on-aws">How to Architect Account Governance on AWS</a></li>
+  <li><a href="#the-method-govern-accounts-in-five-moves" id="toc-the-method-govern-accounts-in-five-moves" class="nav-link" data-scroll-target="#the-method-govern-accounts-in-five-moves">13.1 The Method: govern accounts in five moves</a></li>
+  <li><a href="#sec-drivers" id="toc-sec-drivers" class="nav-link" data-scroll-target="#sec-drivers">13.2 Step 1 — Why a multi-account strategy?</a>
+  <ul class="collapse">
+  <li><a href="#the-problem-with-one-account" id="toc-the-problem-with-one-account" class="nav-link" data-scroll-target="#the-problem-with-one-account">13.2.1 The problem with one account</a></li>
+  <li><a href="#what-multiple-accounts-optimise" id="toc-what-multiple-accounts-optimise" class="nav-link" data-scroll-target="#what-multiple-accounts-optimise">13.2.2 What multiple accounts optimise</a></li>
+  <li><a href="#it-operating-models" id="toc-it-operating-models" class="nav-link" data-scroll-target="#it-operating-models">13.2.3 IT operating models</a></li>
+  </ul></li>
+  <li><a href="#sec-orgs" id="toc-sec-orgs" class="nav-link" data-scroll-target="#sec-orgs">13.3 Step 2 — Organise with AWS Organizations, OUs and SCPs</a>
+  <ul class="collapse">
+  <li><a href="#four-scp-facts-that-catch-people-out" id="toc-four-scp-facts-that-catch-people-out" class="nav-link" data-scroll-target="#four-scp-facts-that-catch-people-out">13.3.1 Four SCP facts that catch people out</a></li>
+  </ul></li>
+  <li><a href="#sec-auth" id="toc-sec-auth" class="nav-link" data-scroll-target="#sec-auth">13.4 Step 3 — Authenticate across accounts</a>
+  <ul class="collapse">
+  <li><a href="#iam-roles-temporary-credentials-no-static-keys" id="toc-iam-roles-temporary-credentials-no-static-keys" class="nav-link" data-scroll-target="#iam-roles-temporary-credentials-no-static-keys">13.4.1 IAM roles: temporary credentials, no static keys</a></li>
+  <li><a href="#delegation-trust-policy-permissions-policy" id="toc-delegation-trust-policy-permissions-policy" class="nav-link" data-scroll-target="#delegation-trust-policy-permissions-policy">13.4.2 Delegation = trust policy + permissions policy</a></li>
+  <li><a href="#cross-account-assume-role-in-action" id="toc-cross-account-assume-role-in-action" class="nav-link" data-scroll-target="#cross-account-assume-role-in-action">13.4.3 Cross-account assume-role in action</a></li>
+  <li><a href="#federation-and-single-sign-on-iam-identity-center" id="toc-federation-and-single-sign-on-iam-identity-center" class="nav-link" data-scroll-target="#federation-and-single-sign-on-iam-identity-center">13.4.4 Federation and single sign-on: IAM Identity Center</a></li>
+  </ul></li>
+  <li><a href="#sec-logging" id="toc-sec-logging" class="nav-link" data-scroll-target="#sec-logging">13.5 Step 4 — Log and monitor centrally</a></li>
+  <li><a href="#sec-automate" id="toc-sec-automate" class="nav-link" data-scroll-target="#sec-automate">13.6 Step 5 — Automate provisioning and enforce guardrails</a>
+  <ul class="collapse">
+  <li><a href="#the-account-provisioning-stack" id="toc-the-account-provisioning-stack" class="nav-link" data-scroll-target="#the-account-provisioning-stack">13.6.1 The account-provisioning stack</a></li>
+  <li><a href="#tag-policies-vs-scps-use-them-together" id="toc-tag-policies-vs-scps-use-them-together" class="nav-link" data-scroll-target="#tag-policies-vs-scps-use-them-together">13.6.2 Tag policies vs SCPs — use them together</a></li>
+  <li><a href="#ongoing-governance-practices" id="toc-ongoing-governance-practices" class="nav-link" data-scroll-target="#ongoing-governance-practices">13.6.3 Ongoing governance practices</a></li>
+  </ul></li>
+  <li><a href="#sec-reference" id="toc-sec-reference" class="nav-link" data-scroll-target="#sec-reference">13.7 The reference architecture, end to end</a></li>
+  <li><a href="#sec-not" id="toc-sec-not" class="nav-link" data-scroll-target="#sec-not">13.8 When <em>not</em> to reach for these</a></li>
+  <li><a href="#sec-cheatsheet" id="toc-sec-cheatsheet" class="nav-link" data-scroll-target="#sec-cheatsheet">13.9 Architect’s cheat sheet</a></li>
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources">Sources</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">13. Architecting for Account Governance and Multi-Account Management</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Senthil Kumar </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>👈 <strong>Back to:</strong> <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">📝 Blog</a> | <a href="https://www.linkedin.com/in/senthilkumarm1901">💼 LinkedIn</a> | <a href="https://medium.com/@senthilkumar.m1901">✍️ Medium</a></p>
+<hr>
+<section id="how-to-architect-account-governance-on-aws" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-architect-account-governance-on-aws">How to Architect Account Governance on AWS</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ When one AWS account grows to hold everything — every client, every environment, every workload — how do you re-organise it so that security, billing and blast radius are all under control, without slowing teams down?</li>
+<li>Hint: same discipline as <a href="./10-architecting-serverless-backend-solution-in-aws.html">10. Serverless Backend</a>, <a href="./11-serverless-data-analytics.html">11. Serverless Data Analytics</a> and <a href="./12-hybrid-container-workloads.html">12. Hybrid Container Workloads</a> — <strong>requirements → architectural drivers → candidate services → trade-offs → decision</strong>. What changes is that the “architecture” is now the <strong>account structure itself</strong>, and the services (Organizations, IAM roles, IAM Identity Center, Control Tower) exist to govern it.</li>
+</ul>
+</blockquote>
+<p><strong>Running example used throughout this chapter</strong></p>
+<blockquote class="blockquote">
+<p>A <strong>marketing agency</strong> runs <strong>all its customer websites in a single AWS account</strong>. They log in as <strong>root</strong> and with unmanaged IAM users. The result: accidental changes affect unrelated clients, billing can’t be split per client, tagging is inconsistent, and there are no security guardrails.</p>
+<p><strong>Goal:</strong> move to a <strong>multi-account</strong> architecture with <strong>centralised governance</strong> — automatic account provisioning, single sign-on, a dedicated logging account, enforced tagging and security controls — while keeping day-to-day work simple.</p>
+<p><em>In scope:</em> account structure, identity, central logging, guardrails and provisioning. <em>Out of scope:</em> the workloads themselves and per-application architecture.</p>
+</blockquote>
+<hr>
+</section>
+<section id="the-method-govern-accounts-in-five-moves" class="level2">
+<h2 class="anchored" data-anchor-id="the-method-govern-accounts-in-five-moves">13.1 The Method: govern accounts in five moves</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A["1. Separate&lt;br&gt;into accounts"] --&gt; B["2. Organise&lt;br&gt;with OUs"]
+    B --&gt; C["3. Authenticate&lt;br&gt;roles + SSO"]
+    C --&gt; D["4. Log and monitor&lt;br&gt;centrally"]
+    D --&gt; E["5. Automate and&lt;br&gt;guardrail"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Question the architect answers</th>
+<th>Winning service(s)</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Why split into multiple accounts?</td>
+<td>Multi-account strategy</td>
+<td><a href="#sec-drivers">13.2</a></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>How do we group and control them?</td>
+<td><strong>AWS Organizations + OUs + SCPs</strong></td>
+<td><a href="#sec-orgs">13.3</a></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>How do people move between accounts safely?</td>
+<td><strong>IAM roles</strong> + <strong>IAM Identity Center</strong></td>
+<td><a href="#sec-auth">13.4</a></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>How do we see everything centrally?</td>
+<td><strong>CloudTrail, Config, VPC Flow Logs, GuardDuty, Security Hub</strong></td>
+<td><a href="#sec-logging">13.5</a></td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>How do we make it repeatable and safe by default?</td>
+<td><strong>Control Tower, Service Catalog, CloudFormation, tag policies</strong></td>
+<td><a href="#sec-automate">13.6</a></td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Do these in order. Handing out accounts before you have an OU shape, an identity story and a logging account just multiplies the problem you started with.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-drivers" class="level2">
+<h2 class="anchored" data-anchor-id="sec-drivers">13.2 Step 1 — Why a multi-account strategy?</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ What exactly does an account boundary buy you that an IAM policy cannot?</li>
+</ul>
+</blockquote>
+<section id="the-problem-with-one-account" class="level3">
+<h3 class="anchored" data-anchor-id="the-problem-with-one-account">13.2.1 The problem with one account</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    ROOT["Single AWS account&lt;br&gt;root + IAM users"] --&gt; P1["Accidental changes hit&lt;br&gt;unrelated clients"]
+    ROOT --&gt; P2["Billing cannot be&lt;br&gt;split per client"]
+    ROOT --&gt; P3["No security guardrails,&lt;br&gt;inconsistent tagging"]
+    ROOT --&gt; P4["One blast radius:&lt;br&gt;an incident affects everything"]
+    ROOT --&gt; P5["Shared service quotas&lt;br&gt;and API rate limits"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>A single account is a single <strong>security, billing and blast-radius boundary</strong>. Once more than one team, client or environment shares it, that boundary <em>is</em> the problem — not a convenience.</p>
+</section>
+<section id="what-multiple-accounts-optimise" class="level3">
+<h3 class="anchored" data-anchor-id="what-multiple-accounts-optimise">13.2.2 What multiple accounts optimise</h3>
+<p>Multiple accounts improve most <strong>Well-Architected</strong> pillars at once (operational excellence, security, reliability, cost).</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    MA["Multi-account strategy"] --&gt; B1["Group workloads by&lt;br&gt;business purpose and ownership"]
+    MA --&gt; B2["Apply distinct security&lt;br&gt;controls per environment"]
+    MA --&gt; B3["Constrain access to&lt;br&gt;sensitive data"]
+    MA --&gt; B4["Promote innovation&lt;br&gt;sandbox and dev freedom"]
+    MA --&gt; B5["Limit blast radius&lt;br&gt;of adverse events"]
+    MA --&gt; B6["Manage costs&lt;br&gt;per-account billing"]
+    MA --&gt; B7["Distribute service quotas&lt;br&gt;and API rate limits"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Driver</th>
+<th>Why an account boundary solves it</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Ownership</strong></td>
+<td>Align decision-making; isolate business units; ease acquisition/divestment (move accounts in or out intact)</td>
+</tr>
+<tr class="even">
+<td><strong>Security by environment</strong></td>
+<td>Prod vs non-prod get different policies by default, separated automatically</td>
+</tr>
+<tr class="odd">
+<td><strong>Sensitive data</strong></td>
+<td>Coarse-grained, account-level isolation makes least privilege easy</td>
+</tr>
+<tr class="even">
+<td><strong>Innovation</strong></td>
+<td>Sandbox/dev accounts give builders freedom with guardrails and cost budgets</td>
+</tr>
+<tr class="odd">
+<td><strong>Blast radius</strong></td>
+<td>Resources are isolated; an issue in one account is contained</td>
+</tr>
+<tr class="even">
+<td><strong>Cost</strong></td>
+<td>The account is the <strong>default</strong> unit of cost allocation; add cost-allocation tags for finer detail</td>
+</tr>
+<tr class="odd">
+<td><strong>Quotas/limits</strong></td>
+<td>Most service quotas and API rate limits are <strong>per account, per Region</strong>, so separation distributes their impact</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Account freedom spectrum</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    SB["Sandbox&lt;br&gt;disconnected, most freedom,&lt;br&gt;no internal data"] --&gt; DEV["Development&lt;br&gt;limited enterprise access,&lt;br&gt;dev data"]
+    DEV --&gt; TEST["Test&lt;br&gt;tighter controls"]
+    TEST --&gt; PROD["Production&lt;br&gt;most controlled"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="it-operating-models" class="level3">
+<h3 class="anchored" data-anchor-id="it-operating-models">13.2.3 IT operating models</h3>
+<p>The right account grouping also depends on <strong>who operates what</strong>.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    subgraph Trad["Traditional Ops"]
+        A1["App teams engineer apps"]
+        O1["Central Cloud Ops&lt;br&gt;operates apps and platform"]
+        P1["Platform team engineers platform"]
+    end
+    subgraph Cloud["CloudOps"]
+        A2["App teams engineer&lt;br&gt;and operate apps"]
+        P2["Platform team engineers&lt;br&gt;and operates platform"]
+    end
+    subgraph Dev["DevOps"]
+        A3["App teams engineer and operate&lt;br&gt;apps and app-specific platform"]
+        P3["Platform team engineers and&lt;br&gt;operates shared platform"]
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Traditional Ops:</strong> a central cloud-operations team runs both apps and platform.</li>
+<li><strong>CloudOps:</strong> app teams operate their own apps; the platform team runs the platform.</li>
+<li><strong>DevOps:</strong> app teams also operate app-specific platform capabilities.</li>
+<li><strong>ITSM</strong> is common across all three; only the <em>responsible parties</em> change.</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Don’t split for its own sake. Split along the lines that matter — <strong>ownership, environment, data sensitivity, blast radius and cost</strong> — and give early-lifecycle work freer accounts behind guardrails.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-orgs" class="level2">
+<h2 class="anchored" data-anchor-id="sec-orgs">13.3 Step 2 — Organise with AWS Organizations, OUs and SCPs</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ How do you govern dozens of accounts centrally instead of one-by-one?</li>
+</ul>
+</blockquote>
+<p><strong>AWS Organizations</strong> groups accounts into <strong>Organizational Units (OUs)</strong>; <strong>Service Control Policies (SCPs)</strong> set the <strong>maximum</strong> permissions available at an OU or account level.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    ROOTA["Organization root"] --&gt; MGMT["Management account"]
+    ROOTA --&gt; CORP["Corporate OU"]
+    ROOTA --&gt; WL["Workloads OU"]
+    WL --&gt; CA["Customer A OU"]
+    WL --&gt; CB["Customer B OU"]
+    CA --&gt; DEV["Dev OU"]
+    CA --&gt; QA["QA OU"]
+    CA --&gt; PRD["Prod OU"]
+    SCP["SCP: only allow&lt;br&gt;t2.micro instances"] -.-&gt;|attached to OU| DEV
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li>Nest OUs by <strong>client → environment</strong> (Dev/QA/Prod), applying different SCPs at each level.</li>
+<li><strong>SCP examples:</strong> restrict allowed EC2 instance types; deny disabling CloudTrail or Config; deny leaving the organization; restrict which Regions can be used; require MFA for sensitive actions.</li>
+</ul>
+<p><strong>A real-world OU structure</strong> — nested and multi-level:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    R["Organization root"] --&gt; M["Management account"]
+    R --&gt; L1["Corporate OU - L1"]
+    L1 --&gt; SEC["Security OU - L2"]
+    L1 --&gt; WLD["Workloads OU - L2"]
+    SEC --&gt; ST["Security Tooling"]
+    SEC --&gt; LA["Log Archive"]
+    WLD --&gt; PPF["Prod Public-Facing OU - L3"]
+    WLD --&gt; PIF["Prod Internal-Facing OU - L3"]
+    WLD --&gt; SDLC["SDLC OU - L3"]
+    PPF --&gt; CONF["Confidential Data"]
+    PPF --&gt; PUB["Public Data"]
+    PIF --&gt; INT["Internal Data"]
+    PIF --&gt; RES["Restricted Data"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="four-scp-facts-that-catch-people-out" class="level3">
+<h3 class="anchored" data-anchor-id="four-scp-facts-that-catch-people-out">13.3.1 Four SCP facts that catch people out</h3>
+<blockquote class="blockquote">
+<p><strong>🔴 SCPs do not apply to the management account.</strong> An SCP attached to the root or to an OU containing the management account has <strong>no effect on that account</strong> — it always retains full permissions. This is precisely why AWS’s guidance is to <strong>run no workloads in the management account</strong> and to treat it as a break-glass, billing and org-administration account only. If you assume the root-level SCP protects everything, the management account is your unguarded back door.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>⚠️ SCPs require “all features” to be enabled.</strong> An organization created for <strong>consolidated billing only</strong> cannot use SCPs (or tag policies). Enabling all features is a one-way door and requires member-account consent — do it early.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>⚠️ An SCP is a ceiling, not a grant.</strong> It <strong>limits</strong> what identities <em>can</em> be granted; it never grants anything. You still need IAM permissions policies to actually allow actions. An action is permitted only if <strong>both</strong> the SCP and the IAM policy allow it.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>⚠️ SCPs don’t cover everything.</strong> They do <strong>not</strong> affect <strong>service-linked roles</strong>, and they do not apply to principals outside your organization who access your resources through <strong>resource-based policies</strong>. Bucket policies and KMS key policies still need their own review.</p>
+</blockquote>
+<p>For IAM policy evaluation, roles and the shared responsibility model, see <a href="./02-security.html">02. Security</a>.</p>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> <strong>Organizations + OUs</strong> give you the shape; <strong>SCPs</strong> give you the guardrails. Design the OU tree around <strong>ownership and data sensitivity</strong>, attach SCPs at the highest level where the rule should apply — and remember the management account is exempt.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-auth" class="level2">
+<h2 class="anchored" data-anchor-id="sec-auth">13.4 Step 3 — Authenticate across accounts</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ How do people and services move between accounts <strong>without duplicating credentials</strong>?</li>
+</ul>
+</blockquote>
+<section id="iam-roles-temporary-credentials-no-static-keys" class="level3">
+<h3 class="anchored" data-anchor-id="iam-roles-temporary-credentials-no-static-keys">13.4.1 IAM roles: temporary credentials, no static keys</h3>
+<p>An <strong>IAM role</strong> is an identity with permissions but <strong>no long-term credentials</strong>. Anyone (or any service) permitted to <strong>assume</strong> it receives <strong>temporary</strong> credentials for the session.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    U["IAM user, same account"] --&gt; ROLE["IAM role&lt;br&gt;temporary credentials"]
+    UX["IAM user, different account"] --&gt; ROLE
+    SVC["AWS service, e.g. EC2"] --&gt; ROLE
+    FED["Federated user&lt;br&gt;SAML 2.0 or OIDC IdP"] --&gt; ROLE
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Service role</strong></td>
+<td>A role a service assumes to act in your account on your behalf</td>
+</tr>
+<tr class="even">
+<td><strong>Service-linked role</strong></td>
+<td>Predefined, service-owned role with exactly the permissions that service needs</td>
+</tr>
+<tr class="odd">
+<td><strong>Permissions boundary</strong></td>
+<td>Advanced control that caps the <em>maximum</em> permissions an identity can be granted (cannot be applied to service-linked roles)</td>
+</tr>
+<tr class="even">
+<td><strong>Principal</strong></td>
+<td>An entity that can act: root user, IAM user, or role</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="delegation-trust-policy-permissions-policy" class="level3">
+<h3 class="anchored" data-anchor-id="delegation-trust-policy-permissions-policy">13.4.2 Delegation = trust policy + permissions policy</h3>
+<p>Cross-account access is built from <strong>two halves</strong>, living in <strong>two different accounts</strong>:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    subgraph Trusting["Trusting account - owns resource"]
+        RL["IAM Role"]
+        TP["Trust policy:&lt;br&gt;WHO may assume"]
+        PP["Permissions policy:&lt;br&gt;WHAT the role can do"]
+        RL --- TP
+        RL --- PP
+    end
+    subgraph Trusted["Trusted account - has the users"]
+        US["IAM user"]
+        UP["Permissions policy:&lt;br&gt;allowed to assume the role"]
+        US --- UP
+    end
+    US --&gt;|"sts:AssumeRole"| RL
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li>The <strong>trust policy</strong> (on the role, in the trusting account) names the <strong>trusted principals</strong>.</li>
+<li>The <strong>permissions policy</strong> (on the user, in the trusted account) allows them to <strong>assume</strong> the role.</li>
+<li>When a user assumes a role they <strong>temporarily give up their own permissions</strong> and take the role’s; exiting restores them.</li>
+<li><strong>External ID</strong> protects against the <strong>confused deputy</strong> problem when you grant access to a <strong>third party</strong> (e.g.&nbsp;an SaaS vendor) — the vendor must present the agreed external ID to assume the role.</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>⚠️ Wildcards in a trust policy — get this right.</strong> The <code>Principal</code> element does <strong>not</strong> support <em>partial</em> wildcards: you cannot write <code>arn:aws:iam::123456789012:user/dev-*</code>. A bare <code>"Principal": "*"</code> <strong>is</strong> syntactically valid, which is exactly why it is dangerous — it means <em>any</em> AWS principal may attempt to assume the role. If you ever use it, it must be paired with strict <code>Condition</code> keys (such as <code>aws:PrincipalOrgID</code>). <strong>IAM Access Analyzer</strong> exists to find exactly this misconfiguration. Prefer naming the specific account or role ARN.</p>
+</blockquote>
+</section>
+<section id="cross-account-assume-role-in-action" class="level3">
+<h3 class="anchored" data-anchor-id="cross-account-assume-role-in-action">13.4.3 Cross-account assume-role in action</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    DS["Data Scientist&lt;br&gt;Data Science account"] --&gt;|"1. assume role"| ROLE["ReadData role&lt;br&gt;Data Lake account"]
+    ROLE --&gt;|"2. temporary creds"| DS
+    DS --&gt;|"3. read, scoped"| S3["S3 buckets&lt;br&gt;raw data"]
+    TRUST["Trust: only Data Science&lt;br&gt;account principals"] -.-&gt; ROLE
+    PERM["Permissions: read only&lt;br&gt;specific S3 buckets"] -.-&gt; ROLE
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>No permanent credentials are shared; access is <strong>temporary, scoped and auto-expiring</strong>.</p>
+</section>
+<section id="federation-and-single-sign-on-iam-identity-center" class="level3">
+<h3 class="anchored" data-anchor-id="federation-and-single-sign-on-iam-identity-center">13.4.4 Federation and single sign-on: IAM Identity Center</h3>
+<p>For <strong>workforce</strong> users, <strong>IAM Identity Center</strong> (the successor to AWS SSO) is the recommended front door: one place for identities, one place for account access.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    IDP["Identity source&lt;br&gt;Active Directory, Okta, Entra ID,&lt;br&gt;or built-in directory"] --&gt; IIC["IAM Identity Center"]
+    IIC --&gt;|"permission sets"| ACC1["Account: Dev"]
+    IIC --&gt;|"permission sets"| ACC2["Account: Prod"]
+    IIC --&gt;|"SAML app assignments"| APP["SaaS applications"]
+    USER["Workforce user"] --&gt;|"AWS access portal, one login"| IIC
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Core features: <strong>workforce identities</strong>, <strong>SAML application assignments</strong>, <strong>Identity Center-enabled applications</strong>, <strong>multi-account permission sets</strong> (applied across many accounts at once), and the <strong>AWS access portal</strong> (one-click access with temporary credentials).</p>
+<blockquote class="blockquote">
+<p><strong>Where does it live?</strong> IAM Identity Center is enabled from the <strong>management account</strong>, but you should <strong>delegate administration</strong> to a member account (commonly Shared Services or Security Tooling) so day-to-day permission-set management does not require management-account access. A few operations still remain in the management account.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Two things to fix on day one.</strong> (1) Enforce <strong>MFA</strong> in IAM Identity Center. (2) Deal with <strong>root users</strong>: every member account still has one. Put MFA on it, remove its access keys, and — since Organizations now supports <strong>centrally managing root access</strong> — consider removing member-account root credentials entirely and using a privileged-action workflow instead. That directly addresses this customer’s “we log in as root” problem.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Use <strong>IAM roles</strong> for machine and cross-account access (temporary credentials, no static keys); use <strong>IAM Identity Center</strong> for humans (federated SSO, permission sets across accounts). Never duplicate IAM users per account.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-logging" class="level2">
+<h2 class="anchored" data-anchor-id="sec-logging">13.5 Step 4 — Log and monitor centrally</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ Several logging and monitoring services sound similar — what does each actually do?</li>
+</ul>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    subgraph Logging["Central logging and monitoring"]
+        CT["CloudTrail&lt;br&gt;WHO did WHAT - API activity"]
+        CFG["AWS Config&lt;br&gt;HOW resources are configured&lt;br&gt;state, history, rules"]
+        VFL["VPC Flow Logs&lt;br&gt;network traffic to and from ENIs"]
+        GD["GuardDuty&lt;br&gt;threat detection"]
+    end
+    CT --&gt; S3L["Central S3 in Log Archive account"]
+    VFL --&gt; S3L
+    CFG --&gt; S3L
+    GD --&gt; SH["Security Hub&lt;br&gt;aggregated findings"]
+    CFG --&gt; SH
+    SH --&gt; ALERT["Alerts and remediation"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Service</th>
+<th>Question it answers</th>
+<th>Key nuance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>CloudTrail</strong></td>
+<td><em>Who called which API, when?</em></td>
+<td>An <strong>organization trail</strong> from the management account logs <strong>all</strong> member accounts, and members <strong>cannot modify or delete</strong> it</td>
+</tr>
+<tr class="even">
+<td><strong>AWS Config</strong></td>
+<td><em>How is each resource configured, now and historically?</em></td>
+<td>Continuous evaluation plus <strong>Config rules</strong> flag non-compliant resources; ideal for audit and change troubleshooting</td>
+</tr>
+<tr class="odd">
+<td><strong>VPC Flow Logs</strong></td>
+<td><em>What IP traffic hit my network interfaces?</em></td>
+<td>Collected <strong>outside</strong> the traffic path, so <strong>no latency or throughput impact</strong>; publishes to CloudWatch Logs or S3</td>
+</tr>
+<tr class="even">
+<td><strong>GuardDuty</strong></td>
+<td><em>Is anything malicious happening?</em></td>
+<td>Continuous analysis of CloudTrail, DNS and VPC flow logs plus optional EKS, RDS, Lambda and malware protection</td>
+</tr>
+<tr class="odd">
+<td><strong>Security Hub</strong></td>
+<td><em>What is my overall posture?</em></td>
+<td>Aggregates findings from GuardDuty, Config, Inspector and Macie against standards such as CIS and AWS Foundational Security Best Practices</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>CloudTrail vs Config — the classic confusion:</strong> <strong>CloudTrail = activity</strong> (API <em>actions</em>). <strong>Config = state</strong> (resource <em>configuration</em> over time). You almost always want both.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>⚠️ CloudTrail is not “already on” in the way people assume.</strong> Every account gets a free <strong>90-day Event history</strong> of management events, but that is not durable, not searchable at scale and not centralised. You need an actual <strong>trail</strong> delivering to S3 for retention. Note also that <strong>data events</strong> (S3 object-level, Lambda invocations) are <strong>not</strong> logged by default and are billed separately — turn them on deliberately where they matter.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>⚠️ Use delegated administrators.</strong> GuardDuty, Config, Security Hub and IAM Access Analyzer should all be <strong>delegated to the Security Tooling account</strong> rather than operated from the management account. This keeps the management account minimal and gives your security team access without handing them the keys to billing and org structure.</p>
+</blockquote>
+<p><strong>Best practice:</strong> concentrate CloudTrail data in a <strong>dedicated Log Archive account</strong> with a restrictive bucket policy, and make sure member accounts cannot delete it.</p>
+<p>See <a href="./07-monitoring.html">07. Monitoring</a> for CloudWatch and logging fundamentals.</p>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Centralise logs in a <strong>dedicated, locked-down logging account</strong>. <strong>CloudTrail</strong> for actions, <strong>Config</strong> for configuration state, <strong>Flow Logs</strong> for network, <strong>GuardDuty</strong> for threats, <strong>Security Hub</strong> to aggregate — layered, not interchangeable.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-automate" class="level2">
+<h2 class="anchored" data-anchor-id="sec-automate">13.6 Step 5 — Automate provisioning and enforce guardrails</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ How do you stamp out new accounts that are compliant <em>by default</em>, at scale?</li>
+</ul>
+</blockquote>
+<section id="the-account-provisioning-stack" class="level3">
+<h3 class="anchored" data-anchor-id="the-account-provisioning-stack">13.6.1 The account-provisioning stack</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    CT["AWS Control Tower&lt;br&gt;landing zone orchestrator"] --&gt; ORG["AWS Organizations&lt;br&gt;create accounts and OUs"]
+    CT --&gt; SCP["Controls&lt;br&gt;preventive, detective, proactive"]
+    CT --&gt; IIC["IAM Identity Center&lt;br&gt;SSO into accounts"]
+    CT --&gt; LOG["Org CloudTrail&lt;br&gt;centralised logging"]
+    CT --&gt; AF["Account Factory&lt;br&gt;via AWS Service Catalog"]
+    CF["CloudFormation and StackSets"] -.-&gt;|underpins all| CT
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Service</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>CloudFormation (IaC)</strong></td>
+<td>Templates that model and provision resources; the substrate everything else uses</td>
+</tr>
+<tr class="even">
+<td><strong>Control Tower</strong></td>
+<td>Sets up and governs a <strong>multi-account landing zone</strong> in well under an hour; applies <strong>controls</strong>; detects <strong>drift</strong>; uses <strong>CloudFormation StackSets</strong> (one stack instance per account and Region)</td>
+</tr>
+<tr class="odd">
+<td><strong>Service Catalog</strong></td>
+<td>Curated <strong>portfolios</strong> of approved products; <strong>self-service</strong> launch within <strong>standardised</strong> constraints. Control Tower’s <strong>Account Factory</strong> is itself a Service Catalog product</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>⚠️ “Guardrails” are now called “controls” — and there are three types.</strong> Control Tower’s terminology changed, and a third category was added: <strong>preventive</strong> (implemented as SCPs — they stop the action), <strong>detective</strong> (implemented as Config rules — they report non-compliance after the fact), and <strong>proactive</strong> (implemented as <strong>CloudFormation hooks</strong> — they block non-compliant resources <em>before</em> provisioning). Material that mentions only “preventive and detective guardrails” predates the proactive category.</p>
+</blockquote>
+</section>
+<section id="tag-policies-vs-scps-use-them-together" class="level3">
+<h3 class="anchored" data-anchor-id="tag-policies-vs-scps-use-them-together">13.6.2 Tag policies vs SCPs — use them together</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    Q{"Goal?"} --&gt;|"Standardise tag&lt;br&gt;keys and values on&lt;br&gt;existing resources"| TAG["Tag policy&lt;br&gt;enforces format;&lt;br&gt;does NOT block untagged creates"]
+    Q --&gt;|"Prevent creating&lt;br&gt;UNtagged resources"| SCPT["SCP&lt;br&gt;explicit Deny when&lt;br&gt;a required tag is missing"]
+    TAG --&gt; BOTH["Use BOTH together"]
+    SCPT --&gt; BOTH
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li>A <strong>tag policy</strong> enforces a standard tag (e.g.&nbsp;<code>Environment=Production</code>) but <strong>does not stop</strong> someone launching a new, untagged resource.</li>
+<li>To <strong>block untagged creates</strong>, use an <strong>SCP</strong> with an explicit <code>Deny</code> conditioned on <code>"Null": {"aws:RequestTag/Project": "true"}</code> — for example requiring <code>Project</code> and <code>CostCenter</code> on <code>ec2:RunInstances</code>.</li>
+<li>Tag policies are often “enough” <strong>if you provision via IaC</strong>, because the tags are embedded in the templates.</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>⚠️ Tag policy limits.</strong> Like SCPs, tag policies need <strong>all features enabled</strong> in Organizations. They also only cover <strong>supported resource types</strong>, and compliance is evaluated on <strong>tagging operations</strong> — an unsupported resource, or one created without any tags at all, will not be caught. That asymmetry is exactly why the SCP is the enforcement half.</p>
+</blockquote>
+</section>
+<section id="ongoing-governance-practices" class="level3">
+<h3 class="anchored" data-anchor-id="ongoing-governance-practices">13.6.3 Ongoing governance practices</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    GOV["Governance practices"] --&gt; G1["SCPs: restrict root, protect&lt;br&gt;CloudTrail and Config, limit Regions"]
+    GOV --&gt; G2["Tag policies plus&lt;br&gt;cost-allocation tags"]
+    GOV --&gt; G3["AWS Budgets per account&lt;br&gt;and per cost category"]
+    GOV --&gt; G4["MFA on IAM Identity Center&lt;br&gt;and on every root user"]
+    GOV --&gt; G5["Delegated admins for&lt;br&gt;security services"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>On cost alerting:</strong> classic <strong>CloudWatch billing alarms</strong> only work against billing metrics published in <strong><code>us-east-1</code></strong>, and only from the payer account. <strong>AWS Budgets</strong> is the better tool for multi-account estates — it works per account, per OU, per tag or per <strong>cost category</strong>, and supports forecasted-spend alerts. Activate <strong>cost-allocation tags</strong> in the Billing console before you rely on them for reporting; they are not retroactive.</p>
+</blockquote>
+<p>For broader cost and resilience levers, see <a href="./08-optimization.html">08. Optimization</a>.</p>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> <strong>Control Tower</strong> (built on Organizations, Service Catalog, IAM Identity Center and CloudFormation) makes every new account <strong>compliant by default</strong>. Pair <strong>tag policies</strong> (standardise) with <strong>SCPs</strong> (enforce) — they solve different halves of the same problem.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-reference" class="level2">
+<h2 class="anchored" data-anchor-id="sec-reference">13.7 The reference architecture, end to end</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    subgraph Org["AWS Organization - all features enabled"]
+        MGMT["Management account&lt;br&gt;Control Tower, org CloudTrail, billing&lt;br&gt;NO workloads"]
+        subgraph SecOU["Security OU"]
+            LOGACC["Log Archive account&lt;br&gt;central CloudTrail and Config"]
+            TOOL["Security Tooling account&lt;br&gt;delegated admin: GuardDuty,&lt;br&gt;Config, Security Hub"]
+        end
+        SS["Shared Services account&lt;br&gt;delegated IAM Identity Center admin"]
+        subgraph WL["Workloads OU"]
+            subgraph CustA["Customer A OU"]
+                DEVA["Dev"]
+                PRDA["Prod"]
+            end
+        end
+    end
+    USER["Workforce"] --&gt;|SSO portal| SS
+    SS --&gt;|permission sets| DEVA
+    SS --&gt;|permission sets| PRDA
+    MGMT --&gt;|SCP guardrails| WL
+    DEVA --&gt;|logs| LOGACC
+    PRDA --&gt;|logs| LOGACC
+    TOOL --&gt;|findings| SEChub["Security Hub"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>How each requirement is satisfied</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Requirement</th>
+<th>Where it is met</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Isolate clients and environments</td>
+<td><strong>Organizations + OUs</strong> (Customer A → Dev/QA/Prod)</td>
+</tr>
+<tr class="even">
+<td>No credential duplication</td>
+<td><strong>IAM roles</strong> plus <strong>IAM Identity Center</strong> permission sets</td>
+</tr>
+<tr class="odd">
+<td>Dedicated, tamper-resistant logging</td>
+<td><strong>Log Archive account</strong> and an <strong>organization trail</strong> members cannot delete</td>
+</tr>
+<tr class="even">
+<td>Security guardrails</td>
+<td><strong>SCPs</strong> (restrict root, protect CloudTrail/Config, limit Regions)</td>
+</tr>
+<tr class="odd">
+<td>Automatic, compliant provisioning</td>
+<td><strong>Control Tower Account Factory</strong> + <strong>Service Catalog</strong> + <strong>CloudFormation</strong></td>
+</tr>
+<tr class="even">
+<td>Consistent tagging and cost control</td>
+<td><strong>Tag policies + SCPs</strong>, cost-allocation tags, <strong>AWS Budgets</strong></td>
+</tr>
+<tr class="odd">
+<td>Threat detection and posture</td>
+<td><strong>GuardDuty</strong> and <strong>Security Hub</strong>, delegated to Security Tooling; <strong>Config</strong> for drift</td>
+</tr>
+<tr class="even">
+<td>Root-user risk removed</td>
+<td>MFA everywhere, plus <strong>centrally managed root access</strong> for member accounts</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="sec-not" class="level2">
+<h2 class="anchored" data-anchor-id="sec-not">13.8 When <em>not</em> to reach for these</h2>
+<p>An honest architect states the boundaries of their own recommendation.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Symptom</th>
+<th>Reconsider</th>
+<th>Better fit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>One team, one workload, no compliance driver</td>
+<td>A full multi-account landing zone</td>
+<td>A <strong>single account</strong> with strong IAM and tagging</td>
+</tr>
+<tr class="even">
+<td>Only a handful of accounts, hands-on team</td>
+<td>Control Tower</td>
+<td>Plain <strong>Organizations + SCPs</strong>, scripted with CloudFormation</td>
+</tr>
+<tr class="odd">
+<td>An existing, heavily customised org structure</td>
+<td>Control Tower landing zone</td>
+<td>Organizations directly — Control Tower expects its own OU conventions</td>
+</tr>
+<tr class="even">
+<td>Need to standardise tag <strong>format</strong> only, and you deploy via IaC</td>
+<td>An SCP that denies untagged creates</td>
+<td>A <strong>tag policy</strong> alone (less friction)</td>
+</tr>
+<tr class="odd">
+<td>Restricting the <strong>management account</strong></td>
+<td>Root-level SCP</td>
+<td>Minimise what lives there; SCPs simply do not apply to it</td>
+</tr>
+<tr class="even">
+<td>Machine-to-machine or cross-account access</td>
+<td>IAM Identity Center</td>
+<td><strong>IAM roles</strong> with <code>sts:AssumeRole</code></td>
+</tr>
+<tr class="odd">
+<td>Third-party/vendor access</td>
+<td>A plain cross-account role</td>
+<td>Role <strong>plus external ID</strong> (confused-deputy protection)</td>
+</tr>
+<tr class="even">
+<td>Every account needs its own VPC and connectivity</td>
+<td>Per-account VPCs and peering</td>
+<td><strong>Transit Gateway</strong> — see <a href="./12-hybrid-container-workloads.html">12. Hybrid Container Workloads</a></td>
+</tr>
+<tr class="odd">
+<td>Too many accounts, nobody owns them</td>
+<td>More accounts</td>
+<td>Consolidate; account sprawl has real operational cost</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Governance is not one service; it is a <strong>layered stack</strong> where each layer answers a different question. “Best fit” balances control against team velocity — over-restrictive SCPs get worked around, and that is worse than no SCP at all.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-cheatsheet" class="level2">
+<h2 class="anchored" data-anchor-id="sec-cheatsheet">13.9 Architect’s cheat sheet</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    ROOT["Account governance&lt;br&gt;decision map"]
+
+    ROOT --&gt; S["Structure"]
+    S --&gt; S1["Account = security + billing + blast-radius boundary"]
+    S --&gt; S2["Organizations + OUs group accounts"]
+    S --&gt; S3["SCPs = a ceiling, not a grant"]
+    S --&gt; S4["SCPs do NOT apply to the management account"]
+
+    ROOT --&gt; A["Auth"]
+    A --&gt; A1["IAM roles = temporary creds, no static keys"]
+    A --&gt; A2["Delegation = trust policy + permissions policy"]
+    A --&gt; A3["Principal has no PARTIAL wildcards"]
+    A --&gt; A4["IAM Identity Center = workforce SSO"]
+
+    ROOT --&gt; L["Logging"]
+    L --&gt; L1["CloudTrail = activity, who did what"]
+    L --&gt; L2["Config = configuration state and history"]
+    L --&gt; L3["VPC Flow Logs = network traffic"]
+    L --&gt; L4["GuardDuty + Security Hub = threats and posture"]
+
+    ROOT --&gt; AU["Automate"]
+    AU --&gt; AU1["Control Tower = landing zone + controls"]
+    AU --&gt; AU2["Service Catalog = approved products"]
+    AU --&gt; AU3["Tag policy standardises; SCP enforces"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ol type="1">
+<li>An <strong>account</strong> is the fundamental boundary for <strong>security, access, billing and blast radius</strong>.</li>
+<li>Split accounts by <strong>ownership, environment, data sensitivity, blast radius and cost</strong> — not arbitrarily.</li>
+<li>Multi-account improves <strong>most Well-Architected pillars</strong> at once.</li>
+<li>Most <strong>service quotas and API rate limits are per account, per Region</strong> — separation distributes their impact.</li>
+<li><strong>Sandbox → dev → test → prod:</strong> give early-lifecycle work more freedom behind guardrails and budgets.</li>
+<li>Match <strong>account groups to IT operating models</strong> (Traditional Ops / CloudOps / DevOps).</li>
+<li><strong>AWS Organizations</strong> groups accounts into <strong>OUs</strong>; nest by client → environment.</li>
+<li><strong>SCPs set the maximum</strong> permissions — they <strong>never grant</strong>, only cap. Both SCP <em>and</em> IAM must allow an action.</li>
+<li><strong>🔴 SCPs do not apply to the management account</strong> — so run no workloads there.</li>
+<li>SCPs and tag policies need <strong>all features enabled</strong>; consolidated-billing-only organizations cannot use them.</li>
+<li>SCPs do <strong>not</strong> affect <strong>service-linked roles</strong> or external principals arriving via resource-based policies.</li>
+<li>Typical SCPs: restrict <strong>root</strong>, prevent disabling <strong>CloudTrail/Config</strong>, deny leaving the org, limit <strong>Regions</strong>.</li>
+<li><strong>IAM roles</strong> provide <strong>temporary</strong> credentials — no passwords or access keys to leak.</li>
+<li><strong>Delegation = trust policy (who) + permissions policy (what)</strong>; the two halves live in different accounts.</li>
+<li>The <code>Principal</code> element supports <strong>no partial wildcards</strong>; a bare <code>"*"</code> is valid but dangerous — use conditions such as <code>aws:PrincipalOrgID</code>, and let <strong>IAM Access Analyzer</strong> catch mistakes.</li>
+<li>Assuming a role means you <strong>temporarily drop</strong> your own permissions.</li>
+<li>Use an <strong>external ID</strong> for third-party access — it defends against the <strong>confused deputy</strong> problem.</li>
+<li><strong>Federation</strong> (SAML 2.0 / OIDC) maps external identities to IAM roles with temporary credentials.</li>
+<li><strong>IAM Identity Center</strong> = workforce SSO: permission sets across many accounts, one access portal. <strong>Delegate its administration</strong> out of the management account.</li>
+<li>New org accounts get <strong><code>OrganizationAccountAccessRole</code></strong> for initial cross-account switching.</li>
+<li>Put <strong>MFA</strong> on IAM Identity Center <em>and</em> every root user; consider <strong>centrally managed root access</strong> to remove member-account root credentials.</li>
+<li><strong>CloudTrail = activity</strong>, <strong>Config = configuration state</strong> — the most-confused pair; use both.</li>
+<li>The free <strong>90-day Event history</strong> is not a trail; <strong>data events</strong> are off by default and billed separately.</li>
+<li>An <strong>organization trail</strong> logs all member accounts and members cannot modify or delete it.</li>
+<li><strong>VPC Flow Logs</strong> sit <strong>outside</strong> the traffic path — no performance impact.</li>
+<li><strong>GuardDuty</strong> detects threats; <strong>Security Hub</strong> aggregates findings against standards. <strong>Delegate both</strong> to Security Tooling.</li>
+<li>Centralise logs in a <strong>dedicated Log Archive account</strong> that members cannot tamper with.</li>
+<li><strong>CloudFormation (IaC)</strong> underpins governance — provision automatically, never by hand.</li>
+<li><strong>Control Tower</strong> builds a governed <strong>landing zone</strong>, fights <strong>drift</strong>, and uses <strong>StackSets</strong>; its <strong>Account Factory</strong> is a Service Catalog product.</li>
+<li>Control Tower <strong>“guardrails” are now “controls”</strong>, in three flavours: <strong>preventive</strong> (SCP), <strong>detective</strong> (Config rule), <strong>proactive</strong> (CloudFormation hook).</li>
+<li><strong>Tag policy standardises tags; SCP blocks untagged creates</strong> — use them <strong>together</strong>.</li>
+<li>Prefer <strong>AWS Budgets</strong> over CloudWatch billing alarms for multi-account cost control (billing metrics live only in <code>us-east-1</code>).</li>
+</ol>
+<hr>
+</section>
+<section id="sources" class="level2">
+<h2 class="anchored" data-anchor-id="sources">Sources</h2>
+<p><em>Inspired from course notes — “Architecting Solutions on AWS”, Week 4: Designing a Solution Following Account Governance and Management Best Practices (marketing-agency multi-account use case).</em></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./12-hybrid-container-workloads.html" class="pagination-link" aria-label="12. Architecting Hybrid Container-Based Workloads">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">12. Architecting Hybrid Container-Based Workloads</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./09-references-disclosure.html" class="pagination-link" aria-label="Disclosure">
+        <span class="nav-page-text"><span class="chapter-title">Disclosure</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
