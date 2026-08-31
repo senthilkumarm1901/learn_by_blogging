@@ -1,0 +1,546 @@
+---
+title: "11. Architecting Serverless Data Analytics Solutions"
+author: "Senthil Kumar"
+mermaid:
+  theme: neutral
+format:
+  html:
+    navbar:
+      right:
+        - text: "Blog"
+          href: "https://senthilkumarm1901.github.io/learn_by_blogging/blog.html"
+          target: _self
+        - text: "LinkedIn"
+          href: "https://www.linkedin.com/in/senthilkumarm1901"
+          target: _blank
+        - text: "Medium"
+          href: "https://medium.com/@senthilkumar.m1901"
+          target: _blank
+---
+
+
+👈 **Back to:** [📝 Blog](https://senthilkumarm1901.github.io/learn_by_blogging/blog.html) | [💼 LinkedIn](https://www.linkedin.com/in/senthilkumarm1901) | [✍️ Medium](https://medium.com/@senthilkumar.m1901)
+
+---
+
+## How to Architect a Serverless Data Analytics Solution in AWS
+
+> * ❓ Given a stream of raw events, how do you decide *which* analytics services to combine to turn it into insight — and how do you defend the ones you rejected?
+> * Hint: the same discipline as [10. Architecting a Serverless Backend Solution](10-architecting-serverless-backend-solution-in-aws.qmd) — **requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections**. What changes is the shape of the workload: it is now a **data pipeline** — ingest → store → query → visualise.
+
+**Running example used throughout this chapter**
+
+> A software house sells **online restaurant menus** as static HTML pages hosted on **Amazon S3**, reached through **QR codes**. Restaurant admins generate menus and QR codes through an existing system.
+>
+> They now want two things:
+>
+> 1. An **"order this item"** feature wired to an existing third-party payment API.
+> 2. To collect **clickstream data** — which dishes are viewed, how customers navigate the menu — to optimise menu design.
+>
+> **Goal:** design the **analytics pipeline** on AWS for **serverless, usage-based billing, no servers to manage, encryption in transit and at rest, and durable backup in a second Region**.
+>
+> *In scope:* ingesting, storing, querying and visualising the clickstream. *Out of scope:* payment processing and the client-side JavaScript that emits the clicks.
+
+> **A note on service names.** AWS renamed two services in this chapter in 2024: **Kinesis Data Firehose → Amazon Data Firehose**, and **Kinesis Data Analytics → Amazon Managed Service for Apache Flink**. This chapter uses the current names, with the old ones in brackets on first use, because most existing material still uses the old ones.
+
+---
+
+## 11.1 The Method: four pipeline hops plus cross-cutting concerns
+
+Every analytics design reduces to the same four hops. The valuable skill is choosing the **right service at each hop for the customer's constraints** — not knowing every service.
+
+```{mermaid}
+flowchart LR
+    A["Business question<br>which dishes sell?"] --> B["1. Ingest<br>get events in"]
+    B --> C["2. Store<br>durable data lake"]
+    C --> D["3. Query<br>turn data into answers"]
+    D --> E["4. Visualise<br>dashboards for humans"]
+    X["Cross-cutting: security, observability,<br>repeatability, cost"] -.-> B
+    X -.-> C
+    X -.-> D
+    X -.-> E
+```
+
+| Step | Question the architect answers | Winning service (this case) | Section |
+| --- | --- | --- | --- |
+| 1 | What are the real architectural drivers? | — | [11.2](#sec-drivers) |
+| 2 | How do events get in, safely and cheaply? | API Gateway → **Amazon Data Firehose** | [11.3](#sec-ingest) |
+| 3 | Where does the data land and stay durable? | **Amazon S3** data lake (+ CRR) | [11.4](#sec-store) |
+| 4 | How do we ask questions of it? | **Amazon Athena** | [11.5](#sec-query) |
+| 5 | How do humans see the answers? | **Amazon QuickSight** | [11.6](#sec-visualise) |
+| 6 | How is every hop secured? | TLS + SSE + least privilege | [11.7](#sec-secure) |
+| 7 | How do we know it is working? | CloudWatch across the pipeline | [11.8](#sec-observability) |
+| 8 | How do we rebuild it per client? | CloudFormation + retries | [11.9](#sec-resilient) |
+| 9 | How do we tune cost and performance? | Compress, partition, columnar | [11.10](#sec-optimize) |
+
+> **Architect's takeaway:** A data-analytics architecture is a **pipeline of decoupled stages**. Choose each stage for its own constraints; a good pipeline lets you swap any single stage later without rebuilding the rest.
+
+---
+
+## 11.2 Step 1 — Turn requirements into architectural drivers {#sec-drivers}
+
+> * ❓ How do a customer's wishes become design constraints for a pipeline?
+
+```{mermaid}
+flowchart TD
+    R1["Serverless, usage-billed,<br>no EC2"] --> D1["Managed services only"]
+    R2["HTTPS RESTful endpoint<br>from a JS library"] --> D2["Managed API front door"]
+    R3["High-volume small<br>click events"] --> D3["Streaming ingestion"]
+    R4["Durable + backup in<br>another Region"] --> D4["S3 + Cross-Region Replication"]
+    R5["Encryption in transit<br>and at rest"] --> D5["TLS + SSE everywhere"]
+    R6["Small / short-staffed team"] --> D6["Low learning curve,<br>low maintenance"]
+```
+
+| Customer requirement | Architectural driver | Implication |
+| --- | --- | --- |
+| Serverless, usage-based billing, no EC2 | **Cost + operational efficiency** | Pay-per-use managed services; scale to zero |
+| HTTPS endpoint fed by a JS library | **Managed ingress** | API Gateway, not a hand-rolled web tier |
+| Continuous, high-volume, tiny click events | **Streaming ingestion** | Kinesis family, not batch/DB tooling |
+| Durability + backup in another Region | **Durability + DR** | S3 (11 nines) + Cross-Region Replication |
+| Encryption in transit and at rest | **Security / compliance** | TLS + server-side encryption on every store |
+| Short-staffed customer | **Low operational burden** | Avoid services with a steep learning curve (EMR, heavy Glue ETL) |
+
+> **A design lever worth noticing:** *controlling how the data is produced simplifies the architecture*. Because the customer owns the JavaScript that emits clicks, they can emit **clean, well-formed JSON** up front — which removes the need for a heavy transformation/ETL stage on ingest. **Shape the data at the source and you delete a whole pipeline stage.**
+
+> **Architect's takeaway:** "Short-staffed" is an architectural driver, not a footnote. It rules out powerful-but-heavy options (EMR, Spark, complex Glue ETL) before you even compare features.
+
+---
+
+## 11.3 Step 2 — Ingest the clickstream {#sec-ingest}
+
+> * ❓ What service pulls in a firehose of tiny, continuous events — without exposing infrastructure or writing plumbing?
+
+### 11.3.1 Choosing the ingestion family
+
+```{mermaid}
+flowchart TD
+    W["High-volume, small,<br>continuous click events"] --> Q1{"Migrating a database?"}
+    Q1 -->|Yes| DMS["AWS DMS<br>REJECTED: it moves DBs,<br>not event streams"]
+    Q1 -->|No| Q2{"Buying 3rd-party<br>data catalogs?"}
+    Q2 -->|Yes| DX["AWS Data Exchange<br>REJECTED: not for<br>user-generated events"]
+    Q2 -->|No| Q3{"Team has big-data /<br>Spark expertise?"}
+    Q3 -->|Yes| EMR["EMR + Spark Streaming<br>viable but bills by<br>cluster time; needs skill"]
+    Q3 -->|No| KIN["Amazon Kinesis family - CHOSEN<br>built for streaming clickstream"]
+```
+
+**Chosen family: Amazon Kinesis** — purpose-built to collect and process large volumes of small, continuous events (clickstreams, logs, IoT telemetry).
+
+**Rejected — and why**
+
+| Rejected option | Reason |
+| --- | --- |
+| **AWS DMS** | Designed to migrate databases, not ingest streaming events |
+| **AWS Data Exchange** | For subscribing to third-party data catalogs, not user-generated clickstream |
+| **EMR + Spark Streaming** | Technically viable, but bills by **cluster time** and demands big-data expertise the short-staffed team lacks |
+
+### 11.3.2 Choosing *within* the streaming family
+
+```{mermaid}
+flowchart TD
+    K["Kinesis family chosen"] --> QA{"Need sub-second<br>latency?"}
+    QA -->|Yes| KDS["Kinesis Data Streams<br>under 1s, but you code<br>producers + consumers"]
+    QA -->|No| QB{"Need in-stream<br>transformation?"}
+    QB -->|Yes| KDA["Managed Service for Apache Flink<br>real-time transforms;<br>unnecessary here"]
+    QB -->|No| KDF["Amazon Data Firehose - CHOSEN<br>least code, auto-delivers to S3"]
+```
+
+**Chosen: Amazon Data Firehose** (formerly Kinesis Data Firehose). The clickstream does **not** need sub-second processing, so Firehose wins on the driver that matters most here — **least code, least operations**. It captures, optionally batches/compresses/encrypts/converts, and **auto-delivers straight to S3**, scaling itself with no administration.
+
+| Service | Latency | Coding effort | Fit here |
+| --- | --- | --- | --- |
+| **Amazon Data Firehose** | Near-real-time (buffered) | Minimal — managed delivery | **Chosen** — no sub-second need |
+| Kinesis Data Streams | **Sub-second** | You build producers + consumers | Rejected — latency not needed, more code |
+| Managed Service for Apache Flink | Real-time | Flink application | Rejected — no in-stream transformation needed |
+
+> **Key latency nuance:** Firehose trades latency for simplicity. You configure a **buffer interval and buffer size**, and data lands once either threshold is hit — so delivery is *near*-real-time (typically seconds to a couple of minutes), not "slow". If you genuinely need **sub-second** delivery, that is precisely when you drop down to **Data Streams** and accept the extra producer/consumer code.
+
+### 11.3.3 Securing the front door: API Gateway vs Cognito
+
+The JS library must POST over HTTPS **without exposing the delivery stream publicly**. Two paths:
+
+```{mermaid}
+flowchart LR
+    JS["Browser JS library<br>emits click events"] --> CH{"How to reach<br>Firehose safely?"}
+    CH -->|"Chosen: managed proxy"| AG["API Gateway<br>HTTPS endpoint, throttling, WAF"]
+    CH -->|"Alternative: client credentials"| CG["Amazon Cognito identity pool<br>role scoped to PutRecord only"]
+    AG --> KDF["Amazon Data Firehose<br>Direct PUT source"]
+    CG --> KDF
+```
+
+| Path | How it works | Prefer when |
+| --- | --- | --- |
+| **API Gateway (chosen)** | Public HTTPS endpoint proxies to the Firehose **Direct PUT** stream via an AWS service integration; the stream is never public | You want the simplest integration **and** you want a throttling/WAF chokepoint |
+| **Amazon Cognito** | The browser gets temporary credentials from an identity pool, scoped to **only `PutRecord`** on one stream, and calls Firehose directly | You want to remove the API Gateway hop and its per-call cost, and you can refactor the client |
+
+> **⚠️ The Cognito trade-off is not just cost vs effort — it is cost vs abuse control.** If the identity pool allows **unauthenticated** identities (the usual choice for an anonymous menu page), then *anyone* can obtain those credentials from the browser and call `PutRecord` directly. That means **data poisoning** of your clickstream and a **cost-amplification** attack on Firehose, Athena scans and S3 storage — with no throttling in front of it. API Gateway's per-key throttling, usage plans and **AWS WAF** integration are exactly what you are giving up. Prefer Cognito only if you add rate controls elsewhere and can tolerate untrusted writes.
+
+> **Implementation nuance:** the enhanced (default) identity-pool flow issues credentials via `GetCredentialsForIdentity`; `AssumeRoleWithWebIdentity` is the older, classic flow. Either way, the win is that **AWS SDKs apply exponential backoff and retries by default** (see [11.9](#sec-resilient)).
+
+> **Architect's takeaway:** Two independent choices at ingest — **which streaming service** (Firehose, for no-sub-second + least code) and **how the client authenticates** (API Gateway for simplicity *and* abuse control; Cognito to shave cost at the price of that control). Don't conflate them.
+
+---
+
+## 11.4 Step 3 — Store it in a data lake {#sec-store}
+
+> * ❓ Where do continuous, schema-flexible events land durably and cheaply?
+
+**Chosen: Amazon S3 as a data lake.** It stores unlimited structured/semi-structured/unstructured data in native format, is designed for **11 nines (99.999999999%) durability**, and — unlike EBS/EFS — is **decoupled from any compute instance**, so the lake grows independently and any analytics service can read it directly.
+
+For the storage-class and durability fundamentals behind this section, see [05. Storage](05-storage.qmd); for how a *data lake* differs from a database and a data warehouse, see [06. Databases](06-databases.qmd).
+
+```{mermaid}
+flowchart LR
+    KDF["Amazon Data Firehose"] --> S3["Amazon S3 data lake<br>raw clickstream JSON"]
+    S3 --> CRR["S3 Cross-Region Replication<br>backup to 2nd Region"]
+    S3 --> LC["S3 Lifecycle<br>tiering and archive"]
+    S3 -.->|read directly| ATH["Athena / QuickSight"]
+```
+
+### 11.4.1 Storage classes and lifecycle — matching class to access pattern
+
+```{mermaid}
+flowchart TD
+    O["Object in the lake"] --> Q1{"Access pattern known?"}
+    Q1 -->|"No / unpredictable"| IT["S3 Intelligent-Tiering<br>auto-moves tiers, no retrieval fee"]
+    Q1 -->|"Yes - hot"| STD["S3 Standard"]
+    Q1 -->|"Yes - infrequent"| IA["S3 Standard-IA"]
+    Q1 -->|"Yes - archive"| GL["S3 Glacier classes<br>lowest cost, 11 nines"]
+```
+
+| Class | Prefer when | Note |
+| --- | --- | --- |
+| **Intelligent-Tiering** | Access pattern is **unknown or changing** (typical for a new data lake) | Auto-tiers with **no retrieval charge**; objects **< 128 KB** are never auto-tiered and stay billed at the frequent-access rate |
+| Standard | Hot, frequently queried data | Default |
+| Standard-IA | Known infrequent access | Lower storage price, per-GB retrieval fee |
+| Glacier classes | Archival, rare access | Lowest cost; ms-to-hours retrieval depending on class |
+
+**Lifecycle policies** move objects between classes automatically over time (e.g. hot → IA → Glacier), which is how you control cost at scale without manual work.
+
+> **Watch the small-file trap:** a clickstream naturally produces *many tiny objects*. That hurts twice — Intelligent-Tiering won't tier objects under 128 KB, and Athena is slow and expensive over thousands of small files. Firehose's buffering is your first defence; see [11.10](#sec-optimize).
+
+### 11.4.2 Meeting the backup requirement: Cross-Region Replication
+
+The customer's *"backup in another Region"* requirement is met by **S3 Cross-Region Replication (CRR)** — automatic replication of objects, metadata and tags to a bucket in a second Region.
+
+| CRR buys you | Why it matters here |
+| --- | --- |
+| Disaster recovery | Survive a Region-level failure |
+| Compliance | Store copies at a required distance |
+| Lower-latency reads | Serve geographically distant users |
+
+> **Prerequisites and honest limits.** CRR requires **versioning enabled on both the source and destination buckets** plus an IAM role that S3 assumes to replicate. Replication is **asynchronous**, so your RPO is **not zero** — objects land in the second Region after a delay. If you need a bounded guarantee, enable **S3 Replication Time Control (RTC)**, which carries an SLA to replicate 99.99% of objects within 15 minutes. Also note CRR replicates *new* writes; existing objects need **batch replication**.
+
+> **Architect's takeaway:** S3's value in analytics is **decoupling storage from compute** — the lake becomes a shared substrate that Firehose writes to and Athena and QuickSight read from independently. For new pipelines with unknown query patterns, **Intelligent-Tiering** is the safe default; **CRR (with versioning)** is the one-switch answer to a cross-region backup requirement — as long as you state the asynchronous RPO out loud.
+
+---
+
+## 11.5 Step 4 — Query the lake {#sec-query}
+
+> * ❓ How does a short-staffed team ask SQL questions of raw S3 data with no ETL and no servers?
+
+```{mermaid}
+flowchart TD
+    Q["Query clickstream in S3"] --> Q1{"Heavy transformation<br>or big-data processing?"}
+    Q1 -->|Yes| GE["Glue ETL / Amazon EMR<br>powerful but learning curve<br>plus maintenance"]
+    Q1 -->|No| Q2{"Interactive SQL over<br>many files?"}
+    Q2 -->|Yes| ATH["Amazon Athena - CHOSEN<br>serverless SQL on S3,<br>pay per byte scanned"]
+    Q2 -->|"No - one object at a time"| SEL["S3 Select<br>REJECTED: single-object only,<br>and closed to new customers"]
+```
+
+**Chosen: Amazon Athena.** Serverless, standard SQL **directly on S3**, no data movement, no ETL servers, pay **per query**. You define an external table (schema-on-read) over the JSON/CSV/Parquet in S3 and query in seconds.
+
+**Rejected — and why**
+
+| Rejected option | Reason |
+| --- | --- |
+| **S3 Select** | Queries **one object per request** — unusable across many small clickstream files. AWS has also **closed S3 Select to new customers**, so it is not a forward-looking choice |
+| **AWS Glue ETL / Amazon EMR** | Powerful for heavy transforms and big-data processing, but carry a **learning curve and maintenance** the team can't absorb |
+
+> **⚠️ Important clarification — you are rejecting Glue *ETL*, not Glue entirely.** Athena stores its table and partition metadata in the **AWS Glue Data Catalog** by default, and Firehose's Parquet/ORC conversion (see [11.10](#sec-optimize)) **requires** a Glue Data Catalog table to supply the schema. So the Data Catalog is very much *in* this architecture — it is the **Glue ETL jobs and crawlers-as-a-pipeline** that are out of scope. Saying "no Glue" without that distinction confuses readers who then can't get format conversion working.
+
+> **How Athena bills — and why it drives your S3 layout:** Athena **charges per amount of data scanned** (with a **10 MB minimum per query**). That single fact makes storage layout an *architectural* decision, not a detail — see [11.10](#sec-optimize).
+
+> **Architect's takeaway:** Athena is the natural query layer for an S3 data lake when the team wants SQL without infrastructure. Its pay-per-scan model means **how you store the data determines what you pay to query it.**
+
+---
+
+## 11.6 Step 5 — Visualise the insight {#sec-visualise}
+
+> * ❓ How do non-technical restaurant owners see "which dishes are viewed most" without SQL?
+
+**Chosen: Amazon QuickSight** — a serverless BI service that sits on top of Athena/S3. Business users explore interactive dashboards, it scales through the **SPICE** in-memory engine, and readers can be billed per session rather than per seat.
+
+```{mermaid}
+flowchart LR
+    S3["S3 data lake"] --> ATH["Athena"]
+    ATH --> QS["Amazon QuickSight<br>dashboards + SPICE"]
+    QS --> U1["Restaurant owner<br>menu-view charts"]
+    QS --> U2["ML insights<br>anomaly detection, forecasting"]
+```
+
+| QuickSight strength | Why it fits |
+| --- | --- |
+| Serverless, pay-per-session **readers** | No per-seat licences for the restaurant owners; matches usage-based billing |
+| SPICE in-memory engine | Fast dashboards without re-scanning S3 on every interaction |
+| ML insights | Built-in anomaly detection and forecasting |
+| Governance | Row/column-level security, encryption at rest in SPICE |
+
+> **Two pricing/edition caveats to state up front.** (1) **Pay-per-session applies to Readers**; **Authors and Admins are billed per user, per month** — so "no named users" is only true for the consumers, not the dashboard builders. (2) The customer's **encryption-at-rest** requirement effectively forces **Enterprise edition**, since SPICE encryption at rest, row/column-level security and private VPC connectivity are Enterprise features. That is a real line item, not a footnote.
+
+> **Architect's takeaway:** QuickSight closes the pipeline — raw clicks become a chart a restaurant owner acts on. Its **pay-per-session reader** model keeps the usage-billed promise intact for the many consumers, while the few authors are a fixed cost.
+
+---
+
+## 11.7 Step 6 — Secure every stage {#sec-secure}
+
+> * ❓ Serverless removes servers, not the security requirements. What stays yours across a pipeline?
+
+```{mermaid}
+flowchart LR
+    subgraph Transit["In transit"]
+        T1["HTTPS to API Gateway"]
+        T2["TLS to Firehose and S3"]
+    end
+    subgraph Rest["At rest"]
+        R1["SSE-KMS on S3 buckets"]
+        R2["Encryption on Firehose delivery"]
+        R3["Encryption at rest in SPICE"]
+    end
+    subgraph Identity["Identity"]
+        I1["Client role scoped to<br>PutRecord on one stream"]
+        I2["IAM least privilege per stage"]
+    end
+```
+
+| Requirement | Control |
+| --- | --- |
+| **Encryption in transit** | HTTPS at API Gateway; TLS to Firehose and S3 |
+| **Encryption at rest** | Server-side encryption on S3 (SSE-S3 or SSE-KMS), on Firehose delivery, and in SPICE |
+| **Least privilege** | Scope every stage's IAM role to the exact resource; a browser-facing role gets **only `PutRecord`** on the one stream |
+| **Bucket hygiene** | Block Public Access on the lake bucket, bucket policy requiring `aws:SecureTransport`, versioning (also a CRR prerequisite) |
+| **Edge protection** | **CloudFront + AWS WAF + AWS Shield** in front of the static menu S3 site for DDoS protection and custom SSL |
+| **Audit** | **CloudTrail** for API activity; **CloudTrail data events** on the lake bucket if object-level access must be auditable |
+
+For IAM roles, least privilege and the shared responsibility model, see [02. Security](02-security.qmd).
+
+> **Architect's takeaway:** In a pipeline, security is **per hop**. Encrypt in transit *and* at rest at every stage, and scope each identity to the single action it needs — the browser-facing `PutRecord`-only role is the textbook example, and also the one with the abuse caveat from [11.3.3](#sec-ingest).
+
+---
+
+## 11.8 Step 7 — Make the pipeline observable {#sec-observability}
+
+> * ❓ A pipeline fails *silently*. How do you know clicks are still arriving and landing?
+
+This is the stage most analytics designs skip. A backend returns an error to a caller; a **pipeline just stops producing data**, and nobody notices until a dashboard looks wrong days later.
+
+```{mermaid}
+flowchart LR
+    AG["API Gateway"] --> CW["Amazon CloudWatch<br>metrics, logs, alarms"]
+    KDF["Amazon Data Firehose"] --> CW
+    S3["Amazon S3 + CRR"] --> CW
+    ATH["Amazon Athena"] --> CW
+    QS["QuickSight SPICE"] --> CW
+    KDF -.->|"failed records"| ERR["S3 error output prefix"]
+    CW --> AL["Alarms to SNS<br>on-call notification"]
+```
+
+**Signals worth alarming on**
+
+| Stage | Metric | Why it matters |
+| --- | --- | --- |
+| API Gateway | `4XXError`, `5XXError`, `Latency`, `Count` | `Count` dropping to zero is your earliest "the clicks stopped" signal |
+| Data Firehose | `DeliveryToS3.Success` | Below 1 means records are failing to land |
+| Data Firehose | `DeliveryToS3.DataFreshness` | Age of the oldest undelivered record — the pipeline's backlog gauge |
+| Data Firehose | `ThrottledRecords`, `IncomingRecords` | Throttling means you are hitting stream quotas |
+| S3 replication | `ReplicationLatency`, `OperationsPendingReplication` | Your cross-Region backup silently falling behind |
+| Athena | `ProcessedBytes`, `QueryQueueTime`, failed queries | `ProcessedBytes` is also your **cost** meter — alarm on it |
+| QuickSight | SPICE ingestion failures | Dashboards quietly serving stale data |
+
+**Practices**
+
+- Configure a **Firehose S3 error output prefix**. Records that fail conversion or delivery are written there instead of being lost — but only if you set it, and only if you alarm on it.
+- Put a **CloudWatch alarm on Athena `ProcessedBytes`**: in a pay-per-scan model, a runaway query is a runaway bill.
+- **S3 Storage Lens** for lake-level growth and small-object trends.
+- Treat **"`Count` at the front door is zero for N minutes"** as a page-worthy alarm — it is the only end-to-end liveness check you have.
+
+See [07. Monitoring](07-monitoring.qmd) for CloudWatch fundamentals.
+
+> **Architect's takeaway:** In a request/response backend, failure is loud. In a pipeline, failure is **silence**. Alarm on *absence* of data — freshness, delivery success and record count — not just on errors.
+
+---
+
+## 11.9 Step 8 — Make it replicable and resilient {#sec-resilient}
+
+> * ❓ The customer has many restaurant clients. How do you stand up this pipeline again and again, identically?
+
+```{mermaid}
+flowchart TD
+    TPL["CloudFormation template<br>Infrastructure as Code"] --> C1["Client A stack"]
+    TPL --> C2["Client B stack"]
+    TPL --> C3["Client C stack"]
+    C1 --> R1["SDK retries with<br>exponential backoff"]
+    C2 --> R1
+    C3 --> R1
+    R1 --> KDF["Resilient calls to<br>API / Firehose"]
+```
+
+- **AWS CloudFormation (IaC):** capture the whole environment as a template and replicate it per client account or Region — repeatable, versioned, no manual clicking. Use `DeletionPolicy: Retain` on data resources (buckets, catalogs) so a stack deletion never destroys the lake.
+- **Error retries + exponential backoff:** network components fail transiently; retrying with backoff raises reliability. **AWS SDKs do this by default** — a quiet argument for an SDK-based client over a hand-rolled `fetch()` sender. Always cap max delay and max retries, and add jitter to avoid synchronised retry storms.
+
+Broader cost and resilience levers: [08. Optimization](08-optimization.qmd).
+
+> **Architect's takeaway:** A one-off pipeline is a demo; a **template** is a product. IaC turns "architecture for this restaurant" into "architecture for every client," and SDK-default backoff gives you resilience for free.
+
+---
+
+## 11.10 Step 9 — Optimise cost and performance {#sec-optimize}
+
+> * ❓ The pipeline works. Where are the cheap wins — especially on Athena's pay-per-scan bill?
+
+Because Athena **charges by data scanned**, the top three levers all *reduce bytes scanned*, commonly cutting cost and query time substantially:
+
+```{mermaid}
+flowchart TD
+    RAW["Raw JSON in S3<br>large scans, slow, costly"] --> O1["1. Compress<br>smaller files"]
+    O1 --> O2["2. Partition<br>e.g. year/month/day/hour"]
+    O2 --> O3["3. Columnar format<br>Parquet / ORC"]
+    O3 --> FAST["Less data scanned<br>cheaper and faster queries"]
+```
+
+| Optimisation | What it does | Why it works |
+| --- | --- | --- |
+| **Compression** | Shrinks file size | Athena scans fewer bytes per query |
+| **Partitioning** (e.g. by time) | Prunes irrelevant data | `WHERE month='02'` reads only February's prefix, not the whole dataset |
+| **Columnar (Parquet/ORC)** | Column-oriented storage | Predicate pushdown and splitting → reads only the needed columns/blocks, in parallel |
+| **Firehose format conversion** | Firehose writes **Parquet/ORC** on delivery | Data lands query-optimised — no separate ETL job |
+| **Firehose buffering** | Fewer, larger objects | Avoids the many-small-files penalty in Athena and Intelligent-Tiering |
+| **CloudFront** on the menu site | Edge-caches static S3 content | Lower latency and fewer origin requests |
+
+> **⚠️ Partitioning does not work by accident.** Athena only prunes if the partitions are **registered**, and Firehose's default S3 prefix is `YYYY/MM/DD/HH` — which is **not** Hive-style (`year=2026/month=02/`), so Athena will not discover it automatically. You have three options: use **Firehose dynamic partitioning** to write Hive-style prefixes; enable **Athena partition projection** (no catalog updates needed — usually the best fit for time-series clickstream); or run `MSCK REPAIR TABLE` / a Glue crawler on a schedule. Skip this and you will partition your data and still pay for full scans.
+
+> **And format conversion needs a schema.** Firehose Parquet/ORC conversion reads the schema from an **AWS Glue Data Catalog table** — so create the table *before* you switch conversion on (see [11.5](#sec-query)).
+
+> **Concrete cost intuition:** an unpartitioned year of data is scanned **in full** for every `WHERE month=...` query. Partition by month and the same query reads roughly 1/12th — the bill moves in direct proportion.
+
+> **Architect's takeaway:** In pay-per-scan analytics, **storage layout is a cost control**. Compress, partition and go columnar — and let Firehose write Parquet with Hive-style prefixes on the way in, so the lake is born optimised.
+
+---
+
+## 11.11 The reference architecture, end to end {#sec-reference}
+
+```{mermaid}
+flowchart LR
+    JS["Browser JS library<br>click events"] --> AG["API Gateway<br>HTTPS, throttling, WAF"]
+    AG --> KDF["Amazon Data Firehose<br>Direct PUT, buffer, Parquet"]
+    KDF --> S3["Amazon S3 data lake<br>Hive-style prefixes"]
+    KDF -.->|"failed records"| ERR["S3 error prefix"]
+    S3 --> CRR["S3 CRR + versioning<br>backup Region"]
+    S3 --> ATH["Amazon Athena<br>SQL on S3"]
+    GDC["Glue Data Catalog<br>schema + partitions"] -.-> ATH
+    GDC -.-> KDF
+    ATH --> QS["Amazon QuickSight<br>SPICE dashboards"]
+    CF["CloudFront + WAF"] --> MENU["S3 static menu site"]
+    IaC["CloudFormation"] -.->|provisions all| S3
+    CW["CloudWatch alarms across every hop"] -.-> KDF
+```
+
+**How each driver is satisfied**
+
+| Driver | Where it is met |
+| --- | --- |
+| Serverless / usage-billed | API Gateway, Firehose, S3, Athena, QuickSight readers — pay-per-use, scale to zero |
+| Streaming ingestion, no plumbing | Firehose Direct PUT auto-delivers to S3 |
+| Durability + cross-region backup | S3 (11 nines) + CRR with versioning (async RPO; RTC for a 15-min SLA) |
+| Encryption in transit + at rest | HTTPS/TLS + SSE on S3 and Firehose + SPICE encryption (Enterprise edition) |
+| Low latency to answer | Athena queries S3 directly; QuickSight SPICE cache |
+| Low operational burden | No EMR/Spark, no Glue ETL jobs; managed services end to end |
+| Cost efficiency | Compress + partition + Parquet cut Athena scans; Intelligent-Tiering on the lake |
+| Observability | CloudWatch on delivery success, freshness, replication lag and bytes scanned |
+| Replicable per client | CloudFormation templates with `DeletionPolicy: Retain` |
+
+---
+
+## 11.12 When *not* to build it this way {#sec-not}
+
+An honest architect states the boundaries of their own recommendation.
+
+| Symptom | Why this pipeline struggles | Better fit |
+| --- | --- | --- |
+| Sub-second, real-time reactions needed | Firehose buffers before delivering | **Kinesis Data Streams** + custom consumers |
+| Heavy in-stream transformation / enrichment | Firehose is delivery, not compute | **Managed Service for Apache Flink**, or Glue ETL |
+| Petabyte-scale, complex ML / what-if processing | Athena is for interactive SQL | **Amazon EMR** (if the team has Spark skills) |
+| Frequent low-latency lookups on individual records | Athena scans; it is not a point-read store | **DynamoDB** — see [06. Databases](06-databases.qmd) |
+| Predictable, heavy, concurrent BI workloads | Per-scan pricing stops being cheaper | **Amazon Redshift** with a warehouse model |
+| Team already deep in Spark/big-data | Firehose + Athena underuses their skill | **EMR** end-to-end |
+| Untrusted, anonymous write clients with no rate limit | Direct-to-Firehose credentials invite abuse | Keep **API Gateway** with throttling + WAF |
+
+> **Architect's takeaway:** "Technically works" ≠ "best fit". The Firehose + Athena pipeline is optimal for a **short-staffed team, no-sub-second, SQL-shaped** analytics need. Change any of those three and the winning services change.
+
+---
+
+## 11.13 Architect's cheat sheet {#sec-cheatsheet}
+
+```{mermaid}
+flowchart TD
+    ROOT["Serverless data<br>analytics pipeline"]
+
+    ROOT --> I["Ingest"]
+    I --> I1["Kinesis family for streaming clickstream"]
+    I --> I2["Data Firehose = least code, near-real-time"]
+    I --> I3["Data Streams only if sub-second"]
+    I --> I4["API Gateway = simplicity + throttling"]
+
+    ROOT --> S["Store"]
+    S --> S1["S3 lake, 11 nines, compute-decoupled"]
+    S --> S2["Intelligent-Tiering for unknown access"]
+    S --> S3["CRR needs versioning; RPO is not zero"]
+
+    ROOT --> Q["Query + Show"]
+    Q --> Q1["Athena = serverless SQL on S3"]
+    Q --> Q2["Athena bills per byte scanned"]
+    Q --> Q3["Glue Data Catalog IS used"]
+    Q --> Q4["QuickSight readers pay per session"]
+
+    ROOT --> X["Cross-cutting"]
+    X --> X1["Compress + partition + Parquet"]
+    X --> X2["Encrypt in transit AND at rest"]
+    X --> X3["Alarm on absence of data"]
+    X --> X4["CloudFormation per client"]
+```
+
+1. An analytics architecture is a **pipeline**: ingest → store → query → visualise. Choose each stage for its own constraints.
+2. **"Short-staffed" is a driver** — it rules out EMR/Spark and heavy Glue ETL before feature comparison.
+3. Names moved in 2024: **Kinesis Data Firehose → Amazon Data Firehose**; **Kinesis Data Analytics → Managed Service for Apache Flink**.
+4. **Kinesis family** is for high-volume, small, continuous events (clickstream, logs, IoT).
+5. **Data Firehose** wins when there's **no sub-second need** — least code, auto-delivers to S3, self-scaling.
+6. **Data Streams** only when you need **sub-second** latency (and accept producer/consumer code).
+7. **Managed Service for Apache Flink** only when you need **in-stream transformation**.
+8. **Rejections at ingest:** DMS (DB migration), Data Exchange (3rd-party catalogs), EMR (skill + cluster-time cost).
+9. **API Gateway** gives simplicity *and* a throttling/WAF chokepoint; **Cognito** removes that hop and its cost.
+10. **Cognito's real cost is abuse control**: unauthenticated identities let anyone `PutRecord` — data poisoning and bill amplification.
+11. **Shape data at the source** (clean JSON from the JS library) to delete a transformation stage.
+12. **S3 = the data lake**: 11 nines, unlimited, **decoupled from compute** (unlike EBS/EFS).
+13. **Intelligent-Tiering** is the safe default for unknown access; objects **< 128 KB** are never auto-tiered.
+14. **Lifecycle policies** move data Standard → IA → Glacier to control cost automatically.
+15. **CRR** answers cross-region backup, but needs **versioning on both buckets**, is **asynchronous**, and only covers new writes unless you run batch replication. **RTC** gives a 15-minute SLA.
+16. **Athena** = serverless SQL directly on S3, schema-on-read, no ETL servers, pay-per-query.
+17. **Athena bills by bytes scanned** (10 MB minimum per query) — so storage layout is a cost decision.
+18. **You reject Glue *ETL*, not the Glue Data Catalog** — Athena and Firehose format conversion both depend on the catalog.
+19. **Compress + partition + columnar (Parquet/ORC)** cut scans, cost and query time.
+20. **Partitions must be registered** — use Firehose dynamic partitioning, Athena **partition projection**, or `MSCK REPAIR`. Firehose's default `YYYY/MM/DD/HH` prefix is *not* Hive-style.
+21. Let **Firehose write Parquet** on delivery so the lake is born query-optimised — but create the Glue table first.
+22. **Buffer to avoid many small files** — they hurt Athena performance and block Intelligent-Tiering.
+23. **QuickSight**: **readers** pay-per-session, **authors/admins** are per-user monthly; SPICE encryption at rest means **Enterprise edition**.
+24. **Encrypt in transit and at rest** at every hop; scope each IAM role to its single action.
+25. **Pipelines fail silently** — alarm on `DeliveryToS3.Success`, `DataFreshness`, replication lag, and a front-door `Count` of zero.
+26. Alarm on **Athena `ProcessedBytes`**: in pay-per-scan, a runaway query is a runaway bill.
+27. **CloudFront + WAF + Shield** protect the static menu site at the edge.
+28. **CloudFormation** turns a one-off pipeline into a repeatable per-client product; `DeletionPolicy: Retain` protects data.
+29. **SDK exponential backoff** is on by default — free resilience; add jitter and cap retries.
+30. "Technically works" ≠ "best fit": Firehose + Athena is optimal for **short-staffed + no-sub-second + SQL-shaped** analytics.
+
+---
+
+## Sources
+
+*Inspired from course notes — "Architecting Solutions on AWS", Week 2: Designing a Serverless Data Analytics Solution (software-house restaurant-menu clickstream use case).*
