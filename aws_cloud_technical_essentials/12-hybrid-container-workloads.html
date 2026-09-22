@@ -210,8 +210,9 @@ ul.task-list li input[type="checkbox"] {
   </ul></li>
   <li><a href="#sec-compute" id="toc-sec-compute" class="nav-link" data-scroll-target="#sec-compute">12.4 Step 3 — Run the containers, privately</a>
   <ul class="collapse">
-  <li><a href="#launch-type-decision-why-ec2-not-fargate" id="toc-launch-type-decision-why-ec2-not-fargate" class="nav-link" data-scroll-target="#launch-type-decision-why-ec2-not-fargate">12.4.1 Launch-type decision: why EC2, not Fargate</a></li>
-  <li><a href="#private-subnets-outbound-egress-and-the-nat-trap" id="toc-private-subnets-outbound-egress-and-the-nat-trap" class="nav-link" data-scroll-target="#private-subnets-outbound-egress-and-the-nat-trap">12.4.2 Private subnets, outbound egress, and the NAT trap</a></li>
+  <li><a href="#orchestrator-decision-ecs-or-eks" id="toc-orchestrator-decision-ecs-or-eks" class="nav-link" data-scroll-target="#orchestrator-decision-ecs-or-eks">12.4.1 Orchestrator decision: ECS or EKS?</a></li>
+  <li><a href="#launch-type-decision-why-ec2-not-fargate" id="toc-launch-type-decision-why-ec2-not-fargate" class="nav-link" data-scroll-target="#launch-type-decision-why-ec2-not-fargate">12.4.2 Launch-type decision: why EC2, not Fargate</a></li>
+  <li><a href="#private-subnets-outbound-egress-and-the-nat-trap" id="toc-private-subnets-outbound-egress-and-the-nat-trap" class="nav-link" data-scroll-target="#private-subnets-outbound-egress-and-the-nat-trap">12.4.3 Private subnets, outbound egress, and the NAT trap</a></li>
   </ul></li>
   <li><a href="#sec-db" id="toc-sec-db" class="nav-link" data-scroll-target="#sec-db">12.5 Step 4 — Migrate the database, resiliently</a>
   <ul class="collapse">
@@ -284,6 +285,33 @@ ul.task-list li input[type="checkbox"] {
 <li>On-prem apps must <strong>store/read data in AWS over NFS</strong> without refactoring.</li>
 </ul>
 </blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph DCn["Data centre (contracts&lt;br&gt;expiring in waves)"]
+        C1["Containerised apps"]
+        DB1["PostgreSQL"]
+    end
+    DCn &lt;--&gt;|"dedicated, low-latency link"| AWS
+
+    subgraph AWS["AWS (half the workloads)"]
+        C2["Containers&lt;br&gt;private, outbound only"]
+        DB2["PostgreSQL&lt;br&gt;lift-and-shift, no rewrite"]
+        NFS["Data over NFS&lt;br&gt;no refactor"]
+    end
+
+    C1 -.-&gt;|"same orchestration tooling"| C2
+    DB1 -.-&gt;|"no app code rewrite"| DB2
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 <hr>
 </section>
 <section id="the-method-nine-steps-across-two-environments" class="level2">
@@ -294,7 +322,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     N["1. Connect&lt;br&gt;DC to AWS"] --&gt; C["2. Run containers&lt;br&gt;privately"]
     C --&gt; D["3. Migrate the&lt;br&gt;database"]
     D --&gt; S["4. Share storage&lt;br&gt;across the boundary"]
@@ -388,9 +417,10 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     R1["Half on-prem, half AWS,&lt;br&gt;for a long time"] --&gt; D1["True hybrid, not big-bang"]
-    R2["High-volume, consistent traffic"] --&gt; D2["Dedicated connectivity"]
+    R2["High-volume,&lt;br&gt;consistent traffic"] --&gt; D2["Dedicated connectivity"]
     R3["Private containers,&lt;br&gt;outbound only"] --&gt; D3["Private subnets + NAT"]
     R4["Same tooling both sides"] --&gt; D4["Consistent orchestration"]
     R5["Lift-and-shift PostgreSQL,&lt;br&gt;no rewrite"] --&gt; D5["Managed compatible DB"]
@@ -475,13 +505,14 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     Q0["Connect DC to AWS"] --&gt; Q1{"Need consistent,&lt;br&gt;dedicated, high throughput?"}
     Q1 --&gt;|Yes| DX["AWS Direct Connect - CHOSEN&lt;br&gt;private, off the public internet"]
     Q1 --&gt;|"No / quick + cheap"| VPN["Site-to-Site VPN&lt;br&gt;IPsec over internet"]
     DX --&gt; Q2{"Many VPCs / accounts /&lt;br&gt;Regions to interconnect?"}
     Q2 --&gt;|Yes| TGW["Add Transit Gateway&lt;br&gt;+ Direct Connect Gateway"]
-    Q2 --&gt;|No| DONE["Direct Connect + VPN failover"]
+    Q2 --&gt;|No| DONE["Direct Connect&lt;br&gt;+ VPN failover"]
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -503,7 +534,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     DC["Data Center"] &lt;--&gt; DX1["Direct Connect&lt;br&gt;Location A"]
     BO["Branch Office"] &lt;--&gt; DX2["Direct Connect&lt;br&gt;Location B"]
     DX1 &lt;--&gt;|"SiteLink between&lt;br&gt;DX locations"| DX2
@@ -529,7 +561,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     subgraph AWS["Amazon VPC"]
         VGW["Virtual Private Gateway&lt;br&gt;AWS-side concentrator"]
         E1["EC2 in AZ 1"]
@@ -592,7 +625,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     CE["Client VPN endpoint"] --&gt; S1["Scenario 1&lt;br&gt;access a single VPC"]
     CE --&gt; S2["Scenario 2&lt;br&gt;access on-prem only"]
     CE --&gt; S3["Scenario 3&lt;br&gt;access VPC + client-to-client"]
@@ -611,8 +645,9 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
-    subgraph Without["Without Transit Gateway - mesh"]
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    subgraph Without["Without Transit&lt;br&gt;Gateway - mesh"]
         A1["VPC A"] --- A2["VPC B"]
         A2 --- A3["VPC C"]
         A1 --- A3
@@ -631,7 +666,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     subgraph With["With Transit Gateway - hub"]
         TGW(("AWS Transit&lt;br&gt;Gateway"))
         V1["VPC A"] --- TGW
@@ -665,14 +701,48 @@ ul.task-list li input[type="checkbox"] {
 <li>❓ ECS or EKS? EC2 or Fargate? And how do private containers still reach the internet <em>outbound</em>?</li>
 </ul>
 </blockquote>
+<section id="orchestrator-decision-ecs-or-eks" class="level3">
+<h3 class="anchored" data-anchor-id="orchestrator-decision-ecs-or-eks">12.4.1 Orchestrator decision: ECS or EKS?</h3>
+<p>This customer’s containers are plain Docker on EC2, so <strong>ECS</strong> (AWS-native, simpler to operate, no separate control-plane concept to learn) is the right orchestrator. <strong>EKS earns its keep in a different, common hybrid scenario: an existing on-premises Kubernetes cluster.</strong></p>
+<blockquote class="blockquote">
+<p><strong>If the workload you’re migrating is <em>already</em> a hybrid Kubernetes cluster</strong> — and the ask is to move part of it to the cloud with <strong>minimum effort</strong>, keep <strong>native Kubernetes APIs/tooling</strong>, and <strong>cut operational overhead</strong> for running the control plane — the answer is <strong>Amazon EKS</strong>, not ECS. EKS runs the same Kubernetes you already operate, so manifests, Helm charts and <code>kubectl</code> muscle memory carry over unchanged, while AWS manages the control plane’s availability and scaling. <strong>Fargate with ECS is the wrong fit here</strong>: it doesn’t run Kubernetes at all, so it fails the “keep native Kubernetes features” requirement outright, regardless of how little effort it takes to operate.</p>
+</blockquote>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Starting point</th>
+<th>Orchestrator</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Plain Docker containers, no Kubernetes investment</td>
+<td><strong>ECS</strong> (this chapter’s case)</td>
+<td>Simpler AWS-native model, less to learn, fits the EC2 launch-type requirement below</td>
+</tr>
+<tr class="even">
+<td>Existing on-prem <strong>Kubernetes</strong> cluster, hybrid migration</td>
+<td><strong>EKS</strong></td>
+<td>Preserves native Kubernetes APIs/tooling; AWS manages the control plane</td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="launch-type-decision-why-ec2-not-fargate" class="level3">
-<h3 class="anchored" data-anchor-id="launch-type-decision-why-ec2-not-fargate">12.4.1 Launch-type decision: why EC2, not Fargate</h3>
+<h3 class="anchored" data-anchor-id="launch-type-decision-why-ec2-not-fargate">12.4.2 Launch-type decision: why EC2, not Fargate</h3>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     W["Container hosting on AWS"] --&gt; Q1{"Need a custom AMI?"}
     Q1 --&gt;|No| Q2{"Need SSH to the&lt;br&gt;underlying hosts?"}
     Q1 --&gt;|Yes| EC2["EC2 launch type - CHOSEN"]
@@ -691,7 +761,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     IMG["Container image"] --&gt; REG["Container registry&lt;br&gt;ECR or Docker Hub"]
     TD["Task definition"] --&gt; CL
     SVC["Service&lt;br&gt;task def + service description"] --&gt; CL
@@ -754,14 +825,15 @@ ul.task-list li input[type="checkbox"] {
 <p>See <a href="./03-compute.html">03. Compute</a> for the wider EC2 and container landscape.</p>
 </section>
 <section id="private-subnets-outbound-egress-and-the-nat-trap" class="level3">
-<h3 class="anchored" data-anchor-id="private-subnets-outbound-egress-and-the-nat-trap">12.4.2 Private subnets, outbound egress, and the NAT trap</h3>
+<h3 class="anchored" data-anchor-id="private-subnets-outbound-egress-and-the-nat-trap">12.4.3 Private subnets, outbound egress, and the NAT trap</h3>
 <p>The containers must be <strong>private (no inbound internet)</strong> but need <strong>outbound</strong> (updates). A <strong>NAT gateway</strong> provides exactly that.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     subgraph AZ1["AZ 1"]
         E1["ECS tasks&lt;br&gt;private subnet"] --&gt; N1["NAT gateway 1&lt;br&gt;public subnet"]
     end
@@ -780,6 +852,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <ul>
 <li>A NAT device <strong>replaces the private instance’s source IP</strong> with its own and translates responses back — so instances <strong>initiate</strong> outbound connections but <strong>can’t receive</strong> unsolicited inbound ones.</li>
+<li>Because a VPC gives full control over the virtual network, <strong>security groups</strong> (instance-level, stateful) and <strong>network ACLs</strong> (subnet-level, stateless) are the firewall rules that actually enforce “private, outbound-only” — the NAT gateway alone only handles address translation, not access control.</li>
 <li><strong>NAT gateway (managed)</strong> is recommended over a self-run <strong>NAT instance</strong> for <strong>better availability, bandwidth and less admin</strong>.</li>
 <li><strong>Public NAT gateway</strong> (Elastic IP, routes to internet gateway) vs <strong>private NAT gateway</strong> (routes to other VPCs/on-prem via TGW or VGW, no Elastic IP).</li>
 </ul>
@@ -811,7 +884,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     APP["Application"] --&gt; PRI["Primary DB&lt;br&gt;AZ 1"]
     PRI --&gt;|"synchronous&lt;br&gt;replication"| STB["Standby DB&lt;br&gt;AZ 2"]
     PRI -.-&gt;|"auto-failover on failure&lt;br&gt;same endpoint"| STB
@@ -834,7 +908,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     W["Writer endpoint"] --&gt; P["Primary writer&lt;br&gt;AZ 1"]
     P --&gt;|"replicate"| S1["Readable standby&lt;br&gt;AZ 2"]
     P --&gt;|"replicate"| S2["Readable standby&lt;br&gt;AZ 3"]
@@ -858,7 +933,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     APPW["App servers&lt;br&gt;read and write"] --&gt;|"read + write"| PRI["Primary DB"]
     PRI --&gt;|"asynchronous&lt;br&gt;replication"| RR["Read replica&lt;br&gt;read-only"]
     BI["BI / reporting&lt;br&gt;app server"] --&gt;|"read-only queries"| RR
@@ -883,7 +959,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     NEED{"What is the bottleneck?"} --&gt;|"More CPU + storage"| VUP["Scale up vertically&lt;br&gt;bigger instance"]
     NEED --&gt;|"More read CPU only"| RR2["Add read replicas"]
     NEED --&gt;|"More storage only"| AS["RDS Storage Auto Scaling"]
@@ -906,7 +983,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     SRC["Source DB&lt;br&gt;on-prem PostgreSQL"] --&gt; SE["Source endpoint"]
     SE --&gt; RT["Replication task&lt;br&gt;DMS replication instance"]
     RT --&gt; TE["Target endpoint"]
@@ -942,7 +1020,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     Q["On-prem apps write files over NFS,&lt;br&gt;data must live in AWS"] --&gt; Q1{"Keep NFS + low-latency&lt;br&gt;local writes?"}
     Q1 --&gt;|"Pure cloud NFS"| EFS["Amazon EFS&lt;br&gt;NFS + lifecycle, but adds&lt;br&gt;network latency to AWS"]
     Q1 --&gt;|"Hybrid local cache"| SGW["S3 File Gateway - CHOSEN&lt;br&gt;local NFS cache, async to S3"]
@@ -960,7 +1039,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     APP["On-prem apps&lt;br&gt;NFS or SMB"] --&gt; GW["S3 File Gateway&lt;br&gt;VM appliance + local cache"]
     GW --&gt;|"async, encrypted in transit"| S3["Amazon S3"]
     S3 --&gt; LC["Lifecycle to Glacier /&lt;br&gt;Intelligent-Tiering"]
@@ -981,6 +1061,12 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <blockquote class="blockquote">
 <p><strong>⚠️ Two operational caveats.</strong> (1) Upload is <strong>asynchronous</strong>, so there is a <strong>non-zero RPO</strong> — a file written locally is not instantly durable in S3; size the local cache disk for your write burst and monitor upload lag. (2) If anything writes to the bucket <strong>outside</strong> the gateway, the gateway won’t see it until you run <strong><code>RefreshCache</code></strong> — so treat a File Gateway bucket as gateway-owned, or automate the refresh.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>File Gateway is one of three Storage Gateway types.</strong> <strong>Volume Gateway</strong> presents block storage over iSCSI (backed by EBS snapshots, and integrates with <strong>AWS Backup</strong> for volume recovery); <strong>Tape Gateway</strong> presents a virtual tape library for existing backup software. Pick the gateway type by the <strong>protocol the on-prem app already speaks</strong> — NFS/SMB here, hence File Gateway.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>A CRR fact worth stating explicitly:</strong> the source and destination buckets for <strong>Cross-Region Replication don’t have to be in the same AWS account</strong>, and <strong>SSE (via KMS)</strong> is supported on the replicated objects — useful if the DR account is separate from the production account.</p>
 </blockquote>
 <p><strong>The wider storage menu (know when each wins):</strong></p>
 <table class="caption-top table">
@@ -1045,7 +1131,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     GOAL["Consistent operations&lt;br&gt;across DC and AWS"] --&gt; ECSA["Amazon ECS Anywhere&lt;br&gt;run ECS-managed containers&lt;br&gt;on your own hardware"]
     GOAL --&gt; SSM["AWS Systems Manager&lt;br&gt;Run Command, Patch,&lt;br&gt;Parameter Store, Maintenance Windows"]
     GOAL --&gt; BKP["AWS Backup&lt;br&gt;centralised, policy-based&lt;br&gt;protection across AWS and on-prem"]
@@ -1081,7 +1168,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     DXm["Direct Connect&lt;br&gt;+ VPN tunnels"] --&gt; CW["Amazon CloudWatch&lt;br&gt;metrics, logs, alarms"]
     ECSm["ECS cluster + services"] --&gt; CW
     RDSm["RDS Multi-AZ&lt;br&gt;+ read replicas"] --&gt; CW
@@ -1171,7 +1259,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     subgraph ECS["Two scaling layers"]
         L1["Cluster Auto Scaling&lt;br&gt;EC2 instances"] --&gt;|"capacity provider +&lt;br&gt;CloudWatch metrics"| ASG["Auto Scaling group"]
         L2["Service Auto Scaling&lt;br&gt;task count"] --&gt;|"Application Auto Scaling"| TASK["Desired tasks up or down"]
@@ -1211,7 +1300,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     BR["Backup and Restore&lt;br&gt;lowest cost&lt;br&gt;highest RTO"] --&gt; PL["Pilot Light&lt;br&gt;core infra on,&lt;br&gt;rest off"]
     PL --&gt; WS["Warm Standby&lt;br&gt;scaled-down but&lt;br&gt;always running"]
     WS --&gt; MS["Multi-site Active/Active&lt;br&gt;highest cost&lt;br&gt;near-zero RTO"]
@@ -1274,7 +1364,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     DCn["Data Center"] --&gt;|"primary dedicated"| DX["AWS Direct Connect"]
     DCn -.-&gt;|"failover IPsec"| VPN["Site-to-Site VPN"]
     DX --&gt; AWS["AWS VPC"]
@@ -1297,7 +1388,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     subgraph DCn["On-Premises"]
         OC["Containers&lt;br&gt;ECS Anywhere"]
         ODB["PostgreSQL"]
@@ -1326,7 +1418,7 @@ ul.task-list li input[type="checkbox"] {
     end
 
     ODB -.-&gt;|"DMS data + pg_dump schema"| RDS
-    OPS["ECS Anywhere · Systems Manager · AWS Backup"] -.-&gt; DCn
+    OPS["ECS Anywhere · Systems&lt;br&gt;Manager · AWS Backup"] -.-&gt; DCn
     OPS -.-&gt; AWS
     CW["CloudWatch: BGP state, tunnel state,&lt;br&gt;task counts, replica lag, cache lag"] -.-&gt; AWS
 </pre>
@@ -1467,32 +1559,33 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     ROOT["Hybrid container&lt;br&gt;workload on AWS"]
 
     ROOT --&gt; N["Network"]
-    N --&gt; N1["Direct Connect = consistent, private, high-volume"]
-    N --&gt; N2["DX is NOT encrypted by default"]
-    N --&gt; N3["DX has weeks-to-months lead time"]
-    N --&gt; N4["Transit Gateway + DX Gateway = many VPCs"]
+    N --&gt; N1["Direct Connect = consistent,&lt;br&gt;private, high-volume"]
+    N --&gt; N2["DX is NOT encrypted&lt;br&gt;by default"]
+    N --&gt; N3["DX has weeks-to-months&lt;br&gt;lead time"]
+    N --&gt; N4["Transit Gateway + DX&lt;br&gt;Gateway = many VPCs"]
 
     ROOT --&gt; C["Compute"]
-    C --&gt; C1["ECS on EC2 = custom AMI + SSH"]
-    C --&gt; C2["Fargate = no host, no custom AMI"]
+    C --&gt; C1["ECS on EC2 =&lt;br&gt;custom AMI + SSH"]
+    C --&gt; C2["Fargate = no host,&lt;br&gt;no custom AMI"]
     C --&gt; C3["One NAT gateway PER AZ"]
-    C --&gt; C4["VPC endpoints beat NAT for AWS traffic"]
+    C --&gt; C4["VPC endpoints beat&lt;br&gt;NAT for AWS traffic"]
 
     ROOT --&gt; D["Database"]
-    D --&gt; D1["RDS PostgreSQL = lift-and-shift"]
-    D --&gt; D2["Multi-AZ = availability; endpoint stable"]
-    D --&gt; D3["Read replica = read scaling, async"]
-    D --&gt; D4["DMS moves data, not full schema"]
+    D --&gt; D1["RDS PostgreSQL&lt;br&gt;= lift-and-shift"]
+    D --&gt; D2["Multi-AZ = availability;&lt;br&gt;endpoint stable"]
+    D --&gt; D3["Read replica = read&lt;br&gt;scaling, async"]
+    D --&gt; D4["DMS moves data,&lt;br&gt;not full schema"]
 
     ROOT --&gt; S["Storage + Ops"]
-    S --&gt; S1["S3 File Gateway = NFS local, S3 behind"]
+    S --&gt; S1["S3 File Gateway =&lt;br&gt;NFS local, S3 behind"]
     S --&gt; S2["ECS Anywhere + SSM + Backup"]
-    S --&gt; S3["Watch BGP state and tunnel state"]
-    S --&gt; S4["DR: cheapest tier that meets RTO/RPO"]
+    S --&gt; S3["Watch BGP state&lt;br&gt;and tunnel state"]
+    S --&gt; S4["DR: cheapest tier&lt;br&gt;that meets RTO/RPO"]
 </pre>
 </div>
 <p></p></figure><p></p>

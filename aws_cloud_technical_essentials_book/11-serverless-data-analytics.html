@@ -175,6 +175,32 @@ ul.task-list li input[type="checkbox"] {
 <p><strong>Goal:</strong> design the <strong>analytics pipeline</strong> on AWS for <strong>serverless, usage-based billing, no servers to manage, encryption in transit and at rest, and durable backup in a second Region</strong>.</p>
 <p><em>In scope:</em> ingesting, storing, querying and visualising the clickstream. <em>Out of scope:</em> payment processing and the client-side JavaScript that emits the clicks.</p>
 </blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    C[Customer scans QR code] --&gt; S3M["S3 static menu&lt;br&gt;HTML pages"]
+    S3M --&gt; ORD["'Order this item'&lt;br&gt;feature"]
+    ORD -.-&gt; PAY["Third-party payment API"]
+    S3M --&gt; CLICK["Clickstream:&lt;br&gt;views + navigation"]
+    CLICK --&gt; PIPE["Analytics pipeline&lt;br&gt;ingest, store, query, visualise"]
+
+    subgraph InScope["In scope"]
+        PIPE
+    end
+
+    subgraph OutOfScope["Out of scope"]
+        PAY
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 <blockquote class="blockquote">
 <p><strong>A note on service names.</strong> AWS renamed two services in this chapter in 2024: <strong>Kinesis Data Firehose → Amazon Data Firehose</strong>, and <strong>Kinesis Data Analytics → Amazon Managed Service for Apache Flink</strong>. This chapter uses the current names, with the old ones in brackets on first use, because most existing material still uses the old ones.</p>
 </blockquote>
@@ -188,7 +214,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     A["Business question&lt;br&gt;which dishes sell?"] --&gt; B["1. Ingest&lt;br&gt;get events in"]
     B --&gt; C["2. Store&lt;br&gt;durable data lake"]
     C --&gt; D["3. Query&lt;br&gt;turn data into answers"]
@@ -286,11 +313,12 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     R1["Serverless, usage-billed,&lt;br&gt;no EC2"] --&gt; D1["Managed services only"]
     R2["HTTPS RESTful endpoint&lt;br&gt;from a JS library"] --&gt; D2["Managed API front door"]
     R3["High-volume small&lt;br&gt;click events"] --&gt; D3["Streaming ingestion"]
-    R4["Durable + backup in&lt;br&gt;another Region"] --&gt; D4["S3 + Cross-Region Replication"]
+    R4["Durable + backup in&lt;br&gt;another Region"] --&gt; D4["S3 + Cross-Region&lt;br&gt;Replication"]
     R5["Encryption in transit&lt;br&gt;and at rest"] --&gt; D5["TLS + SSE everywhere"]
     R6["Small / short-staffed team"] --&gt; D6["Low learning curve,&lt;br&gt;low maintenance"]
 </pre>
@@ -367,7 +395,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     W["High-volume, small,&lt;br&gt;continuous click events"] --&gt; Q1{"Migrating a database?"}
     Q1 --&gt;|Yes| DMS["AWS DMS&lt;br&gt;REJECTED: it moves DBs,&lt;br&gt;not event streams"]
     Q1 --&gt;|No| Q2{"Buying 3rd-party&lt;br&gt;data catalogs?"}
@@ -417,7 +446,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     K["Kinesis family chosen"] --&gt; QA{"Need sub-second&lt;br&gt;latency?"}
     QA --&gt;|Yes| KDS["Kinesis Data Streams&lt;br&gt;under 1s, but you code&lt;br&gt;producers + consumers"]
     QA --&gt;|No| QB{"Need in-stream&lt;br&gt;transformation?"}
@@ -478,10 +508,11 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     JS["Browser JS library&lt;br&gt;emits click events"] --&gt; CH{"How to reach&lt;br&gt;Firehose safely?"}
     CH --&gt;|"Chosen: managed proxy"| AG["API Gateway&lt;br&gt;HTTPS endpoint, throttling, WAF"]
-    CH --&gt;|"Alternative: client credentials"| CG["Amazon Cognito identity pool&lt;br&gt;role scoped to PutRecord only"]
+    CH --&gt;|"Alternative:&lt;br&gt;client credentials"| CG["Amazon Cognito identity pool&lt;br&gt;role scoped to PutRecord only"]
     AG --&gt; KDF["Amazon Data Firehose&lt;br&gt;Direct PUT source"]
     CG --&gt; KDF
 </pre>
@@ -542,7 +573,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     KDF["Amazon Data Firehose"] --&gt; S3["Amazon S3 data lake&lt;br&gt;raw clickstream JSON"]
     S3 --&gt; CRR["S3 Cross-Region Replication&lt;br&gt;backup to 2nd Region"]
     S3 --&gt; LC["S3 Lifecycle&lt;br&gt;tiering and archive"]
@@ -560,7 +592,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     O["Object in the lake"] --&gt; Q1{"Access pattern known?"}
     Q1 --&gt;|"No / unpredictable"| IT["S3 Intelligent-Tiering&lt;br&gt;auto-moves tiers, no retrieval fee"]
     Q1 --&gt;|"Yes - hot"| STD["S3 Standard"]
@@ -659,7 +692,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     Q["Query clickstream in S3"] --&gt; Q1{"Heavy transformation&lt;br&gt;or big-data processing?"}
     Q1 --&gt;|Yes| GE["Glue ETL / Amazon EMR&lt;br&gt;powerful but learning curve&lt;br&gt;plus maintenance"]
     Q1 --&gt;|No| Q2{"Interactive SQL over&lt;br&gt;many files?"}
@@ -719,7 +753,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     S3["S3 data lake"] --&gt; ATH["Athena"]
     ATH --&gt; QS["Amazon QuickSight&lt;br&gt;dashboards + SPICE"]
     QS --&gt; U1["Restaurant owner&lt;br&gt;menu-view charts"]
@@ -780,19 +815,20 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     subgraph Transit["In transit"]
         T1["HTTPS to API Gateway"]
         T2["TLS to Firehose and S3"]
     end
     subgraph Rest["At rest"]
         R1["SSE-KMS on S3 buckets"]
-        R2["Encryption on Firehose delivery"]
+        R2["Encryption on&lt;br&gt;Firehose delivery"]
         R3["Encryption at rest in SPICE"]
     end
     subgraph Identity["Identity"]
         I1["Client role scoped to&lt;br&gt;PutRecord on one stream"]
-        I2["IAM least privilege per stage"]
+        I2["IAM least&lt;br&gt;privilege per stage"]
     end
 </pre>
 </div>
@@ -857,7 +893,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     AG["API Gateway"] --&gt; CW["Amazon CloudWatch&lt;br&gt;metrics, logs, alarms"]
     KDF["Amazon Data Firehose"] --&gt; CW
     S3["Amazon S3 + CRR"] --&gt; CW
@@ -948,7 +985,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     TPL["CloudFormation template&lt;br&gt;Infrastructure as Code"] --&gt; C1["Client A stack"]
     TPL --&gt; C2["Client B stack"]
     TPL --&gt; C3["Client C stack"]
@@ -985,7 +1023,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     RAW["Raw JSON in S3&lt;br&gt;large scans, slow, costly"] --&gt; O1["1. Compress&lt;br&gt;smaller files"]
     O1 --&gt; O2["2. Partition&lt;br&gt;e.g. year/month/day/hour"]
     O2 --&gt; O3["3. Columnar format&lt;br&gt;Parquet / ORC"]
@@ -1063,7 +1102,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     JS["Browser JS library&lt;br&gt;click events"] --&gt; AG["API Gateway&lt;br&gt;HTTPS, throttling, WAF"]
     AG --&gt; KDF["Amazon Data Firehose&lt;br&gt;Direct PUT, buffer, Parquet"]
     KDF --&gt; S3["Amazon S3 data lake&lt;br&gt;Hive-style prefixes"]
@@ -1075,7 +1115,7 @@ ul.task-list li input[type="checkbox"] {
     ATH --&gt; QS["Amazon QuickSight&lt;br&gt;SPICE dashboards"]
     CF["CloudFront + WAF"] --&gt; MENU["S3 static menu site"]
     IaC["CloudFormation"] -.-&gt;|provisions all| S3
-    CW["CloudWatch alarms across every hop"] -.-&gt; KDF
+    CW["CloudWatch alarms&lt;br&gt;across every hop"] -.-&gt; KDF
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -1196,29 +1236,30 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     ROOT["Serverless data&lt;br&gt;analytics pipeline"]
 
     ROOT --&gt; I["Ingest"]
-    I --&gt; I1["Kinesis family for streaming clickstream"]
-    I --&gt; I2["Data Firehose = least code, near-real-time"]
-    I --&gt; I3["Data Streams only if sub-second"]
-    I --&gt; I4["API Gateway = simplicity + throttling"]
+    I --&gt; I1["Kinesis family for&lt;br&gt;streaming clickstream"]
+    I --&gt; I2["Data Firehose = least&lt;br&gt;code, near-real-time"]
+    I --&gt; I3["Data Streams only&lt;br&gt;if sub-second"]
+    I --&gt; I4["API Gateway =&lt;br&gt;simplicity + throttling"]
 
     ROOT --&gt; S["Store"]
-    S --&gt; S1["S3 lake, 11 nines, compute-decoupled"]
-    S --&gt; S2["Intelligent-Tiering for unknown access"]
-    S --&gt; S3["CRR needs versioning; RPO is not zero"]
+    S --&gt; S1["S3 lake, 11 nines,&lt;br&gt;compute-decoupled"]
+    S --&gt; S2["Intelligent-Tiering&lt;br&gt;for unknown access"]
+    S --&gt; S3["CRR needs versioning;&lt;br&gt;RPO is not zero"]
 
     ROOT --&gt; Q["Query + Show"]
-    Q --&gt; Q1["Athena = serverless SQL on S3"]
-    Q --&gt; Q2["Athena bills per byte scanned"]
+    Q --&gt; Q1["Athena = serverless&lt;br&gt;SQL on S3"]
+    Q --&gt; Q2["Athena bills&lt;br&gt;per byte scanned"]
     Q --&gt; Q3["Glue Data Catalog IS used"]
-    Q --&gt; Q4["QuickSight readers pay per session"]
+    Q --&gt; Q4["QuickSight readers&lt;br&gt;pay per session"]
 
     ROOT --&gt; X["Cross-cutting"]
-    X --&gt; X1["Compress + partition + Parquet"]
-    X --&gt; X2["Encrypt in transit AND at rest"]
+    X --&gt; X1["Compress +&lt;br&gt;partition + Parquet"]
+    X --&gt; X2["Encrypt in transit&lt;br&gt;AND at rest"]
     X --&gt; X3["Alarm on absence of data"]
     X --&gt; X4["CloudFormation per client"]
 </pre>
@@ -1263,7 +1304,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="sources" class="level2">
 <h2 class="anchored" data-anchor-id="sources">Sources</h2>
-<p><em>Inspired from course notes — “Architecting Solutions on AWS”, Week 2: Designing a Serverless Data Analytics Solution (software-house restaurant-menu clickstream use case).</em> touc</p>
+<p><em>Inspired from course notes — “Architecting Solutions on AWS”, Week 2: Designing a Serverless Data Analytics Solution (software-house restaurant-menu clickstream use case).</em></p>
 
 
 </section>

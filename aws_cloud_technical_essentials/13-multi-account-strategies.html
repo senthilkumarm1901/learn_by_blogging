@@ -275,6 +275,38 @@ ul.task-list li input[type="checkbox"] {
 <p><strong>Goal:</strong> move to a <strong>multi-account</strong> architecture with <strong>centralised governance</strong> — automatic account provisioning, single sign-on, a dedicated logging account, enforced tagging and security controls — while keeping day-to-day work simple.</p>
 <p><em>In scope:</em> account structure, identity, central logging, guardrails and provisioning. <em>Out of scope:</em> the workloads themselves and per-application architecture.</p>
 </blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph Before["Single account (today)"]
+        ROOT["root + unmanaged IAM users"] --&gt; W1["Client A website"]
+        ROOT --&gt; W2["Client B website"]
+        ROOT --&gt; W3["Client C website"]
+    end
+
+    Before --&gt;|"re-architect"| After
+
+    subgraph After["Multi-account (goal)"]
+        SSO["Single sign-on"] --&gt; ACCA["Client A account"]
+        SSO --&gt; ACCB["Client B account"]
+        SSO --&gt; ACCC["Client C account"]
+        ACCA --&gt; LOG["Dedicated logging account"]
+        ACCB --&gt; LOG
+        ACCC --&gt; LOG
+        GR["Guardrails +&lt;br&gt;enforced tagging"] -.-&gt; ACCA
+        GR -.-&gt; ACCB
+        GR -.-&gt; ACCC
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 <hr>
 </section>
 <section id="the-method-govern-accounts-in-five-moves" class="level2">
@@ -284,7 +316,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     A["1. Separate&lt;br&gt;into accounts"] --&gt; B["2. Organise&lt;br&gt;with OUs"]
     B --&gt; C["3. Authenticate&lt;br&gt;roles + SSO"]
     C --&gt; D["4. Log and monitor&lt;br&gt;centrally"]
@@ -356,7 +389,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     ROOT["Single AWS account&lt;br&gt;root + IAM users"] --&gt; P1["Accidental changes hit&lt;br&gt;unrelated clients"]
     ROOT --&gt; P2["Billing cannot be&lt;br&gt;split per client"]
     ROOT --&gt; P3["No security guardrails,&lt;br&gt;inconsistent tagging"]
@@ -378,7 +412,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     MA["Multi-account strategy"] --&gt; B1["Group workloads by&lt;br&gt;business purpose and ownership"]
     MA --&gt; B2["Apply distinct security&lt;br&gt;controls per environment"]
     MA --&gt; B3["Constrain access to&lt;br&gt;sensitive data"]
@@ -440,7 +475,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     SB["Sandbox&lt;br&gt;disconnected, most freedom,&lt;br&gt;no internal data"] --&gt; DEV["Development&lt;br&gt;limited enterprise access,&lt;br&gt;dev data"]
     DEV --&gt; TEST["Test&lt;br&gt;tighter controls"]
     TEST --&gt; PROD["Production&lt;br&gt;most controlled"]
@@ -459,11 +495,12 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     subgraph Trad["Traditional Ops"]
         A1["App teams engineer apps"]
         O1["Central Cloud Ops&lt;br&gt;operates apps and platform"]
-        P1["Platform team engineers platform"]
+        P1["Platform team&lt;br&gt;engineers platform"]
     end
     subgraph Cloud["CloudOps"]
         A2["App teams engineer&lt;br&gt;and operate apps"]
@@ -504,7 +541,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     ROOTA["Organization root"] --&gt; MGMT["Management account"]
     ROOTA --&gt; CORP["Corporate OU"]
     ROOTA --&gt; WL["Workloads OU"]
@@ -530,7 +568,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     R["Organization root"] --&gt; M["Management account"]
     R --&gt; L1["Corporate OU - L1"]
     L1 --&gt; SEC["Security OU - L2"]
@@ -554,6 +593,7 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="four-scp-facts-that-catch-people-out">13.3.1 Four SCP facts that catch people out</h3>
 <blockquote class="blockquote">
 <p><strong>🔴 SCPs do not apply to the management account.</strong> An SCP attached to the root or to an OU containing the management account has <strong>no effect on that account</strong> — it always retains full permissions. This is precisely why AWS’s guidance is to <strong>run no workloads in the management account</strong> and to treat it as a break-glass, billing and org-administration account only. If you assume the root-level SCP protects everything, the management account is your unguarded back door.</p>
+<p><strong>In every <em>other</em> account, an explicit deny is absolute.</strong> An SCP <code>Deny</code> on a member account blocks <strong>even that account’s root user</strong> — there is no “root override” once the guardrail is in place. Only the management account itself sits outside SCP enforcement.</p>
 </blockquote>
 <blockquote class="blockquote">
 <p><strong>⚠️ SCPs require “all features” to be enabled.</strong> An organization created for <strong>consolidated billing only</strong> cannot use SCPs (or tag policies). Enabling all features is a one-way door and requires member-account consent — do it early.</p>
@@ -586,7 +626,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     U["IAM user, same account"] --&gt; ROLE["IAM role&lt;br&gt;temporary credentials"]
     UX["IAM user, different account"] --&gt; ROLE
     SVC["AWS service, e.g. EC2"] --&gt; ROLE
@@ -636,15 +677,16 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
-    subgraph Trusting["Trusting account - owns resource"]
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph Trusting["Trusting account&lt;br&gt;- owns resource"]
         RL["IAM Role"]
         TP["Trust policy:&lt;br&gt;WHO may assume"]
         PP["Permissions policy:&lt;br&gt;WHAT the role can do"]
         RL --- TP
         RL --- PP
     end
-    subgraph Trusted["Trusted account - has the users"]
+    subgraph Trusted["Trusted account&lt;br&gt;- has the users"]
         US["IAM user"]
         UP["Permissions policy:&lt;br&gt;allowed to assume the role"]
         US --- UP
@@ -673,7 +715,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     DS["Data Scientist&lt;br&gt;Data Science account"] --&gt;|"1. assume role"| ROLE["ReadData role&lt;br&gt;Data Lake account"]
     ROLE --&gt;|"2. temporary creds"| DS
     DS --&gt;|"3. read, scoped"| S3["S3 buckets&lt;br&gt;raw data"]
@@ -695,7 +738,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
     IDP["Identity source&lt;br&gt;Active Directory, Okta, Entra ID,&lt;br&gt;or built-in directory"] --&gt; IIC["IAM Identity Center"]
     IIC --&gt;|"permission sets"| ACC1["Account: Dev"]
     IIC --&gt;|"permission sets"| ACC2["Account: Prod"]
@@ -732,14 +776,15 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
-    subgraph Logging["Central logging and monitoring"]
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    subgraph Logging["Central logging&lt;br&gt;and monitoring"]
         CT["CloudTrail&lt;br&gt;WHO did WHAT - API activity"]
         CFG["AWS Config&lt;br&gt;HOW resources are configured&lt;br&gt;state, history, rules"]
         VFL["VPC Flow Logs&lt;br&gt;network traffic to and from ENIs"]
         GD["GuardDuty&lt;br&gt;threat detection"]
     end
-    CT --&gt; S3L["Central S3 in Log Archive account"]
+    CT --&gt; S3L["Central S3 in Log&lt;br&gt;Archive account"]
     VFL --&gt; S3L
     CFG --&gt; S3L
     GD --&gt; SH["Security Hub&lt;br&gt;aggregated findings"]
@@ -822,7 +867,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     CT["AWS Control Tower&lt;br&gt;landing zone orchestrator"] --&gt; ORG["AWS Organizations&lt;br&gt;create accounts and OUs"]
     CT --&gt; SCP["Controls&lt;br&gt;preventive, detective, proactive"]
     CT --&gt; IIC["IAM Identity Center&lt;br&gt;SSO into accounts"]
@@ -872,7 +918,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     Q{"Goal?"} --&gt;|"Standardise tag&lt;br&gt;keys and values on&lt;br&gt;existing resources"| TAG["Tag policy&lt;br&gt;enforces format;&lt;br&gt;does NOT block untagged creates"]
     Q --&gt;|"Prevent creating&lt;br&gt;UNtagged resources"| SCPT["SCP&lt;br&gt;explicit Deny when&lt;br&gt;a required tag is missing"]
     TAG --&gt; BOTH["Use BOTH together"]
@@ -899,7 +946,8 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     GOV["Governance practices"] --&gt; G1["SCPs: restrict root, protect&lt;br&gt;CloudTrail and Config, limit Regions"]
     GOV --&gt; G2["Tag policies plus&lt;br&gt;cost-allocation tags"]
     GOV --&gt; G3["AWS Budgets per account&lt;br&gt;and per cost category"]
@@ -928,8 +976,9 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
-    subgraph Org["AWS Organization - all features enabled"]
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    subgraph Org["AWS Organization -&lt;br&gt;all features enabled"]
         MGMT["Management account&lt;br&gt;Control Tower, org CloudTrail, billing&lt;br&gt;NO workloads"]
         subgraph SecOU["Security OU"]
             LOGACC["Log Archive account&lt;br&gt;central CloudTrail and Config"]
@@ -1076,31 +1125,32 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
     ROOT["Account governance&lt;br&gt;decision map"]
 
     ROOT --&gt; S["Structure"]
-    S --&gt; S1["Account = security + billing + blast-radius boundary"]
-    S --&gt; S2["Organizations + OUs group accounts"]
-    S --&gt; S3["SCPs = a ceiling, not a grant"]
-    S --&gt; S4["SCPs do NOT apply to the management account"]
+    S --&gt; S1["Account = security + billing&lt;br&gt;+ blast-radius boundary"]
+    S --&gt; S2["Organizations +&lt;br&gt;OUs group accounts"]
+    S --&gt; S3["SCPs = a ceiling,&lt;br&gt;not a grant"]
+    S --&gt; S4["SCPs do NOT apply to&lt;br&gt;the management account"]
 
     ROOT --&gt; A["Auth"]
-    A --&gt; A1["IAM roles = temporary creds, no static keys"]
-    A --&gt; A2["Delegation = trust policy + permissions policy"]
-    A --&gt; A3["Principal has no PARTIAL wildcards"]
-    A --&gt; A4["IAM Identity Center = workforce SSO"]
+    A --&gt; A1["IAM roles = temporary&lt;br&gt;creds, no static keys"]
+    A --&gt; A2["Delegation = trust policy&lt;br&gt;+ permissions policy"]
+    A --&gt; A3["Principal has no&lt;br&gt;PARTIAL wildcards"]
+    A --&gt; A4["IAM Identity Center&lt;br&gt;= workforce SSO"]
 
     ROOT --&gt; L["Logging"]
-    L --&gt; L1["CloudTrail = activity, who did what"]
-    L --&gt; L2["Config = configuration state and history"]
-    L --&gt; L3["VPC Flow Logs = network traffic"]
-    L --&gt; L4["GuardDuty + Security Hub = threats and posture"]
+    L --&gt; L1["CloudTrail =&lt;br&gt;activity, who did what"]
+    L --&gt; L2["Config = configuration&lt;br&gt;state and history"]
+    L --&gt; L3["VPC Flow Logs =&lt;br&gt;network traffic"]
+    L --&gt; L4["GuardDuty + Security Hub&lt;br&gt;= threats and posture"]
 
     ROOT --&gt; AU["Automate"]
-    AU --&gt; AU1["Control Tower = landing zone + controls"]
-    AU --&gt; AU2["Service Catalog = approved products"]
-    AU --&gt; AU3["Tag policy standardises; SCP enforces"]
+    AU --&gt; AU1["Control Tower =&lt;br&gt;landing zone + controls"]
+    AU --&gt; AU2["Service Catalog =&lt;br&gt;approved products"]
+    AU --&gt; AU3["Tag policy standardises;&lt;br&gt;SCP enforces"]
 </pre>
 </div>
 <p></p></figure><p></p>
