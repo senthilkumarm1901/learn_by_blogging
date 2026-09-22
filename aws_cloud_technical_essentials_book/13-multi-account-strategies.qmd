@@ -36,11 +36,36 @@ format:
 >
 > *In scope:* account structure, identity, central logging, guardrails and provisioning. *Out of scope:* the workloads themselves and per-application architecture.
 
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph Before["Single account (today)"]
+        ROOT["root + unmanaged IAM users"] --> W1["Client A website"]
+        ROOT --> W2["Client B website"]
+        ROOT --> W3["Client C website"]
+    end
+
+    Before -->|"re-architect"| After
+
+    subgraph After["Multi-account (goal)"]
+        SSO["Single sign-on"] --> ACCA["Client A account"]
+        SSO --> ACCB["Client B account"]
+        SSO --> ACCC["Client C account"]
+        ACCA --> LOG["Dedicated logging account"]
+        ACCB --> LOG
+        ACCC --> LOG
+        GR["Guardrails +<br>enforced tagging"] -.-> ACCA
+        GR -.-> ACCB
+        GR -.-> ACCC
+    end
+```
+
 ---
 
 ## 13.1 The Method: govern accounts in five moves
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     A["1. Separate<br>into accounts"] --> B["2. Organise<br>with OUs"]
     B --> C["3. Authenticate<br>roles + SSO"]
@@ -67,6 +92,7 @@ flowchart LR
 ### 13.2.1 The problem with one account
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     ROOT["Single AWS account<br>root + IAM users"] --> P1["Accidental changes hit<br>unrelated clients"]
     ROOT --> P2["Billing cannot be<br>split per client"]
@@ -82,6 +108,7 @@ A single account is a single **security, billing and blast-radius boundary**. On
 Multiple accounts improve most **Well-Architected** pillars at once (operational excellence, security, reliability, cost).
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     MA["Multi-account strategy"] --> B1["Group workloads by<br>business purpose and ownership"]
     MA --> B2["Apply distinct security<br>controls per environment"]
@@ -105,6 +132,7 @@ flowchart TD
 **Account freedom spectrum**
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     SB["Sandbox<br>disconnected, most freedom,<br>no internal data"] --> DEV["Development<br>limited enterprise access,<br>dev data"]
     DEV --> TEST["Test<br>tighter controls"]
@@ -116,11 +144,12 @@ flowchart LR
 The right account grouping also depends on **who operates what**.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     subgraph Trad["Traditional Ops"]
         A1["App teams engineer apps"]
         O1["Central Cloud Ops<br>operates apps and platform"]
-        P1["Platform team engineers platform"]
+        P1["Platform team<br>engineers platform"]
     end
     subgraph Cloud["CloudOps"]
         A2["App teams engineer<br>and operate apps"]
@@ -148,6 +177,7 @@ flowchart TD
 **AWS Organizations** groups accounts into **Organizational Units (OUs)**; **Service Control Policies (SCPs)** set the **maximum** permissions available at an OU or account level.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     ROOTA["Organization root"] --> MGMT["Management account"]
     ROOTA --> CORP["Corporate OU"]
@@ -166,6 +196,7 @@ flowchart TD
 **A real-world OU structure** — nested and multi-level:
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     R["Organization root"] --> M["Management account"]
     R --> L1["Corporate OU - L1"]
@@ -185,6 +216,8 @@ flowchart TD
 ### 13.3.1 Four SCP facts that catch people out
 
 > **🔴 SCPs do not apply to the management account.** An SCP attached to the root or to an OU containing the management account has **no effect on that account** — it always retains full permissions. This is precisely why AWS's guidance is to **run no workloads in the management account** and to treat it as a break-glass, billing and org-administration account only. If you assume the root-level SCP protects everything, the management account is your unguarded back door.
+>
+> **In every *other* account, an explicit deny is absolute.** An SCP `Deny` on a member account blocks **even that account's root user** — there is no "root override" once the guardrail is in place. Only the management account itself sits outside SCP enforcement.
 
 > **⚠️ SCPs require "all features" to be enabled.** An organization created for **consolidated billing only** cannot use SCPs (or tag policies). Enabling all features is a one-way door and requires member-account consent — do it early.
 
@@ -207,6 +240,7 @@ For IAM policy evaluation, roles and the shared responsibility model, see [02. S
 An **IAM role** is an identity with permissions but **no long-term credentials**. Anyone (or any service) permitted to **assume** it receives **temporary** credentials for the session.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     U["IAM user, same account"] --> ROLE["IAM role<br>temporary credentials"]
     UX["IAM user, different account"] --> ROLE
@@ -226,15 +260,16 @@ flowchart LR
 Cross-account access is built from **two halves**, living in **two different accounts**:
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
-    subgraph Trusting["Trusting account - owns resource"]
+    subgraph Trusting["Trusting account<br>- owns resource"]
         RL["IAM Role"]
         TP["Trust policy:<br>WHO may assume"]
         PP["Permissions policy:<br>WHAT the role can do"]
         RL --- TP
         RL --- PP
     end
-    subgraph Trusted["Trusted account - has the users"]
+    subgraph Trusted["Trusted account<br>- has the users"]
         US["IAM user"]
         UP["Permissions policy:<br>allowed to assume the role"]
         US --- UP
@@ -252,6 +287,7 @@ flowchart LR
 ### 13.4.3 Cross-account assume-role in action
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     DS["Data Scientist<br>Data Science account"] -->|"1. assume role"| ROLE["ReadData role<br>Data Lake account"]
     ROLE -->|"2. temporary creds"| DS
@@ -267,6 +303,7 @@ No permanent credentials are shared; access is **temporary, scoped and auto-expi
 For **workforce** users, **IAM Identity Center** (the successor to AWS SSO) is the recommended front door: one place for identities, one place for account access.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     IDP["Identity source<br>Active Directory, Okta, Entra ID,<br>or built-in directory"] --> IIC["IAM Identity Center"]
     IIC -->|"permission sets"| ACC1["Account: Dev"]
@@ -290,14 +327,15 @@ Core features: **workforce identities**, **SAML application assignments**, **Ide
 > * ❓ Several logging and monitoring services sound similar — what does each actually do?
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
-    subgraph Logging["Central logging and monitoring"]
+    subgraph Logging["Central logging<br>and monitoring"]
         CT["CloudTrail<br>WHO did WHAT - API activity"]
         CFG["AWS Config<br>HOW resources are configured<br>state, history, rules"]
         VFL["VPC Flow Logs<br>network traffic to and from ENIs"]
         GD["GuardDuty<br>threat detection"]
     end
-    CT --> S3L["Central S3 in Log Archive account"]
+    CT --> S3L["Central S3 in Log<br>Archive account"]
     VFL --> S3L
     CFG --> S3L
     GD --> SH["Security Hub<br>aggregated findings"]
@@ -334,6 +372,7 @@ See [07. Monitoring](07-monitoring.qmd) for CloudWatch and logging fundamentals.
 ### 13.6.1 The account-provisioning stack
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     CT["AWS Control Tower<br>landing zone orchestrator"] --> ORG["AWS Organizations<br>create accounts and OUs"]
     CT --> SCP["Controls<br>preventive, detective, proactive"]
@@ -354,6 +393,7 @@ flowchart TD
 ### 13.6.2 Tag policies vs SCPs — use them together
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     Q{"Goal?"} -->|"Standardise tag<br>keys and values on<br>existing resources"| TAG["Tag policy<br>enforces format;<br>does NOT block untagged creates"]
     Q -->|"Prevent creating<br>UNtagged resources"| SCPT["SCP<br>explicit Deny when<br>a required tag is missing"]
@@ -370,6 +410,7 @@ flowchart TD
 ### 13.6.3 Ongoing governance practices
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     GOV["Governance practices"] --> G1["SCPs: restrict root, protect<br>CloudTrail and Config, limit Regions"]
     GOV --> G2["Tag policies plus<br>cost-allocation tags"]
@@ -389,8 +430,9 @@ For broader cost and resilience levers, see [08. Optimization](08-optimization.q
 ## 13.7 The reference architecture, end to end {#sec-reference}
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
-    subgraph Org["AWS Organization - all features enabled"]
+    subgraph Org["AWS Organization -<br>all features enabled"]
         MGMT["Management account<br>Control Tower, org CloudTrail, billing<br>NO workloads"]
         subgraph SecOU["Security OU"]
             LOGACC["Log Archive account<br>central CloudTrail and Config"]
@@ -451,31 +493,32 @@ An honest architect states the boundaries of their own recommendation.
 ## 13.9 Architect's cheat sheet {#sec-cheatsheet}
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     ROOT["Account governance<br>decision map"]
 
     ROOT --> S["Structure"]
-    S --> S1["Account = security + billing + blast-radius boundary"]
-    S --> S2["Organizations + OUs group accounts"]
-    S --> S3["SCPs = a ceiling, not a grant"]
-    S --> S4["SCPs do NOT apply to the management account"]
+    S --> S1["Account = security + billing<br>+ blast-radius boundary"]
+    S --> S2["Organizations +<br>OUs group accounts"]
+    S --> S3["SCPs = a ceiling,<br>not a grant"]
+    S --> S4["SCPs do NOT apply to<br>the management account"]
 
     ROOT --> A["Auth"]
-    A --> A1["IAM roles = temporary creds, no static keys"]
-    A --> A2["Delegation = trust policy + permissions policy"]
-    A --> A3["Principal has no PARTIAL wildcards"]
-    A --> A4["IAM Identity Center = workforce SSO"]
+    A --> A1["IAM roles = temporary<br>creds, no static keys"]
+    A --> A2["Delegation = trust policy<br>+ permissions policy"]
+    A --> A3["Principal has no<br>PARTIAL wildcards"]
+    A --> A4["IAM Identity Center<br>= workforce SSO"]
 
     ROOT --> L["Logging"]
-    L --> L1["CloudTrail = activity, who did what"]
-    L --> L2["Config = configuration state and history"]
-    L --> L3["VPC Flow Logs = network traffic"]
-    L --> L4["GuardDuty + Security Hub = threats and posture"]
+    L --> L1["CloudTrail =<br>activity, who did what"]
+    L --> L2["Config = configuration<br>state and history"]
+    L --> L3["VPC Flow Logs =<br>network traffic"]
+    L --> L4["GuardDuty + Security Hub<br>= threats and posture"]
 
     ROOT --> AU["Automate"]
-    AU --> AU1["Control Tower = landing zone + controls"]
-    AU --> AU2["Service Catalog = approved products"]
-    AU --> AU3["Tag policy standardises; SCP enforces"]
+    AU --> AU1["Control Tower =<br>landing zone + controls"]
+    AU --> AU2["Service Catalog =<br>approved products"]
+    AU --> AU3["Tag policy standardises;<br>SCP enforces"]
 ```
 
 1. An **account** is the fundamental boundary for **security, access, billing and blast radius**.

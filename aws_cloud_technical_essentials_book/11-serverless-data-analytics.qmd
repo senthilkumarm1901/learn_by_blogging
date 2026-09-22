@@ -41,6 +41,24 @@ format:
 >
 > *In scope:* ingesting, storing, querying and visualising the clickstream. *Out of scope:* payment processing and the client-side JavaScript that emits the clicks.
 
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    C[Customer scans QR code] --> S3M["S3 static menu<br>HTML pages"]
+    S3M --> ORD["'Order this item'<br>feature"]
+    ORD -.-> PAY["Third-party payment API"]
+    S3M --> CLICK["Clickstream:<br>views + navigation"]
+    CLICK --> PIPE["Analytics pipeline<br>ingest, store, query, visualise"]
+
+    subgraph InScope["In scope"]
+        PIPE
+    end
+
+    subgraph OutOfScope["Out of scope"]
+        PAY
+    end
+```
+
 > **A note on service names.** AWS renamed two services in this chapter in 2024: **Kinesis Data Firehose → Amazon Data Firehose**, and **Kinesis Data Analytics → Amazon Managed Service for Apache Flink**. This chapter uses the current names, with the old ones in brackets on first use, because most existing material still uses the old ones.
 
 ---
@@ -50,6 +68,7 @@ format:
 Every analytics design reduces to the same four hops. The valuable skill is choosing the **right service at each hop for the customer's constraints** — not knowing every service.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     A["Business question<br>which dishes sell?"] --> B["1. Ingest<br>get events in"]
     B --> C["2. Store<br>durable data lake"]
@@ -82,11 +101,12 @@ flowchart LR
 > * ❓ How do a customer's wishes become design constraints for a pipeline?
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     R1["Serverless, usage-billed,<br>no EC2"] --> D1["Managed services only"]
     R2["HTTPS RESTful endpoint<br>from a JS library"] --> D2["Managed API front door"]
     R3["High-volume small<br>click events"] --> D3["Streaming ingestion"]
-    R4["Durable + backup in<br>another Region"] --> D4["S3 + Cross-Region Replication"]
+    R4["Durable + backup in<br>another Region"] --> D4["S3 + Cross-Region<br>Replication"]
     R5["Encryption in transit<br>and at rest"] --> D5["TLS + SSE everywhere"]
     R6["Small / short-staffed team"] --> D6["Low learning curve,<br>low maintenance"]
 ```
@@ -113,6 +133,7 @@ flowchart TD
 ### 11.3.1 Choosing the ingestion family
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     W["High-volume, small,<br>continuous click events"] --> Q1{"Migrating a database?"}
     Q1 -->|Yes| DMS["AWS DMS<br>REJECTED: it moves DBs,<br>not event streams"]
@@ -136,6 +157,7 @@ flowchart TD
 ### 11.3.2 Choosing *within* the streaming family
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     K["Kinesis family chosen"] --> QA{"Need sub-second<br>latency?"}
     QA -->|Yes| KDS["Kinesis Data Streams<br>under 1s, but you code<br>producers + consumers"]
@@ -159,10 +181,11 @@ flowchart TD
 The JS library must POST over HTTPS **without exposing the delivery stream publicly**. Two paths:
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     JS["Browser JS library<br>emits click events"] --> CH{"How to reach<br>Firehose safely?"}
     CH -->|"Chosen: managed proxy"| AG["API Gateway<br>HTTPS endpoint, throttling, WAF"]
-    CH -->|"Alternative: client credentials"| CG["Amazon Cognito identity pool<br>role scoped to PutRecord only"]
+    CH -->|"Alternative:<br>client credentials"| CG["Amazon Cognito identity pool<br>role scoped to PutRecord only"]
     AG --> KDF["Amazon Data Firehose<br>Direct PUT source"]
     CG --> KDF
 ```
@@ -189,6 +212,7 @@ flowchart LR
 For the storage-class and durability fundamentals behind this section, see [05. Storage](05-storage.qmd); for how a *data lake* differs from a database and a data warehouse, see [06. Databases](06-databases.qmd).
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     KDF["Amazon Data Firehose"] --> S3["Amazon S3 data lake<br>raw clickstream JSON"]
     S3 --> CRR["S3 Cross-Region Replication<br>backup to 2nd Region"]
@@ -199,6 +223,7 @@ flowchart LR
 ### 11.4.1 Storage classes and lifecycle — matching class to access pattern
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     O["Object in the lake"] --> Q1{"Access pattern known?"}
     Q1 -->|"No / unpredictable"| IT["S3 Intelligent-Tiering<br>auto-moves tiers, no retrieval fee"]
@@ -239,6 +264,7 @@ The customer's *"backup in another Region"* requirement is met by **S3 Cross-Reg
 > * ❓ How does a short-staffed team ask SQL questions of raw S3 data with no ETL and no servers?
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     Q["Query clickstream in S3"] --> Q1{"Heavy transformation<br>or big-data processing?"}
     Q1 -->|Yes| GE["Glue ETL / Amazon EMR<br>powerful but learning curve<br>plus maintenance"]
@@ -271,6 +297,7 @@ flowchart TD
 **Chosen: Amazon QuickSight** — a serverless BI service that sits on top of Athena/S3. Business users explore interactive dashboards, it scales through the **SPICE** in-memory engine, and readers can be billed per session rather than per seat.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     S3["S3 data lake"] --> ATH["Athena"]
     ATH --> QS["Amazon QuickSight<br>dashboards + SPICE"]
@@ -296,6 +323,7 @@ flowchart LR
 > * ❓ Serverless removes servers, not the security requirements. What stays yours across a pipeline?
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     subgraph Transit["In transit"]
         T1["HTTPS to API Gateway"]
@@ -303,12 +331,12 @@ flowchart LR
     end
     subgraph Rest["At rest"]
         R1["SSE-KMS on S3 buckets"]
-        R2["Encryption on Firehose delivery"]
+        R2["Encryption on<br>Firehose delivery"]
         R3["Encryption at rest in SPICE"]
     end
     subgraph Identity["Identity"]
         I1["Client role scoped to<br>PutRecord on one stream"]
-        I2["IAM least privilege per stage"]
+        I2["IAM least<br>privilege per stage"]
     end
 ```
 
@@ -334,6 +362,7 @@ For IAM roles, least privilege and the shared responsibility model, see [02. Sec
 This is the stage most analytics designs skip. A backend returns an error to a caller; a **pipeline just stops producing data**, and nobody notices until a dashboard looks wrong days later.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     AG["API Gateway"] --> CW["Amazon CloudWatch<br>metrics, logs, alarms"]
     KDF["Amazon Data Firehose"] --> CW
@@ -374,6 +403,7 @@ See [07. Monitoring](07-monitoring.qmd) for CloudWatch fundamentals.
 > * ❓ The customer has many restaurant clients. How do you stand up this pipeline again and again, identically?
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     TPL["CloudFormation template<br>Infrastructure as Code"] --> C1["Client A stack"]
     TPL --> C2["Client B stack"]
@@ -400,6 +430,7 @@ Broader cost and resilience levers: [08. Optimization](08-optimization.qmd).
 Because Athena **charges by data scanned**, the top three levers all *reduce bytes scanned*, commonly cutting cost and query time substantially:
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     RAW["Raw JSON in S3<br>large scans, slow, costly"] --> O1["1. Compress<br>smaller files"]
     O1 --> O2["2. Partition<br>e.g. year/month/day/hour"]
@@ -429,6 +460,7 @@ flowchart TD
 ## 11.11 The reference architecture, end to end {#sec-reference}
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     JS["Browser JS library<br>click events"] --> AG["API Gateway<br>HTTPS, throttling, WAF"]
     AG --> KDF["Amazon Data Firehose<br>Direct PUT, buffer, Parquet"]
@@ -441,7 +473,7 @@ flowchart LR
     ATH --> QS["Amazon QuickSight<br>SPICE dashboards"]
     CF["CloudFront + WAF"] --> MENU["S3 static menu site"]
     IaC["CloudFormation"] -.->|provisions all| S3
-    CW["CloudWatch alarms across every hop"] -.-> KDF
+    CW["CloudWatch alarms<br>across every hop"] -.-> KDF
 ```
 
 **How each driver is satisfied**
@@ -481,29 +513,30 @@ An honest architect states the boundaries of their own recommendation.
 ## 11.13 Architect's cheat sheet {#sec-cheatsheet}
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     ROOT["Serverless data<br>analytics pipeline"]
 
     ROOT --> I["Ingest"]
-    I --> I1["Kinesis family for streaming clickstream"]
-    I --> I2["Data Firehose = least code, near-real-time"]
-    I --> I3["Data Streams only if sub-second"]
-    I --> I4["API Gateway = simplicity + throttling"]
+    I --> I1["Kinesis family for<br>streaming clickstream"]
+    I --> I2["Data Firehose = least<br>code, near-real-time"]
+    I --> I3["Data Streams only<br>if sub-second"]
+    I --> I4["API Gateway =<br>simplicity + throttling"]
 
     ROOT --> S["Store"]
-    S --> S1["S3 lake, 11 nines, compute-decoupled"]
-    S --> S2["Intelligent-Tiering for unknown access"]
-    S --> S3["CRR needs versioning; RPO is not zero"]
+    S --> S1["S3 lake, 11 nines,<br>compute-decoupled"]
+    S --> S2["Intelligent-Tiering<br>for unknown access"]
+    S --> S3["CRR needs versioning;<br>RPO is not zero"]
 
     ROOT --> Q["Query + Show"]
-    Q --> Q1["Athena = serverless SQL on S3"]
-    Q --> Q2["Athena bills per byte scanned"]
+    Q --> Q1["Athena = serverless<br>SQL on S3"]
+    Q --> Q2["Athena bills<br>per byte scanned"]
     Q --> Q3["Glue Data Catalog IS used"]
-    Q --> Q4["QuickSight readers pay per session"]
+    Q --> Q4["QuickSight readers<br>pay per session"]
 
     ROOT --> X["Cross-cutting"]
-    X --> X1["Compress + partition + Parquet"]
-    X --> X2["Encrypt in transit AND at rest"]
+    X --> X1["Compress +<br>partition + Parquet"]
+    X --> X2["Encrypt in transit<br>AND at rest"]
     X --> X3["Alarm on absence of data"]
     X --> X4["CloudFormation per client"]
 ```
@@ -544,4 +577,3 @@ flowchart TD
 ## Sources
 
 *Inspired from course notes — "Architecting Solutions on AWS", Week 2: Designing a Serverless Data Analytics Solution (software-house restaurant-menu clickstream use case).*
-touc

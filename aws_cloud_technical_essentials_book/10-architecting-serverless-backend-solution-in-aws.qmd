@@ -36,6 +36,29 @@ format:
 >
 > *In scope:* the web tier, the order service, and the database. *Out of scope:* payment processing and the downstream services themselves.
 
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+  U[Customers] --> W[Web tier]
+  W --> O[Monolithic order service]
+  O --> M[(MySQL)]
+  O -.-> I[Inventory service]
+  O -.-> A[Accounting service]
+  O -.-> F[Fulfillment service]
+
+  subgraph InScope["In scope for this chapter"]
+    W
+    O
+    M
+  end
+
+  subgraph OutOfScope["Out of scope"]
+    I
+    A
+    F
+  end
+```
+
 ---
 
 ## 10.1 The Method: nine steps to a serverless architecture
@@ -43,6 +66,7 @@ format:
 Every serverless design in this chapter follows the same reasoning chain. The valuable skill is the **chain and the rejected options**, not memorising service features — multiple valid solutions always exist.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     A["Business need"] --> B["Non-functional drivers<br>scale, latency, cost,<br>ops, resilience"]
     B --> C["Candidate AWS services"]
@@ -83,14 +107,15 @@ The customer's words map cleanly onto architectural drivers:
 | Simple order data, basic CRUD | **Right-sized data store** | NoSQL key-value, not an enterprise RDBMS |
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     M["On-prem monolith<br>web servers + MySQL"] --> P1["Spiky, unpredictable load"]
     M --> P2["Tight coupling<br>cascading failures"]
     M --> P3["High ops overhead"]
-    P1 --> S1["Serverless + managed auto-scaling"]
+    P1 --> S1["Serverless +<br>managed auto-scaling"]
     P2 --> S2["Event-driven decoupling"]
     P3 --> S3["Fully managed services"]
-    S1 --> ARCH["Serverless event-driven backend"]
+    S1 --> ARCH["Serverless<br>event-driven backend"]
     S2 --> ARCH
     S3 --> ARCH
 ```
@@ -115,6 +140,7 @@ flowchart TD
 **Chosen: Amazon API Gateway.** It fronts the backend so compute is never exposed directly to the open internet, and it absorbs the plumbing you would otherwise hand-write into a web server.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     C["Clients<br>web / mobile"] --> AG["Amazon API Gateway"]
     AG --> A1["AuthN / AuthZ"]
@@ -148,10 +174,11 @@ What API Gateway removes from your code: authentication, throttling, request val
 The mechanics differ, though. Lambda is *invoked* by API Gateway. ECS/Fargate tasks are long-running containers in a VPC, so API Gateway must reach them **through a load balancer**.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     FE["Frontend<br>one stable HTTPS endpoint"] --> APIGW["API Gateway"]
     APIGW -->|"Option A: HTTP integration"| ALB["Application Load Balancer<br>public"]
-    APIGW -->|"Option B: private integration"| VL["VPC Link"]
+    APIGW -->|"Option B: private<br>integration"| VL["VPC Link"]
     VL --> NLB["Internal NLB / ALB"]
     ALB --> F["ECS Fargate tasks"]
     NLB --> F
@@ -168,6 +195,7 @@ flowchart LR
 **Mixing compute behind one API.** Routing is per-route, so a single domain can fan out to different compute types:
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     FE["Frontend"] --> APIGW["API Gateway<br>single domain"]
     APIGW -->|"/orders"| F["Fargate on ECS"]
@@ -196,6 +224,7 @@ The client calls `api.company.com/orders` and `api.company.com/notify` identical
 > * ❓ Lambda, containers or EC2 — and how do you defend the rejection?
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     W["Order service compute"] --> Q1{"Need OS or<br>infra-level control?"}
     Q1 -->|Yes| EC2["EC2 / Elastic Beanstalk<br>REJECTED: ops overhead,<br>idle cost under spiky load"]
@@ -241,6 +270,7 @@ For the wider compute landscape (EC2 families, containers, scaling), see [03. Co
 Lambda's constraints (15-minute cap, statelessness, event triggers, one deployable per function) **implicitly force decomposition**. Fargate has none of them: it runs a long-lived container with your existing process model, in-memory state and background threads, with the code largely untouched.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     Choice{"Chosen compute?"}
     Choice -->|Lambda| Force["Constraints force decomposition<br>15-min cap, stateless,<br>per-function deploy"]
@@ -266,6 +296,7 @@ Microservices are an organisational and scaling tool, **not a default**. A modul
 **What containerising does *not* fix**
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     Mono["Monolith on Fargate"] --> P1["Scales as ONE unit<br>scale everything even if<br>only orders is hot"]
     Mono --> P2["One deploy = whole app<br>small change, full redeploy risk"]
@@ -278,6 +309,7 @@ Containerising solves **infrastructure and operations pain**. It does **not** so
 **The pragmatic sequence**
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     A["1. Containerise the monolith<br>on Fargate - re-platform"] --> B["2. Enforce internal modularity<br>modular monolith"]
     B --> C["3. Extract ONLY the hot or<br>high-change module when justified"]
@@ -295,6 +327,7 @@ Steps 3–4 are painless precisely because of the compute-agnostic façade in [1
 > * ❓ NoSQL or relational — and what breaks if you get it wrong behind Lambda?
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     D["Order data store"] --> Q1{"Complex SQL,<br>joins, transactions<br>across tables?"}
     Q1 -->|Yes| Q2{"Enterprise-scale<br>relational features?"}
@@ -319,6 +352,7 @@ flowchart TD
 Lambda scales horizontally to thousands of concurrent environments. Each environment holding an open database connection will exhaust a relational database's connection limit almost immediately.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     subgraph Bad["Naive"]
         L1["1000s of concurrent<br>Lambda environments"] -->|1 connection each| DB1["RDS / Aurora<br>connection limit hit"]
@@ -349,6 +383,7 @@ More depth on picking a database and on DynamoDB's placement relative to your VP
 ### 10.6.1 The event-driven building block
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     Prod["Event producer"] --> Router["Event router<br>filters and routes"]
     Router --> C1["Consumer A"]
@@ -363,6 +398,7 @@ An **event** is a record of a state change ("order placed", "order shipped"). Pr
 **Problem:** notify fulfillment, accounting and inventory whenever an order changes — without hard-wiring them into the order logic.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     DDB["DynamoDB<br>order written"] --> STR["DynamoDB Streams"]
     STR --> L["Lambda"]
@@ -403,6 +439,7 @@ For this use case SNS wins: the consumers are known and the routing is trivial, 
 Even after SNS decoupling, **synchronous** processing still made the caller wait while downstream work ran. The fix is to **acknowledge the request as soon as it is durably stored**, then process it asynchronously.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     U["User"] --> API["API Gateway"]
     API -->|"buffer request"| SQS["SQS queue"]
@@ -446,6 +483,7 @@ Both terms describe how a queue protects a slower downstream system from a faste
 **Push vs pull — who initiates delivery?**
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     subgraph Push["SNS = PUSH"]
         P["Producer"] --> SNS["SNS"]
@@ -462,6 +500,7 @@ SNS **pushes**: 10,000 messages arriving at once are delivered at once. SQS **pu
 **Pull buffering** — the queue is a shock absorber between a spiky producer and a steady consumer.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     Spiky["Producer<br>bursty: 5000 orders/sec"] -->|"writes fast"| Q["SQS queue<br>holds messages<br>up to 14 days"]
     Q -->|"consumer pulls at<br>its own safe rate"| Steady["Lambda consumer<br>processes ~500/sec"]
@@ -472,6 +511,7 @@ A flash sale fills the queue quickly; the consumer drains it at a rate it can sa
 **Backpressure** — the feedback effect: because the consumer only pulls what it can handle, excess load pushes back *into the queue* instead of forward into the fragile system.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     In["Incoming TPS<br>too high"] --> Q["Queue absorbs excess<br>depth rises"]
     Q -.->|"consumer sets the pace,<br>not the producer"| Slow["Downstream stays<br>within safe limits"]
@@ -489,6 +529,7 @@ flowchart LR
 Under the shared responsibility model, AWS patches the runtime and the fleet; **identity, data and application logic remain yours**.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     subgraph Edge["Edge / entry"]
         WAF["AWS WAF<br>on API Gateway"] --> AUTH["Cognito / IAM /<br>Lambda authorizer"]
@@ -531,6 +572,7 @@ Deeper coverage of IAM, roles and the shared responsibility model: [02. Security
 > * ❓ With no servers to SSH into, how do you debug a distributed, async flow?
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     APIGW["API Gateway"] --> CW["Amazon CloudWatch<br>logs + metrics + alarms"]
     LAM["Lambda"] --> CW
@@ -575,6 +617,7 @@ See [07. Monitoring](07-monitoring.qmd) for CloudWatch fundamentals.
 | --- | --- | --- |
 | DynamoDB | **DAX** in-memory cache | Milliseconds → microseconds on reads, up to ~10x; DynamoDB-API compatible so **no application changes**; runs inside a VPC |
 | DynamoDB | Secondary indexes; on-demand vs provisioned capacity | Match the read pattern; on-demand for spiky, provisioned + auto-scaling for steady |
+| DynamoDB | Skip DAX for write-heavy tables | DAX only caches reads — it adds cost with little payoff unless the workload is genuinely read-intensive |
 | Lambda | **Lambda Power Tuning** (a Step Functions state machine) | Data-driven memory sizing — more memory means more CPU, so a function can be **cheaper *and* faster** |
 | Lambda | **Lambda Layers** | Share common code and dependencies across functions; smaller deployment packages |
 | Lambda | Initialise SDK clients / connections **outside the handler** | Execution-environment reuse cuts init time and cost (see below) |
@@ -592,6 +635,7 @@ Broader cost and resilience levers: [08. Optimization](08-optimization.qmd).
 - **Warm start** → AWS reuses a live environment, skips the outside-handler code, and jumps straight into the handler.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     R["Request arrives"] --> Q{"Warm environment<br>available?"}
     Q -->|"No - cold start"| C["Create environment<br>load code<br>run OUTSIDE-handler code once"]
@@ -616,6 +660,7 @@ def lambda_handler(event, context):
 Putting `boto3.resource(...)` *inside* the handler rebuilds the SDK client and re-establishes connections on every single request — repeating TCP/TLS handshakes, credential loading and connection-pool setup that could have been done once.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     subgraph Bad["Init INSIDE handler"]
         A1["Req 1: init + work"] --> A2["Req 2: init + work"] --> A3["Req 3: init + work"]
@@ -640,6 +685,7 @@ flowchart LR
 ## 10.11 The reference architecture, end to end {#sec-reference}
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     FE["Frontend clients"] --> APIGW["API Gateway<br>auth, validation, throttling"]
     APIGW --> SQS["SQS<br>buffer / decouple"]
@@ -694,31 +740,32 @@ An honest architect states the boundary conditions of their own recommendation.
 ## 10.13 Architect's cheat sheet {#sec-cheatsheet}
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     ROOT["Serverless backend<br>decision map"]
 
     ROOT --> C["Compute"]
-    C --> C1["Lambda: event-driven, under 15 min"]
-    C --> C2["Reject EC2 for ops + idle cost"]
-    C --> C3["Reject Fargate if no container skills"]
-    C --> C4["Fargate? then monolith may stay whole"]
+    C --> C1["Lambda: event-driven,<br>under 15 min"]
+    C --> C2["Reject EC2 for<br>ops + idle cost"]
+    C --> C3["Reject Fargate if<br>no container skills"]
+    C --> C4["Fargate? then monolith<br>may stay whole"]
 
     ROOT --> D["Data"]
-    D --> D1["DynamoDB for simple CRUD, no joins"]
+    D --> D1["DynamoDB for simple<br>CRUD, no joins"]
     D --> D2["Model access patterns FIRST"]
-    D --> D3["Aurora + RDS Proxy only if relational"]
+    D --> D3["Aurora + RDS Proxy<br>only if relational"]
 
     ROOT --> M["Decoupling"]
     M --> M1["SNS = push fan-out"]
-    M --> M2["SQS = pull buffer + backpressure"]
-    M --> M3["Streams = react to data changes"]
+    M --> M2["SQS = pull buffer<br>+ backpressure"]
+    M --> M3["Streams = react<br>to data changes"]
 
     ROOT --> X["Cross-cutting"]
-    X --> X1["API Gateway = managed front door"]
-    X --> X2["CloudWatch + X-Ray everywhere"]
-    X --> X3["Storage-first = async low latency"]
+    X --> X1["API Gateway =<br>managed front door"]
+    X --> X2["CloudWatch +<br>X-Ray everywhere"]
+    X --> X3["Storage-first =<br>async low latency"]
     X --> X4["One function, one IAM role"]
-    X --> X5["VPC Link = private path to containers"]
+    X --> X5["VPC Link = private<br>path to containers"]
 ```
 
 1. Match **requirements → drivers → services**; always justify the rejected options.

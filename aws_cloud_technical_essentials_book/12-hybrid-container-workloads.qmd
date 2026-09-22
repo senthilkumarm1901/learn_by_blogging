@@ -41,6 +41,25 @@ format:
 > - **High uptime, resilience, fault tolerance** — no single points of failure.
 > - On-prem apps must **store/read data in AWS over NFS** without refactoring.
 
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph DCn["Data centre (contracts<br>expiring in waves)"]
+        C1["Containerised apps"]
+        DB1["PostgreSQL"]
+    end
+    DCn <-->|"dedicated, low-latency link"| AWS
+
+    subgraph AWS["AWS (half the workloads)"]
+        C2["Containers<br>private, outbound only"]
+        DB2["PostgreSQL<br>lift-and-shift, no rewrite"]
+        NFS["Data over NFS<br>no refactor"]
+    end
+
+    C1 -.->|"same orchestration tooling"| C2
+    DB1 -.->|"no app code rewrite"| DB2
+```
+
 ---
 
 ## 12.1 The Method: nine steps across two environments
@@ -48,6 +67,7 @@ format:
 A hybrid design decomposes into the same reasoning chain as a cloud-only one — but every answer must hold in **both** environments, and the network underneath them.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     N["1. Connect<br>DC to AWS"] --> C["2. Run containers<br>privately"]
     C --> D["3. Migrate the<br>database"]
@@ -76,9 +96,10 @@ flowchart LR
 > * ❓ How does "half here, half there, for years" change the design?
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     R1["Half on-prem, half AWS,<br>for a long time"] --> D1["True hybrid, not big-bang"]
-    R2["High-volume, consistent traffic"] --> D2["Dedicated connectivity"]
+    R2["High-volume,<br>consistent traffic"] --> D2["Dedicated connectivity"]
     R3["Private containers,<br>outbound only"] --> D3["Private subnets + NAT"]
     R4["Same tooling both sides"] --> D4["Consistent orchestration"]
     R5["Lift-and-shift PostgreSQL,<br>no rewrite"] --> D5["Managed compatible DB"]
@@ -109,13 +130,14 @@ flowchart TD
 ### 12.3.1 The connectivity decision
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     Q0["Connect DC to AWS"] --> Q1{"Need consistent,<br>dedicated, high throughput?"}
     Q1 -->|Yes| DX["AWS Direct Connect - CHOSEN<br>private, off the public internet"]
     Q1 -->|"No / quick + cheap"| VPN["Site-to-Site VPN<br>IPsec over internet"]
     DX --> Q2{"Many VPCs / accounts /<br>Regions to interconnect?"}
     Q2 -->|Yes| TGW["Add Transit Gateway<br>+ Direct Connect Gateway"]
-    Q2 -->|No| DONE["Direct Connect + VPN failover"]
+    Q2 -->|No| DONE["Direct Connect<br>+ VPN failover"]
 ```
 
 **Chosen: AWS Direct Connect.** The customer needs **consistent, dedicated throughput** for high-volume DC↔AWS traffic. Direct Connect keeps traffic **on the AWS global network, never on the public internet**, which removes the latency spikes and bottlenecks you'd get over the internet.
@@ -127,6 +149,7 @@ flowchart TD
 ### 12.3.2 Direct Connect topology
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     DC["Data Center"] <--> DX1["Direct Connect<br>Location A"]
     BO["Branch Office"] <--> DX2["Direct Connect<br>Location B"]
@@ -144,6 +167,7 @@ flowchart LR
 **Site-to-Site VPN** *(virtual private gateway + customer gateway, with redundancy)*
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     subgraph AWS["Amazon VPC"]
         VGW["Virtual Private Gateway<br>AWS-side concentrator"]
@@ -174,6 +198,7 @@ flowchart LR
 **Client VPN** covers three access shapes worth remembering:
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     CE["Client VPN endpoint"] --> S1["Scenario 1<br>access a single VPC"]
     CE --> S2["Scenario 2<br>access on-prem only"]
@@ -185,8 +210,9 @@ flowchart TD
 Direct Connect answers *one* DC to *one* VPC. Once you have **many VPCs, accounts or Regions**, point-to-point peering explodes into an unmanageable mesh. **Transit Gateway** is the hub-and-spoke fix.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
-    subgraph Without["Without Transit Gateway - mesh"]
+    subgraph Without["Without Transit<br>Gateway - mesh"]
         A1["VPC A"] --- A2["VPC B"]
         A2 --- A3["VPC C"]
         A1 --- A3
@@ -197,6 +223,7 @@ flowchart TD
 ```
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     subgraph With["With Transit Gateway - hub"]
         TGW(("AWS Transit<br>Gateway"))
@@ -222,9 +249,21 @@ For VPC, subnet and routing fundamentals, see [04. Networking](04-networking.qmd
 
 > * ❓ ECS or EKS? EC2 or Fargate? And how do private containers still reach the internet *outbound*?
 
-### 12.4.1 Launch-type decision: why EC2, not Fargate
+### 12.4.1 Orchestrator decision: ECS or EKS?
+
+This customer's containers are plain Docker on EC2, so **ECS** (AWS-native, simpler to operate, no separate control-plane concept to learn) is the right orchestrator. **EKS earns its keep in a different, common hybrid scenario: an existing on-premises Kubernetes cluster.**
+
+> **If the workload you're migrating is *already* a hybrid Kubernetes cluster** — and the ask is to move part of it to the cloud with **minimum effort**, keep **native Kubernetes APIs/tooling**, and **cut operational overhead** for running the control plane — the answer is **Amazon EKS**, not ECS. EKS runs the same Kubernetes you already operate, so manifests, Helm charts and `kubectl` muscle memory carry over unchanged, while AWS manages the control plane's availability and scaling. **Fargate with ECS is the wrong fit here**: it doesn't run Kubernetes at all, so it fails the "keep native Kubernetes features" requirement outright, regardless of how little effort it takes to operate.
+
+| Starting point | Orchestrator | Why |
+| --- | --- | --- |
+| Plain Docker containers, no Kubernetes investment | **ECS** (this chapter's case) | Simpler AWS-native model, less to learn, fits the EC2 launch-type requirement below |
+| Existing on-prem **Kubernetes** cluster, hybrid migration | **EKS** | Preserves native Kubernetes APIs/tooling; AWS manages the control plane |
+
+### 12.4.2 Launch-type decision: why EC2, not Fargate
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     W["Container hosting on AWS"] --> Q1{"Need a custom AMI?"}
     Q1 -->|No| Q2{"Need SSH to the<br>underlying hosts?"}
@@ -238,6 +277,7 @@ flowchart TD
 **ECS on EC2 architecture**
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     IMG["Container image"] --> REG["Container registry<br>ECR or Docker Hub"]
     TD["Task definition"] --> CL
@@ -266,11 +306,12 @@ flowchart TD
 
 See [03. Compute](03-compute.qmd) for the wider EC2 and container landscape.
 
-### 12.4.2 Private subnets, outbound egress, and the NAT trap
+### 12.4.3 Private subnets, outbound egress, and the NAT trap
 
 The containers must be **private (no inbound internet)** but need **outbound** (updates). A **NAT gateway** provides exactly that.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     subgraph AZ1["AZ 1"]
         E1["ECS tasks<br>private subnet"] --> N1["NAT gateway 1<br>public subnet"]
@@ -285,6 +326,7 @@ flowchart LR
 ```
 
 - A NAT device **replaces the private instance's source IP** with its own and translates responses back — so instances **initiate** outbound connections but **can't receive** unsolicited inbound ones.
+- Because a VPC gives full control over the virtual network, **security groups** (instance-level, stateful) and **network ACLs** (subnet-level, stateless) are the firewall rules that actually enforce "private, outbound-only" — the NAT gateway alone only handles address translation, not access control.
 - **NAT gateway (managed)** is recommended over a self-run **NAT instance** for **better availability, bandwidth and less admin**.
 - **Public NAT gateway** (Elastic IP, routes to internet gateway) vs **private NAT gateway** (routes to other VPCs/on-prem via TGW or VGW, no Elastic IP).
 
@@ -307,6 +349,7 @@ For RDS fundamentals, backups and where databases sit in your VPC, see [06. Data
 ### 12.5.1 High availability: Multi-AZ DB *instance* (one standby)
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     APP["Application"] --> PRI["Primary DB<br>AZ 1"]
     PRI -->|"synchronous<br>replication"| STB["Standby DB<br>AZ 2"]
@@ -320,6 +363,7 @@ flowchart LR
 ### 12.5.2 Even higher availability: Multi-AZ DB *cluster* (two readable standbys)
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     W["Writer endpoint"] --> P["Primary writer<br>AZ 1"]
     P -->|"replicate"| S1["Readable standby<br>AZ 2"]
@@ -334,6 +378,7 @@ flowchart LR
 ### 12.5.3 Scaling reads: read replicas
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     APPW["App servers<br>read and write"] -->|"read + write"| PRI["Primary DB"]
     PRI -->|"asynchronous<br>replication"| RR["Read replica<br>read-only"]
@@ -348,6 +393,7 @@ flowchart TD
 ### 12.5.4 Choosing a scaling axis
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     NEED{"What is the bottleneck?"} -->|"More CPU + storage"| VUP["Scale up vertically<br>bigger instance"]
     NEED -->|"More read CPU only"| RR2["Add read replicas"]
@@ -361,6 +407,7 @@ flowchart TD
 ### 12.5.5 The migration itself: AWS DMS
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     SRC["Source DB<br>on-prem PostgreSQL"] --> SE["Source endpoint"]
     SE --> RT["Replication task<br>DMS replication instance"]
@@ -382,6 +429,7 @@ flowchart LR
 > * ❓ On-prem apps must keep writing over **NFS**, yet the data has to live in AWS with low local latency. Which storage service?
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     Q["On-prem apps write files over NFS,<br>data must live in AWS"] --> Q1{"Keep NFS + low-latency<br>local writes?"}
     Q1 -->|"Pure cloud NFS"| EFS["Amazon EFS<br>NFS + lifecycle, but adds<br>network latency to AWS"]
@@ -394,6 +442,7 @@ flowchart TD
 **S3 File Gateway architecture**
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     APP["On-prem apps<br>NFS or SMB"] --> GW["S3 File Gateway<br>VM appliance + local cache"]
     GW -->|"async, encrypted in transit"| S3["Amazon S3"]
@@ -410,6 +459,10 @@ Why it fits every requirement at once:
 - **Future-proof:** once fully migrated, apps can read **natively from S3** with no extra data move.
 
 > **⚠️ Two operational caveats.** (1) Upload is **asynchronous**, so there is a **non-zero RPO** — a file written locally is not instantly durable in S3; size the local cache disk for your write burst and monitor upload lag. (2) If anything writes to the bucket **outside** the gateway, the gateway won't see it until you run **`RefreshCache`** — so treat a File Gateway bucket as gateway-owned, or automate the refresh.
+
+> **File Gateway is one of three Storage Gateway types.** **Volume Gateway** presents block storage over iSCSI (backed by EBS snapshots, and integrates with **AWS Backup** for volume recovery); **Tape Gateway** presents a virtual tape library for existing backup software. Pick the gateway type by the **protocol the on-prem app already speaks** — NFS/SMB here, hence File Gateway.
+
+> **A CRR fact worth stating explicitly:** the source and destination buckets for **Cross-Region Replication don't have to be in the same AWS account**, and **SSE (via KMS)** is supported on the replicated objects — useful if the DR account is separate from the production account.
 
 **The wider storage menu (know when each wins):**
 
@@ -434,6 +487,7 @@ More on storage classes, durability and lifecycle: [05. Storage](05-storage.qmd)
 > * ❓ The customer wants the **same tooling** on-prem and in AWS. What makes that possible — and where does it stop?
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     GOAL["Consistent operations<br>across DC and AWS"] --> ECSA["Amazon ECS Anywhere<br>run ECS-managed containers<br>on your own hardware"]
     GOAL --> SSM["AWS Systems Manager<br>Run Command, Patch,<br>Parameter Store, Maintenance Windows"]
@@ -457,6 +511,7 @@ flowchart TD
 In a hybrid estate the **link itself** is the component most likely to hurt you and least likely to be watched. Instrument it first.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     DXm["Direct Connect<br>+ VPN tunnels"] --> CW["Amazon CloudWatch<br>metrics, logs, alarms"]
     ECSm["ECS cluster + services"] --> CW
@@ -496,6 +551,7 @@ See [07. Monitoring](07-monitoring.qmd) for CloudWatch fundamentals.
 > * ❓ With ECS on EC2, what exactly scales, and how?
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     subgraph ECS["Two scaling layers"]
         L1["Cluster Auto Scaling<br>EC2 instances"] -->|"capacity provider +<br>CloudWatch metrics"| ASG["Auto Scaling group"]
@@ -522,6 +578,7 @@ flowchart TD
 DR strategies sit on a spectrum from **cheap/slow** to **expensive/instant**. The choice is an **RTO/RPO vs cost/complexity** trade-off.
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     BR["Backup and Restore<br>lowest cost<br>highest RTO"] --> PL["Pilot Light<br>core infra on,<br>rest off"]
     PL --> WS["Warm Standby<br>scaled-down but<br>always running"]
@@ -543,6 +600,7 @@ Active-active vs active-passive topologies are covered further in [08. Optimizat
 **Make the network itself resilient** — back **Direct Connect** with a **Site-to-Site VPN**:
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     DCn["Data Center"] -->|"primary dedicated"| DX["AWS Direct Connect"]
     DCn -.->|"failover IPsec"| VPN["Site-to-Site VPN"]
@@ -557,6 +615,7 @@ flowchart LR
 ## 12.11 The reference architecture, end to end {#sec-reference}
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     subgraph DCn["On-Premises"]
         OC["Containers<br>ECS Anywhere"]
@@ -586,7 +645,7 @@ flowchart LR
     end
 
     ODB -.->|"DMS data + pg_dump schema"| RDS
-    OPS["ECS Anywhere · Systems Manager · AWS Backup"] -.-> DCn
+    OPS["ECS Anywhere · Systems<br>Manager · AWS Backup"] -.-> DCn
     OPS -.-> AWS
     CW["CloudWatch: BGP state, tunnel state,<br>task counts, replica lag, cache lag"] -.-> AWS
 ```
@@ -629,32 +688,33 @@ flowchart LR
 ## 12.13 Architect's cheat sheet {#sec-cheatsheet}
 
 ```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     ROOT["Hybrid container<br>workload on AWS"]
 
     ROOT --> N["Network"]
-    N --> N1["Direct Connect = consistent, private, high-volume"]
-    N --> N2["DX is NOT encrypted by default"]
-    N --> N3["DX has weeks-to-months lead time"]
-    N --> N4["Transit Gateway + DX Gateway = many VPCs"]
+    N --> N1["Direct Connect = consistent,<br>private, high-volume"]
+    N --> N2["DX is NOT encrypted<br>by default"]
+    N --> N3["DX has weeks-to-months<br>lead time"]
+    N --> N4["Transit Gateway + DX<br>Gateway = many VPCs"]
 
     ROOT --> C["Compute"]
-    C --> C1["ECS on EC2 = custom AMI + SSH"]
-    C --> C2["Fargate = no host, no custom AMI"]
+    C --> C1["ECS on EC2 =<br>custom AMI + SSH"]
+    C --> C2["Fargate = no host,<br>no custom AMI"]
     C --> C3["One NAT gateway PER AZ"]
-    C --> C4["VPC endpoints beat NAT for AWS traffic"]
+    C --> C4["VPC endpoints beat<br>NAT for AWS traffic"]
 
     ROOT --> D["Database"]
-    D --> D1["RDS PostgreSQL = lift-and-shift"]
-    D --> D2["Multi-AZ = availability; endpoint stable"]
-    D --> D3["Read replica = read scaling, async"]
-    D --> D4["DMS moves data, not full schema"]
+    D --> D1["RDS PostgreSQL<br>= lift-and-shift"]
+    D --> D2["Multi-AZ = availability;<br>endpoint stable"]
+    D --> D3["Read replica = read<br>scaling, async"]
+    D --> D4["DMS moves data,<br>not full schema"]
 
     ROOT --> S["Storage + Ops"]
-    S --> S1["S3 File Gateway = NFS local, S3 behind"]
+    S --> S1["S3 File Gateway =<br>NFS local, S3 behind"]
     S --> S2["ECS Anywhere + SSM + Backup"]
-    S --> S3["Watch BGP state and tunnel state"]
-    S --> S4["DR: cheapest tier that meets RTO/RPO"]
+    S --> S3["Watch BGP state<br>and tunnel state"]
+    S --> S4["DR: cheapest tier<br>that meets RTO/RPO"]
 ```
 
 1. In hybrid design the **network is the foundation** — decide connectivity first.
