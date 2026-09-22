@@ -25,8 +25,8 @@ format:
 
 ## How to Architect a Serverless Web Backend Solution in AWS
 
-> * ❓ Given a workload, how do you decide *which* serverless services to combine — and how do you defend the ones you rejected?
-> * Hint: architecting is not "knowing services". It is **requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections**.
+> * ❓ Key Question of this chapter: Given a workload, how do we decide *which* serverless services to combine and how do we defend the ones you rejected?
+> * Workflow followed in all chapters: **requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections**.
 
 **Running example used throughout this chapter**
 
@@ -65,27 +65,19 @@ flowchart LR
 
 Every serverless design in this chapter follows the same reasoning chain. The valuable skill is the **chain and the rejected options**, not memorising service features — multiple valid solutions always exist.
 
-```{mermaid}
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart LR
-    A["Business need"] --> B["Non-functional drivers<br>scale, latency, cost,<br>ops, resilience"]
-    B --> C["Candidate AWS services"]
-    C --> D["Compare trade-offs"]
-    D --> E["Architecture decision"]
-    E --> F["Justify why NOT<br>the alternatives"]
-```
+![](./images/main_image_ca.png)
 
 | Step | Question the architect answers | Section |
 | --- | --- | --- |
-| 1 | What are the real architectural drivers? | [10.2](#sec-drivers) |
-| 2 | How do clients get in? | [10.3](#sec-frontdoor) |
-| 3 | What runs the business logic? | [10.4](#sec-compute) |
-| 4 | Where does state live? | [10.5](#sec-data) |
-| 5 | How do components stay decoupled? | [10.6](#sec-decouple) |
-| 6 | How do we absorb bursts and cut latency? | [10.7](#sec-async) |
-| 7 | How is every hop secured? | [10.8](#sec-security) |
-| 8 | How do we see what is happening? | [10.9](#sec-observability) |
-| 9 | How do we tune cost and performance? | [10.10](#sec-optimize) |
+| 1 | What are the real **architectural drivers?** | [10.2](#sec-drivers) |
+| 2 | How do **clients** get in? | [10.3](#sec-frontdoor) |
+| 3 | **Server**:What runs the business logic? | [10.4](#sec-compute) |
+| 4 | **Data**: Where does state live? | [10.5](#sec-data) |
+| 5 | How do components stay **decoupled?** | [10.6](#sec-decouple) |
+| 6 | How do we absorb **bursts** and cut **latency?** | [10.7](#sec-async) |
+| 7 | How is every hop **secured**? | [10.8](#sec-security) |
+| 8 | **Logging**: How do we see what is happening? | [10.9](#sec-observability) |
+| 9 | **Optimization**: How do we tune cost and performance? | [10.10](#sec-optimize) |
 
 > **Architect's takeaway:** Do the steps *in order*. Choosing compute before understanding drivers is how teams end up with a serverless monolith.
 

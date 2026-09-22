@@ -25,8 +25,9 @@ format:
 
 ## How to Architect a Hybrid, Container-Based Solution on AWS
 
-> * ❓ When *half* your workloads stay on-premises and half move to AWS, how do you connect the two, keep containers portable, migrate a database with near-zero downtime, and stay resilient — without rewriting applications?
-> * Hint: same discipline as [10. Serverless Backend](10-architecting-serverless-backend-solution-in-aws.qmd) and [11. Serverless Data Analytics](11-serverless-data-analytics.qmd) — **requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections**. What changes is that the answer now spans *two* environments joined by a network.
+> * ❓ Key Question of this chapter: When *half* your workloads stay on-premises and half move to AWS, how do you connect the two, keep containers portable, migrate a database with near-zero downtime, and stay resilient — without rewriting applications?
+> * Workflow followed in all chapters: **requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections**. 
+> * What changes is that the answer now spans *two* environments joined by a network.
 
 **Running example used throughout this chapter**
 
@@ -77,21 +78,21 @@ flowchart LR
 
 | Step | Question the architect answers | Winning choice (this case) | Section |
 | --- | --- | --- | --- |
-| 1 | What are the real architectural drivers? | — | [12.2](#sec-drivers) |
-| 2 | How do the two environments connect? | **AWS Direct Connect** (+ VPN failover) | [12.3](#sec-connect) |
-| 3 | What runs the containers, privately? | **ECS on EC2 launch type** + NAT per AZ | [12.4](#sec-compute) |
-| 4 | How does PostgreSQL move, resiliently? | **RDS Multi-AZ** + **DMS**, read replicas | [12.5](#sec-db) |
-| 5 | Where does shared data live? | **S3 File Gateway** + **S3** | [12.6](#sec-storage) |
-| 6 | How is it operated the same way on both sides? | **ECS Anywhere, Systems Manager, AWS Backup** | [12.7](#sec-operate) |
-| 7 | How do we know it is healthy? | CloudWatch across DC **and** AWS | [12.8](#sec-observability) |
-| 8 | What scales, and how? | Cluster + service auto scaling | [12.9](#sec-scale) |
-| 9 | How much disaster recovery do we buy? | Cheapest tier that meets RTO/RPO | [12.10](#sec-dr) |
+| 1 | What are the real **architectural drivers**? | — | [12.2](#sec-drivers) |
+| 2 | **Data Center (DC) ↔ Cloud**: How do the two environments connect? | **AWS Direct Connect** (+ VPN failover) | [12.3](#sec-connect) |
+| 3 | **Common Compute**: What runs the containers privately? | **ECS on EC2 launch type** + NAT per AZ | [12.4](#sec-compute) |
+| 4 | **Cloud DB**: How does PostgreSQL move resiliently? | **RDS Multi-AZ** + **DMS**, read replicas | [12.5](#sec-db) |
+| 5 | **Data**: Where does shared data live? | **S3 File Gateway** + **S3** | [12.6](#sec-storage) |
+| 6 | **Orchestration**: How is it operated the same way on both sides? | **ECS Anywhere, Systems Manager, AWS Backup** | [12.7](#sec-operate) |
+| 7 | **Monitoring**: How do we know it is healthy? | CloudWatch across DC **and** AWS | [12.8](#sec-observability) |
+| 8 | **Scaling**: What scales, and how? | Cluster + service auto scaling | [12.9](#sec-scale) |
+| 9 | **Disaster Recovery**: How much disaster recovery do we buy? | Cheapest tier that meets RTO/RPO | [12.10](#sec-dr) |
 
 > **Architect's takeaway:** In hybrid design, the **network is the foundation** — get connectivity wrong and every other decision inherits its latency, cost and failure modes.
 
 ---
 
-## 12.2 Step 1 — Turn requirements into drivers {#sec-drivers}
+## 12.2 Turn requirements into drivers {#sec-drivers}
 
 > * ❓ How does "half here, half there, for years" change the design?
 
@@ -123,7 +124,7 @@ flowchart TD
 
 ---
 
-## 12.3 Step 2 — Connect the two environments {#sec-connect}
+## 12.3 Connect the two environments {#sec-connect}
 
 > * ❓ Dedicated line, encrypted tunnel, or a central hub — and when does each win?
 
@@ -245,7 +246,7 @@ For VPC, subnet and routing fundamentals, see [04. Networking](04-networking.qmd
 
 ---
 
-## 12.4 Step 3 — Run the containers, privately {#sec-compute}
+## 12.4 Run the containers, privately {#sec-compute}
 
 > * ❓ ECS or EKS? EC2 or Fargate? And how do private containers still reach the internet *outbound*?
 
@@ -338,7 +339,7 @@ flowchart LR
 
 ---
 
-## 12.5 Step 4 — Migrate the database, resiliently {#sec-db}
+## 12.5 Migrate the database, resiliently {#sec-db}
 
 > * ❓ How do you lift-and-shift PostgreSQL with near-zero downtime and no single point of failure?
 
@@ -424,7 +425,7 @@ flowchart LR
 
 ---
 
-## 12.6 Step 5 — Share storage across the boundary {#sec-storage}
+## 12.6 Share storage across the boundary {#sec-storage}
 
 > * ❓ On-prem apps must keep writing over **NFS**, yet the data has to live in AWS with low local latency. Which storage service?
 
@@ -482,7 +483,7 @@ More on storage classes, durability and lifecycle: [05. Storage](05-storage.qmd)
 
 ---
 
-## 12.7 Step 6 — Operate one way across both environments {#sec-operate}
+## 12.7 Operate one way across both environments {#sec-operate}
 
 > * ❓ The customer wants the **same tooling** on-prem and in AWS. What makes that possible — and where does it stop?
 
@@ -504,7 +505,7 @@ flowchart TD
 
 ---
 
-## 12.8 Step 7 — Observe both sides through one pane {#sec-observability}
+## 12.8 Observe both sides through one pane {#sec-observability}
 
 > * ❓ Half the estate has no AWS API in front of it. How do you monitor it the same way?
 
@@ -546,7 +547,7 @@ See [07. Monitoring](07-monitoring.qmd) for CloudWatch fundamentals.
 
 ---
 
-## 12.9 Step 8 — Scale the moving parts {#sec-scale}
+## 12.9 Scale the moving parts {#sec-scale}
 
 > * ❓ With ECS on EC2, what exactly scales, and how?
 
@@ -571,7 +572,7 @@ flowchart TD
 
 ---
 
-## 12.10 Step 9 — Design for disaster recovery {#sec-dr}
+## 12.10 Design for disaster recovery {#sec-dr}
 
 > * ❓ How much resilience does an enterprise workload need — and what does each level cost?
 

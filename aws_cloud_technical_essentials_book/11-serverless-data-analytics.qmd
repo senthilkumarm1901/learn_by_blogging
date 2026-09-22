@@ -25,8 +25,9 @@ format:
 
 ## How to Architect a Serverless Data Analytics Solution in AWS
 
-> * ❓ Given a stream of raw events, how do you decide *which* analytics services to combine to turn it into insight — and how do you defend the ones you rejected?
-> * Hint: the same discipline as [10. Architecting a Serverless Backend Solution](10-architecting-serverless-backend-solution-in-aws.qmd) — **requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections**. What changes is the shape of the workload: it is now a **data pipeline** — ingest → store → query → visualise.
+> * * ❓ Key Question of this chapter: Given a stream of raw events, how do you decide *which* analytics services to combine to turn it into insight, and how do you defend the ones you rejected?
+> * * Workflow followed in all chapters: **requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections**. 
+> * What changes is the shape of the workload: it is now a **data pipeline** — ingest → store → query → visualise.
 
 **Running example used throughout this chapter**
 
@@ -80,23 +81,23 @@ flowchart LR
     X -.-> E
 ```
 
-| Step | Question the architect answers | Winning service (this case) | Section |
+| Step | Question the architect answers | Winning Services (this case) | Section |
 | --- | --- | --- | --- |
-| 1 | What are the real architectural drivers? | — | [11.2](#sec-drivers) |
-| 2 | How do events get in, safely and cheaply? | API Gateway → **Amazon Data Firehose** | [11.3](#sec-ingest) |
-| 3 | Where does the data land and stay durable? | **Amazon S3** data lake (+ CRR) | [11.4](#sec-store) |
-| 4 | How do we ask questions of it? | **Amazon Athena** | [11.5](#sec-query) |
-| 5 | How do humans see the answers? | **Amazon QuickSight** | [11.6](#sec-visualise) |
-| 6 | How is every hop secured? | TLS + SSE + least privilege | [11.7](#sec-secure) |
-| 7 | How do we know it is working? | CloudWatch across the pipeline | [11.8](#sec-observability) |
-| 8 | How do we rebuild it per client? | CloudFormation + retries | [11.9](#sec-resilient) |
-| 9 | How do we tune cost and performance? | Compress, partition, columnar | [11.10](#sec-optimize) |
+| 1 | What are the real **architectural drivers?** | — | [10.2](#sec-drivers) |
+| 2 | How do **clients** get in? | **Amazon API Gateway** | [10.3](#sec-frontdoor) |
+| 3 | **Server**:What runs the business logic? | **AWS Lambda** | [10.4](#sec-compute) |
+| 4 | **Data**: Where does state live? | **Amazon DynamoDB** | [10.5](#sec-data) |
+| 5 | How do components stay **decoupled?** | DynamoDB Streams → Lambda → **Amazon SNS** | [10.6](#sec-decouple) |
+| 6 | How do we absorb **bursts** and cut **latency?** | API Gateway → **Amazon SQS** → Lambda | [10.7](#sec-async) |
+| 7 | How is every hop **secured?** | AWS WAF + IAM/Cognito + KMS + Secrets Manager | [10.8](#sec-security) |
+| 8 | **Logging**: How do we see what is happening? | **Amazon CloudWatch** + AWS X-Ray | [10.9](#sec-observability) |
+| 9 | **Optimization**: How do we tune cost and performance? | DynamoDB DAX + Lambda Power Tuning + Lambda Powertools | [10.10](#sec-optimize) |
 
 > **Architect's takeaway:** A data-analytics architecture is a **pipeline of decoupled stages**. Choose each stage for its own constraints; a good pipeline lets you swap any single stage later without rebuilding the rest.
 
 ---
 
-## 11.2 Step 1 — Turn requirements into architectural drivers {#sec-drivers}
+## 11.2 Turn requirements into architectural drivers {#sec-drivers}
 
 > * ❓ How do a customer's wishes become design constraints for a pipeline?
 
@@ -126,7 +127,7 @@ flowchart TD
 
 ---
 
-## 11.3 Step 2 — Ingest the clickstream {#sec-ingest}
+## 11.3 Ingest the clickstream {#sec-ingest}
 
 > * ❓ What service pulls in a firehose of tiny, continuous events — without exposing infrastructure or writing plumbing?
 
@@ -203,7 +204,7 @@ flowchart LR
 
 ---
 
-## 11.4 Step 3 — Store it in a data lake {#sec-store}
+## 11.4 Store it in a data lake {#sec-store}
 
 > * ❓ Where do continuous, schema-flexible events land durably and cheaply?
 
@@ -259,7 +260,7 @@ The customer's *"backup in another Region"* requirement is met by **S3 Cross-Reg
 
 ---
 
-## 11.5 Step 4 — Query the lake {#sec-query}
+## 11.5 Query the lake {#sec-query}
 
 > * ❓ How does a short-staffed team ask SQL questions of raw S3 data with no ETL and no servers?
 
@@ -290,7 +291,7 @@ flowchart TD
 
 ---
 
-## 11.6 Step 5 — Visualise the insight {#sec-visualise}
+## 11.6 Visualise the insight {#sec-visualise}
 
 > * ❓ How do non-technical restaurant owners see "which dishes are viewed most" without SQL?
 
@@ -318,7 +319,7 @@ flowchart LR
 
 ---
 
-## 11.7 Step 6 — Secure every stage {#sec-secure}
+## 11.7 Secure every stage {#sec-secure}
 
 > * ❓ Serverless removes servers, not the security requirements. What stays yours across a pipeline?
 
@@ -355,7 +356,7 @@ For IAM roles, least privilege and the shared responsibility model, see [02. Sec
 
 ---
 
-## 11.8 Step 7 — Make the pipeline observable {#sec-observability}
+## 11.8 Make the pipeline observable {#sec-observability}
 
 > * ❓ A pipeline fails *silently*. How do you know clicks are still arriving and landing?
 
@@ -398,7 +399,7 @@ See [07. Monitoring](07-monitoring.qmd) for CloudWatch fundamentals.
 
 ---
 
-## 11.9 Step 8 — Make it replicable and resilient {#sec-resilient}
+## 11.9 Make it replicable and resilient {#sec-resilient}
 
 > * ❓ The customer has many restaurant clients. How do you stand up this pipeline again and again, identically?
 
@@ -423,7 +424,7 @@ Broader cost and resilience levers: [08. Optimization](08-optimization.qmd).
 
 ---
 
-## 11.10 Step 9 — Optimise cost and performance {#sec-optimize}
+## 11.10 Optimise cost and performance {#sec-optimize}
 
 > * ❓ The pipeline works. Where are the cheap wins — especially on Athena's pay-per-scan bill?
 

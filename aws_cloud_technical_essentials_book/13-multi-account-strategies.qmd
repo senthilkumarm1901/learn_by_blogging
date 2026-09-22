@@ -25,8 +25,9 @@ format:
 
 ## How to Architect Account Governance on AWS
 
-> * ❓ When one AWS account grows to hold everything — every client, every environment, every workload — how do you re-organise it so that security, billing and blast radius are all under control, without slowing teams down?
-> * Hint: same discipline as [10. Serverless Backend](10-architecting-serverless-backend-solution-in-aws.qmd), [11. Serverless Data Analytics](11-serverless-data-analytics.qmd) and [12. Hybrid Container Workloads](12-hybrid-container-workloads.qmd) — **requirements → architectural drivers → candidate services → trade-offs → decision**. What changes is that the "architecture" is now the **account structure itself**, and the services (Organizations, IAM roles, IAM Identity Center, Control Tower) exist to govern it.
+> * ❓ Key Question of this chapter: When one AWS account grows to hold everything: all clients, all environments, all workloads, how do you re-organise it so that security, billing and blast radius are all under control, without slowing teams down?
+> * Workflow followed in all chapters: **requirements → architectural drivers → candidate services → trade-offs → decision**. 
+> * What changes is that the "architecture" is now the **account structure itself**, and the services (Organizations, IAM roles, IAM Identity Center, Control Tower) exist to govern it.
 
 **Running example used throughout this chapter**
 
@@ -75,17 +76,17 @@ flowchart LR
 
 | Step | Question the architect answers | Winning service(s) | Section |
 | --- | --- | --- | --- |
-| 1 | Why split into multiple accounts? | Multi-account strategy | [13.2](#sec-drivers) |
-| 2 | How do we group and control them? | **AWS Organizations + OUs + SCPs** | [13.3](#sec-orgs) |
-| 3 | How do people move between accounts safely? | **IAM roles** + **IAM Identity Center** | [13.4](#sec-auth) |
-| 4 | How do we see everything centrally? | **CloudTrail, Config, VPC Flow Logs, GuardDuty, Security Hub** | [13.5](#sec-logging) |
-| 5 | How do we make it repeatable and safe by default? | **Control Tower, Service Catalog, CloudFormation, tag policies** | [13.6](#sec-automate) |
+| 1 | **Motivation**: Why split into multiple accounts? | Multi-account strategy | [13.2](#sec-drivers) |
+| 2 | **Account Structure**: How do we group and control them? | **AWS Organizations + OUs + SCPs** | [13.3](#sec-orgs) |
+| 3 | **Accesses**: How do people move between accounts safely? | **IAM roles** + **IAM Identity Center** | [13.4](#sec-auth) |
+| 4 | **Monitoring**: How do we see everything centrally? | **CloudTrail, Config, VPC Flow Logs, GuardDuty, Security Hub** | [13.5](#sec-logging) |
+| 5 | **IAC/DevOps**: How do we make it repeatable and safe by default? | **Control Tower, Service Catalog, CloudFormation, tag policies** | [13.6](#sec-automate) |
 
 > **Architect's takeaway:** Do these in order. Handing out accounts before you have an OU shape, an identity story and a logging account just multiplies the problem you started with.
 
 ---
 
-## 13.2 Step 1 — Why a multi-account strategy? {#sec-drivers}
+## 13.2 Why a multi-account strategy? {#sec-drivers}
 
 > * ❓ What exactly does an account boundary buy you that an IAM policy cannot?
 
@@ -170,7 +171,7 @@ flowchart TD
 
 ---
 
-## 13.3 Step 2 — Organise with AWS Organizations, OUs and SCPs {#sec-orgs}
+## 13.3 Organise with AWS Organizations, OUs and SCPs {#sec-orgs}
 
 > * ❓ How do you govern dozens of accounts centrally instead of one-by-one?
 
@@ -231,7 +232,7 @@ For IAM policy evaluation, roles and the shared responsibility model, see [02. S
 
 ---
 
-## 13.4 Step 3 — Authenticate across accounts {#sec-auth}
+## 13.4 Authenticate across accounts {#sec-auth}
 
 > * ❓ How do people and services move between accounts **without duplicating credentials**?
 
@@ -322,7 +323,7 @@ Core features: **workforce identities**, **SAML application assignments**, **Ide
 
 ---
 
-## 13.5 Step 4 — Log and monitor centrally {#sec-logging}
+## 13.5 Log and monitor centrally {#sec-logging}
 
 > * ❓ Several logging and monitoring services sound similar — what does each actually do?
 
@@ -365,7 +366,7 @@ See [07. Monitoring](07-monitoring.qmd) for CloudWatch and logging fundamentals.
 
 ---
 
-## 13.6 Step 5 — Automate provisioning and enforce guardrails {#sec-automate}
+## 13.6 Automate provisioning and enforce guardrails {#sec-automate}
 
 > * ❓ How do you stamp out new accounts that are compliant *by default*, at scale?
 
