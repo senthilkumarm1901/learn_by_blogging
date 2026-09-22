@@ -1,0 +1,567 @@
+---
+title: "14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR"
+author: "Senthil Kumar"
+mermaid:
+  theme: neutral
+format:
+  html:
+    navbar:
+      right:
+        - text: "Blog"
+          href: "https://senthilkumarm1901.github.io/learn_by_blogging/blog.html"
+          target: _self
+        - text: "LinkedIn"
+          href: "https://www.linkedin.com/in/senthilkumarm1901"
+          target: _blank
+        - text: "Medium"
+          href: "https://medium.com/@senthilkumar.m1901"
+          target: _blank
+---
+
+
+👈 **Back to:** [📝 Blog](https://senthilkumarm1901.github.io/learn_by_blogging/blog.html) | [💼 LinkedIn](https://www.linkedin.com/in/senthilkumarm1901) | [✍️ Medium](https://medium.com/@senthilkumar.m1901)
+
+---
+
+## Capstone: One Customer, Two Workloads, One Migration
+
+* ❓ Key question of this chapter: 
+    * When a customer hands you **two** on-premises workloads at once: 
+        * a three-tier web app *and* a Hadoop analytics estate and 
+        * tells you to decouple one and re-platform the other onto **Amazon EMR**
+    * how do you design both without one decision quietly breaking the other?
+* * Workflow followed in all chapters: **requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections**. 
+* What's new is that this chapter: Learnings from 3 previous chapters applied at once
+    * it reuses the decoupling pattern from Chapter 10, 
+    * the ingest→store→query→visualise pipeline from Chapter 11, and 
+    * the lift-and-shift database pattern from Chapter 12 
+
+**Running example used throughout this chapter**
+
+> A customer runs two workloads **on physical servers in one data centre**:
+>
+> 1. A **three-tier web application**: a static frontend (HTML/CSS/JavaScript), a backend (Apache + a Java application), and a **MySQL** database — serving a public dynamic website. Today all three tiers live on the **same physical servers**.
+> 2. A **Hadoop analytics workload**: a massive on-premises dataset processed by a physical Hadoop cluster, with visualisation tools on top.
+>
+> **The problem the customer actually has:** everything shares one data centre and one power supply. **A single power outage takes down the website *and* the analytics estate at the same time.**
+>
+> * **Goal:** migrate both workloads to AWS. 
+> * **Decouple** the web app's three layers so no single failure or single server takes down the whole site. 
+> * Host the analytics workload in the cloud too, with an explicit requirement to **run it on an Amazon EMR cluster**. 
+> * Ingestion, storage and visualisation choices for the analytics side are ours to make.
+>
+> * *In scope:* re-platforming the three tiers and the analytics pipeline onto AWS. 
+> * *Out of scope:* rewriting the Java application's business logic or the Hadoop jobs' code.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph OnPrem["On-premises today<br>one data centre, one power feed"]
+        FE1["Frontend<br>HTML/CSS/JS"] --> BE1["Backend<br>Apache + Java"]
+        BE1 --> DB1[("MySQL")]
+        HAD["Hadoop cluster<br>+ visualisation tools"]
+    end
+    OnPrem -->|"decouple + migrate"| Cloud
+
+    subgraph Cloud["Goal: on AWS"]
+        FE2["Frontend tier"]
+        BE2["Backend tier"]
+        DB2[("Database tier")]
+        EMR2["EMR analytics<br>tier"]
+    end
+```
+
+---
+
+## 14.1 The Method: one estate, two tracks
+
+Both workloads answer the **same four questions** 
+* *what talks to what, 
+* where does compute run, 
+* where does state live, 
+* how is it observed and secured* 
+<br>
+But the analytics track has one constraint fixed in advance: 
+* **it must use Amazon EMR**.
+* That single fixed point shapes every other analytics decision in this chapter, the same way "short-staffed" shaped Chapter 11.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    A["1. Decouple<br>the app tiers"] --> B["2. Migrate the<br>database"]
+    B --> C["3. Ingest analytics<br>data to AWS"]
+    C --> D["4. Process with<br>Amazon EMR"]
+    D --> E["5. Query and<br>visualise"]
+```
+
+| Step | Question the architect answers | Winning service(s) | Section |
+| --- | --- | --- | --- |
+| 1 | What are the real **architectural drivers**? | — | [14.2](#sec-drivers) |
+| 2 | **Client Tier**: How does the frontend become independent? | **Amazon S3 + CloudFront** | [14.3](#sec-frontend) |
+| 3 | **Backend Tier**: Where does the Java backend run, decoupled? | **Amazon ECS on Fargate** + ALB | [14.4](#sec-backend) |
+| 4 | **Database Tier**: How does MySQL move, without a rewrite? | **Amazon RDS for MySQL** + **AWS DMS** | [14.5](#sec-database) |
+| 5 | **Ingestion**: How does the Hadoop dataset get into AWS? | **AWS DataSync** (+ **Snowball** for the bulk seed) | [14.6](#sec-ingest) |
+| 6 | **Transformation/Processing**: How is it processed — on the mandated EMR? | **Amazon EMR**, transient, reading from **S3 via EMRFS** | [14.7](#sec-emr) |
+| 7 | **Querying**: How do we query it with SQL? | **AWS Glue Data Catalog + Amazon Athena** | [14.8](#sec-query) |
+| 8 | **Visualization**: How do business users see it? | **Amazon QuickSight** | [14.9](#sec-visualise) |
+| 9 | How is every hop **secured**? | IAM + KMS + Security Groups + WAF | [14.10](#sec-secure) |
+| 10 | **Monitoring**: How do we see what's happening, on both tracks? | **Amazon CloudWatch** | [14.11](#sec-observability) |
+| 11 | **Optimization**: How do we cut over safely, and control cost? | DMS CDC cutover, Spot task nodes, S3 lifecycle | [14.12](#sec-resilient) |
+
+> **Architect's takeaway:** Treat this as **two pipelines sharing one VPC and one security model**, not one giant diagram. Every decision below is deliberately small and local — that is what makes a two-workload migration reviewable.
+
+---
+
+## 14.2 Turn requirements into architectural drivers {#sec-drivers}
+
+> * ❓ "Decouple the app, EMR for analytics, and it's up to you for the rest" — what does that actually constrain?
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    R1["One data centre =<br>one blast radius"] --> D1["Decouple every tier;<br>no shared failure domain"]
+    R2["Public dynamic website"] --> D2["Independent, scalable<br>frontend + backend"]
+    R3["MySQL, no rewrite wanted"] --> D3["Engine-compatible<br>managed database"]
+    R4["Hadoop workload,<br>EMR mandated"] --> D4["S3-backed, transient<br>EMR cluster"]
+    R5["Ingestion/storage/viz<br>= architect's choice"] --> D5["Reuse proven<br>ingest-store-query-visualise"]
+```
+
+| Customer requirement | Architectural driver | Implication |
+| --- | --- | --- |
+| Single data centre, single power domain | **Eliminate the shared failure domain** | Each tier becomes independently deployable and independently recoverable |
+| Public, dynamic three-tier website | **Decoupled, scalable app layers** | Frontend, backend and database each get their own AWS service, not one bigger server |
+| MySQL, minimal appetite for code changes | **Engine compatibility over optimality** | A managed MySQL-compatible database, moved with a migration service, not a rewrite |
+| Hadoop workload, **EMR is mandatory** | **Fixed compute engine for analytics** | Every ingestion/storage decision must feed EMR cleanly — no service that bypasses it |
+| Free choice of ingestion, storage, visualisation | **Reuse a proven pipeline shape** | Ingest → store → process (EMR) → query → visualise, as in Chapter 11, with EMR replacing the ETL step |
+
+> **The refactor-vs-lift-and-shift decision, made explicit.** This chapter deliberately takes a **middle path**, and states why for each tier:
+>
+> - **Frontend — refactor (extract to S3 + CloudFront).** The HTML/CSS/JS has no server-side logic; there is nothing to "rewrite", only to relocate. This is the cheapest possible refactor with the biggest payoff: the frontend tier disappears as a maintenance burden entirely.
+> - **Backend — moderate refactor (containerise, don't rewrite).** The Java application is **packaged into a container image**, not rewritten. This decouples it from a specific physical server and lets it scale independently, without touching business logic.
+> - **Database — lift-and-shift (same engine, migrated).** MySQL becomes **Amazon RDS for MySQL**. Wire protocol and SQL dialect are unchanged, so the application's data-access code needs **no changes** at all.
+> - **Analytics — mandated re-platform (EMR, not a rewrite of the jobs).** The customer's Hadoop/Spark jobs keep running on EMR's Hadoop-compatible runtime; what changes is **where the data lives** (S3 instead of on-cluster HDFS), not the job code.
+>
+> This mirrors the assignment's own framing: refactor where it is nearly free (frontend), refactor lightly where it buys resilience without rewriting logic (backend, analytics platform), and lift-and-shift where compatibility matters more than elegance (database engine).
+
+> **Architect's takeaway:** "Decouple" and "EMR" are both non-negotiable constraints in this brief — the design freedom is entirely in *how* you satisfy them, not *whether*.
+
+---
+
+## 14.3 Decouple the frontend {#sec-frontend}
+
+> * ❓ The frontend is static HTML/CSS/JS living on the same server as the backend. What removes it as a shared point of failure?
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    Q["Static HTML/CSS/JS,<br>today on the app server"] --> Q1{"Any server-side<br>logic in these files?"}
+    Q1 -->|No| S3["Amazon S3 + CloudFront - CHOSEN<br>static hosting + global cache"]
+    Q1 -->|"Yes / dynamic pages"| BEOPT["Keep with the<br>backend tier instead"]
+```
+
+**Chosen: Amazon S3 for storage, Amazon CloudFront in front of it.** Static assets have no reason to live on a compute instance at all. Moving them to S3 removes the frontend as a dependency of the backend's uptime, and CloudFront caches them at edge locations close to users — lower latency, and far less load reaching the origin.
+
+| Requirement | How S3 + CloudFront meets it |
+| --- | --- |
+| No shared failure domain with the backend | S3 is independently durable (11 nines) and served without any EC2/container instance |
+| Public dynamic website, fast for users | CloudFront edge caching cuts latency versus serving every request from one Region |
+| DDoS / basic web protection | **AWS WAF** attaches to CloudFront in front of the origin |
+
+> **Architect's takeaway:** The frontend tier is the easiest win in this whole capstone — it costs nothing in refactor effort and removes an entire tier from the backend's blast radius.
+
+---
+
+## 14.4 Decouple the backend compute {#sec-backend}
+
+> * ❓ The Java app runs on Apache on a physical server. How does it run on AWS without a full rewrite, while still being independently scalable?
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    W["Java app + Apache,<br>today on a physical server"] --> Q1{"Willing to<br>containerise?"}
+    Q1 -->|"Yes, no code rewrite"| ECS["Amazon ECS on Fargate - CHOSEN<br>serverless containers"]
+    Q1 -->|"No, keep as VMs"| EC2["EC2 Auto Scaling Group<br>viable, more to patch/manage"]
+```
+
+**Chosen: Amazon ECS on AWS Fargate**, behind an **Application Load Balancer**. The Java application and Apache layer are packaged as a **container image** — a packaging change, not a code change — and Fargate removes the underlying EC2 fleet entirely, so there is no host patching to inherit from the old physical servers.
+
+**Backend tier architecture**
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    CF["CloudFront<br>frontend"] -->|"dynamic requests"| ALB["Application<br>Load Balancer"]
+    ALB --> T1["ECS Fargate task<br>AZ 1"]
+    ALB --> T2["ECS Fargate task<br>AZ 2"]
+    ASG["ECS Service<br>Auto Scaling"] -.-> T1
+    ASG -.-> T2
+```
+
+| | ECS on Fargate (chosen) | EC2 Auto Scaling Group |
+| --- | --- | --- |
+| You manage | Just the container and its task definition | AMIs, patching, capacity |
+| Rewrite required | No — container the existing app | No — same VM-based app |
+| Independently scalable from DB/frontend | Yes | Yes |
+| Fit here | Team wants less host management going forward | Team wants to keep VM-level control |
+
+> **Architect's takeaway:** "Decoupled" does not require a rewrite. Packaging the existing Java app into a container and running it on Fargate behind an ALB satisfies the decoupling requirement with the smallest possible code change.
+
+---
+
+## 14.5 Decouple and migrate the database {#sec-database}
+
+> * ❓ How does MySQL move off the shared physical server with zero application code changes and no single point of failure?
+
+**Chosen: Amazon RDS for MySQL, Multi-AZ, migrated with AWS DMS** — the same lift-and-shift pattern used for PostgreSQL in [12.5](12-hybrid-container-workloads.qmd#sec-db), applied here to MySQL.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    APP["ECS Fargate<br>backend"] --> PRI["RDS for MySQL<br>Primary, AZ 1"]
+    PRI -->|"synchronous<br>replication"| STB["Standby<br>AZ 2"]
+    SRC["On-prem MySQL"] --> DMS["AWS DMS<br>replication task"]
+    DMS -->|"initial load +<br>ongoing changes"| PRI
+```
+
+| Requirement | How RDS + DMS meets it |
+| --- | --- |
+| No application rewrite | Same wire protocol and SQL dialect as on-prem MySQL |
+| No single point of failure | **Multi-AZ** standby with automatic failover; endpoint does not change |
+| Decoupled from the backend server | Database now lives on its own managed service, reachable only from the VPC |
+| Near-zero-downtime migration | **DMS** replicates while the source stays live; a short cutover window at the end |
+
+> **Same caveat as Chapter 12 applies here.** DMS moves rows reliably, but by default only creates the objects needed to move data — **secondary indexes, triggers, stored procedures and views need a separate schema export** (e.g. `mysqldump` for schema only, then DMS for bulk load and change data capture). Confirm binary logging is enabled on the source for CDC before starting the task.
+
+> **Architect's takeaway:** For a database tier with "keep the app code as-is" as a hard requirement, an **engine-compatible managed service plus a replication-based migration tool** is the standard answer — it is exactly what makes this a *lift*-and-shift rather than a rewrite.
+
+---
+
+## 14.6 Ingest the analytics data into AWS {#sec-ingest}
+
+> * ❓ The Hadoop workload's dataset is "massive" and on-premises. How does it get into AWS, and does it need to move all at once?
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    Q["Massive on-prem dataset<br>on HDFS"] --> Q1{"Network bandwidth<br>enough for a timely transfer?"}
+    Q1 -->|"No — too big / too slow"| SNOW["AWS Snowball Edge - CHOSEN<br>for the one-time bulk seed"]
+    Q1 -->|"Yes, ongoing feed"| DS["AWS DataSync - CHOSEN<br>for ongoing incremental sync"]
+    SNOW --> S3["Amazon S3<br>raw zone"]
+    DS --> S3
+```
+
+**Chosen: a two-phase ingestion.** A **one-time bulk transfer** with **AWS Snowball Edge** seeds the initial "massive" dataset without saturating a link that has not been sized for it, followed by **AWS DataSync** for the ongoing, incremental feed of new files landing on-premises after the seed.
+
+| Option | Fit here |
+| --- | --- |
+| **AWS Snowball Edge** (chosen, initial seed) | Physical device shipped to the data centre; avoids transferring the entire historical dataset over the network in one go |
+| **AWS DataSync** (chosen, ongoing) | Automated, scheduled, checksum-verified sync of new/changed files from an on-prem NFS/HDFS-adjacent share to S3 |
+| A one-off `distcp` / manual copy | Rejected — no verification, no scheduling, no resumability at this data volume |
+
+> **Why S3, not on-cluster HDFS, as the landing zone.** The single biggest architectural decision in this chapter's analytics track is **landing data in Amazon S3 rather than on HDFS attached to the EMR cluster**. It decouples storage from compute — the exact same benefit Chapter 11 found for the clickstream lake — and it is also what makes an EMR cluster **safe to terminate** between jobs (see [14.7](#sec-emr)).
+
+> **Architect's takeaway:** Bulk-seed a large historical dataset with **Snowball**, then keep it current with **DataSync**. Either way, the destination is **S3**, because that is what lets the EMR layer above it be transient instead of permanent.
+
+---
+
+## 14.7 Process the workload with Amazon EMR {#sec-emr}
+
+> * ❓ The customer requires an EMR cluster. How do you run it in a way that's actually cost-efficient and resilient, not just "technically EMR"?
+
+### 14.7.1 EMR cluster shape: transient, not persistent
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    W["Run existing Hadoop/Spark<br>jobs on EMR"] --> Q1{"Does the cluster need<br>to run 24/7?"}
+    Q1 -->|"No — scheduled batch jobs"| TR["Transient cluster - CHOSEN<br>spin up, run, terminate"]
+    Q1 -->|"Yes — continuous processing"| PE["Persistent (long-running)<br>cluster"]
+```
+
+**Chosen: a transient EMR cluster**, launched to run each batch job (or a scheduled job window) and **terminated afterwards**. Because the data lives in **S3, not on-cluster HDFS** ([14.6](#sec-ingest)), terminating the cluster loses **no data** — the cluster is compute, not storage.
+
+| | Transient cluster (chosen) | Persistent cluster |
+| --- | --- | --- |
+| Pay for compute | Only while a job runs | 24/7, whether processing or idle |
+| Data survives termination | Yes — it lives in S3 (EMRFS) | Only if data is also kept off-cluster |
+| Fit here | Scheduled/batch Hadoop analytics | Continuous, always-on processing needs |
+
+### 14.7.2 EMR node types and how they read S3
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    S3R["S3 raw zone"] -->|"EMRFS"| MST["Master node<br>cluster + job coordination"]
+    MST --> CORE["Core nodes<br>HDFS cache + compute"]
+    MST --> TASK["Task nodes<br>compute only, Spot-friendly"]
+    CORE --> S3C["S3 curated zone<br>job output"]
+    TASK --> S3C
+```
+
+- **EMRFS** lets Hadoop/Spark address `s3://` paths as if they were HDFS, so the **existing job code runs unmodified** against S3.
+- **Master node** coordinates the cluster; **core nodes** hold a local HDFS cache and run tasks; **task nodes** run compute only and hold no HDFS data — which is exactly why task nodes are the safe place to use **Spot Instances** (see [14.12](#sec-resilient)).
+
+### 14.7.3 Why not EMR Serverless or EMR on EKS here
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    Q["Compute layer for<br>the Hadoop workload"] --> Q1{"Requirement says<br>'spin up an EMR cluster'?"}
+    Q1 -->|Yes| EMRC["EMR on EC2 - CHOSEN<br>satisfies the explicit ask"]
+    Q1 -->|"No constraint"| SRV["EMR Serverless<br>no cluster to manage"]
+```
+
+| Rejected option | Reason |
+| --- | --- |
+| **EMR Serverless** | Removes cluster management entirely — a good default in general, but the brief explicitly asks for **a cluster**, and the team's existing operational runbooks assume one |
+| **EMR on EKS** | Adds a Kubernetes control plane the team has no existing investment in; this workload has no Kubernetes requirement, unlike the Chapter 12 hybrid scenario |
+
+> **Architect's takeaway:** EMR's job here is to run **existing Hadoop/Spark code unchanged** against data that lives in **S3**. Making the cluster **transient** and reading via **EMRFS** is what turns "we were told to use EMR" into a design that is also cost-efficient and resilient — not just compliant with the requirement.
+
+---
+
+## 14.8 Catalog and query the lake {#sec-query}
+
+> * ❓ Once EMR has written curated output to S3, how does anyone run SQL against it without standing up a database?
+
+**Chosen: AWS Glue Data Catalog for schema, Amazon Athena for ad hoc SQL** — the same pattern as [11.5](11-serverless-data-analytics.qmd#sec-query), reused here on EMR's output instead of a clickstream.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    S3C["S3 curated zone<br>EMR job output"] --> GDC["Glue Data Catalog<br>schema + partitions"]
+    GDC --> ATH["Amazon Athena<br>serverless SQL"]
+    S3C --> ATH
+```
+
+| Requirement | How it's met |
+| --- | --- |
+| SQL access to EMR's output, no extra servers | Athena queries the curated S3 zone directly; no database to provision |
+| Schema shared between EMR and Athena | A **Glue crawler** (or an EMR step that registers partitions) keeps the Data Catalog in sync with what EMR writes |
+
+> **Architect's takeaway:** EMR does the heavy processing; **Glue + Athena** is the lightweight, serverless way to make the *result* queryable without adding a second always-on cluster.
+
+---
+
+## 14.9 Visualise the insight {#sec-visualise}
+
+> * ❓ How do the business users who currently use the on-prem visualisation tools see the same insights on AWS?
+
+**Chosen: Amazon QuickSight**, reading through Athena — the same choice as [11.6](11-serverless-data-analytics.qmd#sec-visualise).
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    ATH["Amazon Athena"] --> QS["Amazon QuickSight<br>dashboards + SPICE"]
+    QS --> U["Business users<br>replace on-prem viz tools"]
+```
+
+| QuickSight strength | Why it fits |
+| --- | --- |
+| Serverless, pay-per-session readers | No new licensing model to negotiate for existing report consumers |
+| SPICE in-memory cache | Dashboards stay fast without re-querying Athena on every click |
+| Sits directly on Athena | No extra data movement beyond what EMR already wrote to S3 |
+
+> **Architect's takeaway:** Visualisation is the one place where "it's up to you" genuinely means *pick the simplest thing that replaces what the customer already has* — QuickSight-on-Athena does that without inventing a new data path.
+
+---
+
+## 14.10 Secure both tracks {#sec-secure}
+
+> * ❓ Two workloads, one VPC — what security posture has to hold for both at once?
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph Transit["In transit"]
+        T1["HTTPS via<br>CloudFront + ALB"]
+        T2["TLS: DMS, DataSync,<br>EMRFS to S3"]
+    end
+    subgraph Rest["At rest"]
+        R1["SSE-KMS on<br>every S3 bucket"]
+        R2["RDS storage<br>encryption"]
+    end
+    subgraph Identity["Identity"]
+        I1["ECS task role:<br>only its own resources"]
+        I2["EMR service +<br>instance roles, scoped to S3"]
+    end
+```
+
+| Requirement | Control |
+| --- | --- |
+| Public app tier protected | **AWS WAF** on CloudFront and the ALB |
+| App tiers isolated from each other | Security groups per tier: ALB → ECS tasks → RDS, no direct internet-to-database path |
+| Analytics data protected in transit and at rest | TLS on DataSync/DMS/EMRFS transfers; **SSE-KMS** on every S3 bucket (raw, curated) |
+| Least privilege per workload | Separate IAM roles for the ECS task, the DMS replication instance, and the EMR cluster's service and instance profiles — each scoped only to the resources it needs |
+| Database reachable only from the backend | RDS in a private subnet, security group allowing inbound only from the ECS tasks' security group |
+
+For IAM roles, KMS and the shared responsibility model, see [02. Security](02-security.qmd).
+
+> **Architect's takeaway:** Running two workloads in one account does not mean one security posture. **Scope every role — ECS task, DMS instance, EMR cluster — to only the S3 prefixes and databases it touches.**
+
+---
+
+## 14.11 Make both tracks observable {#sec-observability}
+
+> * ❓ A backend outage is loud. A stalled analytics pipeline is silent. How do you catch both?
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    ALB["ALB + ECS"] --> CW["Amazon CloudWatch<br>metrics, logs, alarms"]
+    RDS["RDS for MySQL"] --> CW
+    DS["DataSync tasks"] --> CW
+    EMR["EMR cluster + steps"] --> CW
+    ATH["Athena"] --> CW
+    CW --> AL["Alarms to SNS"]
+```
+
+| Track | Signal worth alarming on |
+| --- | --- |
+| App tier | ALB `5XXCount`, ECS service task health, RDS `FreeStorageSpace` / `CPUUtilization` / replication lag |
+| Analytics tier | DataSync task success/failure, **EMR step failures**, EMR cluster idle time (a cost signal, not just health), Athena `ProcessedBytes` |
+
+> **Architect's takeaway:** Alarm on the app tier's **errors** and the analytics tier's **absence of progress** (a step that never completes, a DataSync task that stops running) — the same "pipelines fail silently" lesson from [11.8](11-serverless-data-analytics.qmd#sec-observability) applies directly to EMR steps.
+
+---
+
+## 14.12 Cut over safely, and control cost {#sec-resilient}
+
+> * ❓ How do you switch traffic to AWS without a big-bang outage, and keep the EMR side affordable?
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    A["DMS replicates<br>MySQL, source stays live"] --> B["DataSync keeps S3<br>current with on-prem"]
+    B --> C["Test app + EMR jobs<br>against AWS copies"]
+    C --> D["Cutover: point DNS,<br>stop on-prem writes"]
+```
+
+- **Database cutover:** keep DMS replicating (CDC) until the switch, then a short, planned cutover window — the same near-zero-downtime pattern as [12.5.5](12-hybrid-container-workloads.qmd#sec-db).
+- **Analytics cutover:** run the EMR pipeline against synced S3 data in parallel with the on-prem Hadoop cluster until outputs are verified to match, before decommissioning the physical cluster.
+- **Cost levers for EMR:** use **Spot Instances on task nodes only** (they hold no HDFS data, so interruption just delays a job, it doesn't lose it); terminate the cluster between scheduled runs; keep S3 storage on **Intelligent-Tiering** for the raw zone.
+- **Cost levers for the app tier:** ECS Service Auto Scaling to match ALB traffic; RDS storage auto scaling instead of over-provisioning up front.
+
+For broader cost and resilience patterns, see [08. Optimization](08-optimization.qmd).
+
+> **Architect's takeaway:** Both cutovers follow the same shape — **replicate in parallel, verify, then switch** — and both cost profiles improve the same way: **pay for compute only while it's doing something** (ECS auto scaling, transient EMR, Spot task nodes).
+
+---
+
+## 14.13 The reference architecture, end to end {#sec-reference}
+
+Two focused diagrams — one per workload — are easier to review (and to draw correctly) than a single diagram trying to hold both at once.
+
+**Application tier on AWS**
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    USERS["Internet users"] --> CF["CloudFront + WAF"]
+    CF -->|"static"| S3F["S3<br>frontend"]
+    CF -->|"dynamic"| ALB["Application<br>Load Balancer"]
+    ALB --> ECS["ECS on Fargate<br>Java backend"]
+    ECS --> RDS["RDS for MySQL<br>Multi-AZ"]
+    DMS["AWS DMS"] -->|"migrate"| RDS
+```
+
+**Analytics tier on AWS**
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    ONPREM["On-prem HDFS<br>dataset"] -->|"bulk seed"| SNOW["Snowball Edge"]
+    ONPREM -->|"ongoing"| DS["AWS DataSync"]
+    SNOW --> S3R["S3 raw zone"]
+    DS --> S3R
+    S3R -->|"EMRFS"| EMR["Amazon EMR<br>transient cluster"]
+    EMR --> S3C["S3 curated zone"]
+    S3C --> GDC["Glue Data Catalog"]
+    GDC --> ATH["Amazon Athena"]
+    S3C --> ATH
+    ATH --> QS["Amazon QuickSight"]
+```
+
+**How each requirement is satisfied**
+
+| Requirement | Where it is met |
+| --- | --- |
+| Decouple frontend, backend, database | S3+CloudFront / ECS on Fargate+ALB / RDS for MySQL — three independent services, no shared server |
+| No app rewrite | Backend is containerised, not rewritten; database engine is unchanged |
+| Host both workloads in the cloud | Application tier and analytics tier both run entirely on AWS, in one VPC |
+| Analytics must run on Amazon EMR | Transient EMR cluster, reading/writing S3 via EMRFS |
+| Architect's choice of ingest/store/visualise | Snowball + DataSync ingest; S3 store; Glue + Athena query; QuickSight visualise |
+| No single point of failure | Multi-AZ RDS, multi-AZ ECS tasks, CloudFront edge distribution, EMR data safe in S3 independent of cluster life |
+
+---
+
+## 14.14 When *not* to build it this way {#sec-not}
+
+An honest architect states the boundaries of their own recommendation.
+
+| Symptom | Why this design struggles | Better fit |
+| --- | --- | --- |
+| Analytics needs sub-second, always-on processing | Transient EMR is batch-shaped | A persistent EMR cluster, or a streaming service as in [11. Serverless Data Analytics](11-serverless-data-analytics.qmd) |
+| No constraint to use a cluster at all | EMR (on EC2) still carries cluster concepts to manage | **EMR Serverless**, once the "spin up a cluster" requirement is gone |
+| Backend needs a custom AMI or host-level SSH | Fargate gives no host access | **ECS on EC2**, as in [12.4](12-hybrid-container-workloads.qmd#sec-compute) |
+| Team already has deep Kubernetes investment | ECS/EMR-on-EC2 underuses that skill | **EKS** for the app tier, **EMR on EKS** for analytics |
+| Heavy, predictable, always-on BI workload at scale | Athena's per-scan pricing stops being the cheapest option | **Amazon Redshift** |
+| Database needs read scaling beyond one primary | A single RDS instance | Add **RDS read replicas**, as in [12.5.3](12-hybrid-container-workloads.qmd#sec-db) |
+
+> **Architect's takeaway:** This design is optimal for **batch-shaped Hadoop analytics with a mandated EMR cluster, alongside a public three-tier app that needs decoupling but not a rewrite**. Change the traffic pattern, the team's skills, or the "must use EMR" constraint, and the winning services change with it.
+
+---
+
+## 14.15 Architect's cheat sheet {#sec-cheatsheet}
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    ROOT["Capstone:<br>app + EMR analytics"]
+
+    ROOT --> APP["App tier"]
+    APP --> A1["Frontend to S3<br>+ CloudFront"]
+    APP --> A2["Backend containerised<br>on ECS Fargate"]
+    APP --> A3["Database lift-and-shift<br>to RDS + DMS"]
+
+    ROOT --> AN["Analytics tier"]
+    AN --> N1["Snowball for bulk seed,<br>DataSync ongoing"]
+    AN --> N2["S3 = the landing zone,<br>not on-cluster HDFS"]
+    AN --> N3["EMR = transient,<br>reads via EMRFS"]
+    AN --> N4["Glue + Athena +<br>QuickSight on top"]
+
+    ROOT --> X["Cross-cutting"]
+    X --> X1["Scope every IAM role<br>to its own resources"]
+    X --> X2["Encrypt in transit<br>and at rest"]
+    X --> X3["Alarm on errors AND<br>on silent pipeline stalls"]
+    X --> X4["Replicate in parallel,<br>verify, then cut over"]
+```
+
+1. Two workloads sharing one data centre and one power feed is a **single blast radius** — decoupling removes that shared failure domain.
+2. **Refactor where it's cheap** (static frontend → S3), **refactor lightly where it buys resilience** (containerise the backend, don't rewrite it), **lift-and-shift where compatibility matters most** (MySQL → RDS for MySQL).
+3. **Frontend → S3 + CloudFront**: no server-side logic to preserve, so there is nothing to "rewrite" — only to relocate.
+4. **Backend → ECS on Fargate + ALB**: containerising is a packaging change, not a code change.
+5. **Database → RDS for MySQL + DMS**: same wire protocol and SQL dialect keeps the application's data-access code untouched.
+6. **DMS moves data, not the whole schema** — export secondary indexes, triggers and stored procedures separately.
+7. A **mandated EMR cluster** is a fixed point that shapes every ingestion and storage decision around it — check it does not get silently bypassed.
+8. **Land analytics data in S3, not on-cluster HDFS** — this single choice is what makes the EMR cluster safe to terminate.
+9. **Transient EMR clusters** cost less than persistent ones when jobs are scheduled/batch, precisely because the data survives termination in S3.
+10. **EMRFS** lets existing Hadoop/Spark code address `s3://` paths unmodified — no job rewrite needed.
+11. **Core nodes** cache HDFS data; **task nodes** are compute-only — task nodes are the safe place for **Spot Instances**.
+12. Reject **EMR Serverless** only when the requirement explicitly asks for a managed **cluster**; otherwise it is usually the simpler default.
+13. **Snowball Edge** for the one-time bulk historical seed; **DataSync** for the ongoing incremental feed — pick based on data volume vs. link bandwidth.
+14. **Glue Data Catalog + Athena** turn EMR's S3 output into ad hoc SQL without a second always-on database.
+15. **QuickSight on Athena** replaces on-prem visualisation tools without inventing a new data path.
+16. Scope **every IAM role separately** — ECS task, DMS replication instance, EMR service/instance profile — to only what it needs.
+17. **Encrypt in transit and at rest** on both tracks: TLS everywhere, SSE-KMS on every bucket, RDS storage encryption.
+18. App-tier failures are **loud** (5XX errors); analytics-tier failures are **silent** (a stalled EMR step, a paused DataSync task) — alarm on both kinds.
+19. Cut over both tracks the same way: **replicate in parallel with the source live, verify outputs match, then switch** — never a big-bang cutover.
+20. Cost control on both tracks follows one rule: **pay for compute only while it is doing something** — ECS auto scaling, transient EMR, Spot task nodes.
+21. Draw **one diagram per workload**, not one diagram for everything — it is easier to review, and easier to get right.
+22. "Technically satisfies the requirement" (an EMR cluster) is not the same as "well-architected" — make the cluster transient and S3-backed, or you have complied with the letter of the ask while paying for the worst version of it.
+
+---
+
+## Sources
+
+*Inspired from Capstone Project Question*
