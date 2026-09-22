@@ -55,7 +55,7 @@ flowchart TD
     - Scale, latency, cost, resilience, ops burden. 
     - These rank the survivors — among the relational options (RDS, Aurora, self-managed on EC2), the NFRs pick the winner.
 
-## Four Examples - to practice being a Cloud Architect
+## Five Examples - to practice being a Cloud Architect
 
 ### 1. The Monolith: Client → Server → Relational DB
 
@@ -97,6 +97,8 @@ flowchart TD
 
 > * A single EC2 is cheapest but has an app-wide blast radius; going straight to microservices is over-engineering for a monolith that just needs to survive an AZ failure. 
 > * The architect's move here is restraint — the smallest set of blocks that removes the single points of failure.
+
+📖 **Deep dive:** this monolith is exactly what gets decoupled tier-by-tier in [14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/14-capstone-decoupled-app-and-emr-analytics.html)
 
 ---
 
@@ -155,6 +157,8 @@ flowchart TD
 
 - The fully synchronous version is simplest but couples every failure and can't survive a burst; a single Lambda is fewer moving parts but one bug takes down all routes.
 - The **Intuition**: The intuition: serverless starts simple, then earns its resilience one decoupling at a time — event triggers, queues, and dead-letter queues are not decoration, they're the blast-radius controls.
+
+📖 **Deep dive:** [10. Architecting a Serverless Backend Solution in AWS](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/10-architecting-serverless-backend-solution-in-aws.html)
 
 ---
 
@@ -231,6 +235,8 @@ flowchart TD
 - Skipping Parquet keeps it simple but every Athena query scans mountains of JSON. 
 - The intuition: in analytics, storage is cheap and scanning is expensive — so the architecture is really a bet about when you pay to structure data.
 
+📖 **Deep dive:** [11. Serverless Data Analytics](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/11-serverless-data-analytics.html)
+
 ---
 
 ### 4. The Microservice Container Workload
@@ -289,10 +295,66 @@ flowchart TD
     — orchestrator, compute mode, service mesh, and locality 
     - and most teams get burned by answering "EKS" before they've asked the first question
 
+📖 **Deep dive:** [12. Architecting a Hybrid Container-Based Solution on AWS](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/12-hybrid-container-workloads.html#how-to-architect-a-hybrid-container-based-solution-on-aws)
+
+---
+
+### 5. The Multi-Account Landing Zone: One account → Many, by blast radius
+
+**The Naive First Draft**:
+
+"Just build in the account we already have." Every client, every environment, one root login, one shared account.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    Root["root + shared<br/>IAM users"] --> A["Client A workload"]
+    Root --> B["Client B workload"]
+    Root --> C["Dev and Prod,<br/>same account"]
+```
+
+**Problems with the Naive Approach**:
+
+- Block 1: 
+    - **One misconfiguration reaches every client and environment at once**: there is no boundary between them, only convention. 
+    - Mitigation: `Split by ownership`: one account per client or business unit, grouped under **AWS Organizations** OUs — the account itself becomes the blast-radius boundary.
+
+- Block 2: 
+    - **Billing is one lump sum**: no one can say what Client A costs versus Client B without heroic tagging discipline. 
+    - Mitigation: the account is the **default, free unit of cost allocation** — split accounts and the bill splits itself.
+
+- Block 3: 
+    - **Dev experiments and prod traffic share the same guardrails — or lack of them — and the same service quotas**: most quotas and API rate limits are per account, per Region, so one noisy neighbor throttles everyone. 
+    - Mitigation: separate accounts per environment. Sandbox/dev get freedom to experiment; prod gets tight **SCPs**. Quotas reset per account too.
+
+- Block 4: 
+    - **Nobody remembers who has root, and long-lived IAM users pile up per account**. 
+    - Mitigation: replace long-lived users with **IAM Identity Center** (SSO) issuing short-lived assumed roles, and provision every new account through **Control Tower** so guardrails apply by default, not by memory.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    Start(["Requirement:<br/>many clients/environments,<br/>one AWS presence"]) --> Q1{"Must one incident's<br/>blast radius stay contained?"}
+    Q1 -->|"Yes"| A1["Split into accounts by<br/>ownership / environment"]
+    A1 --> Q2{"Need repeatable,<br/>guardrailed provisioning?"}
+    Q2 -->|"Yes"| A2["Organizations + OUs + SCPs<br/>via Control Tower"]
+    A2 --> Q3{"How do people reach<br/>many accounts safely?"}
+    Q3 --> A3["IAM Identity Center (SSO)<br/>+ short-lived roles"]
+    A3 --> Q4{"Need one place to<br/>see everything?"}
+    Q4 --> A4["Dedicated logging account<br/>CloudTrail, GuardDuty"]
+    A4 --> Done(["Governed multi-account<br/>landing zone<br/>rejected: one shared account,<br/>long-lived IAM users"])
+```
+
+**The Rejected Alternative**: `One account for everything` is the simplest to start, but it wastes the strongest, coarsest blast-radius and billing boundary AWS gives away for free.
+
+> * Going the other way — an account per microservice — multiplies the OU/SCP/logging overhead a team must operate, for isolation finer than the actual risk requires.
+> * The intuition: blast radius isn't only a resource-level concern (which AZ, which instance) — the **account boundary** is the largest blast-radius knob available, and it costs nothing until you actually need finer isolation.
+
+📖 **Deep dive:** [13. Architecting for Account Governance and Multi-Account Management](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/13-multi-account-strategies.html)
 
 ## Conclusion
 
-- The way the functional drivers and non-functional drivers dictated the cloud architecture decisions in these 4 examples: 
+- The way the functional drivers and non-functional drivers dictated the cloud architecture decisions in these 5 examples: 
 
 | Example                | Functional driver (produces candidates)                                        | Non-functional driver (picks winner)                                                |
 | ---------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
@@ -300,6 +362,9 @@ flowchart TD
 | **Serverless backend** | "Serve a REST API + persist orders" → Lambda/Fargate + Dynamo/RDS              | Spiky load + zero-idle cost → **Lambda + SQS + DynamoDB**                           |
 | **Data analytics**     | "Ingest a stream + run SQL for dashboards" → Kinesis/Firehose, Athena/Redshift | Occasional queries + cost → **Firehose + S3 + Athena** (read-time) over a warehouse |
 | **Containers**         | "Run containerized microservices" → ECS/EKS, Fargate/EC2                       | Ops burden + scale → **ECS + Fargate** unless K8s ecosystem is genuinely needed     |
+| **Multi-account**      | "Isolate clients/environments" → single account, per-client accounts, per-env accounts | Blast radius + billing clarity → **Organizations + OUs** over one shared account |
 
-- The final repetitive message across the 4 examples: 
+- The final repetitive message across the 5 examples: 
     - Start with the smallest sufficient set of blocks and add 1 complexity for every pain point (e.g. of painpoints: a failure to isolate, a burst to absorb, not paying for idle resources,  etc.,)
+    - Blast radius isn't always a resource sitting inside an account — sometimes the blast radius *is* the account, and the account boundary is the fix.
+    - None of these 5 decisions are made in isolation on a real system: a single build typically decouples its tiers (Example 1), picks an ingest/store/query path for its data (Example 3), and sits inside an account structure that contains the blast radius of all of it (Example 5) — at the same time, not in sequence.
