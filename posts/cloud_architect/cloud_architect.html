@@ -174,12 +174,13 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#technical-architect-cloud-architect" id="toc-technical-architect-cloud-architect" class="nav-link active" data-scroll-target="#technical-architect-cloud-architect">Technical Architect → Cloud Architect</a></li>
   <li><a href="#flow-of-decision-making-for-a-cloud-architect" id="toc-flow-of-decision-making-for-a-cloud-architect" class="nav-link" data-scroll-target="#flow-of-decision-making-for-a-cloud-architect">Flow of Decision-making for a Cloud Architect</a></li>
-  <li><a href="#four-examples---to-practice-being-a-cloud-architect" id="toc-four-examples---to-practice-being-a-cloud-architect" class="nav-link" data-scroll-target="#four-examples---to-practice-being-a-cloud-architect">Four Examples - to practice being a Cloud Architect</a>
+  <li><a href="#five-examples---to-practice-being-a-cloud-architect" id="toc-five-examples---to-practice-being-a-cloud-architect" class="nav-link" data-scroll-target="#five-examples---to-practice-being-a-cloud-architect">Five Examples - to practice being a Cloud Architect</a>
   <ul class="collapse">
   <li><a href="#the-monolith-client-server-relational-db" id="toc-the-monolith-client-server-relational-db" class="nav-link" data-scroll-target="#the-monolith-client-server-relational-db">1. The Monolith: Client → Server → Relational DB</a></li>
   <li><a href="#the-serverless-web-backend-client-serverless-web-backend-db" id="toc-the-serverless-web-backend-client-serverless-web-backend-db" class="nav-link" data-scroll-target="#the-serverless-web-backend-client-serverless-web-backend-db">2. The Serverless Web Backend: Client → <code>&lt;Serverless Web Backend&gt;</code> → DB</a></li>
   <li><a href="#the-serverless-data-analytics-pipeline-event-source-ingest-data-store-query-visualize" id="toc-the-serverless-data-analytics-pipeline-event-source-ingest-data-store-query-visualize" class="nav-link" data-scroll-target="#the-serverless-data-analytics-pipeline-event-source-ingest-data-store-query-visualize">3. The Serverless Data Analytics Pipeline: Event source → Ingest → Data Store → Query → Visualize</a></li>
   <li><a href="#the-microservice-container-workload" id="toc-the-microservice-container-workload" class="nav-link" data-scroll-target="#the-microservice-container-workload">4. The Microservice Container Workload</a></li>
+  <li><a href="#the-multi-account-landing-zone-one-account-many-by-blast-radius" id="toc-the-multi-account-landing-zone-one-account-many-by-blast-radius" class="nav-link" data-scroll-target="#the-multi-account-landing-zone-one-account-many-by-blast-radius">5. The Multi-Account Landing Zone: One account → Many, by blast radius</a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
@@ -239,8 +240,8 @@ flowchart TD
 </ul></li>
 </ul>
 </section>
-<section id="four-examples---to-practice-being-a-cloud-architect" class="level2">
-<h2 class="anchored" data-anchor-id="four-examples---to-practice-being-a-cloud-architect">Four Examples - to practice being a Cloud Architect</h2>
+<section id="five-examples---to-practice-being-a-cloud-architect" class="level2">
+<h2 class="anchored" data-anchor-id="five-examples---to-practice-being-a-cloud-architect">Five Examples - to practice being a Cloud Architect</h2>
 <section id="the-monolith-client-server-relational-db" class="level3">
 <h3 class="anchored" data-anchor-id="the-monolith-client-server-relational-db">1. The Monolith: Client → Server → Relational DB</h3>
 <p><strong>The Naive First Draft</strong>:</p>
@@ -295,6 +296,7 @@ flowchart TD
 <li>The architect’s move here is restraint — the smallest set of blocks that removes the single points of failure.</li>
 </ul>
 </blockquote>
+<p>📖 <strong>Deep dive:</strong> this monolith is exactly what gets decoupled tier-by-tier in <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/14-capstone-decoupled-app-and-emr-analytics.html">14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR</a></p>
 <hr>
 </section>
 <section id="the-serverless-web-backend-client-serverless-web-backend-db" class="level3">
@@ -370,6 +372,7 @@ flowchart TD
 <li>The fully synchronous version is simplest but couples every failure and can’t survive a burst; a single Lambda is fewer moving parts but one bug takes down all routes.</li>
 <li>The <strong>Intuition</strong>: The intuition: serverless starts simple, then earns its resilience one decoupling at a time — event triggers, queues, and dead-letter queues are not decoration, they’re the blast-radius controls.</li>
 </ul>
+<p>📖 <strong>Deep dive:</strong> <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/10-architecting-serverless-backend-solution-in-aws.html">10. Architecting a Serverless Backend Solution in AWS</a></p>
 <hr>
 </section>
 <section id="the-serverless-data-analytics-pipeline-event-source-ingest-data-store-query-visualize" class="level3">
@@ -468,6 +471,7 @@ flowchart TD
 <li>Skipping Parquet keeps it simple but every Athena query scans mountains of JSON.</li>
 <li>The intuition: in analytics, storage is cheap and scanning is expensive — so the architecture is really a bet about when you pay to structure data.</li>
 </ul>
+<p>📖 <strong>Deep dive:</strong> <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/11-serverless-data-analytics.html">11. Serverless Data Analytics</a></p>
 <hr>
 </section>
 <section id="the-microservice-container-workload" class="level3">
@@ -542,12 +546,88 @@ flowchart TD
 </div>
 <p><strong>The Rejected Alternative</strong>: - EKS-by-default buys ecosystem power you may never use and a real operational tax; - EC2 nodes for a bursty low-volume service means paying for idle capacity. - The intuition: containers are one building block with four independent decisions stacked on top<br>
 — orchestrator, compute mode, service mesh, and locality - and most teams get burned by answering “EKS” before they’ve asked the first question</p>
+<p>📖 <strong>Deep dive:</strong> <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/12-hybrid-container-workloads.html#how-to-architect-a-hybrid-container-based-solution-on-aws">12. Architecting a Hybrid Container-Based Solution on AWS</a></p>
+<hr>
+</section>
+<section id="the-multi-account-landing-zone-one-account-many-by-blast-radius" class="level3">
+<h3 class="anchored" data-anchor-id="the-multi-account-landing-zone-one-account-many-by-blast-radius">5. The Multi-Account Landing Zone: One account → Many, by blast radius</h3>
+<p><strong>The Naive First Draft</strong>:</p>
+<p>“Just build in the account we already have.” Every client, every environment, one root login, one shared account.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    Root["root + shared&lt;br/&gt;IAM users"] --&gt; A["Client A workload"]
+    Root --&gt; B["Client B workload"]
+    Root --&gt; C["Dev and Prod,&lt;br/&gt;same account"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Problems with the Naive Approach</strong>:</p>
+<ul>
+<li>Block 1:
+<ul>
+<li><strong>One misconfiguration reaches every client and environment at once</strong>: there is no boundary between them, only convention.</li>
+<li>Mitigation: <code>Split by ownership</code>: one account per client or business unit, grouped under <strong>AWS Organizations</strong> OUs — the account itself becomes the blast-radius boundary.</li>
+</ul></li>
+<li>Block 2:
+<ul>
+<li><strong>Billing is one lump sum</strong>: no one can say what Client A costs versus Client B without heroic tagging discipline.</li>
+<li>Mitigation: the account is the <strong>default, free unit of cost allocation</strong> — split accounts and the bill splits itself.</li>
+</ul></li>
+<li>Block 3:
+<ul>
+<li><strong>Dev experiments and prod traffic share the same guardrails — or lack of them — and the same service quotas</strong>: most quotas and API rate limits are per account, per Region, so one noisy neighbor throttles everyone.</li>
+<li>Mitigation: separate accounts per environment. Sandbox/dev get freedom to experiment; prod gets tight <strong>SCPs</strong>. Quotas reset per account too.</li>
+</ul></li>
+<li>Block 4:
+<ul>
+<li><strong>Nobody remembers who has root, and long-lived IAM users pile up per account</strong>.</li>
+<li>Mitigation: replace long-lived users with <strong>IAM Identity Center</strong> (SSO) issuing short-lived assumed roles, and provision every new account through <strong>Control Tower</strong> so guardrails apply by default, not by memory.</li>
+</ul></li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    Start(["Requirement:&lt;br/&gt;many clients/environments,&lt;br/&gt;one AWS presence"]) --&gt; Q1{"Must one incident's&lt;br/&gt;blast radius stay contained?"}
+    Q1 --&gt;|"Yes"| A1["Split into accounts by&lt;br/&gt;ownership / environment"]
+    A1 --&gt; Q2{"Need repeatable,&lt;br/&gt;guardrailed provisioning?"}
+    Q2 --&gt;|"Yes"| A2["Organizations + OUs + SCPs&lt;br/&gt;via Control Tower"]
+    A2 --&gt; Q3{"How do people reach&lt;br/&gt;many accounts safely?"}
+    Q3 --&gt; A3["IAM Identity Center (SSO)&lt;br/&gt;+ short-lived roles"]
+    A3 --&gt; Q4{"Need one place to&lt;br/&gt;see everything?"}
+    Q4 --&gt; A4["Dedicated logging account&lt;br/&gt;CloudTrail, GuardDuty"]
+    A4 --&gt; Done(["Governed multi-account&lt;br/&gt;landing zone&lt;br/&gt;rejected: one shared account,&lt;br/&gt;long-lived IAM users"])
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>The Rejected Alternative</strong>: <code>One account for everything</code> is the simplest to start, but it wastes the strongest, coarsest blast-radius and billing boundary AWS gives away for free.</p>
+<blockquote class="blockquote">
+<ul>
+<li>Going the other way — an account per microservice — multiplies the OU/SCP/logging overhead a team must operate, for isolation finer than the actual risk requires.</li>
+<li>The intuition: blast radius isn’t only a resource-level concern (which AZ, which instance) — the <strong>account boundary</strong> is the largest blast-radius knob available, and it costs nothing until you actually need finer isolation.</li>
+</ul>
+</blockquote>
+<p>📖 <strong>Deep dive:</strong> <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/13-multi-account-strategies.html">13. Architecting for Account Governance and Multi-Account Management</a></p>
 </section>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 <ul>
-<li>The way the functional drivers and non-functional drivers dictated the cloud architecture decisions in these 4 examples:</li>
+<li>The way the functional drivers and non-functional drivers dictated the cloud architecture decisions in these 5 examples:</li>
 </ul>
 <table class="caption-top table">
 <colgroup>
@@ -583,12 +663,19 @@ flowchart TD
 <td>“Run containerized microservices” → ECS/EKS, Fargate/EC2</td>
 <td>Ops burden + scale → <strong>ECS + Fargate</strong> unless K8s ecosystem is genuinely needed</td>
 </tr>
+<tr class="odd">
+<td><strong>Multi-account</strong></td>
+<td>“Isolate clients/environments” → single account, per-client accounts, per-env accounts</td>
+<td>Blast radius + billing clarity → <strong>Organizations + OUs</strong> over one shared account</td>
+</tr>
 </tbody>
 </table>
 <ul>
-<li>The final repetitive message across the 4 examples:
+<li>The final repetitive message across the 5 examples:
 <ul>
 <li>Start with the smallest sufficient set of blocks and add 1 complexity for every pain point (e.g.&nbsp;of painpoints: a failure to isolate, a burst to absorb, not paying for idle resources, etc.,)</li>
+<li>Blast radius isn’t always a resource sitting inside an account — sometimes the blast radius <em>is</em> the account, and the account boundary is the fix.</li>
+<li>None of these 5 decisions are made in isolation on a real system: a single build typically decouples its tiers (Example 1), picks an ingest/store/query path for its data (Example 3), and sits inside an account structure that contains the blast radius of all of it (Example 5) — at the same time, not in sequence.</li>
 </ul></li>
 </ul>
 
