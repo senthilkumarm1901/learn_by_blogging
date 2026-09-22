@@ -195,8 +195,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="how-to-architect-a-serverless-web-backend-solution-in-aws">How to Architect a Serverless Web Backend Solution in AWS</h2>
 <blockquote class="blockquote">
 <ul>
-<li>❓ Key Question: Given a workload, how do you decide <em>which</em> serverless services to combine — and how do you defend the ones you rejected?</li>
-<li>Hint: architecting is not “knowing services”. It is <strong>requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections</strong>.</li>
+<li>❓ Key Question of this chapter: Given a workload, how do we decide <em>which</em> serverless services to combine and how do we defend the ones you rejected?</li>
+<li>Workflow followed in all chapters: <strong>requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections</strong>.</li>
 </ul>
 </blockquote>
 <p><strong>Running example used throughout this chapter</strong></p>
@@ -241,24 +241,7 @@ flowchart LR
 <section id="the-method-nine-steps-to-a-serverless-architecture" class="level2">
 <h2 class="anchored" data-anchor-id="the-method-nine-steps-to-a-serverless-architecture">10.1 The Method: nine steps to a serverless architecture</h2>
 <p>Every serverless design in this chapter follows the same reasoning chain. The valuable skill is the <strong>chain and the rejected options</strong>, not memorising service features — multiple valid solutions always exist.</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart LR
-    A["Business need"] --&gt; B["Non-functional drivers&lt;br&gt;scale, latency, cost,&lt;br&gt;ops, resilience"]
-    B --&gt; C["Candidate AWS services"]
-    C --&gt; D["Compare trade-offs"]
-    D --&gt; E["Architecture decision"]
-    E --&gt; F["Justify why NOT&lt;br&gt;the alternatives"]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<p><img src="./images/main_image_ca.png" class="img-fluid"></p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -270,47 +253,47 @@ flowchart LR
 <tbody>
 <tr class="odd">
 <td>1</td>
-<td>What are the real architectural drivers?</td>
+<td>What are the real <strong>architectural drivers?</strong></td>
 <td><a href="#sec-drivers">10.2</a></td>
 </tr>
 <tr class="even">
 <td>2</td>
-<td>How do clients get in?</td>
+<td>How do <strong>clients</strong> get in?</td>
 <td><a href="#sec-frontdoor">10.3</a></td>
 </tr>
 <tr class="odd">
 <td>3</td>
-<td>What runs the business logic?</td>
+<td><strong>Server</strong>:What runs the business logic?</td>
 <td><a href="#sec-compute">10.4</a></td>
 </tr>
 <tr class="even">
 <td>4</td>
-<td>Where does state live?</td>
+<td><strong>Data</strong>: Where does state live?</td>
 <td><a href="#sec-data">10.5</a></td>
 </tr>
 <tr class="odd">
 <td>5</td>
-<td>How do components stay decoupled?</td>
+<td>How do components stay <strong>decoupled?</strong></td>
 <td><a href="#sec-decouple">10.6</a></td>
 </tr>
 <tr class="even">
 <td>6</td>
-<td>How do we absorb bursts and cut latency?</td>
+<td>How do we absorb <strong>bursts</strong> and cut <strong>latency?</strong></td>
 <td><a href="#sec-async">10.7</a></td>
 </tr>
 <tr class="odd">
 <td>7</td>
-<td>How is every hop secured?</td>
+<td>How is every hop <strong>secured</strong>?</td>
 <td><a href="#sec-security">10.8</a></td>
 </tr>
 <tr class="even">
 <td>8</td>
-<td>How do we see what is happening?</td>
+<td><strong>Logging</strong>: How do we see what is happening?</td>
 <td><a href="#sec-observability">10.9</a></td>
 </tr>
 <tr class="odd">
 <td>9</td>
-<td>How do we tune cost and performance?</td>
+<td><strong>Optimization</strong>: How do we tune cost and performance?</td>
 <td><a href="#sec-optimize">10.10</a></td>
 </tr>
 </tbody>

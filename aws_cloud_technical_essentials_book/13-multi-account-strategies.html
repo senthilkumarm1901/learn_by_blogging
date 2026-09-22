@@ -160,8 +160,9 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="how-to-architect-account-governance-on-aws">How to Architect Account Governance on AWS</h2>
 <blockquote class="blockquote">
 <ul>
-<li>❓ When one AWS account grows to hold everything — every client, every environment, every workload — how do you re-organise it so that security, billing and blast radius are all under control, without slowing teams down?</li>
-<li>Hint: same discipline as <a href="../aws_cloud_technical_essentials_book/10-architecting-serverless-backend-solution-in-aws.html">10. Serverless Backend</a>, <a href="../aws_cloud_technical_essentials_book/11-serverless-data-analytics.html">11. Serverless Data Analytics</a> and <a href="../aws_cloud_technical_essentials_book/12-hybrid-container-workloads.html">12. Hybrid Container Workloads</a> — <strong>requirements → architectural drivers → candidate services → trade-offs → decision</strong>. What changes is that the “architecture” is now the <strong>account structure itself</strong>, and the services (Organizations, IAM roles, IAM Identity Center, Control Tower) exist to govern it.</li>
+<li>❓ Key Question of this chapter: When one AWS account grows to hold everything: all clients, all environments, all workloads, how do you re-organise it so that security, billing and blast radius are all under control, without slowing teams down?</li>
+<li>Workflow followed in all chapters: <strong>requirements → architectural drivers → candidate services → trade-offs → decision</strong>.</li>
+<li>What changes is that the “architecture” is now the <strong>account structure itself</strong>, and the services (Organizations, IAM roles, IAM Identity Center, Control Tower) exist to govern it.</li>
 </ul>
 </blockquote>
 <p><strong>Running example used throughout this chapter</strong></p>
@@ -235,31 +236,31 @@ flowchart LR
 <tbody>
 <tr class="odd">
 <td>1</td>
-<td>Why split into multiple accounts?</td>
+<td><strong>Motivation</strong>: Why split into multiple accounts?</td>
 <td>Multi-account strategy</td>
 <td><a href="#sec-drivers">13.2</a></td>
 </tr>
 <tr class="even">
 <td>2</td>
-<td>How do we group and control them?</td>
+<td><strong>Account Structure</strong>: How do we group and control them?</td>
 <td><strong>AWS Organizations + OUs + SCPs</strong></td>
 <td><a href="#sec-orgs">13.3</a></td>
 </tr>
 <tr class="odd">
 <td>3</td>
-<td>How do people move between accounts safely?</td>
+<td><strong>Accesses</strong>: How do people move between accounts safely?</td>
 <td><strong>IAM roles</strong> + <strong>IAM Identity Center</strong></td>
 <td><a href="#sec-auth">13.4</a></td>
 </tr>
 <tr class="even">
 <td>4</td>
-<td>How do we see everything centrally?</td>
+<td><strong>Monitoring</strong>: How do we see everything centrally?</td>
 <td><strong>CloudTrail, Config, VPC Flow Logs, GuardDuty, Security Hub</strong></td>
 <td><a href="#sec-logging">13.5</a></td>
 </tr>
 <tr class="odd">
 <td>5</td>
-<td>How do we make it repeatable and safe by default?</td>
+<td><strong>IAC/DevOps</strong>: How do we make it repeatable and safe by default?</td>
 <td><strong>Control Tower, Service Catalog, CloudFormation, tag policies</strong></td>
 <td><a href="#sec-automate">13.6</a></td>
 </tr>
@@ -271,7 +272,7 @@ flowchart LR
 <hr>
 </section>
 <section id="sec-drivers" class="level2">
-<h2 class="anchored" data-anchor-id="sec-drivers">13.2 Step 1 — Why a multi-account strategy?</h2>
+<h2 class="anchored" data-anchor-id="sec-drivers">13.2 Why a multi-account strategy?</h2>
 <blockquote class="blockquote">
 <ul>
 <li>❓ What exactly does an account boundary buy you that an IAM policy cannot?</li>
@@ -424,7 +425,7 @@ flowchart TD
 </section>
 </section>
 <section id="sec-orgs" class="level2">
-<h2 class="anchored" data-anchor-id="sec-orgs">13.3 Step 2 — Organise with AWS Organizations, OUs and SCPs</h2>
+<h2 class="anchored" data-anchor-id="sec-orgs">13.3 Organise with AWS Organizations, OUs and SCPs</h2>
 <blockquote class="blockquote">
 <ul>
 <li>❓ How do you govern dozens of accounts centrally instead of one-by-one?</li>
@@ -507,7 +508,7 @@ flowchart TD
 </section>
 </section>
 <section id="sec-auth" class="level2">
-<h2 class="anchored" data-anchor-id="sec-auth">13.4 Step 3 — Authenticate across accounts</h2>
+<h2 class="anchored" data-anchor-id="sec-auth">13.4 Authenticate across accounts</h2>
 <blockquote class="blockquote">
 <ul>
 <li>❓ How do people and services move between accounts <strong>without duplicating credentials</strong>?</li>
@@ -660,7 +661,7 @@ flowchart LR
 </section>
 </section>
 <section id="sec-logging" class="level2">
-<h2 class="anchored" data-anchor-id="sec-logging">13.5 Step 4 — Log and monitor centrally</h2>
+<h2 class="anchored" data-anchor-id="sec-logging">13.5 Log and monitor centrally</h2>
 <blockquote class="blockquote">
 <ul>
 <li>❓ Several logging and monitoring services sound similar — what does each actually do?</li>
@@ -749,7 +750,7 @@ flowchart TD
 <hr>
 </section>
 <section id="sec-automate" class="level2">
-<h2 class="anchored" data-anchor-id="sec-automate">13.6 Step 5 — Automate provisioning and enforce guardrails</h2>
+<h2 class="anchored" data-anchor-id="sec-automate">13.6 Automate provisioning and enforce guardrails</h2>
 <blockquote class="blockquote">
 <ul>
 <li>❓ How do you stamp out new accounts that are compliant <em>by default</em>, at scale?</li>
