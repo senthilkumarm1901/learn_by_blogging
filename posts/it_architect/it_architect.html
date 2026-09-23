@@ -1728,6 +1728,46 @@ flowchart LR
 </div>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>The Library Analogy</strong></p>
+<p>Imagine you need a book for a project.</p>
+<ul>
+<li><strong>First time (Cache Miss):</strong> You travel to the <strong>Library</strong> (Origin Server) to find the book. You borrow it, read it, and keep a copy on your <strong>bedside table</strong> (CDN Edge Cache).</li>
+<li><strong>Next time (Cache Hit):</strong> When you need the book again, you don’t travel to the library. You simply lift it from your bedside table — fast, local, and no trip required.</li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    U[User]:::client --&gt; B{Bedside Table&lt;br/&gt;CDN Edge}:::control
+    B --&gt;|Book available&lt;br/&gt;Cache Hit| U
+    B --&gt;|Book not here&lt;br/&gt;Cache Miss| L[Library&lt;br/&gt;Origin Server]:::compute
+    L --&gt;|Fetch and return book| B
+    B --&gt;|Store copy locally| B
+
+    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
+    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
+    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+</div>
 <p><strong>When to use:</strong> Use it for global delivery of static assets, downloads, media, and cacheable API responses where origin offload and low latency matter.</p>
 <hr>
 </section>
@@ -2004,7 +2044,7 @@ flowchart LR
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/senthilkumarm1901\.github\.io\/learn_by_blogging\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
