@@ -360,7 +360,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="the-foundation-client-server-and-database" class="level2">
 <h2 class="anchored" data-anchor-id="the-foundation-client-server-and-database">1. The Foundation: Client, Server, and Database</h2>
 <p><em>How a request travels and where it goes.</em></p>
-<p>Every system starts with the same shape: a <strong>client</strong> asks, a <strong>server</strong> does the work, and a <strong>database</strong> remembers. Get this triangle right and everything else in this guide is just a refinement of it.</p>
+<p>Every system starts with the same shape: a <strong>client</strong> asks, a <strong>server</strong> does the work, and a <strong>database</strong> remembers.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>The Restaurant Analogy</strong></p>
+<p>To visualize this, imagine a restaurant:</p>
+<ul>
+<li><strong>Client:</strong> The <strong>Customer</strong> who asks for a dish.</li>
+<li><strong>Server:</strong> The <strong>Chef</strong> who prepares the dish using ingredients.</li>
+<li><strong>API Gateway:</strong> The <strong>Waiter</strong> who takes the order from the customer and communicates it to the kitchen.</li>
+<li><strong>Database:</strong> The <strong>Pantry</strong> where the ingredients (our <em>data</em>) are stored.</li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant Customer as Client (Customer)
+    participant Waiter as API Gateway (Waiter)
+    participant Chef as Server (Chef)
+    participant Pantry as Database (Pantry)
+
+    Customer-&gt;&gt;Waiter: Places order (Request)
+    Waiter-&gt;&gt;Chef: Communicates order to Kitchen
+    Chef-&gt;&gt;Pantry: Fetches ingredients (Data lookup)
+    Pantry--&gt;&gt;Chef: Returns ingredients
+    Chef--&gt;&gt;Waiter: Serves prepared dish (Response)
+    Waiter--&gt;&gt;Customer: Delivers dish to table
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+</div>
 <section id="clientserverdatabase-architecture" class="level3">
 <h3 class="anchored" data-anchor-id="clientserverdatabase-architecture">1.1 Client–Server–Database Architecture</h3>
 <p><strong>What it is:</strong> A client initiates a request, a server processes it (applying business logic), and a database persists or returns the data. The client never touches the database directly; it always goes through the server.</p>
