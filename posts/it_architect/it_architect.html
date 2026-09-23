@@ -1750,16 +1750,22 @@ Tip
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart LR
-    U[User]:::client --&gt; B{Bedside Table&lt;br/&gt;CDN Edge}:::control
-    B --&gt;|Book available&lt;br/&gt;Cache Hit| U
-    B --&gt;|Book not here&lt;br/&gt;Cache Miss| L[Library&lt;br/&gt;Origin Server]:::compute
-    L --&gt;|Fetch and return book| B
-    B --&gt;|Store copy locally| B
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant B as Bedside Table&lt;br/&gt;(CDN Edge)
+    participant L as Library&lt;br/&gt;(Origin Server)
 
-    classDef client fill:#F5F5F5,stroke:#616161,stroke-width:1px;
-    classDef control fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
-    classDef compute fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
+    U-&gt;&gt;B: Request book
+
+    alt Cache Hit — book available
+        B--&gt;&gt;U: Return book immediately
+    else Cache Miss — book not here
+        B-&gt;&gt;L: Fetch book from origin
+        L--&gt;&gt;B: Return book
+        B-&gt;&gt;B: Store copy locally
+        B--&gt;&gt;U: Return book
+    end
 </pre>
 </div>
 <p></p></figure><p></p>
