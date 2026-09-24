@@ -240,6 +240,9 @@ flowchart TD
 | Standard-IA | Known infrequent access | Lower storage price, per-GB retrieval fee |
 | Glacier classes | Archival, rare access | Lowest cost; ms-to-hours retrieval depending on class |
 
+* S3 Intelligent-Tiering is an Amazon S3 storage class that automatically reduces storage costs by moving objects between different access tiers based on how frequently you use them.
+    * Some of the tiers: `Frequent Access Tier` (stores new & active data); `Infrequent Access Tier`; `Archive Instant Access Tier` (automatic movement of unaccessed data after 90 days), `Automatic Promotion` (if an infrequent data is accessed, it gets promoted to `Frequent Access` state)
+
 **Lifecycle policies** move objects between classes automatically over time (e.g. hot → IA → Glacier), which is how you control cost at scale without manual work.
 
 > **Watch the small-file trap:** a clickstream naturally produces *many tiny objects*. That hurts twice — Intelligent-Tiering won't tier objects under 128 KB, and Athena is slow and expensive over thousands of small files. Firehose's buffering is your first defence; see [11.10](#sec-optimize).
@@ -513,6 +516,8 @@ An honest architect states the boundaries of their own recommendation.
 
 ## 11.13 Architect's cheat sheet {#sec-cheatsheet}
 
+The cloud decision-making for the requirement mentioned in the beginning of the blog: 
+
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
@@ -526,13 +531,13 @@ flowchart LR
 
     ROOT --> S["Store"]
     S --> S1["S3 lake, 11 nines,<br>compute-decoupled"]
-    S --> S2["Intelligent-Tiering<br>for unknown access"]
+    S --> S2["Intelligent-Tiering<br>in S3 based on<br>access patterns"]
     S --> S3["CRR needs versioning;<br>RPO is not zero"]
 
     ROOT --> Q["Query + Show"]
     Q --> Q1["Athena = serverless<br>SQL on S3"]
     Q --> Q2["Athena bills<br>per byte scanned"]
-    Q --> Q3["Glue Data Catalog IS used"]
+    Q --> Q3["Glue Data Catalog used"]
     Q --> Q4["QuickSight readers<br>pay per session"]
 
     ROOT --> X["Cross-cutting"]

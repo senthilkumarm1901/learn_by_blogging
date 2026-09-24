@@ -201,7 +201,7 @@ The client calls `api.company.com/orders` and `api.company.com/notify` identical
 
 | Caveat | Detail |
 | --- | --- |
-| **29-second integration timeout** | API Gateway caps any integration at ~29 s. Long-running work must go async (queue + poll), exactly as Lambda's 15-min cap forces |
+| **29-second integration timeout** | API Gateway caps any integration at ~29 s. Long-running work must go async (queue + poll), exactly as Lambda's 90-min cap forces |
 | **Extra hop, extra cost** | API Gateway → VPC Link → load balancer → task adds latency and components versus exposing the ALB directly |
 | **Two scaling models** | Lambda scales per request automatically; Fargate scales via **ECS service auto-scaling** (task count). You now own container-tier capacity planning |
 | **Idle cost** | Fargate tasks run continuously — you pay at low traffic too (mitigate with a low minimum task count) |
@@ -243,7 +243,7 @@ flowchart TD
 
 > **Lambda constraints you must design around**
 >
-> - **15-minute maximum execution.** Anything longer needs Fargate, Batch, or decomposition behind Step Functions.
+> - **90-minute maximum execution.** Anything longer needs Fargate, Batch, or decomposition behind Step Functions.
 > - **No OS access**; the runtime and patching are AWS's responsibility.
 > - **Stateless execution environments** — reused for a while, then torn down (see [10.10.1](#sec-init)).
 > - **Cold starts** on the first invocation into a new environment.
@@ -259,13 +259,13 @@ For the wider compute landscape (EC2 families, containers, scaling), see [03. Co
 
 **No — and this is one of the most under-appreciated points in serverless design.**
 
-Lambda's constraints (15-minute cap, statelessness, event triggers, one deployable per function) **implicitly force decomposition**. Fargate has none of them: it runs a long-lived container with your existing process model, in-memory state and background threads, with the code largely untouched.
+Lambda's constraints (90-minute cap, statelessness, event triggers, one deployable per function) **implicitly force decomposition**. Fargate has none of them: it runs a long-lived container with your existing process model, in-memory state and background threads, with the code largely untouched.
 
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     Choice{"Chosen compute?"}
-    Choice -->|Lambda| Force["Constraints force decomposition<br>15-min cap, stateless,<br>per-function deploy"]
+    Choice -->|Lambda| Force["Constraints force decomposition<br>90-min cap, stateless,<br>per-function deploy"]
     Choice -->|Fargate| Free["No such constraints<br>run the monolith as one container"]
     Force --> Micro["Multiple small functions"]
     Free --> Mono["Containerise the monolith as-is<br>re-platform / lift and shift"]
@@ -731,21 +731,23 @@ An honest architect states the boundary conditions of their own recommendation.
 
 ## 10.13 Architect's cheat sheet {#sec-cheatsheet}
 
+For the scope mentioned in the beginning of this blog post, the following flowchart depicts the cloud decison-making.
+
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     ROOT["Serverless backend<br>decision map"]
 
     ROOT --> C["Compute"]
-    C --> C1["Lambda: event-driven,<br>under 15 min"]
+    C --> C1["Lambda: event-driven,<br>under 90 min<br>(updated on Sep'26)"]
     C --> C2["Reject EC2 for<br>ops + idle cost"]
     C --> C3["Reject Fargate if<br>no container skills"]
-    C --> C4["Fargate? then monolith<br>may stay whole"]
+    C --> C4["Even iF Fargate<br>, monolith<br>may NOT stay whole<br>due to decoupling"]
 
     ROOT --> D["Data"]
     D --> D1["DynamoDB for simple<br>CRUD, no joins"]
-    D --> D2["Model access patterns FIRST"]
-    D --> D3["Aurora + RDS Proxy<br>only if relational"]
+    D --> D2["Define access<br>patterns first<br>Define the exact queries the app needs"]
+    D --> D3["Aurora/RDS<br>only if relational<br>is a need"]
 
     ROOT --> M["Decoupling"]
     M --> M1["SNS = push fan-out"]
@@ -762,7 +764,7 @@ flowchart LR
 
 1. Match **requirements → drivers → services**; always justify the rejected options.
 2. **Serverless** fits spiky, low-ops, simple-data workloads.
-3. **Lambda:** 15-minute cap, stateless, pay-per-use, no idle cost, cold starts.
+3. **Lambda:** 90-minute cap (EDIT: updated on Sep 23rd), stateless, pay-per-use, no idle cost, cold starts.
 4. **Reject a valid option** (Fargate) when adoption cost and team skills do not fit.
 5. **API Gateway** is the managed front door — and it can call DynamoDB/SQS **directly**, with no Lambda.
 6. API Gateway is **compute-agnostic**: it reaches Fargate through a **VPC Link → private NLB/ALB**, so containers stay off the internet.
