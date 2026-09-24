@@ -1615,6 +1615,7 @@ flowchart LR
 </section>
 <section id="sec-cheatsheet" class="level2">
 <h2 class="anchored" data-anchor-id="sec-cheatsheet">10.13 Architect’s cheat sheet</h2>
+<p>For the scope mentioned in the beginning of this blog post, the following flowchart depicts the cloud decison-making.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1625,15 +1626,15 @@ flowchart LR
     ROOT["Serverless backend&lt;br&gt;decision map"]
 
     ROOT --&gt; C["Compute"]
-    C --&gt; C1["Lambda: event-driven,&lt;br&gt;under 15 min"]
+    C --&gt; C1["Lambda: event-driven,&lt;br&gt;under 90 min&lt;br&gt;(updated on Sep'26)"]
     C --&gt; C2["Reject EC2 for&lt;br&gt;ops + idle cost"]
     C --&gt; C3["Reject Fargate if&lt;br&gt;no container skills"]
-    C --&gt; C4["Fargate? then monolith&lt;br&gt;may stay whole"]
+    C --&gt; C4["Even iF Fargate&lt;br&gt;, monolith&lt;br&gt;may NOT stay whole&lt;br&gt;due to decoupling"]
 
     ROOT --&gt; D["Data"]
     D --&gt; D1["DynamoDB for simple&lt;br&gt;CRUD, no joins"]
-    D --&gt; D2["Model access patterns FIRST"]
-    D --&gt; D3["Aurora + RDS Proxy&lt;br&gt;only if relational"]
+    D --&gt; D2["Define access&lt;br&gt;patterns first&lt;br&gt;Define the exact queries the app needs"]
+    D --&gt; D3["Aurora/RDS&lt;br&gt;only if relational&lt;br&gt;is a need"]
 
     ROOT --&gt; M["Decoupling"]
     M --&gt; M1["SNS = push fan-out"]
@@ -1655,7 +1656,7 @@ flowchart LR
 <ol type="1">
 <li>Match <strong>requirements → drivers → services</strong>; always justify the rejected options.</li>
 <li><strong>Serverless</strong> fits spiky, low-ops, simple-data workloads.</li>
-<li><strong>Lambda:</strong> 15-minute cap, stateless, pay-per-use, no idle cost, cold starts.</li>
+<li><strong>Lambda:</strong> 90-minute cap (EDIT: updated on Sep 23rd), stateless, pay-per-use, no idle cost, cold starts.</li>
 <li><strong>Reject a valid option</strong> (Fargate) when adoption cost and team skills do not fit.</li>
 <li><strong>API Gateway</strong> is the managed front door — and it can call DynamoDB/SQS <strong>directly</strong>, with no Lambda.</li>
 <li>API Gateway is <strong>compute-agnostic</strong>: it reaches Fargate through a <strong>VPC Link → private NLB/ALB</strong>, so containers stay off the internet.</li>

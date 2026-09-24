@@ -646,6 +646,12 @@ flowchart TD
 </tr>
 </tbody>
 </table>
+<ul>
+<li>S3 Intelligent-Tiering is an Amazon S3 storage class that automatically reduces storage costs by moving objects between different access tiers based on how frequently you use them.
+<ul>
+<li>Some of the tiers: <code>Frequent Access Tier</code> (stores new &amp; active data); <code>Infrequent Access Tier</code>; <code>Archive Instant Access Tier</code> (automatic movement of unaccessed data after 90 days), <code>Automatic Promotion</code> (if an infrequent data is accessed, it gets promoted to <code>Frequent Access</code> state)</li>
+</ul></li>
+</ul>
 <p><strong>Lifecycle policies</strong> move objects between classes automatically over time (e.g.&nbsp;hot → IA → Glacier), which is how you control cost at scale without manual work.</p>
 <blockquote class="blockquote">
 <p><strong>Watch the small-file trap:</strong> a clickstream naturally produces <em>many tiny objects</em>. That hurts twice — Intelligent-Tiering won’t tier objects under 128 KB, and Athena is slow and expensive over thousands of small files. Firehose’s buffering is your first defence; see <a href="#sec-optimize">11.10</a>.</p>
@@ -1236,6 +1242,7 @@ flowchart LR
 </section>
 <section id="sec-cheatsheet" class="level2">
 <h2 class="anchored" data-anchor-id="sec-cheatsheet">11.13 Architect’s cheat sheet</h2>
+<p>The cloud decision-making:</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1253,13 +1260,13 @@ flowchart LR
 
     ROOT --&gt; S["Store"]
     S --&gt; S1["S3 lake, 11 nines,&lt;br&gt;compute-decoupled"]
-    S --&gt; S2["Intelligent-Tiering&lt;br&gt;for unknown access"]
+    S --&gt; S2["Intelligent-Tiering&lt;br&gt;in S3 based on&lt;br&gt;access patterns"]
     S --&gt; S3["CRR needs versioning;&lt;br&gt;RPO is not zero"]
 
     ROOT --&gt; Q["Query + Show"]
     Q --&gt; Q1["Athena = serverless&lt;br&gt;SQL on S3"]
     Q --&gt; Q2["Athena bills&lt;br&gt;per byte scanned"]
-    Q --&gt; Q3["Glue Data Catalog IS used"]
+    Q --&gt; Q3["Glue Data Catalog used"]
     Q --&gt; Q4["QuickSight readers&lt;br&gt;pay per session"]
 
     ROOT --&gt; X["Cross-cutting"]
