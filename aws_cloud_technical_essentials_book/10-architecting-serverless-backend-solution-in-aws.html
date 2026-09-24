@@ -552,7 +552,7 @@ flowchart LR
 <tbody>
 <tr class="odd">
 <td><strong>29-second integration timeout</strong></td>
-<td>API Gateway caps any integration at ~29 s. Long-running work must go async (queue + poll), exactly as Lambda’s 15-min cap forces</td>
+<td>API Gateway caps any integration at ~29 s. Long-running work must go async (queue + poll), exactly as Lambda’s 90-min cap forces</td>
 </tr>
 <tr class="even">
 <td><strong>Extra hop, extra cost</strong></td>
@@ -642,7 +642,7 @@ flowchart TD
 <blockquote class="blockquote">
 <p><strong>Lambda constraints you must design around</strong></p>
 <ul>
-<li><strong>15-minute maximum execution.</strong> Anything longer needs Fargate, Batch, or decomposition behind Step Functions.</li>
+<li><strong>90-minute maximum execution.</strong> Anything longer needs Fargate, Batch, or decomposition behind Step Functions.</li>
 <li><strong>No OS access</strong>; the runtime and patching are AWS’s responsibility.</li>
 <li><strong>Stateless execution environments</strong> — reused for a while, then torn down (see <a href="#sec-init">10.10.1</a>).</li>
 <li><strong>Cold starts</strong> on the first invocation into a new environment.</li>
@@ -661,7 +661,7 @@ flowchart TD
 </ul>
 </blockquote>
 <p><strong>No — and this is one of the most under-appreciated points in serverless design.</strong></p>
-<p>Lambda’s constraints (15-minute cap, statelessness, event triggers, one deployable per function) <strong>implicitly force decomposition</strong>. Fargate has none of them: it runs a long-lived container with your existing process model, in-memory state and background threads, with the code largely untouched.</p>
+<p>Lambda’s constraints (90-minute cap, statelessness, event triggers, one deployable per function) <strong>implicitly force decomposition</strong>. Fargate has none of them: it runs a long-lived container with your existing process model, in-memory state and background threads, with the code largely untouched.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -670,7 +670,7 @@ flowchart TD
 <pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
     Choice{"Chosen compute?"}
-    Choice --&gt;|Lambda| Force["Constraints force decomposition&lt;br&gt;15-min cap, stateless,&lt;br&gt;per-function deploy"]
+    Choice --&gt;|Lambda| Force["Constraints force decomposition&lt;br&gt;90-min cap, stateless,&lt;br&gt;per-function deploy"]
     Choice --&gt;|Fargate| Free["No such constraints&lt;br&gt;run the monolith as one container"]
     Force --&gt; Micro["Multiple small functions"]
     Free --&gt; Mono["Containerise the monolith as-is&lt;br&gt;re-platform / lift and shift"]
