@@ -1778,33 +1778,120 @@ flowchart LR
 </div>
 </div>
 </div>
-<ol type="1">
+<ul>
 <li>Match <strong>requirements → drivers → services</strong>; always justify the rejected options.</li>
-<li><strong>Serverless</strong> fits spiky, low-ops, simple-data workloads.</li>
-<li><strong>Lambda:</strong> 90-minute cap (EDIT: updated on Sep 23rd), stateless, pay-per-use, no idle cost, cold starts.</li>
-<li><strong>Reject a valid option</strong> (Fargate) when adoption cost and team skills do not fit.</li>
-<li><strong>API Gateway</strong> is the managed front door — and it can call DynamoDB/SQS <strong>directly</strong>, with no Lambda.</li>
-<li>API Gateway is <strong>compute-agnostic</strong>: it reaches Fargate through a <strong>VPC Link → private NLB/ALB</strong>, so containers stay off the internet.</li>
-<li>API Gateway integrations time out at <strong>~29 seconds</strong> — longer work must go async, whatever the compute.</li>
-<li><strong>“Container vs function”</strong> and <strong>“monolith vs microservices”</strong> are two separate decisions; Lambda conflates them, Fargate does not.</li>
-<li>Containerising fixes <strong>ops pain</strong>, not <strong>coupling pain</strong>. Decompose reactively, on evidence.</li>
-<li><strong>DynamoDB</strong> for no-join CRUD; design access patterns up front; use secondary indexes.</li>
-<li><strong>DynamoDB + Lambda</strong> avoids relational connection exhaustion; otherwise add <strong>RDS Proxy</strong>.</li>
-<li><strong>SNS</strong> = push pub/sub fan-out; <strong>SQS</strong> = pull queue that persists and buffers.</li>
-<li><strong>Streams → Lambda → SNS</strong> lets you add consumers with zero changes to producer code.</li>
-<li><strong>Storage-first / async</strong> = fast user response, but the transaction completes downstream (eventual).</li>
-<li><strong>SNS FIFO</strong> = ordered/exactly-once (~300 TPS); <strong>Standard</strong> = higher TPS, best-effort ordering.</li>
-<li><strong>SQS:</strong> 256 KB max message, 14-day max retention, visibility timeout, long polling saves cost.</li>
-<li>Always attach a <strong>DLQ</strong>; a poison message must never stall the buffer.</li>
-<li><strong>EventBridge</strong> beats SNS only when you need rich filtering, many sources or SaaS targets — it costs more.</li>
-<li><strong>DAX</strong> gives microsecond DynamoDB reads with no code changes (VPC-hosted cache).</li>
-<li><strong>Lambda Power Tuning</strong> — right-size memory; more memory can be cheaper <em>and</em> faster.</li>
-<li>Initialise clients <strong>outside the handler</strong> for reuse — but never cache user data or secrets there.</li>
-<li><strong>One function, one IAM role, least privilege</strong> — the blast radius of a shared role is the whole app.</li>
-<li><strong>CloudWatch</strong> is the near-zero-config observability layer; add <strong>X-Ray</strong> and a correlation ID for async flows.</li>
-<li>Decoupling is <strong>layered</strong>: fan-out (SNS) and latency/backpressure (SQS) are different problems.</li>
-<li>Prefer <em>“prefer X when…”</em> over absolute rules — architecture is trade-offs, not commandments.</li>
-</ol>
+</ul>
+<p><strong>Decisions on Compute</strong>: - <strong>Serverless</strong> fits spiky, low-ops, simple-data workloads. - <strong>Lambda:</strong> 90-minute cap (EDIT: updated on Sep 23rd), stateless, pay-per-use, no idle cost, cold starts. - Containerising fixes <strong>ops pain</strong> (especially AWS managed ECS in Fargate), not <strong>coupling pain</strong>. - Also, still reject Fargate as adoption cost and team skills do not fit.</p>
+<p><strong>The Intermediary between Client &amp; Compute - API Gateway</strong>: - <strong>API Gateway</strong> is the managed front door — and it can call DynamoDB/SQS <strong>directly</strong>, with no Lambda. - API Gateway is <strong>compute-agnostic</strong>: it reaches Fargate through a <strong>VPC Link → private NLB/ALB</strong>, so containers stay off the internet. - API Gateway integrations time out at <strong>~29 seconds</strong>, longer work must go async, whatever the compute.</p>
+<p><strong>Pattern A: Direct Async Lambda Pattern - Producer invoking the Worker asynchronously</strong>:</p>
+<blockquote class="blockquote">
+<p>Use for simple fire-and-forget processing where Lambda’s asynchronous invocation controls are enough.</p>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    CALLER["Application"]
+    API["Lambda Invoke API&lt;br/&gt;InvocationType = Event"]
+    QUEUE["Lambda-managed&lt;br/&gt;asynchronous event queue"]
+    FN["Worker Lambda"]
+    RESULT["Database or downstream service"]
+
+    CALLER --&gt;|"Submit event"| API
+    API --&gt;|"Enqueue"| QUEUE
+    API --&gt;|"202 Accepted"| CALLER
+    QUEUE --&gt;|"Process later"| FN
+    FN --&gt; RESULT
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> boto3</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>lambda_client <span class="op">=</span> boto3.client(<span class="st">"lambda"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lambda_handler(event, context):</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    job_id <span class="op">=</span> create_job_record(event)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    lambda_client.invoke(</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        FunctionName<span class="op">=</span><span class="st">"background-worker"</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        InvocationType<span class="op">=</span><span class="st">"Event"</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        Payload<span class="op">=</span>json.dumps({</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">"jobId"</span>: job_id,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>            <span class="st">"input"</span>: event</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        }).encode(<span class="st">"utf-8"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"statusCode"</span>: <span class="dv">202</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"headers"</span>: {</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Content-Type"</span>: <span class="st">"application/json"</span>,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Location"</span>: <span class="ss">f"/jobs/</span><span class="sc">{</span>job_id<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">"body"</span>: json.dumps({</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">"jobId"</span>: job_id,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>            <span class="st">"status"</span>: <span class="st">"ACCEPTED"</span>,</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>            <span class="st">"statusUrl"</span>: <span class="ss">f"/jobs/</span><span class="sc">{</span>job_id<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Pattern B: API Gateway directly to SQS</strong>:</p>
+<blockquote class="blockquote">
+<p>Use when the API only needs to validate basic request structure and enqueue work. This removes the submission Lambda.</p>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    CLIENT["Client"]
+    API["API Gateway&lt;br/&gt;AWS service integration"]
+    SQS["SQS Queue"]
+    WORKER["Worker Lambda"]
+
+    CLIENT --&gt; API
+    API --&gt;|"SendMessage"| SQS
+    API --&gt;|"202 Accepted"| CLIENT
+    SQS --&gt; WORKER
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Pattern C: API Gateway to submission Lambda to SQS</strong></p>
+<blockquote class="blockquote">
+<p>Use when validation, authorization, transformation, job-record creation, or custom acceptance logic is required.</p>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    CLIENT["Client"]
+    API["API Gateway"]
+    SUBMIT["Submission Lambda"]
+    SQS["SQS"]
+    WORKER["Worker Lambda"]
+
+    CLIENT --&gt; API --&gt; SUBMIT
+    SUBMIT --&gt; SQS --&gt; WORKER
+    SUBMIT --&gt;|"202 Accepted"| CLIENT
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>DynamoDB Learnings</strong>: - <strong>DynamoDB</strong> for no-join CRUD; design access patterns up front; use secondary indexes. - <strong>DynamoDB + Lambda</strong> avoids relational connection exhaustion; otherwise add <strong>RDS Proxy</strong>. - <strong>DAX</strong> gives microsecond DynamoDB reads with no code changes (VPC-hosted cache).</p>
+<p><strong>Services aiding in Decoupling - SQS, SNS, EventBridge, DLQ</strong> - <strong>SNS</strong> = push pub/sub fan-out; <strong>SQS</strong> = pull queue that persists and buffers. - <strong>Streams → Lambda → SNS</strong> lets you add consumers with zero changes to producer code. - <strong>Storage-first / async</strong> = fast user response, but the transaction completes downstream (eventual). - <strong>SNS FIFO</strong> = ordered/exactly-once (~300 TPS); <strong>Standard</strong> = higher TPS, best-effort ordering. - <strong>SQS:</strong> 256 KB max message, 14-day max retention, visibility timeout, long polling saves cost. - Always attach a <strong>DLQ</strong>; a poison message must never stall the buffer. - <strong>EventBridge</strong> beats SNS only when you need rich filtering, many sources or SaaS targets — it costs more.</p>
+<p><strong>Serverless Optimizations &amp; Cross-cutting Best Practices</strong>: - <strong>Lambda Power Tuning</strong> helps in arriving at the right-size memory for the lambda; Sometimes, more memory can be cheaper <em>and</em> faster. - Initialise clients <strong>outside the handler</strong> for reuse — but never cache user data or secrets there. - <strong>One function, one IAM role, least privilege</strong> — the blast radius of a shared role is the whole app. - <strong>CloudWatch</strong> is the near-zero-config observability layer; add <strong>X-Ray</strong> and a correlation ID for async flows.</p>
 <hr>
 </section>
 <section id="sources" class="level2">
