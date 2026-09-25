@@ -762,31 +762,124 @@ flowchart LR
     X --> X5["VPC Link = private<br>path to containers"]
 ```
 
-1. Match **requirements → drivers → services**; always justify the rejected options.
-2. **Serverless** fits spiky, low-ops, simple-data workloads.
-3. **Lambda:** 90-minute cap (EDIT: updated on Sep 23rd), stateless, pay-per-use, no idle cost, cold starts.
-4. **Reject a valid option** (Fargate) when adoption cost and team skills do not fit.
-5. **API Gateway** is the managed front door — and it can call DynamoDB/SQS **directly**, with no Lambda.
-6. API Gateway is **compute-agnostic**: it reaches Fargate through a **VPC Link → private NLB/ALB**, so containers stay off the internet.
-7. API Gateway integrations time out at **~29 seconds** — longer work must go async, whatever the compute.
-8. **"Container vs function"** and **"monolith vs microservices"** are two separate decisions; Lambda conflates them, Fargate does not.
-9. Containerising fixes **ops pain**, not **coupling pain**. Decompose reactively, on evidence.
-10. **DynamoDB** for no-join CRUD; design access patterns up front; use secondary indexes.
-11. **DynamoDB + Lambda** avoids relational connection exhaustion; otherwise add **RDS Proxy**.
-12. **SNS** = push pub/sub fan-out; **SQS** = pull queue that persists and buffers.
-13. **Streams → Lambda → SNS** lets you add consumers with zero changes to producer code.
-14. **Storage-first / async** = fast user response, but the transaction completes downstream (eventual).
-15. **SNS FIFO** = ordered/exactly-once (~300 TPS); **Standard** = higher TPS, best-effort ordering.
-16. **SQS:** 256 KB max message, 14-day max retention, visibility timeout, long polling saves cost.
-17. Always attach a **DLQ**; a poison message must never stall the buffer.
-18. **EventBridge** beats SNS only when you need rich filtering, many sources or SaaS targets — it costs more.
-19. **DAX** gives microsecond DynamoDB reads with no code changes (VPC-hosted cache).
-20. **Lambda Power Tuning** — right-size memory; more memory can be cheaper *and* faster.
-21. Initialise clients **outside the handler** for reuse — but never cache user data or secrets there.
-22. **One function, one IAM role, least privilege** — the blast radius of a shared role is the whole app.
-23. **CloudWatch** is the near-zero-config observability layer; add **X-Ray** and a correlation ID for async flows.
-24. Decoupling is **layered**: fan-out (SNS) and latency/backpressure (SQS) are different problems.
-25. Prefer *"prefer X when…"* over absolute rules — architecture is trade-offs, not commandments.
+- Match **requirements → drivers → services**; always justify the rejected options.
+
+**Decisions on Compute**:
+- **Serverless** fits spiky, low-ops, simple-data workloads.
+- **Lambda:** 90-minute cap (EDIT: updated on Sep 23rd), stateless, pay-per-use, no idle cost, cold starts.
+- Containerising fixes **ops pain** (especially AWS managed ECS in Fargate), not **coupling pain**. 
+    - Also, still reject Fargate as adoption cost and team skills do not fit.
+
+**The Intermediary between Client & Compute - API Gateway**:
+- **API Gateway** is the managed front door — and it can call DynamoDB/SQS **directly**, with no Lambda.
+- API Gateway is **compute-agnostic**: it reaches Fargate through a **VPC Link → private NLB/ALB**, so containers stay off the internet.
+- API Gateway integrations time out at **~29 seconds**, longer work must go async, whatever the compute.
+
+
+**Pattern A: Direct Async Lambda Pattern - Producer invoking the Worker asynchronously**:
+
+> Use for simple fire-and-forget processing where Lambda’s asynchronous invocation controls are enough.
+
+```{mermaid}
+flowchart LR
+    CALLER["Application"]
+    API["Lambda Invoke API<br/>InvocationType = Event"]
+    QUEUE["Lambda-managed<br/>asynchronous event queue"]
+    FN["Worker Lambda"]
+    RESULT["Database or downstream service"]
+
+    CALLER -->|"Submit event"| API
+    API -->|"Enqueue"| QUEUE
+    API -->|"202 Accepted"| CALLER
+    QUEUE -->|"Process later"| FN
+    FN --> RESULT
+```
+
+```{python}
+import json
+import boto3
+
+lambda_client = boto3.client("lambda")
+
+def lambda_handler(event, context):
+    job_id = create_job_record(event)
+
+    lambda_client.invoke(
+        FunctionName="background-worker",
+        InvocationType="Event",
+        Payload=json.dumps({
+            "jobId": job_id,
+            "input": event
+        }).encode("utf-8")
+    )
+
+    return {
+        "statusCode": 202,
+        "headers": {
+            "Content-Type": "application/json",
+            "Location": f"/jobs/{job_id}"
+        },
+        "body": json.dumps({
+            "jobId": job_id,
+            "status": "ACCEPTED",
+            "statusUrl": f"/jobs/{job_id}"
+        })
+    }
+```
+
+**Pattern B: API Gateway directly to SQS**:
+
+> Use when the API only needs to validate basic request structure and enqueue work. This removes the submission Lambda.
+
+```{mermaid}
+flowchart LR
+    CLIENT["Client"]
+    API["API Gateway<br/>AWS service integration"]
+    SQS["SQS Queue"]
+    WORKER["Worker Lambda"]
+
+    CLIENT --> API
+    API -->|"SendMessage"| SQS
+    API -->|"202 Accepted"| CLIENT
+    SQS --> WORKER
+```
+
+**Pattern C: API Gateway to submission Lambda to SQS**
+
+> Use when validation, authorization, transformation, job-record creation, or custom acceptance logic is required.
+
+```{mermaid}
+flowchart LR
+    CLIENT["Client"]
+    API["API Gateway"]
+    SUBMIT["Submission Lambda"]
+    SQS["SQS"]
+    WORKER["Worker Lambda"]
+
+    CLIENT --> API --> SUBMIT
+    SUBMIT --> SQS --> WORKER
+    SUBMIT -->|"202 Accepted"| CLIENT
+```
+
+**DynamoDB Learnings**:
+- **DynamoDB** for no-join CRUD; design access patterns up front; use secondary indexes.
+- **DynamoDB + Lambda** avoids relational connection exhaustion; otherwise add **RDS Proxy**.
+- **DAX** gives microsecond DynamoDB reads with no code changes (VPC-hosted cache).
+
+**Services aiding in Decoupling - SQS, SNS, EventBridge, DLQ**
+- **SNS** = push pub/sub fan-out; **SQS** = pull queue that persists and buffers.
+- **Streams → Lambda → SNS** lets you add consumers with zero changes to producer code.
+- **Storage-first / async** = fast user response, but the transaction completes downstream (eventual).
+- **SNS FIFO** = ordered/exactly-once (~300 TPS); **Standard** = higher TPS, best-effort ordering.
+- **SQS:** 256 KB max message, 14-day max retention, visibility timeout, long polling saves cost.
+- Always attach a **DLQ**; a poison message must never stall the buffer.
+- **EventBridge** beats SNS only when you need rich filtering, many sources or SaaS targets — it costs more.
+
+**Serverless Optimizations & Cross-cutting Best Practices**:
+- **Lambda Power Tuning** helps in arriving at the right-size memory for the lambda; Sometimes, more memory can be cheaper *and* faster.
+- Initialise clients **outside the handler** for reuse — but never cache user data or secrets there.
+- **One function, one IAM role, least privilege** — the blast radius of a shared role is the whole app.
+- **CloudWatch** is the near-zero-config observability layer; add **X-Ray** and a correlation ID for async flows.
 
 ---
 
