@@ -1781,8 +1781,21 @@ flowchart LR
 <ul>
 <li>Match <strong>requirements → drivers → services</strong>; always justify the rejected options.</li>
 </ul>
-<p><strong>Decisions on Compute</strong>: - <strong>Serverless</strong> fits spiky, low-ops, simple-data workloads. - <strong>Lambda:</strong> 90-minute cap (EDIT: updated on Sep 23rd), stateless, pay-per-use, no idle cost, cold starts. - Containerising fixes <strong>ops pain</strong> (especially AWS managed ECS in Fargate), not <strong>coupling pain</strong>. - Also, still reject Fargate as adoption cost and team skills do not fit.</p>
-<p><strong>The Intermediary between Client &amp; Compute - API Gateway</strong>: - <strong>API Gateway</strong> is the managed front door — and it can call DynamoDB/SQS <strong>directly</strong>, with no Lambda. - API Gateway is <strong>compute-agnostic</strong>: it reaches Fargate through a <strong>VPC Link → private NLB/ALB</strong>, so containers stay off the internet. - API Gateway integrations time out at <strong>~29 seconds</strong>, longer work must go async, whatever the compute.</p>
+<p><strong>Decisions on Compute</strong>:</p>
+<ul>
+<li><strong>Serverless</strong> fits spiky, low-ops, simple-data workloads.</li>
+<li><strong>Lambda:</strong> 90-minute cap (EDIT: updated on Sep 23rd), stateless, pay-per-use, no idle cost, cold starts.</li>
+<li>Containerising fixes <strong>ops pain</strong> (especially AWS managed ECS in Fargate), not <strong>coupling pain</strong>.
+<ul>
+<li>Also, still reject Fargate as adoption cost and team skills do not fit.</li>
+</ul></li>
+</ul>
+<p><strong>The Intermediary between Client &amp; Compute - API Gateway</strong>:</p>
+<ul>
+<li><strong>API Gateway</strong> is the managed front door — and it can call DynamoDB/SQS <strong>directly</strong>, with no Lambda.</li>
+<li>API Gateway is <strong>compute-agnostic</strong>: it reaches Fargate through a <strong>VPC Link → private NLB/ALB</strong>, so containers stay off the internet.</li>
+<li>API Gateway integrations time out at <strong>~29 seconds</strong>, longer work must go async, whatever the compute.</li>
+</ul>
 <p><strong>Pattern A: Direct Async Lambda Pattern - Producer invoking the Worker asynchronously</strong>:</p>
 <blockquote class="blockquote">
 <p>Use for simple fire-and-forget processing where Lambda’s asynchronous invocation controls are enough.</p>
@@ -1889,9 +1902,29 @@ flowchart LR
 </div>
 </div>
 </div>
-<p><strong>DynamoDB Learnings</strong>: - <strong>DynamoDB</strong> for no-join CRUD; design access patterns up front; use secondary indexes. - <strong>DynamoDB + Lambda</strong> avoids relational connection exhaustion; otherwise add <strong>RDS Proxy</strong>. - <strong>DAX</strong> gives microsecond DynamoDB reads with no code changes (VPC-hosted cache).</p>
-<p><strong>Services aiding in Decoupling - SQS, SNS, EventBridge, DLQ</strong> - <strong>SNS</strong> = push pub/sub fan-out; <strong>SQS</strong> = pull queue that persists and buffers. - <strong>Streams → Lambda → SNS</strong> lets you add consumers with zero changes to producer code. - <strong>Storage-first / async</strong> = fast user response, but the transaction completes downstream (eventual). - <strong>SNS FIFO</strong> = ordered/exactly-once (~300 TPS); <strong>Standard</strong> = higher TPS, best-effort ordering. - <strong>SQS:</strong> 256 KB max message, 14-day max retention, visibility timeout, long polling saves cost. - Always attach a <strong>DLQ</strong>; a poison message must never stall the buffer. - <strong>EventBridge</strong> beats SNS only when you need rich filtering, many sources or SaaS targets — it costs more.</p>
-<p><strong>Serverless Optimizations &amp; Cross-cutting Best Practices</strong>: - <strong>Lambda Power Tuning</strong> helps in arriving at the right-size memory for the lambda; Sometimes, more memory can be cheaper <em>and</em> faster. - Initialise clients <strong>outside the handler</strong> for reuse — but never cache user data or secrets there. - <strong>One function, one IAM role, least privilege</strong> — the blast radius of a shared role is the whole app. - <strong>CloudWatch</strong> is the near-zero-config observability layer; add <strong>X-Ray</strong> and a correlation ID for async flows.</p>
+<p><strong>DynamoDB Learnings</strong>:</p>
+<ul>
+<li><strong>DynamoDB</strong> for no-join CRUD; design access patterns up front; use secondary indexes.</li>
+<li><strong>DynamoDB + Lambda</strong> avoids relational connection exhaustion; otherwise add <strong>RDS Proxy</strong>.</li>
+<li><strong>DAX</strong> gives microsecond DynamoDB reads with no code changes (VPC-hosted cache).</li>
+</ul>
+<p><strong>Services aiding in Decoupling - SQS, SNS, EventBridge, DLQ</strong></p>
+<ul>
+<li><strong>SNS</strong> = push pub/sub fan-out; <strong>SQS</strong> = pull queue that persists and buffers.</li>
+<li><strong>Streams → Lambda → SNS</strong> lets you add consumers with zero changes to producer code.</li>
+<li><strong>Storage-first / async</strong> = fast user response, but the transaction completes downstream (eventual).</li>
+<li><strong>SNS FIFO</strong> = ordered/exactly-once (~300 TPS); <strong>Standard</strong> = higher TPS, best-effort ordering.</li>
+<li><strong>SQS:</strong> 256 KB max message, 14-day max retention, visibility timeout, long polling saves cost.</li>
+<li>Always attach a <strong>DLQ</strong>; a poison message must never stall the buffer.</li>
+<li><strong>EventBridge</strong> beats SNS only when you need rich filtering, many sources or SaaS targets — it costs more.</li>
+</ul>
+<p><strong>Serverless Optimizations &amp; Cross-cutting Best Practices</strong>:</p>
+<ul>
+<li><strong>Lambda Power Tuning</strong> helps in arriving at the right-size memory for the lambda; Sometimes, more memory can be cheaper <em>and</em> faster.</li>
+<li>Initialise clients <strong>outside the handler</strong> for reuse — but never cache user data or secrets there.</li>
+<li><strong>One function, one IAM role, least privilege</strong> — the blast radius of a shared role is the whole app.</li>
+<li><strong>CloudWatch</strong> is the near-zero-config observability layer; add <strong>X-Ray</strong> and a correlation ID for async flows.</li>
+</ul>
 <hr>
 </section>
 <section id="sources" class="level2">
