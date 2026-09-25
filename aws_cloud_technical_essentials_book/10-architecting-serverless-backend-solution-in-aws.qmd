@@ -765,12 +765,14 @@ flowchart LR
 - Match **requirements → drivers → services**; always justify the rejected options.
 
 **Decisions on Compute**:
+
 - **Serverless** fits spiky, low-ops, simple-data workloads.
 - **Lambda:** 90-minute cap (EDIT: updated on Sep 23rd), stateless, pay-per-use, no idle cost, cold starts.
 - Containerising fixes **ops pain** (especially AWS managed ECS in Fargate), not **coupling pain**. 
     - Also, still reject Fargate as adoption cost and team skills do not fit.
 
 **The Intermediary between Client & Compute - API Gateway**:
+
 - **API Gateway** is the managed front door — and it can call DynamoDB/SQS **directly**, with no Lambda.
 - API Gateway is **compute-agnostic**: it reaches Fargate through a **VPC Link → private NLB/ALB**, so containers stay off the internet.
 - API Gateway integrations time out at **~29 seconds**, longer work must go async, whatever the compute.
@@ -795,7 +797,7 @@ flowchart LR
     FN --> RESULT
 ```
 
-```{python}
+```python
 import json
 import boto3
 
@@ -862,11 +864,13 @@ flowchart LR
 ```
 
 **DynamoDB Learnings**:
+
 - **DynamoDB** for no-join CRUD; design access patterns up front; use secondary indexes.
 - **DynamoDB + Lambda** avoids relational connection exhaustion; otherwise add **RDS Proxy**.
 - **DAX** gives microsecond DynamoDB reads with no code changes (VPC-hosted cache).
 
 **Services aiding in Decoupling - SQS, SNS, EventBridge, DLQ**
+
 - **SNS** = push pub/sub fan-out; **SQS** = pull queue that persists and buffers.
 - **Streams → Lambda → SNS** lets you add consumers with zero changes to producer code.
 - **Storage-first / async** = fast user response, but the transaction completes downstream (eventual).
@@ -876,6 +880,7 @@ flowchart LR
 - **EventBridge** beats SNS only when you need rich filtering, many sources or SaaS targets — it costs more.
 
 **Serverless Optimizations & Cross-cutting Best Practices**:
+
 - **Lambda Power Tuning** helps in arriving at the right-size memory for the lambda; Sometimes, more memory can be cheaper *and* faster.
 - Initialise clients **outside the handler** for reuse — but never cache user data or secrets there.
 - **One function, one IAM role, least privilege** — the blast radius of a shared role is the whole app.
