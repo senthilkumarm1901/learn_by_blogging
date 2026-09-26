@@ -1114,7 +1114,7 @@ flowchart TD
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart LR
+flowchart TD
     JS["Browser JS library&lt;br&gt;click events"] --&gt; AG["API Gateway&lt;br&gt;HTTPS, throttling, WAF"]
     AG --&gt; KDF["Amazon Data Firehose&lt;br&gt;Direct PUT, buffer, Parquet"]
     KDF --&gt; S3["Amazon S3 data lake&lt;br&gt;Hive-style prefixes"]
@@ -1280,38 +1280,58 @@ flowchart LR
 </div>
 </div>
 </div>
-<ol type="1">
+<ul>
+<li><strong>Pipeline</strong>:
+<ul>
 <li>An analytics architecture is a <strong>pipeline</strong>: ingest → store → query → visualise. Choose each stage for its own constraints.</li>
+</ul></li>
+<li><strong>Data Ingest Services in AWS</strong>:
+<ul>
 <li><strong>“Short-staffed” is a driver</strong> — it rules out EMR/Spark and heavy Glue ETL before feature comparison.</li>
-<li>Names moved in 2024: <strong>Kinesis Data Firehose → Amazon Data Firehose</strong>; <strong>Kinesis Data Analytics → Managed Service for Apache Flink</strong>.</li>
 <li><strong>Kinesis family</strong> is for high-volume, small, continuous events (clickstream, logs, IoT).</li>
 <li><strong>Data Firehose</strong> wins when there’s <strong>no sub-second need</strong> — least code, auto-delivers to S3, self-scaling.</li>
 <li><strong>Data Streams</strong> only when you need <strong>sub-second</strong> latency (and accept producer/consumer code).</li>
 <li><strong>Managed Service for Apache Flink</strong> only when you need <strong>in-stream transformation</strong>.</li>
-<li><strong>Rejections at ingest:</strong> DMS (DB migration), Data Exchange (3rd-party catalogs), EMR (skill + cluster-time cost).</li>
-<li><strong>API Gateway</strong> gives simplicity <em>and</em> a throttling/WAF chokepoint; <strong>Cognito</strong> removes that hop and its cost.</li>
-<li><strong>Cognito’s real cost is abuse control</strong>: unauthenticated identities let anyone <code>PutRecord</code> — data poisoning and bill amplification.</li>
+<li><strong>Rejections at ingest:</strong> DMS (DB migration), Data Exchange (3rd-party catalogs), EMR/Spark(needs teams skill + cluster-time cost).</li>
+</ul></li>
+<li><strong>Store Services in AWS</strong>:
+<ul>
 <li><strong>Shape data at the source</strong> (clean JSON from the JS library) to delete a transformation stage.</li>
 <li><strong>S3 = the data lake</strong>: 11 nines, unlimited, <strong>decoupled from compute</strong> (unlike EBS/EFS).</li>
 <li><strong>Intelligent-Tiering</strong> is the safe default for unknown access; objects <strong>&lt; 128 KB</strong> are never auto-tiered.</li>
 <li><strong>Lifecycle policies</strong> move data Standard → IA → Glacier to control cost automatically.</li>
-<li><strong>CRR</strong> answers cross-region backup, but needs <strong>versioning on both buckets</strong>, is <strong>asynchronous</strong>, and only covers new writes unless you run batch replication. <strong>RTC</strong> gives a 15-minute SLA.</li>
+<li><strong>CRR</strong> answers cross-region backup, but needs <strong>versioning on both buckets</strong>, is <strong>asynchronous</strong>, and only covers new writes unless you run batch replication.</li>
+</ul></li>
+<li><strong>Querying Services in AWS</strong>:
+<ul>
 <li><strong>Athena</strong> = serverless SQL directly on S3, schema-on-read, no ETL servers, pay-per-query.</li>
 <li><strong>Athena bills by bytes scanned</strong> (10 MB minimum per query) — so storage layout is a cost decision.</li>
-<li><strong>You reject Glue <em>ETL</em>, not the Glue Data Catalog</strong> — Athena and Firehose format conversion both depend on the catalog.</li>
-<li><strong>Compress + partition + columnar (Parquet/ORC)</strong> cut scans, cost and query time.</li>
-<li><strong>Partitions must be registered</strong> — use Firehose dynamic partitioning, Athena <strong>partition projection</strong>, or <code>MSCK REPAIR</code>. Firehose’s default <code>YYYY/MM/DD/HH</code> prefix is <em>not</em> Hive-style.</li>
-<li>Let <strong>Firehose write Parquet</strong> on delivery so the lake is born query-optimised — but create the Glue table first.</li>
+<li>AWS Glue Data Catalog is a centralized metadata repository</li>
+<li>Athena and Firehose format conversion both depend on the catalog.</li>
+</ul></li>
+<li><strong>Cost Optimization Techniques</strong>: <strong>Compress + partition + columnar (Parquet/ORC)</strong> cut scans, cost and query time.
+<ul>
+<li>Let <strong>Firehose write Parquet</strong> on delivery so the lake is born query-optimised, but create the Glue table first.</li>
 <li><strong>Buffer to avoid many small files</strong> — they hurt Athena performance and block Intelligent-Tiering.</li>
+</ul></li>
+<li><strong>Visualization Services in AWS</strong>:
+<ul>
 <li><strong>QuickSight</strong>: <strong>readers</strong> pay-per-session, <strong>authors/admins</strong> are per-user monthly; SPICE encryption at rest means <strong>Enterprise edition</strong>.</li>
+</ul></li>
+<li><strong>Monitoring &amp; Security</strong>
+<ul>
 <li><strong>Encrypt in transit and at rest</strong> at every hop; scope each IAM role to its single action.</li>
 <li><strong>Pipelines fail silently</strong> — alarm on <code>DeliveryToS3.Success</code>, <code>DataFreshness</code>, replication lag, and a front-door <code>Count</code> of zero.</li>
 <li>Alarm on <strong>Athena <code>ProcessedBytes</code></strong>: in pay-per-scan, a runaway query is a runaway bill.</li>
 <li><strong>CloudFront + WAF + Shield</strong> protect the static menu site at the edge.</li>
 <li><strong>CloudFormation</strong> turns a one-off pipeline into a repeatable per-client product; <code>DeletionPolicy: Retain</code> protects data.</li>
-<li><strong>SDK exponential backoff</strong> is on by default — free resilience; add jitter and cap retries.</li>
+<li><strong>AWS SDK exponential backoff</strong> is on by default — free resilience; add jitter and cap retries.</li>
+</ul></li>
+<li>Final Conclusion
+<ul>
 <li>“Technically works” ≠ “best fit”: Firehose + Athena is optimal for <strong>short-staffed + no-sub-second + SQL-shaped</strong> analytics.</li>
-</ol>
+</ul></li>
+</ul>
 <hr>
 </section>
 <section id="sources" class="level2">
