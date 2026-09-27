@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2026-09-27">
 
-<title>09.Disclosure – [Foundational Questions. Visual Answers. Mastering AWS Fundamentals.](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/01-introduction.html)</title>
+<title>Architecting Solutions in AWS: Requirements to Justified Trade-offs – Learn by Blogging</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -30,30 +30,29 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./08-optimization.html" rel="prev">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-81dce849c25865aa69203cbf510b76f1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-67daaa7896f33cc2219aa98eaadded8d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
-  "location": "sidebar",
+  "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "start",
-  "type": "textbox",
+  "panel-placement": "end",
+  "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
     "f",
@@ -77,120 +76,72 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="book.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 
-<body class="nav-sidebar floating quarto-light">
+<body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-        <i class="bi bi-layout-text-sidebar-reverse"></i>
-      </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./09-references-disclosure.html"><span class="chapter-title">09.Disclosure</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-        </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
-      </button>
-    </div>
-  </nav>
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
-    <div class="sidebar-title mb-0 py-0">
-      <a href="./"></a><a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/01-introduction.html">Foundational Questions. Visual Answers. Mastering AWS Fundamentals.</a> 
-    </div>
-      </div>
-        <div class="mt-2 flex-shrink-0 align-items-center">
-        <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
-        </div>
-        </div>
-    <div class="sidebar-menu-container"> 
-    <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Foundational Questions. Visual Answers. Mastering AWS Fundamentals</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./01-introduction.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">1. Introduction to AWS</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./02-security.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">02. Security</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./03-compute.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">03. Compute</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./04-networking.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">04. Networking</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./05-storage.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">05. Storage</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./06-databases.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">06. Databases</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./07-monitoring.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">07. Monitoring</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./08-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">08. Optimization</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./09-references-disclosure.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">09.Disclosure</span></a>
-  </div>
-</li>
-    </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
-    </div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">09.Disclosure</span></h1>
+<h1 class="title">Architecting Solutions in AWS: Requirements to Justified Trade-offs</h1>
+<p class="subtitle lead">From a customer’s requirements to a defensible AWS architecture</p>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Senthil Kumar </p>
-          </div>
-  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 27, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -202,9 +153,48 @@ ul.task-list li input[type="checkbox"] {
 
 <p>👈 <strong>Back to:</strong> <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">📝 Blog</a> | <a href="https://www.linkedin.com/in/senthilkumarm1901">💼 LinkedIn</a> | <a href="https://medium.com/@senthilkumar.m1901">✍️ Medium</a></p>
 <hr>
-<p><strong>Disclaimer</strong> <br> &gt; - The above notes contain my own writing like mermaid charts and bullet points combined with my notes from Coursera course (not to be misjudged for plagiarism). <br> &gt; - I hardly have any pics (only mermaid charts). If a pic is used, source should be cited below it <br> &gt; - I have used interactions with LLMs (ChatGPT, Gemini, etc.,) to solidify my understanding. If there are errors, please let me know. <br> &gt; - The above notes are mainly to architect aws solutions well. &gt; - Ok, I won’t lie ;), they are also to refresh my memory when I take up any AWS exam in future.</p>
+<section id="why-this-book" class="level2">
+<h2 class="anchored" data-anchor-id="why-this-book">❓ 1. Why this Book</h2>
+<blockquote class="blockquote">
+<p>Knowing what a service <em>does</em> is not the same as knowing <em>when</em> to choose it — and what you must be prepared to defend once you have.</p>
+</blockquote>
+<p>This is a companion to <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/"><strong>Foundational Questions. Visual Answers. Mastering AWS Fundamentals</strong></a>. That book builds the fundamentals, chapter by chapter: security, compute, networking, storage, databases, monitoring, optimization. This book assumes those fundamentals and asks a harder question: given a real customer’s requirements, how do you <em>combine</em> those building blocks into one architecture — and justify the services you rejected?</p>
+<p>A companion blog post walks through this same way of thinking end to end: <a href="https://senthilkumarm1901.github.io/learn_by_blogging/posts/cloud_architect/cloud_architect.html"><strong>Thinking like a Cloud Architect</strong></a>.</p>
+<hr>
+</section>
+<section id="what-this-book-covers" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-book-covers">📝 2. What this book covers</h2>
+<p>Every chapter follows the same workflow: <strong>requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections.</strong></p>
+<section id="architecting-a-serverless-web-backend" class="level3">
+<h3 class="anchored" data-anchor-id="architecting-a-serverless-web-backend">🧩 <a href="10-architecting-serverless-backend-solution-in-aws.html"><strong>10. Architecting a Serverless Web Backend</strong></a></h3>
+<p>A monolithic, on-prem order service must become an auto-scaling, decoupled, serverless backend — deciding how clients get in, what runs the business logic, and where state lives.</p>
+</section>
+<section id="serverless-data-analytics" class="level3">
+<h3 class="anchored" data-anchor-id="serverless-data-analytics">📊 <a href="11-serverless-data-analytics.html"><strong>11. Serverless Data Analytics</strong></a></h3>
+<p>Static S3-hosted menus need a clickstream pipeline bolted on — turning a one-off request into a recurring <strong>ingest → store → query → visualise</strong> data pipeline.</p>
+</section>
+<section id="hybrid-container-based-workloads" class="level3">
+<h3 class="anchored" data-anchor-id="hybrid-container-based-workloads">🔗 <a href="12-hybrid-container-workloads.html"><strong>12. Hybrid, Container-Based Workloads</strong></a></h3>
+<p>Half a company’s workloads stay on-premises, half move to AWS — connecting the two, keeping containers portable, and migrating a database with near-zero downtime.</p>
+</section>
+<section id="account-governance-and-multi-account-management" class="level3">
+<h3 class="anchored" data-anchor-id="account-governance-and-multi-account-management">🏛️ <a href="13-multi-account-strategies.html"><strong>13. Account Governance and Multi-Account Management</strong></a></h3>
+<p>A single, unmanaged AWS account has to become a governed multi-account structure — with automatic provisioning, single sign-on, central logging and guardrails.</p>
+</section>
+<section id="capstone-decoupled-app-emr-analytics" class="level3">
+<h3 class="anchored" data-anchor-id="capstone-decoupled-app-emr-analytics">🎯 <a href="14-capstone-decoupled-app-and-emr-analytics.html"><strong>14. Capstone: Decoupled App + EMR Analytics</strong></a></h3>
+<p>One customer, two workloads at once: decoupling a three-tier app and re-platforming a Hadoop estate onto Amazon EMR — reusing the patterns from Chapters 10-12 together.</p>
+<hr>
+</section>
+</section>
+<section id="source-attribution" class="level2">
+<h2 class="anchored" data-anchor-id="source-attribution">📜 3. Source &amp; Attribution</h2>
+<p>The intuition and examples in this book are inspired by the <code>Architecting Solutions in AWS</code> Coursera course.</p>
+<p><img src="images/course_certificate.png" class="img-fluid"></p>
+<hr>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -280,7 +270,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/senthilkumarm1901\.github\.io\/learn_by_blogging\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -607,15 +597,6 @@ ul.task-list li input[type="checkbox"] {
     }
   });
   </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="./08-optimization.html" class="pagination-link" aria-label="08. Optimization">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">08. Optimization</span></span>
-      </a>          
-  </div>
-  <div class="nav-page nav-page-next">
-  </div>
-</nav>
 </div> <!-- /content -->
 
 

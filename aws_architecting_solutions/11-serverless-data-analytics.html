@@ -572,7 +572,7 @@ flowchart LR
 </ul>
 </blockquote>
 <p><strong>Chosen: Amazon S3 as a data lake.</strong> It stores unlimited structured/semi-structured/unstructured data in native format, is designed for <strong>11 nines (99.999999999%) durability</strong>, and — unlike EBS/EFS — is <strong>decoupled from any compute instance</strong>, so the lake grows independently and any analytics service can read it directly.</p>
-<p>For the storage-class and durability fundamentals behind this section, see <a href="../aws_cloud_technical_essentials_book/05-storage.html">05. Storage</a>; for how a <em>data lake</em> differs from a database and a data warehouse, see <a href="../aws_cloud_technical_essentials_book/06-databases.html">06. Databases</a>.</p>
+<p>For the storage-class and durability fundamentals behind this section, see <a href="05-storage.qmd">05. Storage</a>; for how a <em>data lake</em> differs from a database and a data warehouse, see <a href="06-databases.qmd">06. Databases</a>.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -885,7 +885,7 @@ flowchart LR
 </tr>
 </tbody>
 </table>
-<p>For IAM roles, least privilege and the shared responsibility model, see <a href="../aws_cloud_technical_essentials_book/02-security.html">02. Security</a>.</p>
+<p>For IAM roles, least privilege and the shared responsibility model, see <a href="02-security.qmd">02. Security</a>.</p>
 <blockquote class="blockquote">
 <p><strong>Architect’s takeaway:</strong> In a pipeline, security is <strong>per hop</strong>. Encrypt in transit <em>and</em> at rest at every stage, and scope each identity to the single action it needs — the browser-facing <code>PutRecord</code>-only role is the textbook example, and also the one with the abuse caveat from <a href="#sec-ingest">11.3.3</a>.</p>
 </blockquote>
@@ -978,7 +978,7 @@ flowchart LR
 <li><strong>S3 Storage Lens</strong> for lake-level growth and small-object trends.</li>
 <li>Treat <strong>“<code>Count</code> at the front door is zero for N minutes”</strong> as a page-worthy alarm — it is the only end-to-end liveness check you have.</li>
 </ul>
-<p>See <a href="../aws_cloud_technical_essentials_book/07-monitoring.html">07. Monitoring</a> for CloudWatch fundamentals.</p>
+<p>See <a href="07-monitoring.qmd">07. Monitoring</a> for CloudWatch fundamentals.</p>
 <blockquote class="blockquote">
 <p><strong>Architect’s takeaway:</strong> In a request/response backend, failure is loud. In a pipeline, failure is <strong>silence</strong>. Alarm on <em>absence</em> of data — freshness, delivery success and record count — not just on errors.</p>
 </blockquote>
@@ -1015,7 +1015,7 @@ flowchart TD
 <li><strong>AWS CloudFormation (IaC):</strong> capture the whole environment as a template and replicate it per client account or Region — repeatable, versioned, no manual clicking. Use <code>DeletionPolicy: Retain</code> on data resources (buckets, catalogs) so a stack deletion never destroys the lake.</li>
 <li><strong>Error retries + exponential backoff:</strong> network components fail transiently; retrying with backoff raises reliability. <strong>AWS SDKs do this by default</strong> — a quiet argument for an SDK-based client over a hand-rolled <code>fetch()</code> sender. Always cap max delay and max retries, and add jitter to avoid synchronised retry storms.</li>
 </ul>
-<p>Broader cost and resilience levers: <a href="../aws_cloud_technical_essentials_book/08-optimization.html">08. Optimization</a>.</p>
+<p>Broader cost and resilience levers: <a href="08-optimization.qmd">08. Optimization</a>.</p>
 <blockquote class="blockquote">
 <p><strong>Architect’s takeaway:</strong> A one-off pipeline is a demo; a <strong>template</strong> is a product. IaC turns “architecture for this restaurant” into “architecture for every client,” and SDK-default backoff gives you resilience for free.</p>
 </blockquote>
@@ -1216,7 +1216,7 @@ flowchart TD
 <tr class="even">
 <td>Frequent low-latency lookups on individual records</td>
 <td>Athena scans; it is not a point-read store</td>
-<td><strong>DynamoDB</strong> — see <a href="../aws_cloud_technical_essentials_book/06-databases.html">06. Databases</a></td>
+<td><strong>DynamoDB</strong> — see <a href="06-databases.qmd">06. Databases</a></td>
 </tr>
 <tr class="odd">
 <td>Predictable, heavy, concurrent BI workloads</td>
