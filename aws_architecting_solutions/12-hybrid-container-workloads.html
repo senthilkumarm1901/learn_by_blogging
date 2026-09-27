@@ -580,7 +580,7 @@ flowchart TD
 <li><strong>Inter-Region peering</strong> links transit gateways over the AWS backbone; that traffic <strong>is</strong> automatically encrypted and never traverses the public internet — unlike the Direct Connect link itself.</li>
 <li>Pairs naturally with a <strong>Direct Connect Gateway</strong> for <strong>multi-Region + multi-VPC</strong> estates.</li>
 </ul>
-<p>For VPC, subnet and routing fundamentals, see <a href="04-networking.qmd">04. Networking</a>.</p>
+<p>For VPC, subnet and routing fundamentals, see <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/04-networking.html">04. Networking</a>.</p>
 <blockquote class="blockquote">
 <p><strong>Architect’s takeaway:</strong> Choose <strong>Direct Connect</strong> for consistent, high-volume hybrid traffic — but order it early, encrypt it explicitly, and size the fallback honestly. Keep a <strong>VPN as automatic failover</strong> so a single link is never a SPOF, and reach for <strong>Transit Gateway + Direct Connect Gateway</strong> the moment the topology grows past a couple of VPCs.</p>
 </blockquote>
@@ -715,7 +715,7 @@ flowchart TD
 </tr>
 </tbody>
 </table>
-<p>See <a href="03-compute.qmd">03. Compute</a> for the wider EC2 and container landscape.</p>
+<p>See <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/03-compute.html">03. Compute</a> for the wider EC2 and container landscape.</p>
 </section>
 <section id="private-subnets-outbound-egress-and-the-nat-trap" class="level3">
 <h3 class="anchored" data-anchor-id="private-subnets-outbound-egress-and-the-nat-trap">12.4.3 Private subnets, outbound egress, and the NAT trap</h3>
@@ -769,7 +769,7 @@ flowchart LR
 </ul>
 </blockquote>
 <p><strong>Chosen: Amazon RDS for PostgreSQL, Multi-AZ, migrated with AWS DMS.</strong> A managed engine keeps the app code unchanged (lift-and-shift), Multi-AZ delivers the high availability the customer demands, and DMS moves the data while the source stays live.</p>
-<p>For RDS fundamentals, backups and where databases sit in your VPC, see <a href="06-databases.qmd">06. Databases</a>.</p>
+<p>For RDS fundamentals, backups and where databases sit in your VPC, see <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/06-databases.html">06. Databases</a>.</p>
 <section id="high-availability-multi-az-db-instance-one-standby" class="level3">
 <h3 class="anchored" data-anchor-id="high-availability-multi-az-db-instance-one-standby">12.5.1 High availability: Multi-AZ DB <em>instance</em> (one standby)</h3>
 <div class="cell" data-layout-align="default">
@@ -1006,7 +1006,7 @@ flowchart LR
 <blockquote class="blockquote">
 <p><strong>A note on EBS sizing:</strong> with the older <strong>gp2</strong>, IOPS scaled with volume size, so you over-provisioned capacity to buy performance. <strong>gp3 decouples them</strong> — a baseline 3,000 IOPS regardless of size, with IOPS and throughput provisioned independently. Prefer gp3 for new volumes.</p>
 </blockquote>
-<p>More on storage classes, durability and lifecycle: <a href="05-storage.qmd">05. Storage</a>.</p>
+<p>More on storage classes, durability and lifecycle: <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/05-storage.html">05. Storage</a>.</p>
 <blockquote class="blockquote">
 <p><strong>Architect’s takeaway:</strong> When the requirement is <em>“keep NFS but store in AWS,”</em> <strong>S3 File Gateway</strong> is the purpose-built answer — local cache for latency, S3 for durability and lifecycle, and a clean path to native S3 later. Just be explicit that the upload is asynchronous.</p>
 </blockquote>
@@ -1134,7 +1134,7 @@ flowchart LR
 <li>Alarm on <strong><code>TunnelState</code> of the standby VPN</strong>, not just the primary link. An untested failover path is not a failover path.</li>
 <li>Treat <strong>desired-vs-running task count</strong> as your container liveness check on both sides.</li>
 </ul>
-<p>See <a href="07-monitoring.qmd">07. Monitoring</a> for CloudWatch fundamentals.</p>
+<p>See <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/07-monitoring.html">07. Monitoring</a> for CloudWatch fundamentals.</p>
 <blockquote class="blockquote">
 <p><strong>Architect’s takeaway:</strong> In hybrid, monitor the <strong>seam</strong>. BGP state, tunnel state and gateway upload lag are the metrics that tell you the two halves are still one system.</p>
 </blockquote>
@@ -1250,7 +1250,7 @@ flowchart LR
 <li><strong>Active/passive</strong> (backup/restore, pilot light, warm standby) recovers <strong>into</strong> a passive site; <strong>active/active</strong> serves from <strong>all</strong> Regions.</li>
 <li><strong>IaC (CloudFormation / CDK)</strong> is essential for fast, error-free redeploy — also back up <strong>code, config and AMIs</strong>, and automate redeploy with <strong>CodePipeline</strong>.</li>
 </ul>
-<p>Active-active vs active-passive topologies are covered further in <a href="08-optimization.qmd">08. Optimization</a>.</p>
+<p>Active-active vs active-passive topologies are covered further in <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/08-optimization.html">08. Optimization</a>.</p>
 <p><strong>Make the network itself resilient</strong> — back <strong>Direct Connect</strong> with a <strong>Site-to-Site VPN</strong>:</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">

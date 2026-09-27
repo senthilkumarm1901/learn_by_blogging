@@ -649,7 +649,7 @@ flowchart TD
 <li><strong>Concurrency limits</strong> per account/region; a runaway Lambda can starve other functions unless you set reserved concurrency.</li>
 </ul>
 </blockquote>
-<p>For the wider compute landscape (EC2 families, containers, scaling), see <a href="03-compute.qmd">03. Compute</a>.</p>
+<p>For the wider compute landscape (EC2 families, containers, scaling), see <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/03-compute.html">03. Compute</a>.</p>
 <blockquote class="blockquote">
 <p><strong>Architect’s takeaway:</strong> Reject a technically-valid option (Fargate) when <strong>team skills and adoption cost</strong> outweigh the technical fit. Constraints are never only technical.</p>
 </blockquote>
@@ -861,7 +861,7 @@ flowchart LR
 <li>Choose a <strong>partition key with high cardinality</strong> to avoid hot partitions.</li>
 <li><strong>DynamoDB Streams</strong> turn every write into an event — the basis of step 5.</li>
 </ul>
-<p>More depth on picking a database and on DynamoDB’s placement relative to your VPC: <a href="06-databases.qmd">06. Databases</a>.</p>
+<p>More depth on picking a database and on DynamoDB’s placement relative to your VPC: <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/06-databases.html">06. Databases</a>.</p>
 <blockquote class="blockquote">
 <p><strong>Architect’s takeaway:</strong> Prefer NoSQL when there are <strong>no joins</strong> and the access patterns are known up front. DynamoDB + Lambda sidesteps the connection-exhaustion problem entirely; if you truly need relational, budget for <strong>RDS Proxy</strong> as an extra moving part.</p>
 </blockquote>
@@ -1231,7 +1231,7 @@ flowchart TD
 <blockquote class="blockquote">
 <p><strong>Security caveat on execution-environment reuse:</strong> never cache user data, request payloads or caller-scoped secrets <em>outside</em> the handler — a reused environment can leak them into another user’s invocation. See <a href="#sec-init">10.10.1</a>.</p>
 </blockquote>
-<p>Deeper coverage of IAM, roles and the shared responsibility model: <a href="02-security.qmd">02. Security</a>.</p>
+<p>Deeper coverage of IAM, roles and the shared responsibility model: <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/02-security.html">02. Security</a>.</p>
 <blockquote class="blockquote">
 <p><strong>Architect’s takeaway:</strong> In serverless, the blast radius of a single over-permissioned IAM role is the whole application. <strong>One function, one role, one job.</strong></p>
 </blockquote>
@@ -1315,7 +1315,7 @@ flowchart LR
 <li><strong>Lambda Powertools</strong> for structured JSON logging, tracing and custom business metrics.</li>
 <li>Propagate a <strong>correlation ID</strong> from the front door through every message attribute — in an async flow it is the only way to reassemble one logical transaction.</li>
 </ul>
-<p>See <a href="07-monitoring.qmd">07. Monitoring</a> for CloudWatch fundamentals.</p>
+<p>See <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/07-monitoring.html">07. Monitoring</a> for CloudWatch fundamentals.</p>
 <blockquote class="blockquote">
 <p><strong>Architect’s takeaway:</strong> In an async architecture, “the request succeeded” and “the work completed” are different events. Instrument <strong>both</strong>.</p>
 </blockquote>
@@ -1389,7 +1389,7 @@ flowchart LR
 </tr>
 </tbody>
 </table>
-<p>Broader cost and resilience levers: <a href="08-optimization.qmd">08. Optimization</a>.</p>
+<p>Broader cost and resilience levers: <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/08-optimization.html">08. Optimization</a>.</p>
 <section id="sec-init" class="level3">
 <h3 class="anchored" data-anchor-id="sec-init">10.10.1 Deep dive — why initialise clients outside the handler</h3>
 <p><strong>The mental model.</strong> A Lambda function runs inside an <em>execution environment</em> (a micro-VM):</p>
