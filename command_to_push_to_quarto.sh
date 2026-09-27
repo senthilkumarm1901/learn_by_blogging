@@ -4,12 +4,14 @@
 # Step 2: In GitHub CodeSpaces, install dependencies (if needed)
 # pip install quarto-cli
 
-# Step 3: Render the project (builds website + book)
-quarto render && quarto render aws_cloud_technical_essentials_book
+# Step 3: Render the project (builds website + books)
+quarto render && quarto render aws_cloud_technical_essentials_book && quarto render aws_architecting_solutions
 
 # Step 4: Copy book output to _site for deployment
 mkdir -p _site/aws_cloud_technical_essentials
 cp -r aws_cloud_technical_essentials_book/_book/* _site/aws_cloud_technical_essentials/
+mkdir -p _site/aws_architecting_solutions
+cp -r aws_architecting_solutions/_book/* _site/aws_architecting_solutions/
 
 # Step 5: Publish to GitHub Pages
 quarto publish gh-pages --no-prompt
