@@ -240,7 +240,7 @@ flowchart TD
 - **Inter-Region peering** links transit gateways over the AWS backbone; that traffic **is** automatically encrypted and never traverses the public internet — unlike the Direct Connect link itself.
 - Pairs naturally with a **Direct Connect Gateway** for **multi-Region + multi-VPC** estates.
 
-For VPC, subnet and routing fundamentals, see [04. Networking](04-networking.qmd).
+For VPC, subnet and routing fundamentals, see [04. Networking](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/04-networking.html).
 
 > **Architect's takeaway:** Choose **Direct Connect** for consistent, high-volume hybrid traffic — but order it early, encrypt it explicitly, and size the fallback honestly. Keep a **VPN as automatic failover** so a single link is never a SPOF, and reach for **Transit Gateway + Direct Connect Gateway** the moment the topology grows past a couple of VPCs.
 
@@ -305,7 +305,7 @@ flowchart TD
 | SSH to host | ✅ Yes | ❌ No |
 | Best when | Custom AMI, host control, consistent tooling | "Just run my container", no infra ops |
 
-See [03. Compute](03-compute.qmd) for the wider EC2 and container landscape.
+See [03. Compute](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/03-compute.html) for the wider EC2 and container landscape.
 
 ### 12.4.3 Private subnets, outbound egress, and the NAT trap
 
@@ -345,7 +345,7 @@ flowchart LR
 
 **Chosen: Amazon RDS for PostgreSQL, Multi-AZ, migrated with AWS DMS.** A managed engine keeps the app code unchanged (lift-and-shift), Multi-AZ delivers the high availability the customer demands, and DMS moves the data while the source stays live.
 
-For RDS fundamentals, backups and where databases sit in your VPC, see [06. Databases](06-databases.qmd).
+For RDS fundamentals, backups and where databases sit in your VPC, see [06. Databases](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/06-databases.html).
 
 ### 12.5.1 High availability: Multi-AZ DB *instance* (one standby)
 
@@ -477,7 +477,7 @@ Why it fits every requirement at once:
 
 > **A note on EBS sizing:** with the older **gp2**, IOPS scaled with volume size, so you over-provisioned capacity to buy performance. **gp3 decouples them** — a baseline 3,000 IOPS regardless of size, with IOPS and throughput provisioned independently. Prefer gp3 for new volumes.
 
-More on storage classes, durability and lifecycle: [05. Storage](05-storage.qmd).
+More on storage classes, durability and lifecycle: [05. Storage](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/05-storage.html).
 
 > **Architect's takeaway:** When the requirement is *"keep NFS but store in AWS,"* **S3 File Gateway** is the purpose-built answer — local cache for latency, S3 for durability and lifecycle, and a clean path to native S3 later. Just be explicit that the upload is asynchronous.
 
@@ -541,7 +541,7 @@ flowchart LR
 - Alarm on **`TunnelState` of the standby VPN**, not just the primary link. An untested failover path is not a failover path.
 - Treat **desired-vs-running task count** as your container liveness check on both sides.
 
-See [07. Monitoring](07-monitoring.qmd) for CloudWatch fundamentals.
+See [07. Monitoring](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/07-monitoring.html) for CloudWatch fundamentals.
 
 > **Architect's takeaway:** In hybrid, monitor the **seam**. BGP state, tunnel state and gateway upload lag are the metrics that tell you the two halves are still one system.
 
@@ -596,7 +596,7 @@ flowchart LR
 - **Active/passive** (backup/restore, pilot light, warm standby) recovers **into** a passive site; **active/active** serves from **all** Regions.
 - **IaC (CloudFormation / CDK)** is essential for fast, error-free redeploy — also back up **code, config and AMIs**, and automate redeploy with **CodePipeline**.
 
-Active-active vs active-passive topologies are covered further in [08. Optimization](08-optimization.qmd).
+Active-active vs active-passive topologies are covered further in [08. Optimization](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/08-optimization.html).
 
 **Make the network itself resilient** — back **Direct Connect** with a **Site-to-Site VPN**:
 

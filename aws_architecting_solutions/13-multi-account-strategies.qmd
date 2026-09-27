@@ -226,7 +226,7 @@ flowchart TD
 
 > **⚠️ SCPs don't cover everything.** They do **not** affect **service-linked roles**, and they do not apply to principals outside your organization who access your resources through **resource-based policies**. Bucket policies and KMS key policies still need their own review.
 
-For IAM policy evaluation, roles and the shared responsibility model, see [02. Security](02-security.qmd).
+For IAM policy evaluation, roles and the shared responsibility model, see [02. Security](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/02-security.html).
 
 > **Architect's takeaway:** **Organizations + OUs** give you the shape; **SCPs** give you the guardrails. Design the OU tree around **ownership and data sensitivity**, attach SCPs at the highest level where the rule should apply — and remember the management account is exempt.
 
@@ -360,7 +360,7 @@ flowchart TD
 
 **Best practice:** concentrate CloudTrail data in a **dedicated Log Archive account** with a restrictive bucket policy, and make sure member accounts cannot delete it.
 
-See [07. Monitoring](07-monitoring.qmd) for CloudWatch and logging fundamentals.
+See [07. Monitoring](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/07-monitoring.html) for CloudWatch and logging fundamentals.
 
 > **Architect's takeaway:** Centralise logs in a **dedicated, locked-down logging account**. **CloudTrail** for actions, **Config** for configuration state, **Flow Logs** for network, **GuardDuty** for threats, **Security Hub** to aggregate — layered, not interchangeable.
 
@@ -422,7 +422,7 @@ flowchart TD
 
 > **On cost alerting:** classic **CloudWatch billing alarms** only work against billing metrics published in **`us-east-1`**, and only from the payer account. **AWS Budgets** is the better tool for multi-account estates — it works per account, per OU, per tag or per **cost category**, and supports forecasted-spend alerts. Activate **cost-allocation tags** in the Billing console before you rely on them for reporting; they are not retroactive.
 
-For broader cost and resilience levers, see [08. Optimization](08-optimization.qmd).
+For broader cost and resilience levers, see [08. Optimization](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/08-optimization.html).
 
 > **Architect's takeaway:** **Control Tower** (built on Organizations, Service Catalog, IAM Identity Center and CloudFormation) makes every new account **compliant by default**. Pair **tag policies** (standardise) with **SCPs** (enforce) — they solve different halves of the same problem.
 

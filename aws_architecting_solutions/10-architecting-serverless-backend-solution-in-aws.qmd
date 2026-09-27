@@ -249,7 +249,7 @@ flowchart TD
 > - **Cold starts** on the first invocation into a new environment.
 > - **Concurrency limits** per account/region; a runaway Lambda can starve other functions unless you set reserved concurrency.
 
-For the wider compute landscape (EC2 families, containers, scaling), see [03. Compute](03-compute.qmd).
+For the wider compute landscape (EC2 families, containers, scaling), see [03. Compute](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/03-compute.html).
 
 > **Architect's takeaway:** Reject a technically-valid option (Fargate) when **team skills and adoption cost** outweigh the technical fit. Constraints are never only technical.
 
@@ -362,7 +362,7 @@ flowchart LR
 - Choose a **partition key with high cardinality** to avoid hot partitions.
 - **DynamoDB Streams** turn every write into an event — the basis of step 5.
 
-More depth on picking a database and on DynamoDB's placement relative to your VPC: [06. Databases](06-databases.qmd).
+More depth on picking a database and on DynamoDB's placement relative to your VPC: [06. Databases](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/06-databases.html).
 
 > **Architect's takeaway:** Prefer NoSQL when there are **no joins** and the access patterns are known up front. DynamoDB + Lambda sidesteps the connection-exhaustion problem entirely; if you truly need relational, budget for **RDS Proxy** as an extra moving part.
 
@@ -553,7 +553,7 @@ flowchart TD
 
 > **Security caveat on execution-environment reuse:** never cache user data, request payloads or caller-scoped secrets *outside* the handler — a reused environment can leak them into another user's invocation. See [10.10.1](#sec-init).
 
-Deeper coverage of IAM, roles and the shared responsibility model: [02. Security](02-security.qmd).
+Deeper coverage of IAM, roles and the shared responsibility model: [02. Security](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/02-security.html).
 
 > **Architect's takeaway:** In serverless, the blast radius of a single over-permissioned IAM role is the whole application. **One function, one role, one job.**
 
@@ -595,7 +595,7 @@ Every service in this architecture publishes to CloudWatch with near-zero config
 - **Lambda Powertools** for structured JSON logging, tracing and custom business metrics.
 - Propagate a **correlation ID** from the front door through every message attribute — in an async flow it is the only way to reassemble one logical transaction.
 
-See [07. Monitoring](07-monitoring.qmd) for CloudWatch fundamentals.
+See [07. Monitoring](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/07-monitoring.html) for CloudWatch fundamentals.
 
 > **Architect's takeaway:** In an async architecture, "the request succeeded" and "the work completed" are different events. Instrument **both**.
 
@@ -617,7 +617,7 @@ See [07. Monitoring](07-monitoring.qmd) for CloudWatch fundamentals.
 | Lambda | Right-size **batch size** and **reserved / provisioned concurrency** | Batching cuts invocation count; provisioned concurrency removes cold starts for latency-critical paths |
 | Messaging | Swap SNS → **EventBridge** | Only when you need advanced filtering, many more consumers, or SaaS targets |
 
-Broader cost and resilience levers: [08. Optimization](08-optimization.qmd).
+Broader cost and resilience levers: [08. Optimization](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/08-optimization.html).
 
 ### 10.10.1 Deep dive — why initialise clients outside the handler {#sec-init}
 

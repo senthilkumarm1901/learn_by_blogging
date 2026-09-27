@@ -210,7 +210,7 @@ flowchart LR
 
 **Chosen: Amazon S3 as a data lake.** It stores unlimited structured/semi-structured/unstructured data in native format, is designed for **11 nines (99.999999999%) durability**, and — unlike EBS/EFS — is **decoupled from any compute instance**, so the lake grows independently and any analytics service can read it directly.
 
-For the storage-class and durability fundamentals behind this section, see [05. Storage](05-storage.qmd); for how a *data lake* differs from a database and a data warehouse, see [06. Databases](06-databases.qmd).
+For the storage-class and durability fundamentals behind this section, see [05. Storage](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/05-storage.html); for how a *data lake* differs from a database and a data warehouse, see [06. Databases](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/06-databases.html).
 
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
@@ -353,7 +353,7 @@ flowchart LR
 | **Edge protection** | **CloudFront + AWS WAF + AWS Shield** in front of the static menu S3 site for DDoS protection and custom SSL |
 | **Audit** | **CloudTrail** for API activity; **CloudTrail data events** on the lake bucket if object-level access must be auditable |
 
-For IAM roles, least privilege and the shared responsibility model, see [02. Security](02-security.qmd).
+For IAM roles, least privilege and the shared responsibility model, see [02. Security](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/02-security.html).
 
 > **Architect's takeaway:** In a pipeline, security is **per hop**. Encrypt in transit *and* at rest at every stage, and scope each identity to the single action it needs — the browser-facing `PutRecord`-only role is the textbook example, and also the one with the abuse caveat from [11.3.3](#sec-ingest).
 
@@ -396,7 +396,7 @@ flowchart LR
 - **S3 Storage Lens** for lake-level growth and small-object trends.
 - Treat **"`Count` at the front door is zero for N minutes"** as a page-worthy alarm — it is the only end-to-end liveness check you have.
 
-See [07. Monitoring](07-monitoring.qmd) for CloudWatch fundamentals.
+See [07. Monitoring](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/07-monitoring.html) for CloudWatch fundamentals.
 
 > **Architect's takeaway:** In a request/response backend, failure is loud. In a pipeline, failure is **silence**. Alarm on *absence* of data — freshness, delivery success and record count — not just on errors.
 
@@ -421,7 +421,7 @@ flowchart TD
 - **AWS CloudFormation (IaC):** capture the whole environment as a template and replicate it per client account or Region — repeatable, versioned, no manual clicking. Use `DeletionPolicy: Retain` on data resources (buckets, catalogs) so a stack deletion never destroys the lake.
 - **Error retries + exponential backoff:** network components fail transiently; retrying with backoff raises reliability. **AWS SDKs do this by default** — a quiet argument for an SDK-based client over a hand-rolled `fetch()` sender. Always cap max delay and max retries, and add jitter to avoid synchronised retry storms.
 
-Broader cost and resilience levers: [08. Optimization](08-optimization.qmd).
+Broader cost and resilience levers: [08. Optimization](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/08-optimization.html).
 
 > **Architect's takeaway:** A one-off pipeline is a demo; a **template** is a product. IaC turns "architecture for this restaurant" into "architecture for every client," and SDK-default backoff gives you resilience for free.
 
@@ -505,7 +505,7 @@ An honest architect states the boundaries of their own recommendation.
 | Sub-second, real-time reactions needed | Firehose buffers before delivering | **Kinesis Data Streams** + custom consumers |
 | Heavy in-stream transformation / enrichment | Firehose is delivery, not compute | **Managed Service for Apache Flink**, or Glue ETL |
 | Petabyte-scale, complex ML / what-if processing | Athena is for interactive SQL | **Amazon EMR** (if the team has Spark skills) |
-| Frequent low-latency lookups on individual records | Athena scans; it is not a point-read store | **DynamoDB** — see [06. Databases](06-databases.qmd) |
+| Frequent low-latency lookups on individual records | Athena scans; it is not a point-read store | **DynamoDB** — see [06. Databases](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/06-databases.html) |
 | Predictable, heavy, concurrent BI workloads | Per-scan pricing stops being cheaper | **Amazon Redshift** with a warehouse model |
 | Team already deep in Spark/big-data | Firehose + Athena underuses their skill | **EMR** end-to-end |
 | Untrusted, anonymous write clients with no rate limit | Direct-to-Firehose credentials invite abuse | Keep **API Gateway** with throttling + WAF |
