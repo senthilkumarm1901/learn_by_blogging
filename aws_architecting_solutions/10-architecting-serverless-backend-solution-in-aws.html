@@ -8,7 +8,7 @@
 
 <meta name="author" content="Senthil Kumar">
 
-<title>10. Architecting a Serverless Web Backend – Learn by Blogging</title>
+<title>10. Architecting a Serverless Web Backend – [Architecting Solutions in AWS: Requirements to Justified Trade-offs.](https://senthilkumarm1901.github.io/learn_by_blogging/aws_architecting_solutions/10-architecting-serverless-backend-solution-in-aws.html)</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -65,29 +65,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-67daaa7896f33cc2219aa98eaadded8d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./11-serverless-data-analytics.html" rel="next">
+<link href="./index.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-81dce849c25865aa69203cbf510b76f1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
+  "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
+  "panel-placement": "start",
+  "type": "textbox",
   "limit": 50,
   "keyboard-shortcut": [
     "f",
@@ -110,63 +112,131 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <meta name="mermaid-theme" content="neutral">
-<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
-<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="book.css">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-sidebar floating quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Learn by Blogging</span>
-    </a>
-  </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-  <span class="navbar-toggler-icon"></span>
-</button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="../blog.html"> 
-<span class="menu-text">Blog</span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-</ul>
-          </div> <!-- /navcollapse -->
-            <div class="quarto-navbar-tools">
-</div>
-      </div> <!-- /container-fluid -->
-    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./10-architecting-serverless-backend-solution-in-aws.html"><span class="chapter-title">10. Architecting a Serverless Web Backend</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./"></a><a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_architecting_solutions/10-architecting-serverless-backend-solution-in-aws.html">Architecting Solutions in AWS: Requirements to Justified Trade-offs.</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Architecting Solutions in AWS: Requirements to Justified Trade-offs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-architecting-serverless-backend-solution-in-aws.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">10. Architecting a Serverless Web Backend</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-serverless-data-analytics.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">11. Architecting Serverless Data Analytics Solutions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-hybrid-container-workloads.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">12. Architecting Hybrid Container-Based Workloads</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-multi-account-strategies.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">13. Architecting for Account Governance and Multi-Account Management</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-capstone-decoupled-app-and-emr-analytics.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#how-to-architect-a-serverless-web-backend-solution-in-aws" id="toc-how-to-architect-a-serverless-web-backend-solution-in-aws" class="nav-link active" data-scroll-target="#how-to-architect-a-serverless-web-backend-solution-in-aws">How to Architect a Serverless Web Backend Solution in AWS</a></li>
+  <li><a href="#the-method-nine-steps-to-a-serverless-architecture" id="toc-the-method-nine-steps-to-a-serverless-architecture" class="nav-link" data-scroll-target="#the-method-nine-steps-to-a-serverless-architecture">10.1 The Method: nine steps to a serverless architecture</a></li>
+  <li><a href="#sec-drivers" id="toc-sec-drivers" class="nav-link" data-scroll-target="#sec-drivers">10.2 Step 1 — Turn requirements into architectural drivers</a></li>
+  <li><a href="#sec-frontdoor" id="toc-sec-frontdoor" class="nav-link" data-scroll-target="#sec-frontdoor">10.3 Step 2 — Design the front door</a>
+  <ul class="collapse">
+  <li><a href="#sec-compute-agnostic" id="toc-sec-compute-agnostic" class="nav-link" data-scroll-target="#sec-compute-agnostic">10.3.1 The front door is compute-agnostic</a></li>
+  </ul></li>
+  <li><a href="#sec-compute" id="toc-sec-compute" class="nav-link" data-scroll-target="#sec-compute">10.4 Step 3 — Choose the compute</a>
+  <ul class="collapse">
+  <li><a href="#sec-fargate" id="toc-sec-fargate" class="nav-link" data-scroll-target="#sec-fargate">10.4.1 What changes if you pick Fargate instead of Lambda?</a></li>
+  </ul></li>
+  <li><a href="#sec-data" id="toc-sec-data" class="nav-link" data-scroll-target="#sec-data">10.5 Step 4 — Choose the data store</a></li>
+  <li><a href="#sec-decouple" id="toc-sec-decouple" class="nav-link" data-scroll-target="#sec-decouple">10.6 Step 5 — Decouple with events</a>
+  <ul class="collapse">
+  <li><a href="#the-event-driven-building-block" id="toc-the-event-driven-building-block" class="nav-link" data-scroll-target="#the-event-driven-building-block">10.6.1 The event-driven building block</a></li>
+  <li><a href="#fan-out-dynamodb-streams-lambda-sns" id="toc-fan-out-dynamodb-streams-lambda-sns" class="nav-link" data-scroll-target="#fan-out-dynamodb-streams-lambda-sns">10.6.2 Fan-out: DynamoDB Streams → Lambda → SNS</a></li>
+  <li><a href="#sns-vs-eventbridge" id="toc-sns-vs-eventbridge" class="nav-link" data-scroll-target="#sns-vs-eventbridge">10.6.3 SNS vs EventBridge</a></li>
+  </ul></li>
+  <li><a href="#sec-async" id="toc-sec-async" class="nav-link" data-scroll-target="#sec-async">10.7 Step 6 — Absorb bursts and cut latency</a>
+  <ul class="collapse">
+  <li><a href="#the-storage-first-async-pattern" id="toc-the-storage-first-async-pattern" class="nav-link" data-scroll-target="#the-storage-first-async-pattern">10.7.1 The storage-first (async) pattern</a></li>
+  <li><a href="#sqs-essentials-an-architect-must-know" id="toc-sqs-essentials-an-architect-must-know" class="nav-link" data-scroll-target="#sqs-essentials-an-architect-must-know">10.7.2 SQS essentials an architect must know</a></li>
+  <li><a href="#deep-dive-pull-buffering-and-backpressure" id="toc-deep-dive-pull-buffering-and-backpressure" class="nav-link" data-scroll-target="#deep-dive-pull-buffering-and-backpressure">10.7.3 Deep dive — “pull buffering” and “backpressure”</a></li>
+  </ul></li>
+  <li><a href="#sec-security" id="toc-sec-security" class="nav-link" data-scroll-target="#sec-security">10.8 Step 7 — Secure every hop</a></li>
+  <li><a href="#sec-observability" id="toc-sec-observability" class="nav-link" data-scroll-target="#sec-observability">10.9 Step 8 — Make it observable</a></li>
+  <li><a href="#sec-optimize" id="toc-sec-optimize" class="nav-link" data-scroll-target="#sec-optimize">10.10 Step 9 — Optimise cost and performance</a>
+  <ul class="collapse">
+  <li><a href="#sec-init" id="toc-sec-init" class="nav-link" data-scroll-target="#sec-init">10.10.1 Deep dive — why initialise clients outside the handler</a></li>
+  </ul></li>
+  <li><a href="#sec-reference" id="toc-sec-reference" class="nav-link" data-scroll-target="#sec-reference">10.11 The reference architecture, end to end</a></li>
+  <li><a href="#sec-not-serverless" id="toc-sec-not-serverless" class="nav-link" data-scroll-target="#sec-not-serverless">10.12 When <em>not</em> to architect it serverless</a></li>
+  <li><a href="#sec-cheatsheet" id="toc-sec-cheatsheet" class="nav-link" data-scroll-target="#sec-cheatsheet">10.13 Architect’s cheat sheet</a></li>
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources">Sources</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">10. Architecting a Serverless Web Backend</h1>
+<h1 class="title"><span class="chapter-title">10. Architecting a Serverless Web Backend</span></h1>
 </div>
 
 
@@ -1883,7 +1953,7 @@ flowchart LR
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/senthilkumarm1901\.github\.io\/learn_by_blogging\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -2210,6 +2280,18 @@ flowchart LR
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="Architecting Solutions in AWS: Requirements to Justified Trade-offs">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Architecting Solutions in AWS: Requirements to Justified Trade-offs</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./11-serverless-data-analytics.html" class="pagination-link" aria-label="11. Architecting Serverless Data Analytics Solutions">
+        <span class="nav-page-text"><span class="chapter-title">11. Architecting Serverless Data Analytics Solutions</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

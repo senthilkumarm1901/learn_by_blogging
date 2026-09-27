@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Senthil Kumar">
+<meta name="dcterms.date" content="2026-09-27">
+<meta name="description" content="From a customer’s requirements to a defensible AWS architecture.">
 
-<title>Learn by Blogging</title>
+<title>Requirements to Justified Trade-offs: Architecting Solutions in AWS – Learn by Blogging</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -29,23 +32,23 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-67daaa7896f33cc2219aa98eaadded8d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-67daaa7896f33cc2219aa98eaadded8d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -73,20 +76,20 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<meta http-equiv="refresh" content="0; url='https://senthilkumarm1901.github.io/learn_by_blogging/aws_architecting_solutions/'">
 
 
-<link rel="stylesheet" href="styles.css">
-<link rel="canonical" href="https://senthilkumarm1901.github.io/learn_by_blogging/">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Learn by Blogging</span>
     </a>
   </div>
@@ -97,7 +100,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./blog.html"> 
+    <a class="nav-link" href="../../blog.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item compact">
@@ -118,109 +121,69 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Requirements to Justified Trade-offs: Architecting Solutions in AWS</h1>
+                  <div>
+        <div class="description">
+          From a customer’s requirements to a defensible AWS architecture.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Cloud/AWS</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Senthil Kumar </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">September 27, 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Learn by Blogging</h1>
+
+
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Page Moved
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This content has been moved to our technical book series.</p>
+<p>If you are not redirected automatically, please <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_architecting_solutions/"><strong>click here to go to the book</strong></a>.</p>
+</div>
 </div>
 
 
-
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<section id="hi-there-im-senthil-kumar" class="level1">
-<h1>Hi there 👋 I’m Senthil Kumar 👨‍💻</h1>
-<blockquote class="blockquote">
-<ul>
-<li>I am an Applied AI &amp; Cloud Engineer</li>
-</ul>
-</blockquote>
-<p>✦ My Journey:</p>
-<ul>
-<li>More than 15 years ago, I started out as a 📈 Market Research Analyst.<br>
-</li>
-<li>With every role I took on after that, the technology side of the pie kept growing,
-<ul>
-<li>through analytics, data science 📊 and deep learning 🌐,</li>
-<li>eventually leading me to my current role as an Applied AI 🧠 and Cloud Engineer at Toyota</li>
-</ul></li>
-</ul>
-<hr>
-<section id="what-my-blogs-here-contain" class="level2">
-<h2 class="anchored" data-anchor-id="what-my-blogs-here-contain">🔎 What my blogs here contain</h2>
-<ul>
-<li><strong>LLM &amp; Generative AI System Design</strong> → Posts on LLM mental models &amp; LLM systems, Bedrock for GenAI, etc.,</li>
-<li><strong>Agentic AI &amp; AI Engineering Patterns</strong> → Agentic AI posts (LangGraph, MCP).</li>
-<li><strong>Cloud &amp; AWS Architecture</strong> → AWS Cloud Fundamentals, AWS Bedrock and others</li>
-<li><strong>NLP Fundamentals</strong> → Language Modeling, Word2Vec, BERT, NER, etc.,</li>
-<li><strong>Engineering Tools</strong> → Git, Bash, JMESPath</li>
-</ul>
-<hr>
-</section>
-<section id="what-i-do" class="level2">
-<h2 class="anchored" data-anchor-id="what-i-do">🧭 What I Do</h2>
-<p>I work at the intersection of:</p>
-<ul>
-<li><strong>Generative AI</strong>: Building agentic systems and LLM-powered applications<br>
-</li>
-<li><strong>Cloud Engineering</strong>: Designing architectures on AWS, especially serverless</li>
-<li><strong>Applied ML</strong>: Deploying deep learning models for real-world NLP use cases</li>
-</ul>
-<hr>
-</section>
-<section id="how-i-learn-by-blogging" class="level2">
-<h2 class="anchored" data-anchor-id="how-i-learn-by-blogging">🧠 How I Learn by Blogging</h2>
-<ul>
-<li>This blog is my way of thinking in public.</li>
-<li>I write to clarify concepts, test mental models, and document engineering lessons as I learn them.</li>
-<li>Writing forces precision. It turns half-understood ideas into structured understanding.</li>
-</ul>
-<hr>
-<p><img src="blog_home_page.png" class="img-fluid"></p>
-<hr>
-</section>
-<section id="explore-my-blog" class="level2">
-<h2 class="anchored" data-anchor-id="explore-my-blog">📚 Explore My Blog</h2>
-<p>You can browse all my technical posts here:</p>
-<p>👉 <strong><a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">View All Blog Posts</a></strong></p>
-<hr>
-</section>
-<section id="i-also-write-on-medium" class="level2">
-<h2 class="anchored" data-anchor-id="i-also-write-on-medium">✍️ I Also Write on Medium</h2>
-<p>Beyond this blog, I share engineering deep-dives and applied AI insights on Medium too. <a href="https://medium.com/@senthilkumar.m1901"><img src="medium_profile_screenshot.png" class="img-fluid" alt="Medium Profile"></a></p>
-<p>👉 <strong>Explore my Medium articles:</strong><br>
-<a href="https://medium.com/@senthilkumar.m1901">https://medium.com/<span class="citation" data-cites="senthilkumar.m1901">@senthilkumar.m1901</span></a></p>
-<hr>
-</section>
-<section id="lets-connect" class="level2">
-<h2 class="anchored" data-anchor-id="lets-connect">🤝 Let’s Connect</h2>
-<ul>
-<li><p>If what I build and write about resonates with you, feel free to connect with me on LinkedIn.</p></li>
-<li><p>I’m always interested in thoughtful conversations around AI systems, cloud-native architectures, and engineering craftsmanship.</p></li>
-<li><p><a href="https://www.linkedin.com/in/senthilkumarm1901/">LinkedIn</a> | <a href="https://github.com/senthilkumarm1901">GitHub</a> | <a href="https://senthilkumarm1901.github.io/myResume">Resume</a> | <a href="https://medium.com/@senthilkumar.m1901">Medium</a></p></li>
-<li><p>📧 senthilkumar.m1901@gmail.com</p></li>
-</ul>
-<hr>
-
-
-</section>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -623,6 +586,8 @@ ul.task-list li input[type="checkbox"] {
     }
   });
   </script>
+<script src="https://utteranc.es/client.js" repo="senthilkumarm1901/QuartoBlogComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
 </div> <!-- /content -->
 
 

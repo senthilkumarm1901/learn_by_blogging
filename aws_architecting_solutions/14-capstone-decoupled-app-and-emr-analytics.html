@@ -8,7 +8,7 @@
 
 <meta name="author" content="Senthil Kumar">
 
-<title>14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR – Learn by Blogging</title>
+<title>14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR – [Architecting Solutions in AWS: Requirements to Justified Trade-offs.](https://senthilkumarm1901.github.io/learn_by_blogging/aws_architecting_solutions/10-architecting-serverless-backend-solution-in-aws.html)</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -30,29 +30,30 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-67daaa7896f33cc2219aa98eaadded8d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./13-multi-account-strategies.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-81dce849c25865aa69203cbf510b76f1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
+  "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
+  "panel-placement": "start",
+  "type": "textbox",
   "limit": 50,
   "keyboard-shortcut": [
     "f",
@@ -75,63 +76,119 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 <meta name="mermaid-theme" content="neutral">
-<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
-<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="book.css">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-sidebar floating quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Learn by Blogging</span>
-    </a>
-  </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-  <span class="navbar-toggler-icon"></span>
-</button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="../blog.html"> 
-<span class="menu-text">Blog</span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-</ul>
-          </div> <!-- /navcollapse -->
-            <div class="quarto-navbar-tools">
-</div>
-      </div> <!-- /container-fluid -->
-    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./14-capstone-decoupled-app-and-emr-analytics.html"><span class="chapter-title">14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./"></a><a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_architecting_solutions/10-architecting-serverless-backend-solution-in-aws.html">Architecting Solutions in AWS: Requirements to Justified Trade-offs.</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Architecting Solutions in AWS: Requirements to Justified Trade-offs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-architecting-serverless-backend-solution-in-aws.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">10. Architecting a Serverless Web Backend</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-serverless-data-analytics.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">11. Architecting Serverless Data Analytics Solutions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-hybrid-container-workloads.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">12. Architecting Hybrid Container-Based Workloads</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-multi-account-strategies.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">13. Architecting for Account Governance and Multi-Account Management</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-capstone-decoupled-app-and-emr-analytics.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#capstone-one-customer-two-workloads-one-migration" id="toc-capstone-one-customer-two-workloads-one-migration" class="nav-link active" data-scroll-target="#capstone-one-customer-two-workloads-one-migration">Capstone: One Customer, Two Workloads, One Migration</a></li>
+  <li><a href="#the-method-one-estate-two-tracks" id="toc-the-method-one-estate-two-tracks" class="nav-link" data-scroll-target="#the-method-one-estate-two-tracks">14.1 The Method: one estate, two tracks</a></li>
+  <li><a href="#sec-drivers" id="toc-sec-drivers" class="nav-link" data-scroll-target="#sec-drivers">14.2 Turn requirements into architectural drivers</a></li>
+  <li><a href="#sec-frontend" id="toc-sec-frontend" class="nav-link" data-scroll-target="#sec-frontend">14.3 Decouple the frontend</a></li>
+  <li><a href="#sec-backend" id="toc-sec-backend" class="nav-link" data-scroll-target="#sec-backend">14.4 Decouple the backend compute</a></li>
+  <li><a href="#sec-database" id="toc-sec-database" class="nav-link" data-scroll-target="#sec-database">14.5 Decouple and migrate the database</a></li>
+  <li><a href="#sec-ingest" id="toc-sec-ingest" class="nav-link" data-scroll-target="#sec-ingest">14.6 Ingest the analytics data into AWS</a></li>
+  <li><a href="#sec-emr" id="toc-sec-emr" class="nav-link" data-scroll-target="#sec-emr">14.7 Process the workload with Amazon EMR</a>
+  <ul class="collapse">
+  <li><a href="#emr-cluster-shape-transient-not-persistent" id="toc-emr-cluster-shape-transient-not-persistent" class="nav-link" data-scroll-target="#emr-cluster-shape-transient-not-persistent">14.7.1 EMR cluster shape: transient, not persistent</a></li>
+  <li><a href="#emr-node-types-and-how-they-read-s3" id="toc-emr-node-types-and-how-they-read-s3" class="nav-link" data-scroll-target="#emr-node-types-and-how-they-read-s3">14.7.2 EMR node types and how they read S3</a></li>
+  <li><a href="#why-not-emr-serverless-or-emr-on-eks-here" id="toc-why-not-emr-serverless-or-emr-on-eks-here" class="nav-link" data-scroll-target="#why-not-emr-serverless-or-emr-on-eks-here">14.7.3 Why not EMR Serverless or EMR on EKS here</a></li>
+  </ul></li>
+  <li><a href="#sec-query" id="toc-sec-query" class="nav-link" data-scroll-target="#sec-query">14.8 Catalog and query the lake</a></li>
+  <li><a href="#sec-visualise" id="toc-sec-visualise" class="nav-link" data-scroll-target="#sec-visualise">14.9 Visualise the insight</a></li>
+  <li><a href="#sec-secure" id="toc-sec-secure" class="nav-link" data-scroll-target="#sec-secure">14.10 Secure both tracks</a></li>
+  <li><a href="#sec-observability" id="toc-sec-observability" class="nav-link" data-scroll-target="#sec-observability">14.11 Make both tracks observable</a></li>
+  <li><a href="#sec-resilient" id="toc-sec-resilient" class="nav-link" data-scroll-target="#sec-resilient">14.12 Cut over safely, and control cost</a></li>
+  <li><a href="#sec-reference" id="toc-sec-reference" class="nav-link" data-scroll-target="#sec-reference">14.13 The reference architecture, end to end</a></li>
+  <li><a href="#sec-not" id="toc-sec-not" class="nav-link" data-scroll-target="#sec-not">14.14 When <em>not</em> to build it this way</a></li>
+  <li><a href="#sec-cheatsheet" id="toc-sec-cheatsheet" class="nav-link" data-scroll-target="#sec-cheatsheet">14.15 Architect’s cheat sheet</a></li>
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources">Sources</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR</h1>
+<h1 class="title"><span class="chapter-title">14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR</span></h1>
 </div>
 
 
@@ -553,7 +610,7 @@ flowchart LR
 <li>❓ How does MySQL move off the shared physical server with zero application code changes and no single point of failure?</li>
 </ul>
 </blockquote>
-<p><strong>Chosen: Amazon RDS for MySQL, Multi-AZ, migrated with AWS DMS</strong> — the same lift-and-shift pattern used for PostgreSQL in <a href="../aws_architecting_solutions/12-hybrid-container-workloads.html#sec-db">12.5</a>, applied here to MySQL.</p>
+<p><strong>Chosen: Amazon RDS for MySQL, Multi-AZ, migrated with AWS DMS</strong> — the same lift-and-shift pattern used for PostgreSQL in <a href="./12-hybrid-container-workloads.html#sec-db">12.5</a>, applied here to MySQL.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -805,7 +862,7 @@ flowchart TD
 <li>❓ Once EMR has written curated output to S3, how does anyone run SQL against it without standing up a database?</li>
 </ul>
 </blockquote>
-<p><strong>Chosen: AWS Glue Data Catalog for schema, Amazon Athena for ad hoc SQL</strong> — the same pattern as <a href="../aws_architecting_solutions/11-serverless-data-analytics.html#sec-query">11.5</a>, reused here on EMR’s output instead of a clickstream.</p>
+<p><strong>Chosen: AWS Glue Data Catalog for schema, Amazon Athena for ad hoc SQL</strong> — the same pattern as <a href="./11-serverless-data-analytics.html#sec-query">11.5</a>, reused here on EMR’s output instead of a clickstream.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -856,7 +913,7 @@ flowchart LR
 <li>❓ How do the business users who currently use the on-prem visualisation tools see the same insights on AWS?</li>
 </ul>
 </blockquote>
-<p><strong>Chosen: Amazon QuickSight</strong>, reading through Athena — the same choice as <a href="../aws_architecting_solutions/11-serverless-data-analytics.html#sec-visualise">11.6</a>.</p>
+<p><strong>Chosen: Amazon QuickSight</strong>, reading through Athena — the same choice as <a href="./11-serverless-data-analytics.html#sec-visualise">11.6</a>.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1024,7 +1081,7 @@ flowchart LR
 </tbody>
 </table>
 <blockquote class="blockquote">
-<p><strong>Architect’s takeaway:</strong> Alarm on the app tier’s <strong>errors</strong> and the analytics tier’s <strong>absence of progress</strong> (a step that never completes, a DataSync task that stops running) — the same “pipelines fail silently” lesson from <a href="../aws_architecting_solutions/11-serverless-data-analytics.html#sec-observability">11.8</a> applies directly to EMR steps.</p>
+<p><strong>Architect’s takeaway:</strong> Alarm on the app tier’s <strong>errors</strong> and the analytics tier’s <strong>absence of progress</strong> (a step that never completes, a DataSync task that stops running) — the same “pipelines fail silently” lesson from <a href="./11-serverless-data-analytics.html#sec-observability">11.8</a> applies directly to EMR steps.</p>
 </blockquote>
 <hr>
 </section>
@@ -1052,7 +1109,7 @@ flowchart LR
 </div>
 </div>
 <ul>
-<li><strong>Database cutover:</strong> keep DMS replicating (CDC) until the switch, then a short, planned cutover window — the same near-zero-downtime pattern as <a href="../aws_architecting_solutions/12-hybrid-container-workloads.html#sec-db">12.5.5</a>.</li>
+<li><strong>Database cutover:</strong> keep DMS replicating (CDC) until the switch, then a short, planned cutover window — the same near-zero-downtime pattern as <a href="./12-hybrid-container-workloads.html#sec-db">12.5.5</a>.</li>
 <li><strong>Analytics cutover:</strong> run the EMR pipeline against synced S3 data in parallel with the on-prem Hadoop cluster until outputs are verified to match, before decommissioning the physical cluster.</li>
 <li><strong>Cost levers for EMR:</strong> use <strong>Spot Instances on task nodes only</strong> (they hold no HDFS data, so interruption just delays a job, it doesn’t lose it); terminate the cluster between scheduled runs; keep S3 storage on <strong>Intelligent-Tiering</strong> for the raw zone.</li>
 <li><strong>Cost levers for the app tier:</strong> ECS Service Auto Scaling to match ALB traffic; RDS storage auto scaling instead of over-provisioning up front.</li>
@@ -1166,7 +1223,7 @@ flowchart LR
 <tr class="odd">
 <td>Analytics needs sub-second, always-on processing</td>
 <td>Transient EMR is batch-shaped</td>
-<td>A persistent EMR cluster, or a streaming service as in <a href="../aws_architecting_solutions/11-serverless-data-analytics.html">11. Serverless Data Analytics</a></td>
+<td>A persistent EMR cluster, or a streaming service as in <a href="./11-serverless-data-analytics.html">11. Serverless Data Analytics</a></td>
 </tr>
 <tr class="even">
 <td>No constraint to use a cluster at all</td>
@@ -1176,7 +1233,7 @@ flowchart LR
 <tr class="odd">
 <td>Backend needs a custom AMI or host-level SSH</td>
 <td>Fargate gives no host access</td>
-<td><strong>ECS on EC2</strong>, as in <a href="../aws_architecting_solutions/12-hybrid-container-workloads.html#sec-compute">12.4</a></td>
+<td><strong>ECS on EC2</strong>, as in <a href="./12-hybrid-container-workloads.html#sec-compute">12.4</a></td>
 </tr>
 <tr class="even">
 <td>Team already has deep Kubernetes investment</td>
@@ -1191,7 +1248,7 @@ flowchart LR
 <tr class="even">
 <td>Database needs read scaling beyond one primary</td>
 <td>A single RDS instance</td>
-<td>Add <strong>RDS read replicas</strong>, as in <a href="../aws_architecting_solutions/12-hybrid-container-workloads.html#sec-db">12.5.3</a></td>
+<td>Add <strong>RDS read replicas</strong>, as in <a href="./12-hybrid-container-workloads.html#sec-db">12.5.3</a></td>
 </tr>
 </tbody>
 </table>
@@ -1341,7 +1398,7 @@ flowchart LR
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/senthilkumarm1901\.github\.io\/learn_by_blogging\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1668,6 +1725,15 @@ flowchart LR
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./13-multi-account-strategies.html" class="pagination-link" aria-label="13. Architecting for Account Governance and Multi-Account Management">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">13. Architecting for Account Governance and Multi-Account Management</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
 </div> <!-- /content -->
 
 
