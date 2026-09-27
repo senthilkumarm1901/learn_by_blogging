@@ -14,4 +14,4 @@ mkdir -p _site/aws_architecting_solutions
 cp -r aws_architecting_solutions/_book/* _site/aws_architecting_solutions/
 
 # Step 5: Publish to GitHub Pages
-quarto publish gh-pages --no-prompt
+quarto publish gh-pages --no-prompt --no-render
