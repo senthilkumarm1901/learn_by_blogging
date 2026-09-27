@@ -6,6 +6,7 @@ if [[ $# -ne 1 ]]; then
   exit 1
 fi
 
+
 DOCUMENT="$1"
 
 if [[ ! -f "$DOCUMENT" ]]; then
