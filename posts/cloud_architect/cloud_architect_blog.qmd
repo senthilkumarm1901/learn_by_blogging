@@ -22,7 +22,7 @@ output-file: cloud_architect.html
 
 ## Source
 
-> * The intuition and examples used below are inspired by the `Architecting Solutions in AWS` Coursera course that I completed in Sep'26
+> * The intuition and examples above are inspired by the `Architecting Solutions in AWS` Coursera course
 
 ![](./images/course_certificate.png)
 
@@ -115,7 +115,7 @@ flowchart TD
 > * A single EC2 is cheapest but has an app-wide blast radius; going straight to microservices is over-engineering for a monolith that just needs to survive an AZ failure. 
 > * The architect's move here is restraint — the smallest set of blocks that removes the single points of failure.
 
-📖 **Deep dive:** this monolith is exactly what gets decoupled tier-by-tier in [14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/14-capstone-decoupled-app-and-emr-analytics.html)
+📖 **Deep dive:** this monolith is exactly what gets decoupled tier-by-tier in [14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR](https://senthilkumarm1901.github.io/learn_by_blogging/aws_architecting_solutions/14-capstone-decoupled-app-and-emr-analytics.html)
 
 ---
 
@@ -175,7 +175,7 @@ flowchart TD
 - The fully synchronous version is simplest but couples every failure and can't survive a burst; a single Lambda is fewer moving parts but one bug takes down all routes.
 - The **Intuition**: The intuition: serverless starts simple, then earns its resilience one decoupling at a time — event triggers, queues, and dead-letter queues are not decoration, they're the blast-radius controls.
 
-📖 **Deep dive:** [10. Architecting a Serverless Backend Solution in AWS](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/10-architecting-serverless-backend-solution-in-aws.html)
+📖 **Deep dive:** [10. Architecting a Serverless Backend Solution in AWS](https://senthilkumarm1901.github.io/learn_by_blogging/aws_architecting_solutions/10-architecting-serverless-backend-solution-in-aws.html)
 
 ---
 
@@ -252,7 +252,7 @@ flowchart TD
 - Skipping Parquet keeps it simple but every Athena query scans mountains of JSON. 
 - The intuition: in analytics, storage is cheap and scanning is expensive — so the architecture is really a bet about when you pay to structure data.
 
-📖 **Deep dive:** [11. Serverless Data Analytics](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/11-serverless-data-analytics.html)
+📖 **Deep dive:** [11. Serverless Data Analytics](https://senthilkumarm1901.github.io/learn_by_blogging/aws_architecting_solutions/11-serverless-data-analytics.html)
 
 ---
 
@@ -312,7 +312,7 @@ flowchart TD
     — orchestrator, compute mode, service mesh, and locality 
     - and most teams get burned by answering "EKS" before they've asked the first question
 
-📖 **Deep dive:** [12. Architecting a Hybrid Container-Based Solution on AWS](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/12-hybrid-container-workloads.html#how-to-architect-a-hybrid-container-based-solution-on-aws)
+📖 **Deep dive:** [12. Architecting a Hybrid Container-Based Solution on AWS](https://senthilkumarm1901.github.io/learn_by_blogging/aws_architecting_solutions/12-hybrid-container-workloads.html#how-to-architect-a-hybrid-container-based-solution-on-aws)
 
 ---
 
@@ -367,7 +367,7 @@ flowchart TD
 > * Going the other way — an account per microservice — multiplies the OU/SCP/logging overhead a team must operate, for isolation finer than the actual risk requires.
 > * The intuition: blast radius isn't only a resource-level concern (which AZ, which instance) — the **account boundary** is the largest blast-radius knob available, and it costs nothing until you actually need finer isolation.
 
-📖 **Deep dive:** [13. Architecting for Account Governance and Multi-Account Management](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/13-multi-account-strategies.html)
+📖 **Deep dive:** [13. Architecting for Account Governance and Multi-Account Management](https://senthilkumarm1901.github.io/learn_by_blogging/aws_architecting_solutions/13-multi-account-strategies.html)
 
 ## Conclusion
 
