@@ -419,17 +419,6 @@ flowchart LR
         DB1["PostgreSQL"]
         C1 &lt;--&gt; DB1
     end
-    
-    %% DCn &lt;--&gt;|"dedicated, low-latency link"| AWS
-
-    %% subgraph AWS["AWS (half the workloads)"]
-    %%     C2["Containers&lt;br&gt;private, outbound only"]
-    %%     DB2["PostgreSQL&lt;br&gt;lift-and-shift, no rewrite"]
-    %%     NFS["Data over NFS&lt;br&gt;no refactor"]
-    %% end
-
-    %% C1 -.-&gt;|"same orchestration tooling"| C2
-    %% DB1 -.-&gt;|"no app code rewrite"| DB2
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -513,7 +502,7 @@ flowchart LR
 
 **Before an Architect's Intervention**:
 
-```ncrpulgbs
+```tmccwjdic
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     subgraph Before["Single account (today)"]
@@ -521,20 +510,6 @@ flowchart LR
         ROOT --&gt; W2["Client B website"]
         ROOT --&gt; W3["Client C website"]
     end
-
-    %% Before --&gt;|"re-architect"| After
-
-    %% subgraph After["Multi-account (goal)"]
-    %%     SSO["Single sign-on"] --&gt; ACCA["Client A account"]
-    %%     SSO --&gt; ACCB["Client B account"]
-    %%     SSO --&gt; ACCC["Client C account"]
-    %%     ACCA --&gt; LOG["Dedicated logging account"]
-    %%     ACCB --&gt; LOG
-    %%     ACCC --&gt; LOG
-    %%     GR["Guardrails +&lt;br&gt;enforced tagging"] -.-&gt; ACCA
-    %%     GR -.-&gt; ACCB
-    %%     GR -.-&gt; ACCC
-    %% end
 </pre>
 </div>
 <p></p></figure><p></p>
