@@ -428,7 +428,7 @@ For broader cost and resilience levers, see [08. Optimization](https://senthilku
 
 ---
 
-## 13.7 The reference architecture, end to end {#sec-reference}
+## 13.7 The reference architecture {#sec-reference}
 
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
@@ -524,38 +524,89 @@ flowchart LR
     AU --> AU3["Tag policy standardises;<br>SCP enforces"]
 ```
 
-1. An **account** is the fundamental boundary for **security, access, billing and blast radius**.
-2. Split accounts by **ownership, environment, data sensitivity, blast radius and cost** — not arbitrarily.
-3. Multi-account improves **most Well-Architected pillars** at once.
-4. Most **service quotas and API rate limits are per account, per Region** — separation distributes their impact.
-5. **Sandbox → dev → test → prod:** give early-lifecycle work more freedom behind guardrails and budgets.
-6. Match **account groups to IT operating models** (Traditional Ops / CloudOps / DevOps).
-7. **AWS Organizations** groups accounts into **OUs**; nest by client → environment.
-8. **SCPs set the maximum** permissions — they **never grant**, only cap. Both SCP *and* IAM must allow an action.
-9. **🔴 SCPs do not apply to the management account** — so run no workloads there.
-10. SCPs and tag policies need **all features enabled**; consolidated-billing-only organizations cannot use them.
-11. SCPs do **not** affect **service-linked roles** or external principals arriving via resource-based policies.
-12. Typical SCPs: restrict **root**, prevent disabling **CloudTrail/Config**, deny leaving the org, limit **Regions**.
-13. **IAM roles** provide **temporary** credentials — no passwords or access keys to leak.
-14. **Delegation = trust policy (who) + permissions policy (what)**; the two halves live in different accounts.
-15. The `Principal` element supports **no partial wildcards**; a bare `"*"` is valid but dangerous — use conditions such as `aws:PrincipalOrgID`, and let **IAM Access Analyzer** catch mistakes.
-16. Assuming a role means you **temporarily drop** your own permissions.
-17. Use an **external ID** for third-party access — it defends against the **confused deputy** problem.
-18. **Federation** (SAML 2.0 / OIDC) maps external identities to IAM roles with temporary credentials.
-19. **IAM Identity Center** = workforce SSO: permission sets across many accounts, one access portal. **Delegate its administration** out of the management account.
-20. New org accounts get **`OrganizationAccountAccessRole`** for initial cross-account switching.
-21. Put **MFA** on IAM Identity Center *and* every root user; consider **centrally managed root access** to remove member-account root credentials.
-22. **CloudTrail = activity**, **Config = configuration state** — the most-confused pair; use both.
-23. The free **90-day Event history** is not a trail; **data events** are off by default and billed separately.
-24. An **organization trail** logs all member accounts and members cannot modify or delete it.
-25. **VPC Flow Logs** sit **outside** the traffic path — no performance impact.
-26. **GuardDuty** detects threats; **Security Hub** aggregates findings against standards. **Delegate both** to Security Tooling.
-27. Centralise logs in a **dedicated Log Archive account** that members cannot tamper with.
-28. **CloudFormation (IaC)** underpins governance — provision automatically, never by hand.
-29. **Control Tower** builds a governed **landing zone**, fights **drift**, and uses **StackSets**; its **Account Factory** is a Service Catalog product.
-30. Control Tower **"guardrails" are now "controls"**, in three flavours: **preventive** (SCP), **detective** (Config rule), **proactive** (CloudFormation hook).
-31. **Tag policy standardises tags; SCP blocks untagged creates** — use them **together**.
-32. Prefer **AWS Budgets** over CloudWatch billing alarms for multi-account cost control (billing metrics live only in `us-east-1`).
+**Structure**:
+
+* An **account** is the fundamental boundary for **security, access, billing and blast radius**.
+* Split accounts by **ownership, environment, data sensitivity, blast radius and cost** — not arbitrarily.
+* Multi-account improves **most Well-Architected pillars** at once.
+* Most **service quotas and API rate limits are per account, per Region** — separation distributes their impact.
+* **Sandbox → dev → test → prod:** give early-lifecycle work more freedom behind guardrails and budgets.
+* Match **account groups to IT operating models** (Traditional Ops / CloudOps / DevOps).
+* **AWS Organizations** groups accounts into **OUs**; nest by client → environment.
+* **SCPs set the maximum** permissions — they **never grant**, only cap. Both SCP *and* IAM must allow an action.
+* **🔴 SCPs do not apply to the management account** — so run no workloads there.
+* SCPs and tag policies need **all features enabled**; consolidated-billing-only organizations cannot use them.
+* SCPs do **not** affect **service-linked roles** or external principals arriving via resource-based policies.
+* Typical SCPs: restrict **root**, prevent disabling **CloudTrail/Config**, deny leaving the org, limit **Regions**.
+
+
+**Auth**:
+
+* **IAM roles** provide **temporary** credentials — no passwords or access keys to leak.
+* **Delegation = trust policy (who) + permissions policy (what)**; the two halves live in different accounts.
+    * Delegation here means: one AWS account gives an identity from another account permission to temporarily use a role and access selected resources. 
+* The `Principal` element supports **no partial wildcards**; a bare `"*"` is valid but dangerous — use conditions such as `aws:PrincipalOrgID`, and let **IAM Access Analyzer** catch mistakes.
+
+
+* Invalid Principal ❌: 
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "InvalidPartialWildcard",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::111122223333:role/DataScience-*"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+```
+
+* Valid Principal ✅: 
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "TrustSpecificApplicationRole",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::111122223333:role/DataScienceApplicationRole"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+* Assuming a role means you **temporarily drop** your own permissions.
+* 18. **Federation** (SAML 2.0 / OIDC) maps external identities to IAM roles with temporary credentials.
+* **IAM Identity Center** = workforce SSO: permission sets across many accounts, one access portal. **Delegate its administration** out of the management account.
+* AWS IAM Identity Center manages access for employees and workforce users, while Amazon Cognito handles authentication for external customers using web and mobile apps.
+* New org accounts get **`OrganizationAccountAccessRole`** for initial cross-account switching.
+* Put **MFA** on IAM Identity Center *and* every root user; consider **centrally managed root access** to remove member-account root credentials.
+
+**Logging**:
+
+* **CloudTrail = activity**, **Config = configuration state** — the most-confused pair; use both.
+* The free **90-day Event history** is not a trail; **data events** are off by default and billed separately.
+* An **organization trail** logs all member accounts and members cannot modify or delete it.
+* **VPC Flow Logs** sit **outside** the traffic path — no performance impact.
+* **GuardDuty** detects threats; **Security Hub** aggregates findings against standards. **Delegate both** to Security Tooling.
+* Centralise logs in a **dedicated Log Archive account** that members cannot tamper with.
+
+**Automation & Management**:
+
+* **CloudFormation (IaC)** underpins governance — provision automatically, never by hand.
+* **Control Tower** builds a governed **landing zone**, fights **drift**, and uses **StackSets**; its **Account Factory** is a Service Catalog product.
+* Control Tower **"guardrails" are now "controls"**, in three flavours: **preventive** (SCP), **detective** (Config rule), **proactive** (CloudFormation hook).
+* **Tag policy standardises tags; SCP blocks untagged creates** — use them **together**.
+* Prefer **AWS Budgets** over CloudWatch billing alarms for multi-account cost control (billing metrics live only in `us-east-1`).
 
 ---
 
