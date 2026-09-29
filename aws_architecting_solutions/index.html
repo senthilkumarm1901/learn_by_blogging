@@ -165,6 +165,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#architecting-a-serverless-web-backend" id="toc-architecting-a-serverless-web-backend" class="nav-link" data-scroll-target="#architecting-a-serverless-web-backend">🧩 <strong>10. Architecting a Serverless Web Backend</strong></a></li>
   <li><a href="#serverless-data-analytics" id="toc-serverless-data-analytics" class="nav-link" data-scroll-target="#serverless-data-analytics">📊 <strong>11. Serverless Data Analytics</strong></a></li>
   <li><a href="#hybrid-container-based-workloads" id="toc-hybrid-container-based-workloads" class="nav-link" data-scroll-target="#hybrid-container-based-workloads">🔗 <strong>12. Hybrid, Container-Based Workloads</strong></a></li>
+  <li><a href="#account-governance-and-multi-account-management" id="toc-account-governance-and-multi-account-management" class="nav-link" data-scroll-target="#account-governance-and-multi-account-management">🏛️ <strong>13. Account Governance and Multi-Account Management</strong></a></li>
   <li><a href="#capstone-decoupled-app-emr-analytics" id="toc-capstone-decoupled-app-emr-analytics" class="nav-link" data-scroll-target="#capstone-decoupled-app-emr-analytics">🎯 <strong>14. Capstone: Decoupled App + EMR Analytics</strong></a></li>
   </ul></li>
   <li><a href="#source-attribution" id="toc-source-attribution" class="nav-link" data-scroll-target="#source-attribution">📜 3. Source &amp; Attribution</a></li>
@@ -494,16 +495,26 @@ flowchart LR
     ODB -.-&gt;|"DMS data + pg_dump schema"| RDS
     OPS["ECS Anywhere · Systems&lt;br&gt;Manager · AWS Backup"] -.-&gt; DCn
     OPS -.-&gt; AWS
-    CW["CloudWatch: connection state, tunnel state,&lt;br&gt;task counts, replica lag, cache lag"] -.-&gt; AWS```
-
-### 🏛️ [**13. Account Governance and Multi-Account Management**](13-multi-account-strategies.html)
-
-* **Problem**: A single, unmanaged AWS account has to become a governed multi-account structure — with automatic provisioning, single sign-on, central logging and guardrails.
-
-**Before an Architect's Intervention**:
-
-```tmccwjdic
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+    CW["CloudWatch: connection state, tunnel state,&lt;br&gt;task counts, replica lag, cache lag"] -.-&gt; AWS
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="account-governance-and-multi-account-management" class="level3">
+<h3 class="anchored" data-anchor-id="account-governance-and-multi-account-management">🏛️ <a href="13-multi-account-strategies.html"><strong>13. Account Governance and Multi-Account Management</strong></a></h3>
+<ul>
+<li><strong>Problem</strong>: A single, unmanaged AWS account has to become a governed multi-account structure — with automatic provisioning, single sign-on, central logging and guardrails.</li>
+</ul>
+<p><strong>Before an Architect’s Intervention</strong>:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     subgraph Before["Single account (today)"]
         ROOT["root + unmanaged IAM users"] --&gt; W1["Client A website"]
