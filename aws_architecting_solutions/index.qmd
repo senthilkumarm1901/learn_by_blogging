@@ -1,7 +1,7 @@
 ---
-title: "Architecting Solutions in AWS: Requirements to Justified Trade-offs"
+title: "Thinking like a Cloud Architect: Where Systems Thinking is Translated into Reality in Cloud"
 date: 2026-09-27
-subtitle: "From a customer's requirements to a defensible AWS architecture"
+subtitle: "Being a Technical Architect means composing systems from building blocks. Being a Cloud Architect is lower-level systems thinking — which real cloud service to use for *building each block*, and at what cost?"
 format:
   html:
     navbar:
@@ -22,17 +22,51 @@ format:
 
 ---
 
-## ❓ 1. Why this Book
+
+## ❓ 1. Why this blog and the book
 
 > Knowing what a service *does* is not the same as knowing *when* to choose it and what you must be prepared to defend once you have.
 
-This is a companion to [**Foundational Questions. Visual Answers. Mastering AWS Fundamentals**](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/). That book builds the fundamentals, chapter by chapter: security, compute, networking, storage, databases, monitoring, optimization. This book assumes those fundamentals and asks a harder question: given a real customer's requirements, how do you *combine* those building blocks into one architecture — and justify the services you rejected?
+### Technical Architect → Cloud Architect
 
-A companion blog post walks through this same way of thinking end to end: [**Thinking like a Cloud Architect**](https://senthilkumarm1901.github.io/learn_by_blogging/posts/cloud_architect/cloud_architect.html).
+In the previous [blog post on being a Technical Architect](https://senthilkumarm1901.github.io/learn_by_blogging/posts/it_architect/it_architect.html), we composed systems from building blocks. Each block was a clean item on a whiteboard.
+
+In Cloud, for each block one needs to worry about:
+
+- What is the **cost** of building a block in a particular way in cloud?
+- What is the associated **latency** for that chosen path?
+- What is the **blast radius** if things fail?
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    Block["Each building block<br/>of a System"] --> Q{"Made concrete<br/>in the cloud"}
+    Q --> M["💰 What does it cost<br/>when idle vs busy?"]
+    Q --> L["⏱️ What latency does<br/>this choice bake in?"]
+    Q --> R["💥 If it fails,<br/>how far does it spread?"]
+    M --> Dec["The service choice<br/>is the answer to<br/>all three at once"]
+    L --> Dec
+    R --> Dec
+```
+
+This is a companion to [**Foundational Questions. Visual Answers. Mastering AWS Fundamentals**](https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/). That book builds the fundamentals, chapter by chapter: security, compute, networking, storage, databases, monitoring, optimization. This book assumes those fundamentals and asks a harder question: given a real customer's requirements, how do you *combine* those building blocks into one architecture — and justify the services you rejected?
 
 ---
 
-## 📝 2. What this book covers
+## 🧭 2. Flow of Decision-making for a Cloud Architect
+
+![](images/main_image_ca.png)
+
+- Functional drivers = **what the system must do**.
+    - For example: "store relational data", "run SQL analytics", "serve a REST API", "process a stream", "run containerized microservices".
+    - These filter the candidate set; if the requirement is "transactional relational writes", a queue and an object store are simply not candidates.
+- Non-functional drivers = **how well it must do it**.
+    - Scale, latency, cost, resilience, ops burden.
+    - These rank the survivors — among the relational options (RDS, Aurora, self-managed on EC2), the NFRs pick the winner.
+
+---
+
+## 📝 3. What this book covers
 
 Every chapter follows the same workflow: **requirements/problem understanding → architectural drivers → collect candidate services → compare trade-offs → finalize decision → justify rejections.**
 
@@ -65,6 +99,23 @@ flowchart LR
   end
 ```
 
+**The Naive First Draft**: "Make it serverless": swap the monolith for one Lambda that does everything.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    FE["Frontend clients"] --> APIGW["API Gateway"]
+    APIGW --> L["One Lambda<br>all order logic"]
+    L --> DDB["DynamoDB"]
+    L -->|"sync calls"| DS["Inventory, Accounting,<br>Fulfillment"]
+```
+
+**Why the First Draft Fails**  → **What it needs**:
+
+- One Lambda for every route is a monolith in disguise; one bug takes all routes down → split functions by responsibility.
+- Synchronous downstream calls: one slow service fails the whole order → decouple with SQS, fan out with SNS.
+- A sale-day burst hits Lambda and DynamoDB head-on → SQS absorbs it, Lambda drains at its own pace.
+- Poison messages retry, then silently expire → dead-letter queue makes failures visible.
 
 **After an Architect's Intervention**:
 
@@ -116,6 +167,23 @@ flowchart LR
         PAY
     end
 ```
+
+**The Naive First Draft**: "Just save every click somewhere and query it."
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    B["Menu in browser"] -->|"one PUT per click"| S3["S3 bucket<br>raw JSON"]
+    S3 --> ATH["Athena<br>scans raw JSON"]
+    ATH --> QS["QuickSight<br>queries on every view"]
+```
+
+**Why the First Draft Fails**  → **What it needs**:
+
+- Browser writes straight to S3: exposed bucket, no throttling → API Gateway as the front door.
+- One write per click: millions of tiny files and per-request charges → Firehose buffers into batched files.
+- Athena bills by bytes scanned; raw JSON drags every byte of every row → Parquet + Glue catalog + time partitions.
+- Every dashboard view re-scans S3 → QuickSight SPICE caches the dataset in memory.
 
 **After an Architect's Intervention**:
 
@@ -192,6 +260,23 @@ flowchart TD
 * **Problem**: Half a company's workloads stay on-premises, half move to AWS. 
 * Need: Connecting the On-prm Data Center with AWS infra, keeping containers portable, and migrating a database with near-zero downtime.
 
+**The Naive First Draft**: "Spin up a new cluster in AWS, connect over the internet, dump-and-restore the database."
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    DC["Data centre<br>containers, PostgreSQL, NFS"] -->|"public internet"| K["New cluster in AWS<br>own tooling, public subnets"]
+    DC -->|"weekend dump + restore"| DB["PostgreSQL on AWS"]
+    DC -->|"rewrite apps for S3 API"| S3["Amazon S3"]
+```
+
+**Why the First Draft Fails**  → **What it needs**:
+
+- The internet link brings latency spikes to DC↔AWS traffic that will run for years → Direct Connect + VPN failover.
+- Different tooling on each side means two ops models → ECS in AWS + ECS Anywhere on-prem.
+- Containers in public subnets widen the attack surface → private subnets, NAT gateways, VPC endpoints.
+- Dump-and-restore means hours of downtime → DMS for data, `pg_dump` for schema only.
+- Rewriting NFS apps for S3 is a refactor the brief rules out → S3 File Gateway keeps NFS.
 
 **After an Architect's Intervention** (simple version):
 
@@ -257,7 +342,25 @@ flowchart LR
 
 ### 🏛️ [**13. Account Governance and Multi-Account Management**](13-multi-account-strategies.html)
 
-* **Problem**: A single, unmanaged AWS account has to become a governed multi-account structure — with automatic provisioning, single sign-on, central logging and guardrails.
+* **Problem**: A single, unmanaged AWS account has to become a governed multi-account structure, with automatic provisioning, single sign-on, central logging and guardrails.
+
+**The Naive First Draft**: "Keep one account; separate clients with tags and IAM policies."
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    ROOT["One account<br>root + long-lived IAM users"] --> T["Tags + IAM policies<br>per client"]
+    T --> A["Client A"]
+    T --> B["Client B"]
+    T --> C["Client C"]
+```
+
+**Why the First Draft Fails**  → **What it needs**:
+
+- One misconfigured policy reaches every client → one account per client, grouped in Organizations OUs.
+- Cost per client depends on perfect tagging → the account is the free, default unit of cost allocation.
+- Quotas and API limits are per account, so one noisy client throttles all → separate accounts, separate quotas.
+- Shared root and long-lived IAM users → IAM Identity Center (SSO) + Control Tower guardrails.
 
 **After an Architect's Intervention** (simple version):
 
@@ -342,6 +445,23 @@ flowchart LR
     %% end
 ```
 
+**The Naive First Draft**: "Lift and shift as-is."
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    U["Users"] --> EC2["One EC2<br>Apache + Java + static files"]
+    EC2 --> RDS[("RDS MySQL<br>single-AZ")]
+    HAD["Always-on Hadoop<br>cluster on EC2 + HDFS"]
+```
+
+**Why the First Draft Fails**  → **What it needs**:
+
+- One EC2 is a single point of failure → ALB + ECS on Fargate across AZs.
+- A single-AZ database moves the same risk one tier down → RDS Multi-AZ standby.
+- The backend serves static files it shouldn't → CloudFront + WAF + S3 for the frontend.
+- An always-on Hadoop cluster pays for idle compute, with data locked in HDFS → transient EMR reading S3 via EMRFS.
+
 **After an Architect's Intervention** (simplified version):
 
 ```{mermaid}
@@ -397,7 +517,27 @@ flowchart LR
 
 ---
 
-## 📜 3. Source & Attribution
+## 🏁 4. Conclusion
+
+How the functional and non-functional drivers dictated the architecture decisions across the chapters:
+
+| Chapter | Functional driver (produces candidates) | Non-functional driver (picks winner) |
+| ------- | --------------------------------------- | ------------------------------------ |
+| **[10. Serverless backend](10-architecting-serverless-backend-solution-in-aws.html)** | "Serve a REST API + persist orders" → Lambda/Fargate + DynamoDB/RDS | Spiky load + zero-idle cost → **Lambda + SQS + DynamoDB** |
+| **[11. Data analytics](11-serverless-data-analytics.html)** | "Ingest a stream + run SQL for dashboards" → Kinesis/Firehose, Athena/Redshift | Occasional queries + cost → **Firehose + S3 + Athena** (read-time) over a warehouse |
+| **[12. Containers](12-hybrid-container-workloads.html)** | "Run containerized microservices" → ECS/EKS, Fargate/EC2 | Ops burden + scale → **ECS + Fargate** unless the K8s ecosystem is genuinely needed |
+| **[13. Multi-account](13-multi-account-strategies.html)** | "Isolate clients/environments" → single account, per-client accounts, per-env accounts | Blast radius + billing clarity → **Organizations + OUs** over one shared account |
+| **[14. Capstone (monolith)](14-capstone-decoupled-app-and-emr-analytics.html)** | "Transactional relational store" → RDS/Aurora/EC2-hosted DB | Resilience + cost → RDS **Multi-AZ** over single-AZ or self-managed |
+
+The repeated message across the chapters:
+
+- Start with the smallest sufficient set of blocks and add one piece of complexity per pain point (a failure to isolate, a burst to absorb, idle resources you should not pay for).
+- Blast radius isn't always a resource sitting inside an account, sometimes the blast radius *is* the account, and the account boundary is the fix.
+- None of these decisions are made in isolation on a real system: a single build typically decouples its tiers (Ch. 14), picks an ingest/store/query path for its data (Ch. 11), and sits inside an account structure that contains the blast radius of all of it (Ch. 13) — at the same time, not in sequence.
+
+---
+
+## 📜 5. Source & Attribution
 
 The intuition and examples in this book are inspired by the `Architecting Solutions in AWS` Coursera course.
 
