@@ -192,18 +192,6 @@ flowchart TD
 * **Problem**: Half a company's workloads stay on-premises, half move to AWS. 
 * Need: Connecting the On-prm Data Center with AWS infra, keeping containers portable, and migrating a database with near-zero downtime.
 
-**Before an Architect's Intervention**:
-
-```{mermaid}
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart LR
-    subgraph DCn["Data centre (contracts<br>expiring in waves)"]
-        direction TD
-        C1["Containerised apps"]
-        DB1["PostgreSQL"]
-        C1 <--> DB1
-    end
-```
 
 **After an Architect's Intervention** (simple version):
 
@@ -211,7 +199,7 @@ flowchart LR
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
     subgraph DCn["Data centre (contracts<br>expiring in waves)"]
-        direction TD
+        direction TB
         C1["Containerised apps"]
         DB1["PostgreSQL"]
         C1 <--> DB1
@@ -264,23 +252,12 @@ flowchart LR
     ODB -.->|"DMS data + pg_dump schema"| RDS
     OPS["ECS Anywhere · Systems<br>Manager · AWS Backup"] -.-> DCn
     OPS -.-> AWS
-    CW["CloudWatch: connection state, tunnel state,<br>task counts, replica lag, cache lag"] -.-> AWS```
+    CW["CloudWatch: connection state, tunnel state,<br>task counts, replica lag, cache lag"] -.-> AWS
+```
 
 ### 🏛️ [**13. Account Governance and Multi-Account Management**](13-multi-account-strategies.html)
 
 * **Problem**: A single, unmanaged AWS account has to become a governed multi-account structure — with automatic provisioning, single sign-on, central logging and guardrails.
-
-**Before an Architect's Intervention**:
-
-```{mermaid}
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart LR
-    subgraph Before["Single account (today)"]
-        ROOT["root + unmanaged IAM users"] --> W1["Client A website"]
-        ROOT --> W2["Client B website"]
-        ROOT --> W3["Client C website"]
-    end
-```
 
 **After an Architect's Intervention** (simple version):
 
