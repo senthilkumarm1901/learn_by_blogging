@@ -166,7 +166,7 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#the-connectivity-decision" id="toc-the-connectivity-decision" class="nav-link" data-scroll-target="#the-connectivity-decision">12.3.1 The connectivity decision</a></li>
   <li><a href="#direct-connect-topology" id="toc-direct-connect-topology" class="nav-link" data-scroll-target="#direct-connect-topology">12.3.2 Direct Connect topology</a></li>
-  <li><a href="#the-alternatives-and-when-theyd-win" id="toc-the-alternatives-and-when-theyd-win" class="nav-link" data-scroll-target="#the-alternatives-and-when-theyd-win">12.3.3 The alternatives — and when they’d win</a></li>
+  <li><a href="#the-alternatives-and-when-they-would-win" id="toc-the-alternatives-and-when-they-would-win" class="nav-link" data-scroll-target="#the-alternatives-and-when-they-would-win">12.3.3 The alternatives and when they would win</a></li>
   <li><a href="#scaling-connectivity-aws-transit-gateway" id="toc-scaling-connectivity-aws-transit-gateway" class="nav-link" data-scroll-target="#scaling-connectivity-aws-transit-gateway">12.3.4 Scaling connectivity: AWS Transit Gateway</a></li>
   </ul></li>
   <li><a href="#sec-compute" id="toc-sec-compute" class="nav-link" data-scroll-target="#sec-compute">12.4 Run the containers, privately</a>
@@ -177,8 +177,8 @@ ul.task-list li input[type="checkbox"] {
   </ul></li>
   <li><a href="#sec-db" id="toc-sec-db" class="nav-link" data-scroll-target="#sec-db">12.5 Migrate the database, resiliently</a>
   <ul class="collapse">
-  <li><a href="#high-availability-multi-az-db-instance-one-standby" id="toc-high-availability-multi-az-db-instance-one-standby" class="nav-link" data-scroll-target="#high-availability-multi-az-db-instance-one-standby">12.5.1 High availability: Multi-AZ DB <em>instance</em> (one standby)</a></li>
-  <li><a href="#even-higher-availability-multi-az-db-cluster-two-readable-standbys" id="toc-even-higher-availability-multi-az-db-cluster-two-readable-standbys" class="nav-link" data-scroll-target="#even-higher-availability-multi-az-db-cluster-two-readable-standbys">12.5.2 Even higher availability: Multi-AZ DB <em>cluster</em> (two readable standbys)</a></li>
+  <li><a href="#high-availability-multi-az-db-instance-with-one-standby" id="toc-high-availability-multi-az-db-instance-with-one-standby" class="nav-link" data-scroll-target="#high-availability-multi-az-db-instance-with-one-standby">12.5.1 High availability: Multi-AZ DB <em>instance</em> with one standby</a></li>
+  <li><a href="#even-higher-availability-multi-az-db-cluster-with-two-readable-standbys" id="toc-even-higher-availability-multi-az-db-cluster-with-two-readable-standbys" class="nav-link" data-scroll-target="#even-higher-availability-multi-az-db-cluster-with-two-readable-standbys">12.5.2 Even higher availability: Multi-AZ DB <em>cluster</em> with two readable standbys</a></li>
   <li><a href="#scaling-reads-read-replicas" id="toc-scaling-reads-read-replicas" class="nav-link" data-scroll-target="#scaling-reads-read-replicas">12.5.3 Scaling reads: read replicas</a></li>
   <li><a href="#choosing-a-scaling-axis" id="toc-choosing-a-scaling-axis" class="nav-link" data-scroll-target="#choosing-a-scaling-axis">12.5.4 Choosing a scaling axis</a></li>
   <li><a href="#the-migration-itself-aws-dms" id="toc-the-migration-itself-aws-dms" class="nav-link" data-scroll-target="#the-migration-itself-aws-dms">12.5.5 The migration itself: AWS DMS</a></li>
@@ -188,7 +188,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#sec-observability" id="toc-sec-observability" class="nav-link" data-scroll-target="#sec-observability">12.8 Observe both sides through one pane</a></li>
   <li><a href="#sec-scale" id="toc-sec-scale" class="nav-link" data-scroll-target="#sec-scale">12.9 Scale the moving parts</a></li>
   <li><a href="#sec-dr" id="toc-sec-dr" class="nav-link" data-scroll-target="#sec-dr">12.10 Design for disaster recovery</a></li>
-  <li><a href="#sec-reference" id="toc-sec-reference" class="nav-link" data-scroll-target="#sec-reference">12.11 The reference architecture, end to end</a></li>
+  <li><a href="#sec-reference" id="toc-sec-reference" class="nav-link" data-scroll-target="#sec-reference">12.11 The reference architecture</a></li>
   <li><a href="#sec-not" id="toc-sec-not" class="nav-link" data-scroll-target="#sec-not">12.12 When <em>not</em> to use these choices</a></li>
   <li><a href="#sec-cheatsheet" id="toc-sec-cheatsheet" class="nav-link" data-scroll-target="#sec-cheatsheet">12.13 Architect’s cheat sheet</a></li>
   <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources">Sources</a></li>
@@ -229,22 +229,22 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="how-to-architect-a-hybrid-container-based-solution-on-aws">How to Architect a Hybrid, Container-Based Solution on AWS</h2>
 <blockquote class="blockquote">
 <ul>
-<li>❓ Key Question of this chapter: When <em>half</em> your workloads stay on-premises and half move to AWS, how do you connect the two, keep containers portable, migrate a database with near-zero downtime, and stay resilient — without rewriting applications?</li>
+<li>❓ Key Question of this chapter: When <em>half</em> your workloads stay on-premises and half move to AWS, how do you connect the two, keep containers portable, migrate a database with near-zero downtime, and stay resilient without rewriting applications?</li>
 <li>Workflow followed in all chapters: <strong>requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections</strong>.</li>
 <li>What changes is that the answer now spans <em>two</em> environments joined by a network.</li>
 </ul>
 </blockquote>
 <p><strong>Running example used throughout this chapter</strong></p>
 <blockquote class="blockquote">
-<p>An enterprise runs <strong>containerised applications and PostgreSQL databases</strong> in its own data centres. <strong>Data-centre contracts are expiring in waves</strong>, so it will move <strong>half the workloads to AWS now</strong> and keep the rest on-premises until their contracts end — a genuinely <strong>hybrid</strong> end state, not a big-bang migration.</p>
+<p>An enterprise runs <strong>containerised applications and PostgreSQL databases</strong> in its own data centres. <strong>Data-centre contracts are expiring in waves</strong>, so it will move <strong>half the workloads to AWS now</strong> and keep the rest on-premises until their contracts end. This is a genuinely <strong>hybrid</strong> end state, not a big-bang migration.</p>
 <p><strong>The customer’s constraints:</strong></p>
 <ul>
 <li><strong>Dedicated, consistent, low-latency connectivity</strong> between the data centre and AWS for high-volume traffic.</li>
-<li><strong>Keep containers private</strong> (no inbound internet) but allow <strong>outbound</strong> (e.g.&nbsp;to pull updates).</li>
+<li><strong>Keep containers private</strong> with no inbound internet, but allow <strong>outbound</strong> access, for example to pull updates.</li>
 <li><strong>Same orchestration tooling</strong> on both sides to simplify operations.</li>
 <li><strong>Lift-and-shift PostgreSQL</strong> to AWS with <strong>no application code rewrite</strong>.</li>
-<li><strong>High uptime, resilience, fault tolerance</strong> — no single points of failure.</li>
-<li>On-prem apps must <strong>store/read data in AWS over NFS</strong> without refactoring.</li>
+<li><strong>High uptime, resilience and fault tolerance</strong>, with no single points of failure.</li>
+<li>On-prem apps must <strong>store and read data in AWS over NFS</strong> without refactoring.</li>
 </ul>
 </blockquote>
 <div class="cell" data-layout-align="default">
@@ -278,7 +278,7 @@ flowchart LR
 </section>
 <section id="the-method-nine-steps-across-two-environments" class="level2">
 <h2 class="anchored" data-anchor-id="the-method-nine-steps-across-two-environments">12.1 The Method: nine steps across two environments</h2>
-<p>A hybrid design decomposes into the same reasoning chain as a cloud-only one — but every answer must hold in <strong>both</strong> environments, and the network underneath them.</p>
+<p>A hybrid design decomposes into the same reasoning chain as a cloud-only one, but every answer must hold in <strong>both</strong> environments and across the network underneath them.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -297,6 +297,12 @@ flowchart LR
 </div>
 </div>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Step</th>
@@ -310,61 +316,66 @@ flowchart LR
 <td>1</td>
 <td>What are the real <strong>architectural drivers</strong>?</td>
 <td>—</td>
-<td><a href="#sec-drivers">12.2</a></td>
+<td>#sec-drivers</td>
 </tr>
 <tr class="even">
 <td>2</td>
-<td><strong>Data Center (DC) ↔︎ Cloud</strong>: How do the two environments connect?</td>
-<td><strong>AWS Direct Connect</strong> (+ VPN failover)</td>
-<td><a href="#sec-connect">12.3</a></td>
+<td><strong>Data Center (DC) ↔︎ Cloud:</strong> How do the two environments connect?</td>
+<td><strong>AWS Direct Connect</strong> with VPN failover</td>
+<td>#sec-connect</td>
 </tr>
 <tr class="odd">
 <td>3</td>
-<td><strong>Common Compute</strong>: What runs the containers privately?</td>
+<td><strong>Common Compute:</strong> What runs the containers privately?</td>
 <td><strong>ECS on EC2 launch type</strong> + NAT per AZ</td>
-<td><a href="#sec-compute">12.4</a></td>
+<td>#sec-compute</td>
 </tr>
 <tr class="even">
 <td>4</td>
-<td><strong>Cloud DB</strong>: How does PostgreSQL move resiliently?</td>
+<td><strong>Cloud DB:</strong> How does PostgreSQL move resiliently?</td>
 <td><strong>RDS Multi-AZ</strong> + <strong>DMS</strong>, read replicas</td>
-<td><a href="#sec-db">12.5</a></td>
+<td>#sec-db</td>
 </tr>
 <tr class="odd">
 <td>5</td>
-<td><strong>Data</strong>: Where does shared data live?</td>
+<td><strong>Data:</strong> Where does shared data live?</td>
 <td><strong>S3 File Gateway</strong> + <strong>S3</strong></td>
-<td><a href="#sec-storage">12.6</a></td>
+<td>#sec-storage</td>
 </tr>
 <tr class="even">
 <td>6</td>
-<td><strong>Orchestration</strong>: How is it operated the same way on both sides?</td>
+<td><strong>Orchestration:</strong> How is it operated the same way on both sides?</td>
 <td><strong>ECS Anywhere, Systems Manager, AWS Backup</strong></td>
-<td><a href="#sec-operate">12.7</a></td>
+<td>#sec-operate</td>
 </tr>
 <tr class="odd">
 <td>7</td>
-<td><strong>Monitoring</strong>: How do we know it is healthy?</td>
+<td><strong>Monitoring:</strong> How do we know it is healthy?</td>
 <td>CloudWatch across DC <strong>and</strong> AWS</td>
-<td><a href="#sec-observability">12.8</a></td>
+<td>#sec-observability</td>
 </tr>
 <tr class="even">
 <td>8</td>
-<td><strong>Scaling</strong>: What scales, and how?</td>
+<td><strong>Scaling:</strong> What scales, and how?</td>
 <td>Cluster + service auto scaling</td>
-<td><a href="#sec-scale">12.9</a></td>
+<td>#sec-scale</td>
 </tr>
 <tr class="odd">
 <td>9</td>
-<td><strong>Disaster Recovery</strong>: How much disaster recovery do we buy?</td>
+<td><strong>Disaster Recovery:</strong> How much disaster recovery do we buy?</td>
 <td>Cheapest tier that meets RTO/RPO</td>
-<td><a href="#sec-dr">12.10</a></td>
+<td>#sec-dr</td>
 </tr>
 </tbody>
 </table>
 <blockquote class="blockquote">
-<p><strong>Architect’s takeaway:</strong> In hybrid design, the <strong>network is the foundation</strong> — get connectivity wrong and every other decision inherits its latency, cost and failure modes.</p>
+<p><strong>Architect’s takeaway:</strong> In hybrid design, the <strong>network is the foundation</strong>. Get connectivity wrong and every other decision inherits its latency, cost and failure modes.</p>
 </blockquote>
+<p><strong>Note</strong> - What is RTO and RPO metrics in DR measures:</p>
+<ul>
+<li>RTO = Recovery Time Objective = How long can the system remain unavailable?</li>
+<li>RPO = Recovery Point Objective = How much recent data can be lost?</li>
+</ul>
 <hr>
 </section>
 <section id="sec-drivers" class="level2">
@@ -386,7 +397,7 @@ flowchart TD
     R3["Private containers,&lt;br&gt;outbound only"] --&gt; D3["Private subnets + NAT"]
     R4["Same tooling both sides"] --&gt; D4["Consistent orchestration"]
     R5["Lift-and-shift PostgreSQL,&lt;br&gt;no rewrite"] --&gt; D5["Managed compatible DB"]
-    R6["High uptime, no SPOF"] --&gt; D6["Multi-AZ + redundant links"]
+    R6["High uptime,&lt;br&gt;no SPOF"] --&gt; D6["Multi-AZ + redundant links"]
     R7["NFS access to AWS data"] --&gt; D7["Hybrid file storage"]
 </pre>
 </div>
@@ -446,10 +457,10 @@ flowchart TD
 </tbody>
 </table>
 <blockquote class="blockquote">
-<p><strong>⚠️ Plan the address space before anything else.</strong> The most common hybrid blocker is <strong>overlapping CIDR ranges</strong> between the data centre and the VPC — routing simply cannot resolve it, and the fix (re-IP or NAT the overlap) is painful once workloads are live. Agree non-overlapping ranges at design time.</p>
+<p><strong>⚠️ Plan the address space before anything else.</strong> The most common hybrid blocker is <strong>overlapping CIDR ranges</strong> between the data centre and the VPC. Routing cannot resolve the overlap, and the fix, re-IP or NAT the overlap, is painful once workloads are live. Agree non-overlapping ranges at design time.</p>
 </blockquote>
 <blockquote class="blockquote">
-<p><strong>Architect’s takeaway:</strong> “Half and half, for a long time” is the driver that shapes everything: it rules out a big-bang migration and forces you to invest in <strong>durable connectivity and consistent tooling</strong> rather than treating on-prem as throwaway.</p>
+<p><strong>Architect’s takeaway:</strong> “Half and half, for a long time” is the driver that shapes everything. It rules out a big-bang migration and forces you to invest in <strong>durable connectivity and consistent tooling</strong> rather than treating on-prem as throwaway.</p>
 </blockquote>
 <hr>
 </section>
@@ -457,7 +468,7 @@ flowchart TD
 <h2 class="anchored" data-anchor-id="sec-connect">12.3 Connect the two environments</h2>
 <blockquote class="blockquote">
 <ul>
-<li>❓ Dedicated line, encrypted tunnel, or a central hub — and when does each win?</li>
+<li>❓ Dedicated line, encrypted tunnel, or a central hub, and when does each win?</li>
 </ul>
 </blockquote>
 <section id="the-connectivity-decision" class="level3">
@@ -481,12 +492,12 @@ flowchart TD
 </div>
 </div>
 </div>
-<p><strong>Chosen: AWS Direct Connect.</strong> The customer needs <strong>consistent, dedicated throughput</strong> for high-volume DC↔︎AWS traffic. Direct Connect keeps traffic <strong>on the AWS global network, never on the public internet</strong>, which removes the latency spikes and bottlenecks you’d get over the internet.</p>
+<p><strong>Chosen: AWS Direct Connect.</strong> The customer needs <strong>consistent, dedicated throughput</strong> for high-volume DC↔︎AWS traffic. Direct Connect keeps traffic <strong>off the public internet</strong>, which removes the latency spikes and bottlenecks associated with internet-based connectivity.</p>
 <blockquote class="blockquote">
-<p><strong>🔴 Private is not the same as encrypted.</strong> Direct Connect traffic is <strong>not encrypted by default</strong> — it is a private circuit, not a secure one. If your compliance posture requires encryption in transit across the link, you must add it: <strong>MACsec</strong> (on supported dedicated connections) for layer-2 encryption, or run an <strong>IPsec Site-to-Site VPN over the Direct Connect public virtual interface</strong>. Do not let “off the public internet” be read as “encrypted”.</p>
+<p><strong>🔴 Private is not the same as encrypted.</strong> Direct Connect traffic is <strong>not encrypted by default</strong>. It is a private circuit, not an encrypted one. If the compliance posture requires encryption in transit across the link, add <strong>MACsec</strong> on supported dedicated connections for layer-2 encryption, or run an <strong>IPsec Site-to-Site VPN over the Direct Connect public virtual interface</strong>. Do not let “off the public internet” be read as “encrypted.”</p>
 </blockquote>
 <blockquote class="blockquote">
-<p><strong>⏱️ Direct Connect (DX) has a lead time — and here it is on the critical path.</strong> A <strong>dedicated</strong> connection requires a cross-connect at a Direct Connect location (LOA-CFA, partner coordination, physical patching) and typically takes <strong>weeks to months</strong>. Since this customer’s timeline is driven by <strong>expiring data-centre contracts</strong>, order the circuit early, and consider a <strong>hosted connection</strong> from an AWS Partner — provisioned in far less time and available in sub-1 Gbps increments — to bridge the gap.</p>
+<p><strong>⏱️ Direct Connect has a lead time, and here it is on the critical path.</strong> A <strong>dedicated</strong> connection requires a cross-connect at a Direct Connect location, including LOA-CFA, partner coordination and physical patching, and typically takes <strong>weeks to months</strong>. Since this customer’s timeline is driven by <strong>expiring data-centre contracts</strong>, order the circuit early, and consider a <strong>hosted connection</strong> from an AWS Partner, provisioned in less time and available in sub-1 Gbps increments, to bridge the gap.</p>
 </blockquote>
 </section>
 <section id="direct-connect-topology" class="level3">
@@ -510,13 +521,13 @@ flowchart LR
 </div>
 </div>
 <ul>
-<li><strong>SiteLink</strong> lets you send data <strong>between Direct Connect locations</strong>, creating private links across your global offices/data centres.</li>
-<li>A <strong>Direct Connect Gateway</strong> is what lets one connection reach <strong>multiple VPCs across accounts and Regions</strong> — without it, a private virtual interface maps to a single VPC.</li>
-<li>Each dedicated connection is <strong>a single link</strong> — so AWS <strong>recommends a second connection for redundancy</strong>. Without a backup (second DX <strong>or</strong> an IPsec VPN), <strong>VPC traffic is dropped on failure</strong>.</li>
+<li><strong>SiteLink</strong> lets you send data <strong>between Direct Connect locations</strong>, creating private links across global offices and data centres.</li>
+<li>A <strong>Direct Connect Gateway</strong> lets one connection reach <strong>multiple VPCs across accounts and Regions</strong>. Without it, a private virtual interface maps to a single VPC.</li>
+<li>Each dedicated connection is <strong>a single link</strong>, so AWS recommends a second connection for redundancy. Without a backup, either a second Direct Connect connection or an IPsec VPN, <strong>VPC traffic is dropped on failure</strong>.</li>
 </ul>
 </section>
-<section id="the-alternatives-and-when-theyd-win" class="level3">
-<h3 class="anchored" data-anchor-id="the-alternatives-and-when-theyd-win">12.3.3 The alternatives — and when they’d win</h3>
+<section id="the-alternatives-and-when-they-would-win" class="level3">
+<h3 class="anchored" data-anchor-id="the-alternatives-and-when-they-would-win">12.3.3 The alternatives and when they would win</h3>
 <p><strong>Site-to-Site VPN</strong> <em>(virtual private gateway + customer gateway, with redundancy)</em></p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -563,23 +574,23 @@ flowchart LR
 <tbody>
 <tr class="odd">
 <td><strong>Direct Connect</strong> (chosen)</td>
-<td>Private, dedicated fibre to AWS; off the public internet</td>
-<td>You need <strong>consistent</strong> throughput/latency for high volume</td>
+<td>Private, dedicated fibre to AWS, off the public internet</td>
+<td>You need <strong>consistent</strong> throughput and latency for high volume</td>
 </tr>
 <tr class="even">
 <td><strong>Site-to-Site VPN</strong></td>
-<td>IPsec tunnel over the internet via a virtual private gateway</td>
+<td>IPsec tunnel over the internet through a virtual private gateway</td>
 <td>You want it <strong>fast and cheap</strong>, or as <strong>failover</strong> for Direct Connect</td>
 </tr>
 <tr class="odd">
 <td><strong>Client VPN</strong></td>
-<td>Managed remote-access VPN (OpenVPN-based) for individual users</td>
-<td><strong>Remote workforce</strong> needs to reach VPC/on-prem resources</td>
+<td>Managed remote-access VPN for individual users</td>
+<td>A <strong>remote workforce</strong> needs to reach VPC or on-prem resources</td>
 </tr>
 </tbody>
 </table>
 <blockquote class="blockquote">
-<p><strong>⚠️ VPN failover is survival, not capacity.</strong> Each Site-to-Site VPN tunnel is capped at roughly <strong>1.25 Gbps</strong>. Failing a 10 Gbps Direct Connect over to a VPN is a <strong>capacity cliff</strong>, not a transparent switch — expect degraded service. For genuinely high-bandwidth production, AWS’s resiliency models recommend <strong>two Direct Connect connections at two separate locations</strong> (with the VPN as a third line of defence). Also note that when both paths are up, <strong>BGP path selection prefers Direct Connect</strong>, so failover behaviour depends on correct BGP configuration, not luck.</p>
+<p><strong>⚠️ VPN failover is survival, not capacity.</strong> Each Site-to-Site VPN tunnel is capped at roughly <strong>1.25 Gbps</strong>. Failing a 10 Gbps Direct Connect connection over to a VPN is a <strong>capacity cliff</strong>, not a transparent switch. Expect degraded service. For genuinely high-bandwidth production, AWS’s resiliency models recommend <strong>two Direct Connect connections at two separate locations</strong>, with the VPN as a third line of defence.</p>
 </blockquote>
 <p><strong>Client VPN</strong> covers three access shapes worth remembering:</p>
 <div class="cell" data-layout-align="default">
@@ -645,13 +656,13 @@ flowchart TD
 </div>
 </div>
 <ul>
-<li>Each connection is made <strong>once</strong> to the hub; route tables control who talks to whom.</li>
-<li><strong>Inter-Region peering</strong> links transit gateways over the AWS backbone; that traffic <strong>is</strong> automatically encrypted and never traverses the public internet — unlike the Direct Connect link itself.</li>
-<li>Pairs naturally with a <strong>Direct Connect Gateway</strong> for <strong>multi-Region + multi-VPC</strong> estates.</li>
+<li>Each connection is made <strong>once</strong> to the hub, and route tables control which networks can communicate.</li>
+<li><strong>Inter-Region peering</strong> links transit gateways over the AWS backbone. That traffic is automatically encrypted and does not traverse the public internet, unlike the Direct Connect link itself.</li>
+<li>Transit Gateway pairs naturally with a <strong>Direct Connect Gateway</strong> for <strong>multi-Region and multi-VPC</strong> estates.</li>
 </ul>
-<p>For VPC, subnet and routing fundamentals, see <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/04-networking.html">04. Networking</a>.</p>
+<p>For VPC, subnet and routing fundamentals, see <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">04. Networking</a>.</p>
 <blockquote class="blockquote">
-<p><strong>Architect’s takeaway:</strong> Choose <strong>Direct Connect</strong> for consistent, high-volume hybrid traffic — but order it early, encrypt it explicitly, and size the fallback honestly. Keep a <strong>VPN as automatic failover</strong> so a single link is never a SPOF, and reach for <strong>Transit Gateway + Direct Connect Gateway</strong> the moment the topology grows past a couple of VPCs.</p>
+<p><strong>Architect’s takeaway:</strong> Choose <strong>Direct Connect</strong> for consistent, high-volume hybrid traffic, but order it early, encrypt it explicitly, and size the fallback honestly. Keep a <strong>VPN as failover</strong> so a single link is never a SPOF (single point of failure), and reach for <strong>Transit Gateway + Direct Connect Gateway</strong> when the topology grows beyond a couple of VPCs.</p>
 </blockquote>
 <hr>
 </section>
@@ -665,9 +676,9 @@ flowchart TD
 </blockquote>
 <section id="orchestrator-decision-ecs-or-eks" class="level3">
 <h3 class="anchored" data-anchor-id="orchestrator-decision-ecs-or-eks">12.4.1 Orchestrator decision: ECS or EKS?</h3>
-<p>This customer’s containers are plain Docker on EC2, so <strong>ECS</strong> (AWS-native, simpler to operate, no separate control-plane concept to learn) is the right orchestrator. <strong>EKS earns its keep in a different, common hybrid scenario: an existing on-premises Kubernetes cluster.</strong></p>
+<p>This customer’s containers are plain Docker on EC2, so <strong>ECS</strong>, which offers an AWS-native model with less to operate and no separate control-plane concept to learn, is the right orchestrator. <strong>EKS earns its keep in a different, common hybrid scenario: an existing on-premises Kubernetes cluster.</strong></p>
 <blockquote class="blockquote">
-<p><strong>If the workload you’re migrating is <em>already</em> a hybrid Kubernetes cluster</strong> — and the ask is to move part of it to the cloud with <strong>minimum effort</strong>, keep <strong>native Kubernetes APIs/tooling</strong>, and <strong>cut operational overhead</strong> for running the control plane — the answer is <strong>Amazon EKS</strong>, not ECS. EKS runs the same Kubernetes you already operate, so manifests, Helm charts and <code>kubectl</code> muscle memory carry over unchanged, while AWS manages the control plane’s availability and scaling. <strong>Fargate with ECS is the wrong fit here</strong>: it doesn’t run Kubernetes at all, so it fails the “keep native Kubernetes features” requirement outright, regardless of how little effort it takes to operate.</p>
+<p><strong>If the workload you’re migrating is already a hybrid Kubernetes cluster</strong>, and the ask is to move part of it to the cloud with <strong>minimum effort</strong>, keep <strong>native Kubernetes APIs and tooling</strong>, and <strong>cut operational overhead</strong> for running the control plane, the answer is <strong>Amazon EKS</strong>, not ECS. EKS runs the same Kubernetes you already operate, so manifests, Helm charts and <code>kubectl</code> muscle memory carry over unchanged, while AWS manages the control plane’s availability and scaling. <strong>Fargate with ECS is the wrong fit here</strong> because it does not run Kubernetes and therefore fails the “keep native Kubernetes features” requirement outright.</p>
 </blockquote>
 <table class="caption-top table">
 <colgroup>
@@ -691,7 +702,7 @@ flowchart TD
 <tr class="even">
 <td>Existing on-prem <strong>Kubernetes</strong> cluster, hybrid migration</td>
 <td><strong>EKS</strong></td>
-<td>Preserves native Kubernetes APIs/tooling; AWS manages the control plane</td>
+<td>Preserves native Kubernetes APIs and tooling; AWS manages the control plane</td>
 </tr>
 </tbody>
 </table>
@@ -716,7 +727,7 @@ flowchart TD
 </div>
 </div>
 </div>
-<p><strong>Chosen: Amazon ECS with the EC2 launch type.</strong> The customer requires a <strong>custom AMI</strong> and <strong>SSH access</strong> to the underlying instances (to keep management operations similar across on-prem and cloud). <strong>Fargate supports neither</strong>, so EC2 is the correct launch type here — a rare case where the <em>serverless</em> option is rejected on purpose.</p>
+<p><strong>Chosen: Amazon ECS with the EC2 launch type.</strong> The customer requires a <strong>custom AMI</strong> and <strong>SSH access</strong> to the underlying instances to keep management operations similar across on-prem and cloud. <strong>Fargate supports neither</strong>, so EC2 is the correct launch type here, a case where the <em>serverless</em> option is rejected on purpose.</p>
 <p><strong>ECS on EC2 architecture</strong></p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -746,7 +757,7 @@ flowchart TD
 </div>
 <ul>
 <li>The <strong>ECS agent</strong> runs on <strong>each EC2 instance</strong> and lets ECS orchestrate the nodes you own and manage.</li>
-<li>Contrast with <strong>Fargate</strong>, where each task gets its <strong>own elastic network interface</strong> and there are <strong>no EC2 instances to manage</strong> — great when you <em>don’t</em> need a custom AMI or host access.</li>
+<li>In contrast, with <strong>Fargate</strong>, each task gets its <strong>own elastic network interface</strong> and there are <strong>no EC2 instances to manage</strong>. This is valuable when you do not need a custom AMI or host access.</li>
 </ul>
 <table class="caption-top table">
 <colgroup>
@@ -764,7 +775,7 @@ flowchart TD
 <tbody>
 <tr class="odd">
 <td>You manage</td>
-<td>The EC2 cluster (AMI, patching, SSH)</td>
+<td>The EC2 cluster, including AMI, patching and SSH</td>
 <td>Nothing below the task</td>
 </tr>
 <tr class="even">
@@ -780,15 +791,15 @@ flowchart TD
 <tr class="even">
 <td>Best when</td>
 <td>Custom AMI, host control, consistent tooling</td>
-<td>“Just run my container”, no infra ops</td>
+<td>“Just run my container,” no infrastructure operations</td>
 </tr>
 </tbody>
 </table>
-<p>See <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/03-compute.html">03. Compute</a> for the wider EC2 and container landscape.</p>
+<p>See <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">03. Compute</a> for the wider EC2 and container landscape.</p>
 </section>
 <section id="private-subnets-outbound-egress-and-the-nat-trap" class="level3">
 <h3 class="anchored" data-anchor-id="private-subnets-outbound-egress-and-the-nat-trap">12.4.3 Private subnets, outbound egress, and the NAT trap</h3>
-<p>The containers must be <strong>private (no inbound internet)</strong> but need <strong>outbound</strong> (updates). A <strong>NAT gateway</strong> provides exactly that.</p>
+<p>The containers must be <strong>private with no inbound internet</strong>, but need <strong>outbound</strong> connectivity for updates. A <strong>NAT gateway</strong> provides exactly that.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -813,16 +824,16 @@ flowchart LR
 </div>
 </div>
 <ul>
-<li>A NAT device <strong>replaces the private instance’s source IP</strong> with its own and translates responses back — so instances <strong>initiate</strong> outbound connections but <strong>can’t receive</strong> unsolicited inbound ones.</li>
-<li>Because a VPC gives full control over the virtual network, <strong>security groups</strong> (instance-level, stateful) and <strong>network ACLs</strong> (subnet-level, stateless) are the firewall rules that actually enforce “private, outbound-only” — the NAT gateway alone only handles address translation, not access control.</li>
-<li><strong>NAT gateway (managed)</strong> is recommended over a self-run <strong>NAT instance</strong> for <strong>better availability, bandwidth and less admin</strong>.</li>
-<li><strong>Public NAT gateway</strong> (Elastic IP, routes to internet gateway) vs <strong>private NAT gateway</strong> (routes to other VPCs/on-prem via TGW or VGW, no Elastic IP).</li>
+<li>A NAT device <strong>replaces the private instance’s source IP</strong> with its own and translates responses back, so instances <strong>initiate</strong> outbound connections but cannot receive unsolicited inbound ones.</li>
+<li>Because a VPC gives full control over the virtual network, <strong>security groups</strong>, which are instance-level and stateful, and <strong>network ACLs</strong>, which are subnet-level and stateless, are the firewall rules that enforce “private, outbound-only.” The NAT gateway handles address translation rather than access control.</li>
+<li>A managed <strong>NAT gateway</strong> is recommended over a self-managed <strong>NAT instance</strong> for better availability, bandwidth and lower administration.</li>
+<li>A <strong>public NAT gateway</strong> uses an Elastic IP and routes to an internet gateway. A <strong>private NAT gateway</strong> routes to other VPCs or on-premises networks through a Transit Gateway or Virtual Private Gateway and does not use an Elastic IP.</li>
 </ul>
 <blockquote class="blockquote">
-<p><strong>🔴 One NAT gateway is a single point of failure.</strong> A NAT gateway is <strong>scoped to a single Availability Zone</strong>. If you put one NAT gateway in one public subnet and route every private subnet to it, an AZ failure takes <strong>all</strong> your containers’ egress down — which directly contradicts the customer’s “no single points of failure” requirement. Deploy <strong>one NAT gateway per AZ</strong> and give each AZ’s private subnet its own route table pointing at its local NAT gateway. This also avoids paying for cross-AZ data transfer on every outbound byte.</p>
+<p><strong>🔴 One NAT gateway is a single point of failure.</strong> A NAT gateway is <strong>scoped to one Availability Zone</strong>. If you put one NAT gateway in one public subnet and route every private subnet to it, an AZ failure takes <strong>all</strong> container egress down. That directly contradicts the customer’s “no single points of failure” requirement. Deploy <strong>one NAT gateway per AZ</strong> and give each AZ’s private subnet its own route table pointing to its local NAT gateway. This also avoids cross-AZ data transfer on every outbound byte.</p>
 </blockquote>
 <blockquote class="blockquote">
-<p><strong>💰 Don’t pay NAT charges for traffic that never needed the internet.</strong> NAT gateways bill per hour <strong>and per GB processed</strong>. ECS pulling images from <strong>ECR</strong>, the <strong>SSM Agent</strong>, CloudWatch Logs and S3 access all go through NAT by default. Replace that with <strong>VPC endpoints</strong>: a <strong>gateway endpoint</strong> for S3 (no hourly charge) and <strong>interface endpoints</strong> for ECR API/DKR, SSM, and CloudWatch Logs. You cut cost <em>and</em> keep the traffic off the internet path entirely — a better fit for “private containers” than NAT alone.</p>
+<p><strong>💰 Don’t pay NAT charges for traffic that never needed the internet.</strong> NAT gateways bill per hour and per GB processed. ECS image pulls from <strong>ECR</strong>, the <strong>SSM Agent</strong>, CloudWatch Logs and S3 access go through NAT by default. Replace those paths with <strong>VPC endpoints</strong>: a <strong>gateway endpoint</strong> for S3, which has no hourly charge, and <strong>interface endpoints</strong> for ECR API/DKR, SSM and CloudWatch Logs. This reduces cost and keeps AWS-service traffic off the internet path.</p>
 </blockquote>
 <blockquote class="blockquote">
 <p><strong>Architect’s takeaway:</strong> “Serverless by default” is not a law. When the driver is a <strong>custom AMI + host SSH + consistent tooling</strong>, <strong>ECS on EC2</strong> is the right call. Pair private subnets with <strong>one managed NAT gateway per AZ</strong> for resilient outbound-only access, and use <strong>VPC endpoints</strong> for AWS-service traffic.</p>
@@ -837,10 +848,10 @@ flowchart LR
 <li>❓ How do you lift-and-shift PostgreSQL with near-zero downtime and no single point of failure?</li>
 </ul>
 </blockquote>
-<p><strong>Chosen: Amazon RDS for PostgreSQL, Multi-AZ, migrated with AWS DMS.</strong> A managed engine keeps the app code unchanged (lift-and-shift), Multi-AZ delivers the high availability the customer demands, and DMS moves the data while the source stays live.</p>
-<p>For RDS fundamentals, backups and where databases sit in your VPC, see <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/06-databases.html">06. Databases</a>.</p>
-<section id="high-availability-multi-az-db-instance-one-standby" class="level3">
-<h3 class="anchored" data-anchor-id="high-availability-multi-az-db-instance-one-standby">12.5.1 High availability: Multi-AZ DB <em>instance</em> (one standby)</h3>
+<p><strong>Chosen: Amazon RDS for PostgreSQL, Multi-AZ, migrated with AWS DMS.</strong> A managed engine keeps the app code unchanged, Multi-AZ delivers the high availability the customer demands, and DMS moves the data while the source stays live.</p>
+<p>For RDS fundamentals, backups and where databases sit in your VPC, see <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">06. Databases</a>.</p>
+<section id="high-availability-multi-az-db-instance-with-one-standby" class="level3">
+<h3 class="anchored" data-anchor-id="high-availability-multi-az-db-instance-with-one-standby">12.5.1 High availability: Multi-AZ DB <em>instance</em> with one standby</h3>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -858,13 +869,13 @@ flowchart LR
 </div>
 </div>
 <ul>
-<li>RDS keeps a <strong>synchronous</strong> standby in <strong>another AZ</strong> and <strong>fails over automatically</strong> — the <strong>database endpoint doesn’t change</strong>, so applications reconnect transparently.</li>
-<li>The standby is <strong>not readable</strong>; it exists purely for availability.</li>
-<li>A <strong>single</strong> RDS instance does <strong>not</strong> self-heal; HA <strong>requires</strong> Multi-AZ.</li>
+<li>RDS keeps a <strong>synchronous</strong> standby in <strong>another AZ</strong> and <strong>fails over automatically</strong>. The <strong>database endpoint does not change</strong>, so applications reconnect transparently.</li>
+<li>The standby is <strong>not readable</strong>. It exists purely for availability.</li>
+<li>A <strong>single</strong> RDS instance does <strong>not</strong> self-heal. High availability requires Multi-AZ.</li>
 </ul>
 </section>
-<section id="even-higher-availability-multi-az-db-cluster-two-readable-standbys" class="level3">
-<h3 class="anchored" data-anchor-id="even-higher-availability-multi-az-db-cluster-two-readable-standbys">12.5.2 Even higher availability: Multi-AZ DB <em>cluster</em> (two readable standbys)</h3>
+<section id="even-higher-availability-multi-az-db-cluster-with-two-readable-standbys" class="level3">
+<h3 class="anchored" data-anchor-id="even-higher-availability-multi-az-db-cluster-with-two-readable-standbys">12.5.2 Even higher availability: Multi-AZ DB <em>cluster</em> with two readable standbys</h3>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -884,8 +895,8 @@ flowchart LR
 </div>
 </div>
 <ul>
-<li>This is a <strong>different deployment type</strong> from the Multi-AZ DB <em>instance</em> above — in the console and docs it is the <strong>Multi-AZ DB cluster</strong>, available for <strong>PostgreSQL and MySQL</strong>.</li>
-<li>Three AZs, <strong>two readable standbys</strong>: <strong>failover typically under ~35 seconds</strong>, up to <strong>~2× faster commit latency</strong>, plus <strong>extra read capacity</strong>.</li>
+<li>This is a <strong>different deployment type</strong> from the Multi-AZ DB <em>instance</em> above. In the console and documentation it is the <strong>Multi-AZ DB cluster</strong>, available for <strong>PostgreSQL and MySQL</strong>.</li>
+<li>It spans three AZs and includes <strong>two readable standbys</strong>, with failover typically under approximately <strong>35 seconds</strong>, up to approximately <strong>2× faster commit latency</strong>, and additional read capacity.</li>
 </ul>
 </section>
 <section id="scaling-reads-read-replicas" class="level3">
@@ -907,11 +918,11 @@ flowchart TD
 </div>
 </div>
 <ul>
-<li><strong>Read replicas</strong> offload <strong>read-heavy / CPU-intensive</strong> work (e.g.&nbsp;BI reports) off the primary via <strong>asynchronous</strong> replication, raising aggregate read throughput.</li>
+<li><strong>Read replicas</strong> offload <strong>read-heavy and CPU-intensive</strong> work, such as BI reports, from the primary through <strong>asynchronous</strong> replication, raising aggregate read throughput.</li>
 <li>Replicas can be <strong>promoted</strong> to standalone instances if needed.</li>
 </ul>
 <blockquote class="blockquote">
-<p><strong>Don’t confuse the three:</strong> <strong>Multi-AZ standby = availability</strong> (synchronous, auto-failover, not readable). <strong>Multi-AZ DB cluster = availability + some read capacity</strong>. <strong>Read replica = performance/scale</strong> (asynchronous, read-only, replica lag). They solve different problems and are often used together.</p>
+<p><strong>Don’t confuse the three:</strong> <strong>Multi-AZ standby = availability</strong>, with synchronous replication, automatic failover and a non-readable standby. <strong>Multi-AZ DB cluster = availability + some read capacity</strong>. <strong>Read replica = performance and scale</strong>, using asynchronous replication with possible replica lag. They solve different problems and are often used together.</p>
 </blockquote>
 </section>
 <section id="choosing-a-scaling-axis" class="level3">
@@ -934,8 +945,8 @@ flowchart TD
 </div>
 </div>
 <ul>
-<li><strong>Storage types:</strong> <em>General Purpose SSD</em> (broad, bursty), <em>Provisioned IOPS</em> (I/O-intensive DBs, consistent low latency), <em>Magnetic</em> (legacy — avoid for new work).</li>
-<li><strong>RDS Storage Auto Scaling</strong> grows storage automatically toward a max limit with virtually zero downtime.</li>
+<li><strong>Storage types:</strong> <em>General Purpose SSD</em> for broad and bursty workloads, <em>Provisioned IOPS</em> for I/O-intensive databases requiring consistent low latency, and <em>Magnetic</em>, which is a legacy choice to avoid for new work.</li>
+<li><strong>RDS Storage Auto Scaling</strong> grows storage automatically toward a configured maximum with virtually zero downtime.</li>
 </ul>
 </section>
 <section id="the-migration-itself-aws-dms" class="level3">
@@ -958,14 +969,14 @@ flowchart LR
 </div>
 </div>
 <ul>
-<li>DMS is a <strong>replication server</strong> in the cloud: define <strong>source + target endpoints</strong>, run a <strong>task</strong>, and it copies data while the <strong>source stays fully operational</strong> — <strong>near-zero downtime</strong> (there is still a short cutover window).</li>
-<li>This is a <strong>homogeneous</strong> migration (PostgreSQL → RDS PostgreSQL), so no <strong>AWS SCT</strong> schema conversion is needed. <em>Heterogeneous</em> migrations (e.g.&nbsp;Oracle → PostgreSQL) do need SCT.</li>
+<li>DMS is a <strong>replication server</strong> in the cloud. Define <strong>source and target endpoints</strong>, run a <strong>task</strong>, and it copies data while the <strong>source stays fully operational</strong>, enabling <strong>near-zero downtime</strong> with a short cutover window.</li>
+<li>This is a <strong>homogeneous</strong> migration, PostgreSQL to RDS PostgreSQL, so no <strong>AWS SCT</strong> schema conversion is required. <em>Heterogeneous</em> migrations, such as Oracle to PostgreSQL, need SCT.</li>
 </ul>
 <blockquote class="blockquote">
-<p><strong>⚠️ DMS migrates data, not your whole schema.</strong> By default DMS creates only the objects needed to move rows — <strong>tables with primary keys</strong>. It does <strong>not</strong> bring across secondary indexes, sequences, default values, foreign keys, constraints, views, triggers or stored procedures. For a homogeneous PostgreSQL move the standard pattern is <strong><code>pg_dump</code>/<code>pg_restore</code> for the schema, then DMS for the bulk data and ongoing change capture</strong>. Also, <strong>CDC from PostgreSQL requires logical replication</strong> on the source (<code>wal_level = logical</code>, or <code>rds.logical_replication</code> on an RDS source) — configure it <em>before</em> you cut over, since it needs a restart.</p>
+<p><strong>⚠️ DMS migrates data, not your whole schema.</strong> By default, DMS creates only the objects needed to move rows, including <strong>tables with primary keys</strong>. It does <strong>not</strong> migrate secondary indexes, sequences, default values, foreign keys, constraints, views, triggers or stored procedures. For a homogeneous PostgreSQL migration, the standard pattern is <strong><code>pg_dump</code>/<code>pg_restore</code> for the schema, followed by DMS for bulk data and ongoing change capture</strong>. <strong>CDC from PostgreSQL requires logical replication</strong> on the source, such as <code>wal_level = logical</code>, or <code>rds.logical_replication</code> on an RDS source. Configure it before cutover because it requires a restart.</p>
 </blockquote>
 <blockquote class="blockquote">
-<p><strong>Architect’s takeaway:</strong> For a no-rewrite lift-and-shift, <strong>RDS + DMS</strong> is the default: managed engine keeps the app unchanged, <strong>Multi-AZ</strong> gives HA (endpoint-stable failover), <strong>read replicas</strong> absorb reporting load, and DMS moves data with the source still live — provided you move the schema separately and enable logical replication up front.</p>
+<p><strong>Architect’s takeaway:</strong> For a no-rewrite lift-and-shift, <strong>RDS + DMS</strong> is the default. The managed engine keeps the application unchanged, <strong>Multi-AZ</strong> provides availability with endpoint-stable failover, <strong>read replicas</strong> absorb reporting load, and DMS moves data while the source remains live, provided the schema is moved separately and logical replication is enabled in advance.</p>
 </blockquote>
 <hr>
 </section>
@@ -994,7 +1005,7 @@ flowchart TD
 </div>
 </div>
 </div>
-<p><strong>Chosen: AWS Storage Gateway (S3 File Gateway) + Amazon S3.</strong> The customer must <strong>keep the NFS protocol</strong> for unmodified on-prem apps <strong>and</strong> store the files in AWS. File Gateway gives <strong>local NFS/SMB access with a local cache</strong> (low-latency writes) and <strong>asynchronously</strong> transfers data to <strong>S3</strong>.</p>
+<p><strong>Chosen: AWS Storage Gateway (S3 File Gateway) + Amazon S3.</strong> The customer must <strong>keep the NFS protocol</strong> for unmodified on-prem apps <strong>and</strong> store the files in AWS. File Gateway gives <strong>local NFS/SMB access with a local cache</strong> for low-latency writes and <strong>asynchronously</strong> transfers data to <strong>S3</strong>.</p>
 <p><strong>S3 File Gateway architecture</strong></p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -1016,21 +1027,21 @@ flowchart LR
 </div>
 <p>Why it fits every requirement at once:</p>
 <ul>
-<li><strong>No refactoring:</strong> apps keep talking <strong>NFS v3/v4.1</strong> (or SMB).</li>
+<li><strong>No refactoring:</strong> apps keep talking <strong>NFS v3/v4.1</strong> or SMB.</li>
 <li><strong>Low latency:</strong> transparent <strong>local caching</strong> buffers apps from network congestion.</li>
 <li><strong>Cost management:</strong> data lands in S3, so <strong>lifecycle policies</strong> move cold files to cheaper tiers.</li>
-<li><strong>Future-proof:</strong> once fully migrated, apps can read <strong>natively from S3</strong> with no extra data move.</li>
+<li><strong>Future-proof:</strong> once fully migrated, apps can read <strong>natively from S3</strong> with no additional data move.</li>
 </ul>
 <blockquote class="blockquote">
-<p><strong>⚠️ Two operational caveats.</strong> (1) Upload is <strong>asynchronous</strong>, so there is a <strong>non-zero RPO</strong> — a file written locally is not instantly durable in S3; size the local cache disk for your write burst and monitor upload lag. (2) If anything writes to the bucket <strong>outside</strong> the gateway, the gateway won’t see it until you run <strong><code>RefreshCache</code></strong> — so treat a File Gateway bucket as gateway-owned, or automate the refresh.</p>
+<p><strong>⚠️ Two operational caveats.</strong> First, upload is <strong>asynchronous</strong>, so there is a <strong>non-zero RPO</strong>. A file written locally is not instantly durable in S3. Size the local cache disk for the expected write burst and monitor upload lag. Second, if anything writes to the bucket <strong>outside</strong> the gateway, the gateway will not see it until <strong><code>RefreshCache</code></strong> is run. Treat a File Gateway bucket as gateway-owned, or automate the refresh.</p>
 </blockquote>
 <blockquote class="blockquote">
-<p><strong>File Gateway is one of three Storage Gateway types.</strong> <strong>Volume Gateway</strong> presents block storage over iSCSI (backed by EBS snapshots, and integrates with <strong>AWS Backup</strong> for volume recovery); <strong>Tape Gateway</strong> presents a virtual tape library for existing backup software. Pick the gateway type by the <strong>protocol the on-prem app already speaks</strong> — NFS/SMB here, hence File Gateway.</p>
+<p><strong>File Gateway is one of three Storage Gateway types.</strong> <strong>Volume Gateway</strong> presents block storage over iSCSI, backed by EBS snapshots, and integrates with <strong>AWS Backup</strong> for volume recovery. <strong>Tape Gateway</strong> presents a virtual tape library for existing backup software. Choose the gateway type based on the <strong>protocol the on-prem application already speaks</strong>. The application uses NFS/SMB here, so File Gateway is the appropriate choice.</p>
 </blockquote>
 <blockquote class="blockquote">
-<p><strong>A CRR fact worth stating explicitly:</strong> the source and destination buckets for <strong>Cross-Region Replication don’t have to be in the same AWS account</strong>, and <strong>SSE (via KMS)</strong> is supported on the replicated objects — useful if the DR account is separate from the production account.</p>
+<p><strong>A CRR fact worth stating explicitly:</strong> the source and destination buckets for <strong>Cross-Region Replication</strong> do not have to be in the same AWS account, and <strong>SSE through KMS</strong> is supported for replicated objects. This is useful when the DR account is separated from the production account.</p>
 </blockquote>
-<p><strong>The wider storage menu (know when each wins):</strong></p>
+<p><strong>The wider storage menu:</strong></p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -1048,7 +1059,7 @@ flowchart LR
 <tr class="odd">
 <td><strong>S3</strong></td>
 <td>Object</td>
-<td>Data lakes, unlimited scale, lifecycle/tiering</td>
+<td>Data lakes, unlimited scale, lifecycle and tiering</td>
 </tr>
 <tr class="even">
 <td><strong>S3 File Gateway</strong></td>
@@ -1062,22 +1073,22 @@ flowchart LR
 </tr>
 <tr class="even">
 <td><strong>FSx</strong></td>
-<td>Managed file (Windows/Lustre/…)</td>
-<td>Specific file-system software needs</td>
+<td>Managed file</td>
+<td>Specific file-system software requirements</td>
 </tr>
 <tr class="odd">
 <td><strong>EBS</strong></td>
 <td>Block</td>
-<td>A disk <strong>attached to one EC2 instance</strong></td>
+<td>A disk <strong>attached to an EC2 instance</strong></td>
 </tr>
 </tbody>
 </table>
 <blockquote class="blockquote">
-<p><strong>A note on EBS sizing:</strong> with the older <strong>gp2</strong>, IOPS scaled with volume size, so you over-provisioned capacity to buy performance. <strong>gp3 decouples them</strong> — a baseline 3,000 IOPS regardless of size, with IOPS and throughput provisioned independently. Prefer gp3 for new volumes.</p>
+<p><strong>A note on EBS sizing:</strong> with the older <strong>gp2</strong>, IOPS scaled with volume size, so capacity was often over-provisioned to obtain performance. <strong>gp3 decouples them</strong>, offering a baseline of 3,000 IOPS regardless of volume size, with IOPS and throughput provisioned independently. Prefer gp3 for new volumes.</p>
 </blockquote>
-<p>More on storage classes, durability and lifecycle: <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/05-storage.html">05. Storage</a>.</p>
+<p>More on storage classes, durability and lifecycle: <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">05. Storage</a>.</p>
 <blockquote class="blockquote">
-<p><strong>Architect’s takeaway:</strong> When the requirement is <em>“keep NFS but store in AWS,”</em> <strong>S3 File Gateway</strong> is the purpose-built answer — local cache for latency, S3 for durability and lifecycle, and a clean path to native S3 later. Just be explicit that the upload is asynchronous.</p>
+<p><strong>Architect’s takeaway:</strong> When the requirement is <em>“keep NFS but store in AWS,”</em> <strong>S3 File Gateway</strong> is the purpose-built answer. It provides a local cache for latency, S3 for durability and lifecycle, and a clean path to native S3 later. Be explicit that the upload is asynchronous.</p>
 </blockquote>
 <hr>
 </section>
@@ -1085,7 +1096,7 @@ flowchart LR
 <h2 class="anchored" data-anchor-id="sec-operate">12.7 Operate one way across both environments</h2>
 <blockquote class="blockquote">
 <ul>
-<li>❓ The customer wants the <strong>same tooling</strong> on-prem and in AWS. What makes that possible — and where does it stop?</li>
+<li>❓ The customer wants the <strong>same tooling</strong> on-prem and in AWS. What makes that possible, and where does it stop?</li>
 </ul>
 </blockquote>
 <div class="cell" data-layout-align="default">
@@ -1105,15 +1116,15 @@ flowchart TD
 </div>
 </div>
 <ul>
-<li><strong>ECS Anywhere</strong> runs and manages containers on <strong>customer-managed infrastructure</strong> using the <strong>same ECS APIs, scheduling and monitoring</strong> — it needs the <strong>ECS + SSM agents</strong> installed on local servers, plus outbound connectivity to AWS.</li>
-<li><strong>AWS Systems Manager</strong> gives one control plane: <strong>Run Command</strong> (scripts across fleets without SSH), <strong>Patch Manager</strong>, <strong>Maintenance Windows</strong>, and <strong>Parameter Store</strong> (config/secrets, KMS-encrypted SecureStrings). Requires the <strong>SSM Agent</strong> on managed nodes.</li>
-<li><strong>AWS Backup</strong> centralises and automates <strong>policy-based</strong> data protection across EC2, EBS, RDS/Aurora, DynamoDB, EFS/FSx, <strong>Storage Gateway volumes, and on-prem VMware</strong> — one place for compliance.</li>
+<li><strong>ECS Anywhere</strong> runs and manages containers on <strong>customer-managed infrastructure</strong> using the <strong>same ECS APIs, scheduling and monitoring</strong>. It requires the <strong>ECS and SSM agents</strong> on local servers, plus outbound connectivity to AWS.</li>
+<li><strong>AWS Systems Manager</strong> provides one control plane: <strong>Run Command</strong> for running scripts across fleets without SSH, <strong>Patch Manager</strong>, <strong>Maintenance Windows</strong>, and <strong>Parameter Store</strong> for configuration and KMS-encrypted SecureStrings. It requires the <strong>SSM Agent</strong> on managed nodes.</li>
+<li><strong>AWS Backup</strong> centralises and automates <strong>policy-based</strong> data protection across EC2, EBS, RDS/Aurora, DynamoDB, EFS/FSx, <strong>Storage Gateway volumes and on-prem VMware</strong>, providing one place for compliance.</li>
 </ul>
 <blockquote class="blockquote">
-<p><strong>⚠️ “Same tooling” has limits — say them out loud.</strong> ECS Anywhere external instances register with the <strong><code>EXTERNAL</code> launch type</strong> and do <strong>not</strong> support <code>awsvpc</code> task networking, <strong>Elastic Load Balancing target-group registration</strong>, or Fargate. So on-prem tasks are managed by the same control plane but are <strong>not operationally identical</strong> to cloud tasks — you still need a local load-balancing story. Also, the on-prem side depends on <strong>outbound connectivity to AWS</strong>: if the link drops, running containers keep running, but you lose orchestration.</p>
+<p><strong>⚠️ “Same tooling” has limits.</strong> ECS Anywhere external instances register with the <strong><code>EXTERNAL</code> launch type</strong> and do <strong>not</strong> support <code>awsvpc</code> task networking, <strong>Elastic Load Balancing target-group registration</strong>, or Fargate. On-prem tasks are managed through the same control plane but are <strong>not operationally identical</strong> to cloud tasks. A local load-balancing approach is still required. The on-prem side also depends on <strong>outbound connectivity to AWS</strong>. If the link drops, running containers continue operating, but orchestration is unavailable.</p>
 </blockquote>
 <blockquote class="blockquote">
-<p><strong>Architect’s takeaway:</strong> Hybrid operational consistency comes from three pillars — <strong>ECS Anywhere</strong> (same container tooling), <strong>Systems Manager</strong> (same ops/automation), <strong>AWS Backup</strong> (same protection policy) — all reaching <em>into</em> the data centre via agents. Consistent control plane, not identical capability.</p>
+<p><strong>Architect’s takeaway:</strong> Hybrid operational consistency comes from three pillars: <strong>ECS Anywhere</strong> for common container tooling, <strong>Systems Manager</strong> for common operations and automation, and <strong>AWS Backup</strong> for common protection policies. This gives a consistent control plane, not identical capability.</p>
 </blockquote>
 <hr>
 </section>
@@ -1124,7 +1135,7 @@ flowchart TD
 <li>❓ Half the estate has no AWS API in front of it. How do you monitor it the same way?</li>
 </ul>
 </blockquote>
-<p>In a hybrid estate the <strong>link itself</strong> is the component most likely to hurt you and least likely to be watched. Instrument it first.</p>
+<p>In a hybrid estate, the <strong>link itself</strong> is the component most likely to hurt you and least likely to be watched. Instrument it first.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1162,8 +1173,8 @@ flowchart LR
 <tbody>
 <tr class="odd">
 <td>Direct Connect</td>
-<td><code>ConnectionState</code>, virtual-interface <strong>BGP state</strong></td>
-<td>The earliest, cleanest “the link is gone” signal</td>
+<td><code>ConnectionState</code></td>
+<td>The earliest, cleanest “the dedicated link is gone” signal</td>
 </tr>
 <tr class="even">
 <td>Direct Connect</td>
@@ -1173,12 +1184,12 @@ flowchart LR
 <tr class="odd">
 <td>Site-to-Site VPN</td>
 <td><code>TunnelState</code></td>
-<td>Confirms the failover path is actually up <em>before</em> you need it</td>
+<td>Confirms the failover path is available before it is needed</td>
 </tr>
 <tr class="even">
 <td>ECS</td>
 <td>Container Insights, <code>CPUReservation</code>, <code>MemoryReservation</code>, running vs desired task count</td>
-<td>Desired ≠ running means the cluster can’t place tasks</td>
+<td>Desired ≠ running means the cluster cannot place tasks</td>
 </tr>
 <tr class="odd">
 <td>RDS</td>
@@ -1188,24 +1199,24 @@ flowchart LR
 <tr class="even">
 <td>S3 File Gateway</td>
 <td><code>CachePercentDirty</code>, <code>CloudBytesUploaded</code>, <code>FilesFailingUpload</code></td>
-<td>Rising dirty cache = the async upload is falling behind (your RPO growing)</td>
+<td>A rising dirty cache means asynchronous upload is falling behind and the RPO is growing</td>
 </tr>
 <tr class="odd">
 <td>DMS</td>
 <td><code>CDCLatencySource</code>, <code>CDCLatencyTarget</code></td>
-<td>Tells you whether cutover is safe yet</td>
+<td>Indicates whether the database is ready for cutover</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Practices</strong></p>
 <ul>
-<li>Install the <strong>CloudWatch agent on-prem</strong> via <strong>Systems Manager hybrid activations</strong> so data-centre servers publish the <em>same</em> metrics and logs as EC2 — this is what makes “one pane of glass” real rather than aspirational.</li>
-<li>Alarm on <strong><code>TunnelState</code> of the standby VPN</strong>, not just the primary link. An untested failover path is not a failover path.</li>
-<li>Treat <strong>desired-vs-running task count</strong> as your container liveness check on both sides.</li>
+<li>Install the <strong>CloudWatch agent on-premises</strong> through <strong>Systems Manager hybrid activations</strong> so data-centre servers publish the same metrics and logs as EC2. This is what makes “one pane of glass” real rather than aspirational.</li>
+<li>Alarm on <strong><code>TunnelState</code> for the standby VPN</strong>, not only the primary Direct Connect link. An untested failover path is not a failover path.</li>
+<li>Treat <strong>desired-vs-running task count</strong> as the container liveness check on both sides.</li>
 </ul>
-<p>See <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/07-monitoring.html">07. Monitoring</a> for CloudWatch fundamentals.</p>
+<p>See <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">07. Monitoring</a> for CloudWatch fundamentals.</p>
 <blockquote class="blockquote">
-<p><strong>Architect’s takeaway:</strong> In hybrid, monitor the <strong>seam</strong>. BGP state, tunnel state and gateway upload lag are the metrics that tell you the two halves are still one system.</p>
+<p><strong>Architect’s takeaway:</strong> In hybrid, monitor the <strong>seam</strong>. Connection state, VPN tunnel state and gateway upload lag are the metrics that tell you whether the two halves are still operating as one system.</p>
 </blockquote>
 <hr>
 </section>
@@ -1236,16 +1247,16 @@ flowchart TD
 </div>
 </div>
 <ul>
-<li><strong>Cluster auto scaling</strong> grows/shrinks the <strong>EC2 fleet</strong> via an Auto Scaling group <strong>capacity provider</strong> with managed scaling.</li>
-<li><strong>Service auto scaling</strong> grows/shrinks the <strong>number of tasks</strong> using <strong>Application Auto Scaling</strong>, driven by CloudWatch alarms.
+<li><strong>Cluster auto scaling</strong> grows or shrinks the <strong>EC2 fleet</strong> through an Auto Scaling group <strong>capacity provider</strong> with managed scaling.</li>
+<li><strong>Service auto scaling</strong> grows or shrinks the <strong>number of tasks</strong> through <strong>Application Auto Scaling</strong>, driven by CloudWatch alarms.
 <ul>
-<li><strong>Target tracking</strong> (recommended) — like a thermostat: pick a metric target, AWS maintains it.</li>
-<li><strong>Step scaling</strong> — adjustments sized to the alarm breach.</li>
+<li><strong>Target tracking</strong>, the recommended approach, works like a thermostat: choose a metric target and AWS maintains it.</li>
+<li><strong>Step scaling</strong> applies adjustments according to the size of the alarm breach.</li>
 </ul></li>
-<li>Don’t forget the DB: <strong>RDS Storage Auto Scaling</strong> for storage growth.</li>
+<li>Do not forget the database: use <strong>RDS Storage Auto Scaling</strong> for storage growth.</li>
 </ul>
 <blockquote class="blockquote">
-<p><strong>Architect’s takeaway:</strong> With the EC2 launch type you own <strong>two</strong> scaling dimensions — <strong>cluster (hosts)</strong> and <strong>service (tasks)</strong>. Prefer <strong>target-tracking</strong> policies. This is operational work you would <em>not</em> pay with Fargate, and it belongs in the EC2-vs-Fargate trade-off.</p>
+<p><strong>Architect’s takeaway:</strong> With the EC2 launch type, you own <strong>two</strong> scaling dimensions: <strong>cluster capacity through hosts</strong> and <strong>service capacity through tasks</strong>. Prefer <strong>target-tracking</strong> policies. This is operational work that Fargate would remove, and it belongs in the EC2-versus-Fargate trade-off.</p>
 </blockquote>
 <hr>
 </section>
@@ -1253,10 +1264,10 @@ flowchart TD
 <h2 class="anchored" data-anchor-id="sec-dr">12.10 Design for disaster recovery</h2>
 <blockquote class="blockquote">
 <ul>
-<li>❓ How much resilience does an enterprise workload need — and what does each level cost?</li>
+<li>❓ How much resilience does an enterprise workload need, and what does each level cost?</li>
 </ul>
 </blockquote>
-<p>DR strategies sit on a spectrum from <strong>cheap/slow</strong> to <strong>expensive/instant</strong>. The choice is an <strong>RTO/RPO vs cost/complexity</strong> trade-off.</p>
+<p>DR strategies sit on a spectrum from <strong>cheap and slow</strong> to <strong>expensive and immediate</strong>. The choice is an <strong>RTO/RPO versus cost and complexity</strong> trade-off.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1297,7 +1308,7 @@ flowchart LR
 </tr>
 <tr class="even">
 <td><strong>Pilot light</strong></td>
-<td>Core (DB replication, storage) <strong>on</strong>; app servers <strong>off</strong></td>
+<td>Core services, such as database replication and storage, are <strong>on</strong>; app servers are <strong>off</strong></td>
 <td>Lower</td>
 <td>Low–medium</td>
 </tr>
@@ -1316,11 +1327,11 @@ flowchart LR
 </tbody>
 </table>
 <ul>
-<li><strong>Active/passive</strong> (backup/restore, pilot light, warm standby) recovers <strong>into</strong> a passive site; <strong>active/active</strong> serves from <strong>all</strong> Regions.</li>
-<li><strong>IaC (CloudFormation / CDK)</strong> is essential for fast, error-free redeploy — also back up <strong>code, config and AMIs</strong>, and automate redeploy with <strong>CodePipeline</strong>.</li>
+<li><strong>Active/passive</strong>, including backup and restore, pilot light and warm standby, recovers <strong>into</strong> a passive site. <strong>Active/active</strong> serves traffic from <strong>all</strong> Regions.</li>
+<li><strong>IaC through CloudFormation or CDK</strong> is essential for fast, repeatable redeployment. Also back up <strong>code, configuration and AMIs</strong>, and automate redeployment through <strong>CodePipeline</strong>.</li>
 </ul>
-<p>Active-active vs active-passive topologies are covered further in <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/08-optimization.html">08. Optimization</a>.</p>
-<p><strong>Make the network itself resilient</strong> — back <strong>Direct Connect</strong> with a <strong>Site-to-Site VPN</strong>:</p>
+<p>Active-active versus active-passive topologies are covered further in <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">08. Optimization</a>.</p>
+<p><strong>Make the network itself resilient</strong> by backing <strong>Direct Connect</strong> with a <strong>Site-to-Site VPN</strong>:</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1339,12 +1350,12 @@ flowchart LR
 </div>
 </div>
 <blockquote class="blockquote">
-<p><strong>Architect’s takeaway:</strong> Pick the <strong>cheapest DR strategy that still meets your RTO/RPO</strong> — most enterprises land on <strong>warm standby</strong> unless near-zero downtime justifies <strong>active/active</strong>. And never leave the <strong>link</strong> as a SPOF: back <strong>Direct Connect</strong> with a <strong>VPN</strong>, while remembering the bandwidth cliff from <a href="#sec-connect">12.3.3</a>.</p>
+<p><strong>Architect’s takeaway:</strong> Pick the <strong>cheapest DR strategy that still meets the required RTO/RPO</strong>. Most enterprises land on <strong>warm standby</strong> unless near-zero downtime justifies <strong>active/active</strong>. Never leave the <strong>network link</strong> as a SPOF: back <strong>Direct Connect</strong> with a <strong>VPN</strong>, while remembering the bandwidth cliff described in #sec-connect.</p>
 </blockquote>
 <hr>
 </section>
 <section id="sec-reference" class="level2">
-<h2 class="anchored" data-anchor-id="sec-reference">12.11 The reference architecture, end to end</h2>
+<h2 class="anchored" data-anchor-id="sec-reference">12.11 The reference architecture</h2>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1355,13 +1366,13 @@ flowchart LR
     subgraph DCn["On-Premises"]
         OC["Containers&lt;br&gt;ECS Anywhere"]
         ODB["PostgreSQL"]
-        OFS["Apps over NFS"]
+        OFS["NFS-mounted File Share"]
         SGW["S3 File Gateway&lt;br&gt;local cache"]
         OFS --&gt; SGW
     end
-
+    &nbsp;
     DCn &lt;==&gt;|"Direct Connect&lt;br&gt;plus VPN failover"| AWS
-
+    &nbsp;
     subgraph AWS["AWS Cloud VPC"]
         subgraph A1["AZ 1"]
             ECS1["ECS on EC2&lt;br&gt;private subnet"] --&gt; NAT1["NAT gateway 1"]
@@ -1378,11 +1389,11 @@ flowchart LR
         ECS2 -.-&gt; VPE
         SGW -.-&gt;|async| S3
     end
-
+    &nbsp;
     ODB -.-&gt;|"DMS data + pg_dump schema"| RDS
     OPS["ECS Anywhere · Systems&lt;br&gt;Manager · AWS Backup"] -.-&gt; DCn
     OPS -.-&gt; AWS
-    CW["CloudWatch: BGP state, tunnel state,&lt;br&gt;task counts, replica lag, cache lag"] -.-&gt; AWS
+    CW["CloudWatch: connection state, tunnel state,&lt;br&gt;task counts, replica lag, cache lag"] -.-&gt; AWS
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -1404,7 +1415,7 @@ flowchart LR
 <tbody>
 <tr class="odd">
 <td>Dedicated, consistent connectivity</td>
-<td><strong>Direct Connect</strong> (+ MACsec or IPsec if encryption required), VPN failover</td>
+<td><strong>Direct Connect</strong>, with MACsec or IPsec if encryption is required, plus VPN failover</td>
 </tr>
 <tr class="even">
 <td>Private containers, outbound only</td>
@@ -1420,7 +1431,7 @@ flowchart LR
 </tr>
 <tr class="odd">
 <td>No-rewrite DB migration</td>
-<td><strong>RDS PostgreSQL + DMS</strong> (schema via <code>pg_dump</code>)</td>
+<td><strong>RDS PostgreSQL + DMS</strong>, with schema moved through <code>pg_dump</code></td>
 </tr>
 <tr class="even">
 <td>High availability</td>
@@ -1432,7 +1443,7 @@ flowchart LR
 </tr>
 <tr class="even">
 <td>Observability</td>
-<td><strong>CloudWatch</strong> across both sides via the SSM-installed agent</td>
+<td><strong>CloudWatch</strong> across both sides through the SSM-installed agent</td>
 </tr>
 <tr class="odd">
 <td>Cost efficiency</td>
@@ -1440,7 +1451,7 @@ flowchart LR
 </tr>
 <tr class="even">
 <td>Resilience / DR</td>
-<td><strong>Warm standby</strong> (or chosen tier) + IaC</td>
+<td><strong>Warm standby</strong>, or the selected DR tier, plus IaC</td>
 </tr>
 </tbody>
 </table>
@@ -1463,60 +1474,60 @@ flowchart LR
 </thead>
 <tbody>
 <tr class="odd">
-<td>No custom AMI / no host access needed</td>
+<td>No custom AMI or host access required</td>
 <td>EC2 launch type</td>
-<td><strong>Fargate</strong> (drop the cluster ops)</td>
+<td><strong>Fargate</strong> to remove cluster operations</td>
 </tr>
 <tr class="even">
 <td>Low-volume or temporary connectivity</td>
 <td>Direct Connect</td>
-<td><strong>Site-to-Site VPN</strong> (cheaper, quick, no lead time)</td>
+<td><strong>Site-to-Site VPN</strong>, which is cheaper and quicker with no circuit lead time</td>
 </tr>
 <tr class="odd">
-<td>Migration deadline shorter than DX provisioning</td>
+<td>Migration deadline shorter than Direct Connect provisioning</td>
 <td>Dedicated connection</td>
-<td><strong>Hosted connection</strong> via a partner, or VPN first</td>
+<td><strong>Hosted connection</strong> through a partner, or VPN first</td>
 </tr>
 <tr class="even">
-<td>Only 1 VPC, 1 account</td>
+<td>Only one VPC and one account</td>
 <td>Transit Gateway</td>
-<td>Direct connection / simple peering</td>
+<td>Direct connection or simple peering</td>
 </tr>
 <tr class="odd">
-<td>Shared file system <strong>inside</strong> AWS only</td>
+<td>Shared file system <strong>inside AWS only</strong></td>
 <td>S3 File Gateway</td>
 <td><strong>Amazon EFS</strong></td>
 </tr>
 <tr class="even">
-<td>Heterogeneous DB engines</td>
+<td>Heterogeneous database engines</td>
 <td>One-step DMS</td>
-<td><strong>DMS + AWS SCT</strong> (schema conversion)</td>
+<td><strong>DMS + AWS SCT</strong> for schema conversion</td>
 </tr>
 <tr class="odd">
-<td>On-prem tasks need ELB / <code>awsvpc</code> networking</td>
+<td>On-prem tasks require ELB or <code>awsvpc</code> networking</td>
 <td>ECS Anywhere</td>
 <td>Local orchestration, or move the workload to AWS</td>
 </tr>
 <tr class="even">
-<td>Near-zero RTO mandated + budget</td>
+<td>Near-zero RTO is mandated and funded</td>
 <td>Warm standby</td>
 <td><strong>Multi-site active/active</strong></td>
 </tr>
 <tr class="odd">
-<td>Read scaling needed, not availability</td>
+<td>Read scaling is needed rather than availability</td>
 <td>Multi-AZ standby</td>
-<td><strong>Read replicas</strong> (and vice-versa)</td>
+<td><strong>Read replicas</strong>, and vice versa</td>
 </tr>
 </tbody>
 </table>
 <blockquote class="blockquote">
-<p><strong>Architect’s takeaway:</strong> Every choice here flips with a change in <strong>volume, tooling needs, engine compatibility, provisioning time, or RTO budget</strong>. “Best fit” = technical + operational + cost, across <strong>both</strong> environments.</p>
+<p><strong>Architect’s takeaway:</strong> Every choice here changes with differences in <strong>volume, tooling requirements, engine compatibility, provisioning time or RTO budget</strong>. Best fit means balancing technical, operational and cost factors across <strong>both</strong> environments.</p>
 </blockquote>
 <hr>
 </section>
 <section id="sec-cheatsheet" class="level2">
 <h2 class="anchored" data-anchor-id="sec-cheatsheet">12.13 Architect’s cheat sheet</h2>
-<p>The cloud decision-making for the requirement mentioned in the beginning of the blog:</p>
+<p>The cloud decision-making for the requirement described at the beginning of the blog:</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1547,7 +1558,7 @@ flowchart LR
     ROOT --&gt; S["Storage + Ops"]
     S --&gt; S1["S3 File Gateway =&lt;br&gt;NFS local, S3 behind"]
     S --&gt; S2["ECS Anywhere + SSM + Backup"]
-    S --&gt; S3["Watch BGP state&lt;br&gt;and tunnel state"]
+    S --&gt; S3["Watch connection state&lt;br&gt;and VPN tunnel state"]
     S --&gt; S4["DR: cheapest tier&lt;br&gt;that meets RTO/RPO"]
 </pre>
 </div>
@@ -1555,43 +1566,60 @@ flowchart LR
 </div>
 </div>
 </div>
-<ol type="1">
-<li>In hybrid design the <strong>network is the foundation</strong> — decide connectivity first.</li>
-<li>Agree <strong>non-overlapping CIDR ranges</strong> between data centre and VPC before anything else.</li>
-<li><strong>Direct Connect</strong> for consistent, dedicated, high-volume DC↔︎AWS traffic (off the public internet).</li>
-<li><strong>Direct Connect is private, not encrypted</strong> — add <strong>MACsec</strong> or an <strong>IPsec VPN over DX</strong> if compliance requires it.</li>
-<li><strong>Direct Connect takes weeks to months</strong> to provision; use a <strong>hosted connection</strong> or VPN to bridge a deadline.</li>
-<li>Always add a <strong>VPN failover</strong> for Direct Connect — a single link is a SPOF; without backup, VPC traffic drops.</li>
-<li><strong>VPN failover is survival, not capacity</strong>: ~1.25 Gbps per tunnel. Two DX at two locations is the real HA answer.</li>
-<li><strong>Site-to-Site VPN</strong> = cheap/quick or failover; <strong>Client VPN</strong> = remote workforce access.</li>
-<li><strong>Transit Gateway</strong> turns an unmanageable VPC <strong>mesh</strong> into a <strong>hub</strong>; a <strong>Direct Connect Gateway</strong> reaches many VPCs/Regions.</li>
-<li><strong>ECS on EC2</strong> when you need a <strong>custom AMI</strong> or <strong>SSH</strong>; <strong>Fargate</strong> can’t do either.</li>
-<li>Private subnets + <strong>managed NAT gateway</strong> = <strong>outbound-only</strong> internet; no unsolicited inbound.</li>
-<li><strong>A NAT gateway is AZ-scoped — deploy one per AZ</strong>, or you have re-created the SPOF you were told to remove.</li>
-<li>Use <strong>VPC endpoints</strong> (S3 gateway; ECR/SSM/Logs interface) to cut NAT data-processing cost and stay off the internet.</li>
-<li><strong>RDS + managed engine</strong> = lift-and-shift with <strong>no app rewrite</strong>.</li>
-<li><strong>Multi-AZ DB instance = availability</strong> (synchronous, non-readable standby, auto-failover, <strong>endpoint unchanged</strong>).</li>
-<li><strong>Multi-AZ DB cluster</strong> (PostgreSQL/MySQL) = two <strong>readable</strong> standbys, ~<strong>35 s</strong> failover, ~2× faster commits.</li>
-<li><strong>Read replica = performance</strong> (asynchronous, read-only, replica lag). Don’t confuse it with a standby.</li>
-<li>Scale RDS by the <strong>right axis</strong>: vertical (CPU+storage), replicas (read CPU), <strong>Storage Auto Scaling</strong>, Provisioned IOPS.</li>
-<li><strong>DMS migrates data, not full schema</strong> — no secondary indexes, sequences, FKs or procedures. Use <code>pg_dump</code>/<code>pg_restore</code> for schema.</li>
-<li><strong>CDC from PostgreSQL needs logical replication</strong> enabled on the source <em>before</em> cutover.</li>
-<li><strong>S3 File Gateway</strong> = keep <strong>NFS/SMB</strong> locally with a <strong>cache</strong>, store in <strong>S3</strong> async — no app refactor.</li>
-<li>File Gateway upload is <strong>asynchronous</strong> (real RPO), and out-of-band bucket writes need <strong><code>RefreshCache</code></strong>.</li>
-<li>Know the storage menu: <strong>S3</strong> (object), <strong>EFS</strong> (cloud NFS), <strong>FSx</strong> (specific FS), <strong>EBS</strong> (block); prefer <strong>gp3</strong>, which decouples IOPS from size.</li>
-<li><strong>ECS Anywhere</strong> runs ECS-managed containers on your <strong>own hardware</strong> — but no <code>awsvpc</code>, no ELB target groups, no Fargate.</li>
-<li><strong>Systems Manager</strong> (Run Command, Patch, Parameter Store) + <strong>AWS Backup</strong> centralise hybrid ops and protection.</li>
-<li>Install the <strong>CloudWatch agent on-prem via SSM hybrid activations</strong> — that is what makes one pane of glass real.</li>
-<li><strong>Monitor the seam:</strong> DX <code>ConnectionState</code>/BGP, VPN <code>TunnelState</code>, gateway <code>CachePercentDirty</code>, DMS CDC latency.</li>
-<li>ECS on EC2 has <strong>two</strong> scaling layers: <strong>cluster (hosts)</strong> and <strong>service (tasks)</strong> — prefer <strong>target tracking</strong>.</li>
-<li><strong>DR spectrum:</strong> backup/restore → pilot light → warm standby → active/active (cost ↑, RTO ↓); use <strong>IaC</strong> for redeploy.</li>
-<li>“Serverless by default” is not a law — <strong>ECS on EC2</strong> here proves fit beats fashion.</li>
-</ol>
+<p><strong>Network</strong>:</p>
+<ul>
+<li>In hybrid design, the <strong>network is the foundation</strong>. Decide connectivity first.</li>
+<li>Agree <strong>non-overlapping CIDR ranges</strong> between the data centre and VPC before anything else.</li>
+<li>Use <strong>Direct Connect</strong> for consistent, dedicated, high-volume DataCenter(DC)↔︎AWS traffic that stays off the public internet.</li>
+<li><strong>Direct Connect is private, not encrypted</strong>. Add <strong>MACsec</strong> or an <strong>IPsec VPN over Direct Connect</strong> if compliance requires encryption.</li>
+<li><strong>Direct Connect takes weeks to months</strong> to provision. Use a <strong>hosted connection</strong> or VPN to bridge a deadline.</li>
+<li>Always add a <strong>VPN failover</strong> for Direct Connect. A single connection is a SPOF, and without backup, VPC traffic drops.</li>
+<li><strong>VPN failover is survival, not capacity</strong>: approximately 1.25 Gbps per tunnel. Two Direct Connect connections at two locations provide the stronger high-availability design.</li>
+<li><strong>Site-to-Site VPN</strong> is suitable for quick, lower-cost connectivity or failover. <strong>Client VPN</strong> is for remote workforce access.</li>
+<li><strong>Transit Gateway</strong> converts an unmanageable VPC <strong>mesh</strong> into a <strong>hub</strong>.</li>
+<li>A <strong>Direct Connect Gateway</strong> extends connectivity to multiple VPCs and Regions.</li>
+</ul>
+<p><strong>Compute</strong>:</p>
+<ul>
+<li>Use <strong>ECS on EC2</strong> when you need a <strong>custom AMI</strong> or <strong>SSH</strong>. <strong>Fargate</strong> supports neither AMI not SSH.</li>
+<li>Private subnets with a <strong>managed NAT gateway</strong> provide <strong>outbound-only</strong> internet access without unsolicited inbound connections.</li>
+<li><strong>A NAT gateway is AZ-scoped. Deploy one per AZ</strong>, or the architecture recreates the SPOF it was designed to remove.</li>
+<li>Use <strong>VPC endpoints</strong>, including an S3 gateway endpoint and ECR, SSM and Logs interface endpoints, to reduce NAT data-processing cost and keep AWS-service traffic off the internet.</li>
+</ul>
+<p><strong>Database</strong>:</p>
+<ul>
+<li><strong>RDS with a compatible managed engine</strong> supports lift-and-shift with <strong>no application rewrite</strong>.</li>
+<li><strong>Multi-AZ DB instance = availability</strong>, with synchronous replication, a non-readable standby, automatic failover and an unchanged endpoint.</li>
+<li><strong>Multi-AZ DB cluster</strong>, available for PostgreSQL and MySQL, has two <strong>readable</strong> standbys, approximately <strong>35-second</strong> failover and faster commits.</li>
+<li><strong>Read replica = performance</strong>, with asynchronous replication, read-only access and possible replica lag. Do not confuse it with a standby.</li>
+<li>Scale RDS along the appropriate axis: vertical capacity for CPU and storage, replicas for read CPU, <strong>Storage Auto Scaling</strong> for storage, or Provisioned IOPS for I/O performance.</li>
+<li><strong>DMS migrates data, not the full schema</strong>. It does not migrate secondary indexes, sequences, foreign keys or procedures. Use <code>pg_dump</code>/<code>pg_restore</code> for the schema.</li>
+<li><strong>Change Data Capture (CDC) from PostgreSQL requires logical replication</strong> on the source before cutover.</li>
+</ul>
+<p><strong>Storage</strong>:</p>
+<ul>
+<li><strong>S3 File Gateway</strong> keeps <strong>NFS/SMB</strong> access local with a <strong>cache</strong> while storing data asynchronously in <strong>S3</strong>, avoiding application refactoring.</li>
+<li>File Gateway upload is <strong>asynchronous</strong>, creating a real RPO, and out-of-band bucket writes require <strong><code>RefreshCache</code></strong>.</li>
+<li>Know the storage menu: <strong>S3</strong> for object storage, <strong>EFS</strong> for cloud NFS, <strong>FSx</strong> for specific file systems and <strong>EBS</strong> for block storage. Prefer <strong>gp3</strong>, which decouples IOPS from volume size.</li>
+</ul>
+<p><strong>Ops</strong>:</p>
+<ul>
+<li><strong>ECS Anywhere</strong> runs ECS-managed containers on <strong>customer-owned hardware</strong>, but does not support <code>awsvpc</code>, ELB target groups or Fargate.</li>
+<li><strong>Systems Manager</strong>, including Run Command, Patch and Parameter Store, together with <strong>AWS Backup</strong>, centralises hybrid operations and protection.</li>
+<li>Install the <strong>CloudWatch agent on-premises through SSM hybrid activations</strong>. That is what makes one pane of glass real.</li>
+</ul>
+<p>On-Prem ↔︎ Cloud:</p>
+<ul>
+<li><strong>Monitor the seam:</strong> Direct Connect <code>ConnectionState</code>, VPN <code>TunnelState</code>, gateway <code>CachePercentDirty</code>, and DMS CDC latency.</li>
+<li>ECS on EC2 has <strong>two</strong> scaling layers: <strong>cluster capacity through hosts</strong> and <strong>service capacity through tasks</strong>. Prefer <strong>target tracking</strong>.</li>
+<li><strong>DR spectrum:</strong> backup and restore → pilot light → warm standby → active/active. Cost rises and RTO falls as you move right. Use <strong>IaC</strong> for redeployment.</li>
+<li>“Serverless by default” is not a law. <strong>ECS on EC2</strong> here proves that fit beats fashion.</li>
+</ul>
 <hr>
 </section>
 <section id="sources" class="level2">
 <h2 class="anchored" data-anchor-id="sources">Sources</h2>
-<p><em>Inspired from course notes — “Architecting Solutions on AWS”, Week 3: Designing a Hybrid Solution for Container-Based Workloads (enterprise container + PostgreSQL migration use case).</em></p>
+<p><em>Inspired from course notes, “Architecting Solutions on AWS,” Week 3: Designing a Hybrid Solution for Container-Based Workloads, using an enterprise container and PostgreSQL migration use case.</em></p>
 
 
 </section>

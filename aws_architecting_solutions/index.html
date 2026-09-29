@@ -76,6 +76,10 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<meta name="mermaid-theme" content="neutral">
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="book.css">
@@ -161,7 +165,6 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#architecting-a-serverless-web-backend" id="toc-architecting-a-serverless-web-backend" class="nav-link" data-scroll-target="#architecting-a-serverless-web-backend">🧩 <strong>10. Architecting a Serverless Web Backend</strong></a></li>
   <li><a href="#serverless-data-analytics" id="toc-serverless-data-analytics" class="nav-link" data-scroll-target="#serverless-data-analytics">📊 <strong>11. Serverless Data Analytics</strong></a></li>
   <li><a href="#hybrid-container-based-workloads" id="toc-hybrid-container-based-workloads" class="nav-link" data-scroll-target="#hybrid-container-based-workloads">🔗 <strong>12. Hybrid, Container-Based Workloads</strong></a></li>
-  <li><a href="#account-governance-and-multi-account-management" id="toc-account-governance-and-multi-account-management" class="nav-link" data-scroll-target="#account-governance-and-multi-account-management">🏛️ <strong>13. Account Governance and Multi-Account Management</strong></a></li>
   <li><a href="#capstone-decoupled-app-emr-analytics" id="toc-capstone-decoupled-app-emr-analytics" class="nav-link" data-scroll-target="#capstone-decoupled-app-emr-analytics">🎯 <strong>14. Capstone: Decoupled App + EMR Analytics</strong></a></li>
   </ul></li>
   <li><a href="#source-attribution" id="toc-source-attribution" class="nav-link" data-scroll-target="#source-attribution">📜 3. Source &amp; Attribution</a></li>
@@ -208,7 +211,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="why-this-book" class="level2">
 <h2 class="anchored" data-anchor-id="why-this-book">❓ 1. Why this Book</h2>
 <blockquote class="blockquote">
-<p>Knowing what a service <em>does</em> is not the same as knowing <em>when</em> to choose it — and what you must be prepared to defend once you have.</p>
+<p>Knowing what a service <em>does</em> is not the same as knowing <em>when</em> to choose it and what you must be prepared to defend once you have.</p>
 </blockquote>
 <p>This is a companion to <a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_cloud_technical_essentials/"><strong>Foundational Questions. Visual Answers. Mastering AWS Fundamentals</strong></a>. That book builds the fundamentals, chapter by chapter: security, compute, networking, storage, databases, monitoring, optimization. This book assumes those fundamentals and asks a harder question: given a real customer’s requirements, how do you <em>combine</em> those building blocks into one architecture — and justify the services you rejected?</p>
 <p>A companion blog post walks through this same way of thinking end to end: <a href="https://senthilkumarm1901.github.io/learn_by_blogging/posts/cloud_architect/cloud_architect.html"><strong>Thinking like a Cloud Architect</strong></a>.</p>
@@ -216,26 +219,507 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="what-this-book-covers" class="level2">
 <h2 class="anchored" data-anchor-id="what-this-book-covers">📝 2. What this book covers</h2>
-<p>Every chapter follows the same workflow: <strong>requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections.</strong></p>
+<p>Every chapter follows the same workflow: <strong>requirements/problem understanding → architectural drivers → collect candidate services → compare trade-offs → finalize decision → justify rejections.</strong></p>
 <section id="architecting-a-serverless-web-backend" class="level3">
 <h3 class="anchored" data-anchor-id="architecting-a-serverless-web-backend">🧩 <a href="10-architecting-serverless-backend-solution-in-aws.html"><strong>10. Architecting a Serverless Web Backend</strong></a></h3>
-<p>A monolithic, on-prem order service must become an auto-scaling, decoupled, serverless backend — deciding how clients get in, what runs the business logic, and where state lives.</p>
+<ul>
+<li><strong>Problem</strong>: A monolithic, on-prem order service must become an auto-scaling, decoupled, serverless backend in the cloud</li>
+</ul>
+<p><strong>Before an Architect’s Intervention</strong>:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+  U[Customers] --&gt; W[Web tier]
+  W --&gt; O[Monolithic order service]
+  O --&gt; M[(MySQL)]
+  O -.-&gt; I[Inventory service]
+  O -.-&gt; A[Accounting service]
+  O -.-&gt; F[Fulfillment service]
+
+  subgraph InScope["In scope for Migration"]
+    W
+    O
+    M
+  end
+
+  subgraph OutOfScope["Out of scope"]
+    I
+    A
+    F
+  end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>After an Architect’s Intervention</strong>:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    FE["Frontend clients"] --&gt; APIGW["API Gateway&lt;br&gt;auth, validation, throttling"]
+    APIGW --&gt; SQS["SQS&lt;br&gt;buffer / decouple"]
+    SQS --&gt; LAM["Lambda&lt;br&gt;order processing"]
+    LAM --&gt; DDB["DynamoDB&lt;br&gt;orders"]
+    LAM -.-&gt;|"failures"| DLQ["Dead-letter queue"]
+    DDB --&gt; STR["DynamoDB Streams"]
+    STR --&gt; LAM2["Lambda&lt;br&gt;publisher"]
+    LAM2 --&gt; SNS["SNS topic"]
+    SNS --&gt; D1["Fulfillment"]
+    SNS --&gt; D2["Accounting"]
+    SNS --&gt; D3["Inventory"]
+    APIGW --&gt; CW["CloudWatch + X-Ray&lt;br&gt;across all services"]
+    LAM --&gt; CW
+    DDB --&gt; CW
+    SNS --&gt; CW
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 </section>
 <section id="serverless-data-analytics" class="level3">
 <h3 class="anchored" data-anchor-id="serverless-data-analytics">📊 <a href="11-serverless-data-analytics.html"><strong>11. Serverless Data Analytics</strong></a></h3>
-<p>Static S3-hosted menus need a clickstream pipeline bolted on — turning a one-off request into a recurring <strong>ingest → store → query → visualise</strong> data pipeline.</p>
+<ul>
+<li><strong>Problem</strong>: A Static S3-hosted menus website needs a clickstream pipeline to be used along with it.</li>
+<li>This should turn a one-off request into a recurring <strong>ingest → store → query → visualise</strong> data pipeline.</li>
+<li>Such a Data Analytics pipeline gives insights to restaurant owners on analytics from customer preferences</li>
+</ul>
+<p><strong>Before an Architect’s Intervention</strong>:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    C[Customer scans QR code] --&gt; S3M["S3 static menu&lt;br&gt;HTML pages"]
+    S3M --&gt; ORD["'Order this item'&lt;br&gt;feature"]
+    ORD -.-&gt; PAY["Third-party payment API"]
+    S3M --&gt; CLICK["Clickstream:&lt;br&gt;views + navigation"]
+    CLICK --&gt; PIPE["Analytics pipeline&lt;br&gt;ingest, store, query, visualise"]
+
+    subgraph InScope["In scope&lt;br&gt;(newly added)"]
+        CLICK
+        PIPE
+    end
+
+    subgraph OutOfScope["Out of scope&lt;br&gt;(not touching for edit)"]
+        ORD
+        PAY
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>After an Architect’s Intervention</strong>:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+
+    USER["Customer&lt;br/&gt;scans QR code"]
+
+    subgraph SITE["Static Menu Website"]
+        EDGE["CloudFront distribution&lt;br/&gt;&lt;br/&gt;protected by AWS WAF"]
+        MENU[("S3 private origin&lt;br/&gt;&lt;br/&gt;HTML, CSS and JavaScript")]
+        BROWSER["Menu running in browser&lt;br/&gt;JS emits click events"]
+
+        EDGE --&gt;|"Fetch static assets"| MENU
+        EDGE --&gt;|"Serve menu application"| BROWSER
+    end
+
+    USER --&gt;|"Request menu"| EDGE
+
+    subgraph PIPELINE["Serverless Clickstream Analytics Pipeline"]
+        AG["API Gateway&lt;br/&gt;&lt;br/&gt;HTTPS, throttling and abuse control"]
+        KDF["Amazon Data Firehose&lt;br/&gt;&lt;br/&gt;Direct PUT, buffering,&lt;br/&gt;JSON to Parquet"]
+        
+        subgraph LAKE["S3 Data Lake"]
+            DATA["Parquet data&lt;br/&gt;Hive-style prefixes"]
+            ERR["Error output prefix"]
+        end
+
+        REPLICA[("S3 replica bucket&lt;br/&gt;&lt;br/&gt;Second Region")]
+        GDC["Glue Data Catalog&lt;br/&gt;&lt;br/&gt;Table schema and partitions"]
+        ATH["Amazon Athena&lt;br/&gt;&lt;br/&gt;SQL on S3"]
+        SPICE[("QuickSight SPICE&lt;br/&gt;&lt;br/&gt;In-memory dataset")]
+        QS["QuickSight Dashboards"]
+
+        BROWSER --&gt;|"Click events"| AG
+        AG --&gt; KDF
+
+        GDC -.-&gt;|"Schema for&lt;br/&gt;Parquet conversion"| KDF
+        KDF --&gt; DATA
+        KDF -.-&gt;|"Failed records"| ERR
+
+        DATA --&gt;|"Asynchronous CRR&lt;br/&gt;with versioning"| REPLICA
+
+        GDC -.-&gt;|"Table metadata"| ATH
+        DATA --&gt; ATH
+
+        ATH --&gt;|"Dataset ingestion&lt;br/&gt;and scheduled refresh"| SPICE
+        SPICE --&gt; QS
+    end
+
+    subgraph OBS["Cross-Cutting Observability"]
+        CW["Amazon CloudWatch&lt;br/&gt;&lt;br/&gt;Metrics, logs and alarms"]
+        SNS["Amazon SNS&lt;br/&gt;Operational notifications"]
+
+        CW --&gt; SNS
+    end
+
+    AG -.-&gt;|"Count, 4XX, 5XX, latency"| CW
+    KDF -.-&gt;|"Delivery success,&lt;br/&gt;freshness and throttling"| CW
+    REPLICA -.-&gt;|"Replication lag"| CW
+    ATH -.-&gt;|"Failures and bytes scanned"| CW
+    SPICE -.-&gt;|"Ingestion or refresh failures"| CW
+
+    IAC["CloudFormation&lt;br/&gt;provisions the architecture"] -.-&gt; SITE
+    IAC -.-&gt; PIPELINE
+    IAC -.-&gt; OBS
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 </section>
 <section id="hybrid-container-based-workloads" class="level3">
 <h3 class="anchored" data-anchor-id="hybrid-container-based-workloads">🔗 <a href="12-hybrid-container-workloads.html"><strong>12. Hybrid, Container-Based Workloads</strong></a></h3>
-<p>Half a company’s workloads stay on-premises, half move to AWS — connecting the two, keeping containers portable, and migrating a database with near-zero downtime.</p>
-</section>
-<section id="account-governance-and-multi-account-management" class="level3">
-<h3 class="anchored" data-anchor-id="account-governance-and-multi-account-management">🏛️ <a href="13-multi-account-strategies.html"><strong>13. Account Governance and Multi-Account Management</strong></a></h3>
-<p>A single, unmanaged AWS account has to become a governed multi-account structure — with automatic provisioning, single sign-on, central logging and guardrails.</p>
+<ul>
+<li><strong>Problem</strong>: Half a company’s workloads stay on-premises, half move to AWS.</li>
+<li>Need: Connecting the On-prm Data Center with AWS infra, keeping containers portable, and migrating a database with near-zero downtime.</li>
+</ul>
+<p><strong>Before an Architect’s Intervention</strong>:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph DCn["Data centre (contracts&lt;br&gt;expiring in waves)"]
+        direction TD
+        C1["Containerised apps"]
+        DB1["PostgreSQL"]
+        C1 &lt;--&gt; DB1
+    end
+    
+    %% DCn &lt;--&gt;|"dedicated, low-latency link"| AWS
+
+    %% subgraph AWS["AWS (half the workloads)"]
+    %%     C2["Containers&lt;br&gt;private, outbound only"]
+    %%     DB2["PostgreSQL&lt;br&gt;lift-and-shift, no rewrite"]
+    %%     NFS["Data over NFS&lt;br&gt;no refactor"]
+    %% end
+
+    %% C1 -.-&gt;|"same orchestration tooling"| C2
+    %% DB1 -.-&gt;|"no app code rewrite"| DB2
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>After an Architect’s Intervention</strong> (simple version):</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph DCn["Data centre (contracts&lt;br&gt;expiring in waves)"]
+        direction TD
+        C1["Containerised apps"]
+        DB1["PostgreSQL"]
+        C1 &lt;--&gt; DB1
+    end
+    
+    DCn &lt;--&gt;|"dedicated, low-latency link"| AWS
+
+    subgraph AWS["AWS (half the workloads)"]
+        C2["Containers&lt;br&gt;private, outbound only"]
+        DB2["PostgreSQL&lt;br&gt;lift-and-shift, no rewrite"]
+        NFS["Data over NFS&lt;br&gt;no refactor"]
+    end
+
+    C1 -.-&gt;|"same orchestration tooling"| C2
+    DB1 -.-&gt;|"no app code rewrite"| DB2
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>After an Architect’s Intervention</strong> (detailed version):</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph DCn["On-Premises"]
+        OC["Containers&lt;br&gt;ECS Anywhere"]
+        ODB["PostgreSQL"]
+        OFS["NFS-mounted File Share"]
+        SGW["S3 File Gateway&lt;br&gt;local cache"]
+        OFS --&gt; SGW
+    end
+    &nbsp;
+    DCn &lt;==&gt;|"Direct Connect&lt;br&gt;plus VPN failover"| AWS
+    &nbsp;
+    subgraph AWS["AWS Cloud VPC"]
+        subgraph A1["AZ 1"]
+            ECS1["ECS on EC2&lt;br&gt;private subnet"] --&gt; NAT1["NAT gateway 1"]
+        end
+        subgraph A2["AZ 2"]
+            ECS2["ECS on EC2&lt;br&gt;private subnet"] --&gt; NAT2["NAT gateway 2"]
+        end
+        VPE["VPC endpoints&lt;br&gt;ECR, SSM, S3, Logs"]
+        RDS["RDS PostgreSQL&lt;br&gt;Multi-AZ + read replica"]
+        S3["Amazon S3&lt;br&gt;Intelligent-Tiering"]
+        ECS1 --&gt; RDS
+        ECS2 --&gt; RDS
+        ECS1 -.-&gt; VPE
+        ECS2 -.-&gt; VPE
+        SGW -.-&gt;|async| S3
+    end
+    &nbsp;
+    ODB -.-&gt;|"DMS data + pg_dump schema"| RDS
+    OPS["ECS Anywhere · Systems&lt;br&gt;Manager · AWS Backup"] -.-&gt; DCn
+    OPS -.-&gt; AWS
+    CW["CloudWatch: connection state, tunnel state,&lt;br&gt;task counts, replica lag, cache lag"] -.-&gt; AWS```
+
+### 🏛️ [**13. Account Governance and Multi-Account Management**](13-multi-account-strategies.html)
+
+* **Problem**: A single, unmanaged AWS account has to become a governed multi-account structure — with automatic provisioning, single sign-on, central logging and guardrails.
+
+**Before an Architect's Intervention**:
+
+```ncrpulgbs
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph Before["Single account (today)"]
+        ROOT["root + unmanaged IAM users"] --&gt; W1["Client A website"]
+        ROOT --&gt; W2["Client B website"]
+        ROOT --&gt; W3["Client C website"]
+    end
+
+    %% Before --&gt;|"re-architect"| After
+
+    %% subgraph After["Multi-account (goal)"]
+    %%     SSO["Single sign-on"] --&gt; ACCA["Client A account"]
+    %%     SSO --&gt; ACCB["Client B account"]
+    %%     SSO --&gt; ACCC["Client C account"]
+    %%     ACCA --&gt; LOG["Dedicated logging account"]
+    %%     ACCB --&gt; LOG
+    %%     ACCC --&gt; LOG
+    %%     GR["Guardrails +&lt;br&gt;enforced tagging"] -.-&gt; ACCA
+    %%     GR -.-&gt; ACCB
+    %%     GR -.-&gt; ACCC
+    %% end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>After an Architect’s Intervention</strong> (simple version):</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph Before["Single account (today)"]
+        ROOT["root + unmanaged IAM users"] --&gt; W1["Client A website"]
+        ROOT --&gt; W2["Client B website"]
+        ROOT --&gt; W3["Client C website"]
+    end
+
+    Before --&gt;|"re-architect"| After
+
+    subgraph After["Multi-account (goal)"]
+        SSO["Single sign-on"] --&gt; ACCA["Client A account"]
+        SSO --&gt; ACCB["Client B account"]
+        SSO --&gt; ACCC["Client C account"]
+        ACCA --&gt; LOG["Dedicated logging account"]
+        ACCB --&gt; LOG
+        ACCC --&gt; LOG
+        GR["Guardrails +&lt;br&gt;enforced tagging"] -.-&gt; ACCA
+        GR -.-&gt; ACCB
+        GR -.-&gt; ACCC
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>After an Architect’s Intervention</strong> (detailed version):</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    subgraph Org["AWS Organization -&lt;br&gt;all features enabled"]
+        MGMT["Management account&lt;br&gt;Control Tower, org CloudTrail, billing&lt;br&gt;NO workloads"]
+        subgraph SecOU["Security OU"]
+            LOGACC["Log Archive account&lt;br&gt;central CloudTrail and Config"]
+            TOOL["Security Tooling account&lt;br&gt;delegated admin: GuardDuty,&lt;br&gt;Config, Security Hub"]
+        end
+        SS["Shared Services account&lt;br&gt;delegated IAM Identity Center admin"]
+        subgraph WL["Workloads OU"]
+            subgraph CustA["Customer A OU"]
+                DEVA["Dev"]
+                PRDA["Prod"]
+            end
+        end
+    end
+    USER["Workforce"] --&gt;|SSO portal| SS
+    SS --&gt;|permission sets| DEVA
+    SS --&gt;|permission sets| PRDA
+    MGMT --&gt;|SCP guardrails| WL
+    DEVA --&gt;|logs| LOGACC
+    PRDA --&gt;|logs| LOGACC
+    TOOL --&gt;|findings| SEChub["Security Hub"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 </section>
 <section id="capstone-decoupled-app-emr-analytics" class="level3">
 <h3 class="anchored" data-anchor-id="capstone-decoupled-app-emr-analytics">🎯 <a href="14-capstone-decoupled-app-and-emr-analytics.html"><strong>14. Capstone: Decoupled App + EMR Analytics</strong></a></h3>
-<p>One customer, two workloads at once: decoupling a three-tier app and re-platforming a Hadoop estate onto Amazon EMR — reusing the patterns from Chapters 10-12 together.</p>
+<p><strong>Problem</strong>:</p>
+<ul>
+<li>One customer, migrate two workloads to cloud at once:
+<ul>
+<li>decoupling a three-tier app and</li>
+<li>re-platforming a Hadoop estate onto Amazon EMR</li>
+</ul></li>
+<li>This capstone effort reuses the patterns from Chapters 10-12 together.</li>
+</ul>
+<p><strong>Before an Architect’s Intervention</strong>:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph OnPrem["On-premises today&lt;br&gt;one data centre, one power feed"]
+        FE1["Frontend&lt;br&gt;HTML/CSS/JS"] --&gt; BE1["Backend&lt;br&gt;Apache + Java"]
+        BE1 --&gt; DB1[("MySQL")]
+        HAD["Hadoop cluster&lt;br&gt;+ visualisation tools"]
+    end
+    %% OnPrem --&gt;|"decouple + migrate"| Cloud
+
+    %% subgraph Cloud["Goal: on AWS"]
+    %%     FE2["Frontend tier"]
+    %%     BE2["Backend tier"]
+    %%     DB2[("Database tier")]
+    %%     EMR2["EMR analytics&lt;br&gt;tier"]
+    %% end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>After an Architect’s Intervention</strong> (simplified version):</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph OnPrem["On-premises today&lt;br&gt;one data centre, one power feed"]
+        FE1["Frontend&lt;br&gt;HTML/CSS/JS"] --&gt; BE1["Backend&lt;br&gt;Apache + Java"]
+        BE1 --&gt; DB1[("MySQL")]
+        HAD["Hadoop cluster&lt;br&gt;+ visualisation tools"]
+    end
+    OnPrem --&gt;|"decouple + migrate"| Cloud
+
+    subgraph Cloud["Goal: on AWS"]
+        FE2["Frontend tier&lt;br&gt;CloudFront-WAF-S3"]
+        BE2["Backend tier&lt;br&gt;ALB-&lt;br&gt;ECS_on_Fargate"]
+        DB2[("Database tier")]
+        EMR2["EMR analytics&lt;br&gt;tier"]
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>After an Architect’s Intervention</strong> (detailed version):</p>
+<p><strong>Application tier on AWS</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    USERS["Internet users"] --&gt; CF["CloudFront + WAF"]
+    CF --&gt;|"static"| S3F["S3&lt;br&gt;frontend"]
+    CF --&gt;|"dynamic"| ALB["Application&lt;br&gt;Load Balancer"]
+    ALB --&gt; ECS["ECS on Fargate&lt;br&gt;Java backend"]
+    ECS --&gt; RDS[("RDS for MySQL&lt;br&gt;Multi-AZ")]
+    OnPremMySQ[("On-prem MySQL")] --&gt; DMS["AWS DMS"] --&gt;|"migrate&lt;br&gt;Full load or&lt;br&gt;Changed Data"| RDS
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Analytics tier on AWS</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    ONPREM["On-prem HDFS&lt;br&gt;dataset"] --&gt;|"bulk seed"| SNOW["Snowball Edge"]
+    ONPREM --&gt;|"ongoing"| DS["AWS DataSync"]
+    SNOW --&gt; S3R["S3 raw zone"]
+    DS --&gt; S3R
+    S3R --&gt;|"EMRFS"| EMR["Amazon EMR&lt;br&gt;transient cluster"]
+    EMR --&gt; S3C["S3 curated zone"]
+    S3C --&gt; GDC["Glue Data Catalog"]
+    GDC --&gt; ATH["Amazon Athena"]
+    S3C --&gt; ATH
+    ATH --&gt; QS["Amazon QuickSight"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 <hr>
 </section>
 </section>

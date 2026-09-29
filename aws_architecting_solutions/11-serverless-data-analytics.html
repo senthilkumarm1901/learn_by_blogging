@@ -179,7 +179,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#sec-observability" id="toc-sec-observability" class="nav-link" data-scroll-target="#sec-observability">11.8 Make the pipeline observable</a></li>
   <li><a href="#sec-resilient" id="toc-sec-resilient" class="nav-link" data-scroll-target="#sec-resilient">11.9 Make it replicable and resilient</a></li>
   <li><a href="#sec-optimize" id="toc-sec-optimize" class="nav-link" data-scroll-target="#sec-optimize">11.10 Optimise cost and performance</a></li>
-  <li><a href="#sec-reference" id="toc-sec-reference" class="nav-link" data-scroll-target="#sec-reference">11.11 The reference architecture, end to end</a></li>
+  <li><a href="#sec-reference" id="toc-sec-reference" class="nav-link" data-scroll-target="#sec-reference">11.11 The reference architecture</a></li>
   <li><a href="#sec-not" id="toc-sec-not" class="nav-link" data-scroll-target="#sec-not">11.12 When <em>not</em> to build it this way</a></li>
   <li><a href="#sec-cheatsheet" id="toc-sec-cheatsheet" class="nav-link" data-scroll-target="#sec-cheatsheet">11.13 Architect’s cheat sheet</a></li>
   <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources">Sources</a></li>
@@ -253,11 +253,13 @@ flowchart LR
     S3M --&gt; CLICK["Clickstream:&lt;br&gt;views + navigation"]
     CLICK --&gt; PIPE["Analytics pipeline&lt;br&gt;ingest, store, query, visualise"]
 
-    subgraph InScope["In scope"]
+    subgraph InScope["In scope&lt;br&gt;(newly added)"]
+        CLICK
         PIPE
     end
 
-    subgraph OutOfScope["Out of scope"]
+    subgraph OutOfScope["Out of scope&lt;br&gt;(not touching for edit)"]
+        ORD
         PAY
     end
 </pre>
@@ -818,7 +820,11 @@ flowchart TD
 <li>❓ How do non-technical restaurant owners see “which dishes are viewed most” without SQL?</li>
 </ul>
 </blockquote>
-<p><strong>Chosen: Amazon QuickSight</strong> — a serverless BI service that sits on top of Athena/S3. Business users explore interactive dashboards, it scales through the <strong>SPICE</strong> in-memory engine, and readers can be billed per session rather than per seat.</p>
+<ul>
+<li><strong>Chosen: Amazon QuickSight</strong> - a serverless BI service that sits on top of Athena/S3.</li>
+<li>SPICE: Super-fast, Parallel, In-memory Calculation Engine</li>
+<li>Business users explore interactive dashboards, it scales through the <strong>SPICE</strong> in-memory engine, and readers can be billed per session rather than per seat.</li>
+</ul>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -866,6 +872,69 @@ flowchart LR
 </tr>
 </tbody>
 </table>
+<p><strong>Without SPICE: direct querying in Athena for even filtering</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant User
+    participant QS as QuickSight Dashboard
+    participant Athena
+    participant S3
+
+    User-&gt;&gt;QS: Open or filter dashboard
+    QS-&gt;&gt;Athena: Run SQL query
+    Athena-&gt;&gt;S3: Scan relevant objects
+    S3--&gt;&gt;Athena: Data
+    Athena--&gt;&gt;QS: Query result
+    QS--&gt;&gt;User: Render visual
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>With SPICE: Quicker data retrieval, Skips Athena Querying for filtering</strong>:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant User
+    participant QS as QuickSight Dashboard
+    participant Athena
+    participant S3
+
+    User-&gt;&gt;QS: Open or filter dashboard
+    QS-&gt;&gt;Athena: Run SQL query
+    Athena-&gt;&gt;S3: Scan relevant objects
+    S3--&gt;&gt;Athena: Data
+    Athena--&gt;&gt;QS: Query result
+    QS--&gt;&gt;User: Render visual
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Piepline with SPICE</strong>:</p>
+<pre class="{merrmaid}"><code>%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    S3[("S3 Data Lake")]
+    ATH["Athena&lt;br/&gt;SQL over S3"]
+    SPICE[("QuickSight SPICE&lt;br/&gt;In-memory dataset")]
+    DASH["QuickSight Dashboard"]
+    USER["Restaurant Owner"]
+
+    S3 --&gt; ATH
+    ATH --&gt;|"Scheduled or manual ingestion"| SPICE
+    SPICE --&gt; DASH
+    DASH --&gt; USER</code></pre>
 <blockquote class="blockquote">
 <p><strong>Two pricing/edition caveats to state up front.</strong> (1) <strong>Pay-per-session applies to Readers</strong>; <strong>Authors and Admins are billed per user, per month</strong> — so “no named users” is only true for the consumers, not the dashboard builders. (2) The customer’s <strong>encryption-at-rest</strong> requirement effectively forces <strong>Enterprise edition</strong>, since SPICE encryption at rest, row/column-level security and private VPC connectivity are Enterprise features. That is a real line item, not a footnote.</p>
 </blockquote>
@@ -966,13 +1035,27 @@ flowchart LR
 <div>
 <pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
-    AG["API Gateway"] --&gt; CW["Amazon CloudWatch&lt;br&gt;metrics, logs, alarms"]
-    KDF["Amazon Data Firehose"] --&gt; CW
-    S3["Amazon S3 + CRR"] --&gt; CW
-    ATH["Amazon Athena"] --&gt; CW
-    QS["QuickSight SPICE"] --&gt; CW
-    KDF -.-&gt;|"failed records"| ERR["S3 error output prefix"]
-    CW --&gt; AL["Alarms to SNS&lt;br&gt;on-call notification"]
+    subgraph PIPE["Data Analytics Pipeline"]
+        direction TD
+        API["API Gateway"]
+        FH["Amazon Data Firehose"]
+        S3["S3 and Replication"]
+        ATH["Athena"]
+        QS["QuickSight Ingestion"]
+        API --&gt; FH --&gt; S3 --&gt; ATH --&gt; QS
+    end
+
+    CW["Amazon CloudWatch&lt;br/&gt;Metrics, Logs and Alarms"]
+    SNS["Amazon SNS&lt;br/&gt;Operational Notifications"]
+
+    API -.-&gt;|"metrics and logs"| CW
+    FH -.-&gt;|"delivery and freshness metrics"| CW
+    S3 -.-&gt;|"replication metrics"| CW
+    ATH -.-&gt;|"query metrics"| CW
+    QS -.-&gt;|"ingestion status"| CW
+
+    CW --&gt;|"Alarm notification"| SNS
+    SNS --&gt; TE["Ops Team Email"] --&gt; OE["On-call Engineer"]
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -1167,7 +1250,7 @@ flowchart TD
 <hr>
 </section>
 <section id="sec-reference" class="level2">
-<h2 class="anchored" data-anchor-id="sec-reference">11.11 The reference architecture, end to end</h2>
+<h2 class="anchored" data-anchor-id="sec-reference">11.11 The reference architecture</h2>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1175,18 +1258,67 @@ flowchart TD
 <div>
 <pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart TD
-    JS["Browser JS library&lt;br&gt;click events"] --&gt; AG["API Gateway&lt;br&gt;HTTPS, throttling, WAF"]
-    AG --&gt; KDF["Amazon Data Firehose&lt;br&gt;Direct PUT, buffer, Parquet"]
-    KDF --&gt; S3["Amazon S3 data lake&lt;br&gt;Hive-style prefixes"]
-    KDF -.-&gt;|"failed records"| ERR["S3 error prefix"]
-    S3 --&gt; CRR["S3 CRR + versioning&lt;br&gt;backup Region"]
-    S3 --&gt; ATH["Amazon Athena&lt;br&gt;SQL on S3"]
-    GDC["Glue Data Catalog&lt;br&gt;schema + partitions"] -.-&gt; ATH
-    GDC -.-&gt; KDF
-    ATH --&gt; QS["Amazon QuickSight&lt;br&gt;SPICE dashboards"]
-    CF["CloudFront + WAF"] --&gt; MENU["S3 static menu site"]
-    IaC["CloudFormation"] -.-&gt;|provisions all| S3
-    CW["CloudWatch alarms&lt;br&gt;across every hop"] -.-&gt; KDF
+
+    USER["Customer&lt;br/&gt;scans QR code"]
+
+    subgraph SITE["Static Menu Website"]
+        EDGE["CloudFront distribution&lt;br/&gt;&lt;br/&gt;protected by AWS WAF"]
+        MENU[("S3 private origin&lt;br/&gt;&lt;br/&gt;HTML, CSS and JavaScript")]
+        BROWSER["Menu running in browser&lt;br/&gt;JS emits click events"]
+
+        EDGE --&gt;|"Fetch static assets"| MENU
+        EDGE --&gt;|"Serve menu application"| BROWSER
+    end
+
+    USER --&gt;|"Request menu"| EDGE
+
+    subgraph PIPELINE["Serverless Clickstream Analytics Pipeline"]
+        AG["API Gateway&lt;br/&gt;&lt;br/&gt;HTTPS, throttling and abuse control"]
+        KDF["Amazon Data Firehose&lt;br/&gt;&lt;br/&gt;Direct PUT, buffering,&lt;br/&gt;JSON to Parquet"]
+        
+        subgraph LAKE["S3 Data Lake"]
+            DATA["Parquet data&lt;br/&gt;Hive-style prefixes"]
+            ERR["Error output prefix"]
+        end
+
+        REPLICA[("S3 replica bucket&lt;br/&gt;&lt;br/&gt;Second Region")]
+        GDC["Glue Data Catalog&lt;br/&gt;&lt;br/&gt;Table schema and partitions"]
+        ATH["Amazon Athena&lt;br/&gt;&lt;br/&gt;SQL on S3"]
+        SPICE[("QuickSight SPICE&lt;br/&gt;&lt;br/&gt;In-memory dataset")]
+        QS["QuickSight Dashboards"]
+
+        BROWSER --&gt;|"Click events"| AG
+        AG --&gt; KDF
+
+        GDC -.-&gt;|"Schema for&lt;br/&gt;Parquet conversion"| KDF
+        KDF --&gt; DATA
+        KDF -.-&gt;|"Failed records"| ERR
+
+        DATA --&gt;|"Asynchronous CRR&lt;br/&gt;with versioning"| REPLICA
+
+        GDC -.-&gt;|"Table metadata"| ATH
+        DATA --&gt; ATH
+
+        ATH --&gt;|"Dataset ingestion&lt;br/&gt;and scheduled refresh"| SPICE
+        SPICE --&gt; QS
+    end
+
+    subgraph OBS["Cross-Cutting Observability"]
+        CW["Amazon CloudWatch&lt;br/&gt;&lt;br/&gt;Metrics, logs and alarms"]
+        SNS["Amazon SNS&lt;br/&gt;Operational notifications"]
+
+        CW --&gt; SNS
+    end
+
+    AG -.-&gt;|"Count, 4XX, 5XX, latency"| CW
+    KDF -.-&gt;|"Delivery success,&lt;br/&gt;freshness and throttling"| CW
+    REPLICA -.-&gt;|"Replication lag"| CW
+    ATH -.-&gt;|"Failures and bytes scanned"| CW
+    SPICE -.-&gt;|"Ingestion or refresh failures"| CW
+
+    IAC["CloudFormation&lt;br/&gt;provisions the architecture"] -.-&gt; SITE
+    IAC -.-&gt; PIPELINE
+    IAC -.-&gt; OBS
 </pre>
 </div>
 <p></p></figure><p></p>

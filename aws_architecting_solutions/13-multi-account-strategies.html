@@ -27,6 +27,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -185,7 +220,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#tag-policies-vs-scps-use-them-together" id="toc-tag-policies-vs-scps-use-them-together" class="nav-link" data-scroll-target="#tag-policies-vs-scps-use-them-together">13.6.2 Tag policies vs SCPs — use them together</a></li>
   <li><a href="#ongoing-governance-practices" id="toc-ongoing-governance-practices" class="nav-link" data-scroll-target="#ongoing-governance-practices">13.6.3 Ongoing governance practices</a></li>
   </ul></li>
-  <li><a href="#sec-reference" id="toc-sec-reference" class="nav-link" data-scroll-target="#sec-reference">13.7 The reference architecture, end to end</a></li>
+  <li><a href="#sec-reference" id="toc-sec-reference" class="nav-link" data-scroll-target="#sec-reference">13.7 The reference architecture</a></li>
   <li><a href="#sec-not" id="toc-sec-not" class="nav-link" data-scroll-target="#sec-not">13.8 When <em>not</em> to reach for these</a></li>
   <li><a href="#sec-cheatsheet" id="toc-sec-cheatsheet" class="nav-link" data-scroll-target="#sec-cheatsheet">13.9 Architect’s cheat sheet</a></li>
   <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources">Sources</a></li>
@@ -932,7 +967,7 @@ flowchart TD
 </section>
 </section>
 <section id="sec-reference" class="level2">
-<h2 class="anchored" data-anchor-id="sec-reference">13.7 The reference architecture, end to end</h2>
+<h2 class="anchored" data-anchor-id="sec-reference">13.7 The reference architecture</h2>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1120,7 +1155,8 @@ flowchart LR
 </div>
 </div>
 </div>
-<ol type="1">
+<p><strong>Structure</strong>:</p>
+<ul>
 <li>An <strong>account</strong> is the fundamental boundary for <strong>security, access, billing and blast radius</strong>.</li>
 <li>Split accounts by <strong>ownership, environment, data sensitivity, blast radius and cost</strong> — not arbitrarily.</li>
 <li>Multi-account improves <strong>most Well-Architected pillars</strong> at once.</li>
@@ -1133,27 +1169,73 @@ flowchart LR
 <li>SCPs and tag policies need <strong>all features enabled</strong>; consolidated-billing-only organizations cannot use them.</li>
 <li>SCPs do <strong>not</strong> affect <strong>service-linked roles</strong> or external principals arriving via resource-based policies.</li>
 <li>Typical SCPs: restrict <strong>root</strong>, prevent disabling <strong>CloudTrail/Config</strong>, deny leaving the org, limit <strong>Regions</strong>.</li>
-<li><strong>IAM roles</strong> provide <strong>temporary</strong> credentials — no passwords or access keys to leak.</li>
-<li><strong>Delegation = trust policy (who) + permissions policy (what)</strong>; the two halves live in different accounts.</li>
-<li>The <code>Principal</code> element supports <strong>no partial wildcards</strong>; a bare <code>"*"</code> is valid but dangerous — use conditions such as <code>aws:PrincipalOrgID</code>, and let <strong>IAM Access Analyzer</strong> catch mistakes.</li>
+</ul>
+<p><strong>Auth</strong>:</p>
+<ul>
+<li><p><strong>IAM roles</strong> provide <strong>temporary</strong> credentials — no passwords or access keys to leak.</p></li>
+<li><p><strong>Delegation = trust policy (who) + permissions policy (what)</strong>; the two halves live in different accounts.</p>
+<ul>
+<li>Delegation here means: one AWS account gives an identity from another account permission to temporarily use a role and access selected resources.</li>
+</ul></li>
+<li><p>The <code>Principal</code> element supports <strong>no partial wildcards</strong>; a bare <code>"*"</code> is valid but dangerous — use conditions such as <code>aws:PrincipalOrgID</code>, and let <strong>IAM Access Analyzer</strong> catch mistakes.</p></li>
+<li><p>Invalid Principal ❌:</p></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"Version"</span><span class="fu">:</span> <span class="st">"2012-10-17"</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"Statement"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"Sid"</span><span class="fu">:</span> <span class="st">"InvalidPartialWildcard"</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"Effect"</span><span class="fu">:</span> <span class="st">"Allow"</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"Principal"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                <span class="dt">"AWS"</span><span class="fu">:</span> <span class="st">"arn:aws:iam::111122223333:role/DataScience-*"</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>            <span class="fu">},</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"Action"</span><span class="fu">:</span> <span class="st">"sts:AssumeRole"</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Valid Principal ✅:</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"Version"</span><span class="fu">:</span> <span class="st">"2012-10-17"</span><span class="fu">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"Statement"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"Sid"</span><span class="fu">:</span> <span class="st">"TrustSpecificApplicationRole"</span><span class="fu">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"Effect"</span><span class="fu">:</span> <span class="st">"Allow"</span><span class="fu">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"Principal"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"AWS"</span><span class="fu">:</span> <span class="st">"arn:aws:iam::111122223333:role/DataScienceApplicationRole"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"Action"</span><span class="fu">:</span> <span class="st">"sts:AssumeRole"</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
 <li>Assuming a role means you <strong>temporarily drop</strong> your own permissions.</li>
-<li>Use an <strong>external ID</strong> for third-party access — it defends against the <strong>confused deputy</strong> problem.</li>
+<li><ol start="18" type="1">
 <li><strong>Federation</strong> (SAML 2.0 / OIDC) maps external identities to IAM roles with temporary credentials.</li>
+</ol></li>
 <li><strong>IAM Identity Center</strong> = workforce SSO: permission sets across many accounts, one access portal. <strong>Delegate its administration</strong> out of the management account.</li>
+<li>AWS IAM Identity Center manages access for employees and workforce users, while Amazon Cognito handles authentication for external customers using web and mobile apps.</li>
 <li>New org accounts get <strong><code>OrganizationAccountAccessRole</code></strong> for initial cross-account switching.</li>
 <li>Put <strong>MFA</strong> on IAM Identity Center <em>and</em> every root user; consider <strong>centrally managed root access</strong> to remove member-account root credentials.</li>
+</ul>
+<p><strong>Logging</strong>:</p>
+<ul>
 <li><strong>CloudTrail = activity</strong>, <strong>Config = configuration state</strong> — the most-confused pair; use both.</li>
 <li>The free <strong>90-day Event history</strong> is not a trail; <strong>data events</strong> are off by default and billed separately.</li>
 <li>An <strong>organization trail</strong> logs all member accounts and members cannot modify or delete it.</li>
 <li><strong>VPC Flow Logs</strong> sit <strong>outside</strong> the traffic path — no performance impact.</li>
 <li><strong>GuardDuty</strong> detects threats; <strong>Security Hub</strong> aggregates findings against standards. <strong>Delegate both</strong> to Security Tooling.</li>
 <li>Centralise logs in a <strong>dedicated Log Archive account</strong> that members cannot tamper with.</li>
+</ul>
+<p><strong>Automation &amp; Management</strong>:</p>
+<ul>
 <li><strong>CloudFormation (IaC)</strong> underpins governance — provision automatically, never by hand.</li>
 <li><strong>Control Tower</strong> builds a governed <strong>landing zone</strong>, fights <strong>drift</strong>, and uses <strong>StackSets</strong>; its <strong>Account Factory</strong> is a Service Catalog product.</li>
 <li>Control Tower <strong>“guardrails” are now “controls”</strong>, in three flavours: <strong>preventive</strong> (SCP), <strong>detective</strong> (Config rule), <strong>proactive</strong> (CloudFormation hook).</li>
 <li><strong>Tag policy standardises tags; SCP blocks untagged creates</strong> — use them <strong>together</strong>.</li>
 <li>Prefer <strong>AWS Budgets</strong> over CloudWatch billing alarms for multi-account cost control (billing metrics live only in <code>us-east-1</code>).</li>
-</ol>
+</ul>
 <hr>
 </section>
 <section id="sources" class="level2">
