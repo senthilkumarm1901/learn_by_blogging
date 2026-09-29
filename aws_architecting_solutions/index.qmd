@@ -203,17 +203,6 @@ flowchart LR
         DB1["PostgreSQL"]
         C1 <--> DB1
     end
-    
-    %% DCn <-->|"dedicated, low-latency link"| AWS
-
-    %% subgraph AWS["AWS (half the workloads)"]
-    %%     C2["Containers<br>private, outbound only"]
-    %%     DB2["PostgreSQL<br>lift-and-shift, no rewrite"]
-    %%     NFS["Data over NFS<br>no refactor"]
-    %% end
-
-    %% C1 -.->|"same orchestration tooling"| C2
-    %% DB1 -.->|"no app code rewrite"| DB2
 ```
 
 **After an Architect's Intervention** (simple version):
@@ -291,20 +280,6 @@ flowchart LR
         ROOT --> W2["Client B website"]
         ROOT --> W3["Client C website"]
     end
-
-    %% Before -->|"re-architect"| After
-
-    %% subgraph After["Multi-account (goal)"]
-    %%     SSO["Single sign-on"] --> ACCA["Client A account"]
-    %%     SSO --> ACCB["Client B account"]
-    %%     SSO --> ACCC["Client C account"]
-    %%     ACCA --> LOG["Dedicated logging account"]
-    %%     ACCB --> LOG
-    %%     ACCC --> LOG
-    %%     GR["Guardrails +<br>enforced tagging"] -.-> ACCA
-    %%     GR -.-> ACCB
-    %%     GR -.-> ACCC
-    %% end
 ```
 
 **After an Architect's Intervention** (simple version):
