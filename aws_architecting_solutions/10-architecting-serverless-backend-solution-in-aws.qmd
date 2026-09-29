@@ -46,7 +46,7 @@ flowchart LR
   O -.-> A[Accounting service]
   O -.-> F[Fulfillment service]
 
-  subgraph InScope["In scope for this chapter"]
+  subgraph InScope["In scope for Migration"]
     W
     O
     M
@@ -654,10 +654,10 @@ Putting `boto3.resource(...)` *inside* the handler rebuilds the SDK client and r
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
 flowchart LR
-    subgraph Bad["Init INSIDE handler"]
+    subgraph Bad["Initialize INSIDE handler"]
         A1["Req 1: init + work"] --> A2["Req 2: init + work"] --> A3["Req 3: init + work"]
     end
-    subgraph Good["Init OUTSIDE handler"]
+    subgraph Good["Initialize OUTSIDE handler"]
         B0["init once"] --> B1["Req 1: work"] --> B2["Req 2: work"] --> B3["Req 3: work"]
     end
 ```
