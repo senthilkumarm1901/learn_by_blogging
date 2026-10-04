@@ -321,6 +321,39 @@ aws ec2 authorize-security-group-ingress \
 
 ---
 
+### 4.10.1 VPC Link & PrivateLink (AWS services reaching into your private VPC)
+
+§4.10 was "private subnet → internet" via NAT. This is the **reverse direction**: how an AWS-managed service that runs **outside your VPC** (like API Gateway) reaches a resource that is **not internet-facing** inside your VPC — without a public IP or an internet-facing load balancer.
+
+- **API Gateway runs in AWS's own network**, not inside your VPC — it has no route into your private subnets by default.
+- **VPC Link** is the bridge: an API Gateway resource that privately connects to a target inside your VPC.
+  - **HTTP APIs**: VPC Link can target an **ALB**, **NLB**, or a Cloud Map service directly.
+  - **REST APIs**: VPC Link only supports an **NLB** target (put an NLB in front if you only have an ALB).
+- **PrivateLink / interface VPC endpoints** are the more general version of this idea: they let traffic reach an AWS service (or another account's service) via a private ENI in your subnet, instead of going over the internet or through a NAT Gateway.
+- **Gateway endpoints** (S3, DynamoDB only) are a related but separate mechanism — routed via the route table, not an ENI, and free of charge.
+
+### 🧪 CLI: Create a VPC Link (API Gateway HTTP API → private ALB)
+
+```bash
+# Create a VPC Link pointing at subnets that can reach the private ALB
+aws apigatewayv2 create-vpc-link \
+  --name my-vpc-link \
+  --subnet-ids subnet-aaaa subnet-bbbb \
+  --security-group-ids sg-xxxx
+
+# Create a private integration that uses the VPC Link
+aws apigatewayv2 create-integration \
+  --api-id <api-id> \
+  --integration-type HTTP_PROXY \
+  --integration-uri <alb-listener-arn> \
+  --connection-type VPC_LINK \
+  --connection-id <vpc-link-id>
+```
+
+> 💡 No VPC Link (or NLB/PrivateLink equivalent) means API Gateway simply cannot reach a private ALB — the ALB would have to be internet-facing instead, which defeats the point of keeping it private.
+
+---
+
 ## 4.11 Ten VPC troubleshooting checks (public EC2 web app not loading)
 
 1. **IGW attached to VPC**
