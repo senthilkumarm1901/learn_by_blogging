@@ -8,7 +8,7 @@
 
 <meta name="author" content="Senthil Kumar">
 
-<title>15. One Core, Many Runtimes: Architecting an Agentic AI Harness from Desktop to AWS – Learn by Blogging</title>
+<title>15. One Core, Many Runtimes: Architecting an Agentic AI Harness from Desktop to AWS – [Architecting Solutions in AWS: Requirements to Justified Trade-offs.](https://senthilkumarm1901.github.io/learn_by_blogging/aws_architecting_solutions/10-architecting-serverless-backend-solution-in-aws.html)</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -65,29 +65,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-67daaa7896f33cc2219aa98eaadded8d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./14-capstone-decoupled-app-and-emr-analytics.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-81dce849c25865aa69203cbf510b76f1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
+  "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
+  "panel-placement": "start",
+  "type": "textbox",
   "limit": 50,
   "keyboard-shortcut": [
     "f",
@@ -110,63 +111,130 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <meta name="mermaid-theme" content="neutral">
-<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
-<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="book.css">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-sidebar floating quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Learn by Blogging</span>
-    </a>
-  </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-  <span class="navbar-toggler-icon"></span>
-</button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="../blog.html"> 
-<span class="menu-text">Blog</span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-</ul>
-          </div> <!-- /navcollapse -->
-            <div class="quarto-navbar-tools">
-</div>
-      </div> <!-- /container-fluid -->
-    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./15-architecting-agentic-ai-harness-desktop-to-aws.html"><span class="chapter-title">15. One Core, Many Runtimes: Architecting an Agentic AI Harness from Desktop to AWS</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./"></a><a href="https://senthilkumarm1901.github.io/learn_by_blogging/aws_architecting_solutions/10-architecting-serverless-backend-solution-in-aws.html">Architecting Solutions in AWS: Requirements to Justified Trade-offs.</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Thinking like a Cloud Architect: Where Systems Thinking is Translated into Reality in Cloud</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-architecting-serverless-backend-solution-in-aws.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">10. Architecting a Serverless Web Backend</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-serverless-data-analytics.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">11. Architecting Serverless Data Analytics Solutions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-hybrid-container-workloads.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">12. Architecting Hybrid Container-Based Workloads</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-multi-account-strategies.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">13. Architecting for Account Governance and Multi-Account Management</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-capstone-decoupled-app-and-emr-analytics.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-architecting-agentic-ai-harness-desktop-to-aws.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">15. One Core, Many Runtimes: Architecting an Agentic AI Harness from Desktop to AWS</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#how-to-architect-an-agentic-ai-harness-that-runs-on-desktop-and-in-aws" id="toc-how-to-architect-an-agentic-ai-harness-that-runs-on-desktop-and-in-aws" class="nav-link active" data-scroll-target="#how-to-architect-an-agentic-ai-harness-that-runs-on-desktop-and-in-aws">How to Architect an Agentic AI Harness that Runs on Desktop and in AWS</a>
+  <ul class="collapse">
+  <li><a href="#the-naive-first-draft" id="toc-the-naive-first-draft" class="nav-link" data-scroll-target="#the-naive-first-draft">The naive first draft</a></li>
+  </ul></li>
+  <li><a href="#sec-method" id="toc-sec-method" class="nav-link" data-scroll-target="#sec-method">15.1 The Method: draw the boundary, then bind each environment</a></li>
+  <li><a href="#sec-drivers" id="toc-sec-drivers" class="nav-link" data-scroll-target="#sec-drivers">15.2 Turn requirements into architectural drivers</a></li>
+  <li><a href="#sec-boundary" id="toc-sec-boundary" class="nav-link" data-scroll-target="#sec-boundary">15.3 Draw the boundary: core vs environment</a></li>
+  <li><a href="#sec-providers" id="toc-sec-providers" class="nav-link" data-scroll-target="#sec-providers">15.4 Refactor for portability: provider interfaces</a>
+  <ul class="collapse">
+  <li><a href="#one-core-many-bindings-the-coreprovider-architecture" id="toc-one-core-many-bindings-the-coreprovider-architecture" class="nav-link" data-scroll-target="#one-core-many-bindings-the-coreprovider-architecture">15.4.1 One core, many bindings: the Core–Provider architecture</a></li>
+  </ul></li>
+  <li><a href="#sec-runtime" id="toc-sec-runtime" class="nav-link" data-scroll-target="#sec-runtime">15.5 Choose the cloud runtime: EKS or AgentCore Runtime?</a>
+  <ul class="collapse">
+  <li><a href="#what-agentcore-runtime-actually-offers" id="toc-what-agentcore-runtime-actually-offers" class="nav-link" data-scroll-target="#what-agentcore-runtime-actually-offers">15.5.1 What AgentCore Runtime actually offers</a></li>
+  <li><a href="#head-to-head" id="toc-head-to-head" class="nav-link" data-scroll-target="#head-to-head">15.5.2 Head-to-head</a></li>
+  <li><a href="#using-agentcore-à-la-carte" id="toc-using-agentcore-à-la-carte" class="nav-link" data-scroll-target="#using-agentcore-à-la-carte">15.5.3 Using AgentCore à la carte</a></li>
+  </ul></li>
+  <li><a href="#sec-frontdoor" id="toc-sec-frontdoor" class="nav-link" data-scroll-target="#sec-frontdoor">15.6 Design the front door and identity</a></li>
+  <li><a href="#sec-state" id="toc-sec-state" class="nav-link" data-scroll-target="#sec-state">15.7 Place state, memory and knowledge</a></li>
+  <li><a href="#sec-tools" id="toc-sec-tools" class="nav-link" data-scroll-target="#sec-tools">15.8 Connect tools and the registry</a></li>
+  <li><a href="#sec-models" id="toc-sec-models" class="nav-link" data-scroll-target="#sec-models">15.9 Route models and guard them</a></li>
+  <li><a href="#sec-governance" id="toc-sec-governance" class="nav-link" data-scroll-target="#sec-governance">15.10 Keep governance in the core, add central policy</a></li>
+  <li><a href="#sec-observability" id="toc-sec-observability" class="nav-link" data-scroll-target="#sec-observability">15.11 Make the agents observable</a></li>
+  <li><a href="#sec-delivery" id="toc-sec-delivery" class="nav-link" data-scroll-target="#sec-delivery">15.12 Deliver it: build order and pipeline</a></li>
+  <li><a href="#sec-reference" id="toc-sec-reference" class="nav-link" data-scroll-target="#sec-reference">15.13 The reference architecture</a></li>
+  <li><a href="#sec-not" id="toc-sec-not" class="nav-link" data-scroll-target="#sec-not">15.14 When <em>not</em> to architect it this way</a></li>
+  <li><a href="#sec-cheatsheet" id="toc-sec-cheatsheet" class="nav-link" data-scroll-target="#sec-cheatsheet">15.15 Architect’s cheat sheet</a></li>
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources">Sources</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">15. One Core, Many Runtimes: Architecting an Agentic AI Harness from Desktop to AWS</h1>
+<h1 class="title"><span class="chapter-title">15. One Core, Many Runtimes: Architecting an Agentic AI Harness from Desktop to AWS</span></h1>
 </div>
 
 
@@ -1586,10 +1654,11 @@ flowchart LR
 
     subgraph CLOUD["AWS harness - org-wide agents"]
         AMP["Amplify&lt;br&gt;React web UI"] --&gt; APIGW["API Gateway&lt;br&gt;JWT authorizer,&lt;br&gt;async + WebSocket"]
+        APIGW --&gt;|"VPC Link"| ALB["Internal&lt;br&gt;Application&lt;br&gt;Load Balancer"]
         subgraph EKS["Amazon EKS"]
             CCORE["SAME xAgents Core"]
         end
-        APIGW --&gt; CCORE
+        ALB --&gt; CCORE
         CCORE --&gt; RDS[("RDS PostgreSQL")]
         CCORE --&gt; KB[("Bedrock KB")]
         CCORE --&gt; GW["AgentCore Gateway&lt;br&gt;+ Policy"]
@@ -2233,6 +2302,15 @@ flowchart LR
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./14-capstone-decoupled-app-and-emr-analytics.html" class="pagination-link" aria-label="14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">14. Capstone Project: Decoupling a Three-Tier App and Migrating Hadoop Analytics with Amazon EMR</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
 </div> <!-- /content -->
 
 
