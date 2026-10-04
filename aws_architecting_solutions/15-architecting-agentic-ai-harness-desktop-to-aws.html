@@ -1,0 +1,2241 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Senthil Kumar">
+
+<title>15. One Core, Many Runtimes: Architecting an Agentic AI Harness from Desktop to AWS – Learn by Blogging</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-67daaa7896f33cc2219aa98eaadded8d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="mermaid-theme" content="neutral">
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learn by Blogging</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/senthilkumarm1901"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/senthilkumarm1901"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">15. One Core, Many Runtimes: Architecting an Agentic AI Harness from Desktop to AWS</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Senthil Kumar </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>👈 <strong>Back to:</strong> <a href="https://senthilkumarm1901.github.io/learn_by_blogging/blog.html">📝 Blog</a> | <a href="https://www.linkedin.com/in/senthilkumarm1901">💼 LinkedIn</a> | <a href="https://medium.com/@senthilkumar.m1901">✍️ Medium</a></p>
+<hr>
+<section id="how-to-architect-an-agentic-ai-harness-that-runs-on-desktop-and-in-aws" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-architect-an-agentic-ai-harness-that-runs-on-desktop-and-in-aws">How to Architect an Agentic AI Harness that Runs on Desktop and in AWS</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ Key Question of this chapter: Given an agent harness that already works on a laptop, how do you take it to the cloud <strong>without rewriting it</strong> — and how do you decide which managed AWS services to adopt and which to reject?</li>
+<li>Workflow followed in all chapters: <strong>requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections</strong>.</li>
+<li>What changes is the shape of the workload: it is no longer a request/response backend or a data pipeline. It is a <strong>long-running, tool-calling reasoning loop</strong> — and the hard problem is <strong>portability without a rewrite</strong>, not scale or migration.</li>
+</ul>
+</blockquote>
+<p><strong>Running example used throughout this chapter</strong></p>
+<blockquote class="blockquote">
+<p><strong>xAgents</strong> is an enterprise Agentic AI platform that already ships as a <strong>desktop app</strong>. A Tauri shell and React UI sit on a <strong>Rust core</strong> that runs a bounded, GOAP-inspired ReAct loop (the <em>AgentLoop</em>). Non-developers define agents through a 5-file spec (<code>agent.yaml</code>, <code>agent.md</code>, <code>soul.md</code>, <code>context.md</code>, <code>memory.md</code>) using a guided wizard. Locally it uses <strong>SQLite</strong> for state, <strong>LanceDB</strong> for knowledge, <strong>MCP</strong> for tools, and <strong>Ollama / Azure OpenAI / Bedrock</strong> for models. Users sign in with <strong>Azure Entra ID</strong>.</p>
+<p>The organisation now wants two kinds of agents:</p>
+<ol type="1">
+<li><strong>Personal agents</strong> that keep running on the user’s desktop, close to local files.</li>
+<li><strong>Org-wide agents</strong> that run in the cloud for everyone to use — in <strong>AWS now</strong>, and in <strong>Azure in future</strong>.</li>
+</ol>
+<p><strong>Goal:</strong> run the <strong>same Rust codebase</strong> on Desktop and in AWS (and later Azure), with <strong>one governance model</strong>, <strong>enterprise identity</strong> and <strong>central observability</strong>.</p>
+<p><em>In scope:</em> the core/infrastructure boundary, the cloud runtime, identity, state, tools, models, governance and observability. <em>Out of scope:</em> rewriting the AgentLoop, the 5-file spec format and the desktop UI — the desktop gets <strong>minimal refactoring only</strong>, just enough to share one codebase with the cloud.</p>
+</blockquote>
+<p><strong>What xAgents is today</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    UI["React + TS UI"] &lt;--&gt; IPC["Tauri IPC"] &lt;--&gt; CORE["Rust Core&lt;br/&gt;GOAP ReAct Loop"]
+    CORE --&gt; LLM["LLM Gateway&lt;br/&gt;Bedrock · Azure · Ollama"]
+    CORE --&gt; TOOLS["Tools&lt;br/&gt;File · CSV · Excel · PDF · MCP"]
+    CORE --&gt; DB[("SQLite&lt;br/&gt;State + Audit")]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>What is in scope</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    U["Enterprise users"] --&gt; D["Desktop app&lt;br&gt;Tauri + React"]
+    U --&gt; W["Web UI&lt;br&gt;org-wide agents"]
+    CB["ONE Rust&lt;br&gt;codebase in Git"] -.-&gt; DCORE
+    CB -.-&gt; CCORE
+    CB -.-&gt; ZCORE
+
+    D --&gt; DCORE["Rust Core&lt;br&gt;AgentLoop"]
+    DCORE --&gt; SQL[("SQLite")]
+    DCORE --&gt; LAN[("LanceDB")]
+    W --&gt; CCORE["Same Rust Core&lt;br&gt;in AWS"]
+
+    subgraph Current["Current state&lt;br&gt;(minimal refactoring only,&lt;br&gt;to keep one codebase for cloud)"]
+        D
+        DCORE
+        SQL
+        LAN
+    end
+
+    subgraph InScope["In scope&lt;br&gt;(newly added)"]
+        W
+        CCORE
+        ZCORE["Same Rust Core&lt;br&gt;in Azure (future)"]
+        AWSRDS[("Amazon RDS PostgreSQL")]
+        AWSOPEN[("Amazon OpenSearch")]
+    end
+    CCORE --&gt; AWSRDS
+    CCORE --&gt; AWSOPEN
+    CCORE --&gt; MCP["External MCP tools"]
+    DCORE --&gt; MCP["External MCP tools"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="the-naive-first-draft" class="level3">
+<h3 class="anchored" data-anchor-id="the-naive-first-draft">The naive first draft</h3>
+<p>“Fork the core for the cloud, hard-wire it to cloud services, sync every desktop’s data up, and call it from a web UI.”</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    USER["User"] --&gt; DESKAPP["Desktop app&lt;br&gt;React FE"] --&gt; DESK["Desktop core&lt;br&gt;with SQLite, LanceDB"]
+    USER --&gt; WEB["Web UI"]
+    DESK --&gt;|"sync all data up"| S3[("S3 / cloud DB")]
+    WEB --&gt;|"sync API call,&lt;br&gt;waits for whole run"| FORK["Forked cloud core&lt;br&gt;with Postgres, OpenSearch, Gateway"]
+    FORK --&gt; S3
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Why the first draft fails → what it needs</strong> (each fix is a section of this chapter):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Why it fails</th>
+<th>What it needs</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A forked cloud core means two codebases that drift apart; every fix and every skills-governance rule must be made twice</td>
+<td><strong>One Rust codebase</strong>; desktop and cloud differ only in the adapters plugged into it</td>
+<td><a href="#sec-boundary">15.3</a></td>
+</tr>
+<tr class="even">
+<td>The core is hard-wired to its stores (today the AgentLoop calls SQLite, LanceDB and a <code>match</code> on the LLM provider directly), so moving to cloud means editing the loop</td>
+<td>Extract <strong>provider interfaces</strong>, wrap the desktop implementations behind them, add cloud implementations alongside</td>
+<td><a href="#sec-providers">15.4</a></td>
+</tr>
+<tr class="odd">
+<td>Syncing all desktop data up breaks the rule that sensitive data stays on-device unless explicitly routed</td>
+<td>Desktop runs keep their data locally; <strong>org-wide agents</strong> use cloud persistence; data moves only when a user routes it</td>
+<td><a href="#sec-state">15.7</a></td>
+</tr>
+<tr class="even">
+<td>A synchronous API call that waits for the whole multi-step run outlasts API Gateway’s ~30 s integration timeout</td>
+<td><strong>Submit the run, return a run ID, stream progress</strong></td>
+<td><a href="#sec-frontdoor">15.6</a></td>
+</tr>
+<tr class="odd">
+<td>A web UI calling the core directly has no enterprise auth</td>
+<td>Reuse the desktop’s <strong>Azure Entra ID</strong> tenant, validated by an <strong>API Gateway JWT authorizer</strong></td>
+<td><a href="#sec-frontdoor">15.6</a></td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>The one-line thesis of this chapter:</strong> <em>Refactor for portability first; add cloud infrastructure second.</em> AWS should provide <strong>managed implementations</strong>, not take over the <strong>behaviour</strong> of the harness.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-method" class="level2">
+<h2 class="anchored" data-anchor-id="sec-method">15.1 The Method: draw the boundary, then bind each environment</h2>
+<p>Most “move it to the cloud” designs start with services. A harness design must start with a <strong>boundary</strong>: what the platform <em>is</em> (its behaviour) versus what it <em>uses</em> (its infrastructure). Every service decision after that is just choosing an implementation for one side of that boundary.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    A["Working desktop&lt;br&gt;harness"] --&gt; B["1. Draw the boundary&lt;br&gt;core vs environment"]
+    B --&gt; C["2. Extract interfaces&lt;br&gt;provider traits"]
+    C --&gt; D["3. Pick a cloud runtime&lt;br&gt;for the unchanged core"]
+    D --&gt; E["4. Bind each provider&lt;br&gt;to a managed service"]
+    E --&gt; F["5. Same core on Desktop,&lt;br&gt;AWS now, Azure later"]
+    X["Cross-cutting: identity, governance,&lt;br&gt;observability, delivery"] -.-&gt; C
+    X -.-&gt; D
+    X -.-&gt; E
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Question the architect answers</th>
+<th>Winning choice (this case)</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>What are the real <strong>architectural drivers?</strong></td>
+<td>—</td>
+<td><a href="#sec-drivers">15.2</a></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><strong>Boundary</strong>: what does the core own vs the environment?</td>
+<td>Core owns behaviour; environment owns infrastructure</td>
+<td><a href="#sec-boundary">15.3</a></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><strong>Portability</strong>: how does one core talk to many backends?</td>
+<td>Provider traits (ports and adapters)</td>
+<td><a href="#sec-providers">15.4</a></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><strong>Runtime</strong>: where does the core run in AWS?</td>
+<td><strong>Amazon EKS</strong> (AgentCore Runtime = strong alternative; Harness rejected)</td>
+<td><a href="#sec-runtime">15.5</a></td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td><strong>Front door</strong>: how do users and tokens get in?</td>
+<td><strong>Amplify</strong> + <strong>Entra ID</strong> + <strong>API Gateway</strong> (async submit, stream progress)</td>
+<td><a href="#sec-frontdoor">15.6</a></td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td><strong>State</strong>: where do persistence, memory and knowledge live?</td>
+<td><strong>RDS PostgreSQL</strong>, AgentCore Memory (optional), <strong>OpenSearch / Bedrock KB</strong></td>
+<td><a href="#sec-state">15.7</a></td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td><strong>Tools and registry</strong>: how are tools reached and catalogued?</td>
+<td><strong>AgentCore Gateway</strong> + <strong>AWS Agent Registry</strong> (optional)</td>
+<td><a href="#sec-tools">15.8</a></td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td><strong>Models</strong>: how are LLMs reached and controlled?</td>
+<td><strong>Bedrock</strong> + Azure OpenAI behind <code>LlmProvider</code>; <strong>Bedrock Guardrails</strong></td>
+<td><a href="#sec-models">15.9</a></td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td><strong>Governance</strong>: who approves skills and risky actions?</td>
+<td>Skills lifecycle in core; <strong>Step Functions + EventBridge</strong> for approvals</td>
+<td><a href="#sec-governance">15.10</a></td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td><strong>Observability</strong>: how do we see inside a loop?</td>
+<td><strong>OpenTelemetry → AgentCore Observability / CloudWatch</strong></td>
+<td><a href="#sec-observability">15.11</a></td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td><strong>Delivery</strong>: in what order do we build it?</td>
+<td>Refactor → contract tests → cloud providers → deploy</td>
+<td><a href="#sec-delivery">15.12</a></td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> A harness is <strong>behaviour wrapped around infrastructure</strong>. Draw that line first; every AWS decision then becomes “which implementation sits behind this interface?” — a far smaller, safer decision than “where does the agent live?”.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-drivers" class="level2">
+<h2 class="anchored" data-anchor-id="sec-drivers">15.2 Turn requirements into architectural drivers</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ How do “run it on desktop <em>and</em> in the cloud” wishes become design constraints?</li>
+</ul>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    R1["Same agents on desktop,&lt;br&gt;AWS now, Azure later"] --&gt; D1["Portability:&lt;br&gt;one codebase, many bindings"]
+    R2["Custom GOAP ReAct loop&lt;br&gt;is the differentiator"] --&gt; D2["Runtime ownership:&lt;br&gt;no managed harness"]
+    R3["Sensitive data stays&lt;br&gt;on-device unless routed"] --&gt; D3["Data residency&lt;br&gt;by deployment"]
+    R4["Entra ID already in use"] --&gt; D4["Reuse enterprise identity"]
+    R5["Skills need approval&lt;br&gt;before use"] --&gt; D5["Governance as&lt;br&gt;source of truth"]
+    R6["Org-wide agents for&lt;br&gt;many users"] --&gt; D6["Multi-user scale&lt;br&gt;+ central observability"]
+    R7["Multiple LLM vendors"] --&gt; D7["Model swappability"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Customer requirement</th>
+<th>Architectural driver</th>
+<th>Implication</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Same agents on Desktop and AWS, with Azure to follow</td>
+<td><strong>Portability</strong></td>
+<td>Core depends on interfaces, never on SQLite/LanceDB/Bedrock directly; cloud runtime should not lock in to one provider</td>
+</tr>
+<tr class="even">
+<td>The custom AgentLoop is the product</td>
+<td><strong>Runtime ownership</strong></td>
+<td>Reject anything that replaces the loop (managed harnesses)</td>
+</tr>
+<tr class="odd">
+<td>Sensitive data stays on-device by default</td>
+<td><strong>Data residency</strong></td>
+<td>Each deployment owns its own state; no silent desktop→cloud sync</td>
+</tr>
+<tr class="even">
+<td>Entra ID SSO already works on desktop</td>
+<td><strong>Identity reuse</strong></td>
+<td>Same tenant and app registration in the cloud</td>
+</tr>
+<tr class="odd">
+<td>Skills go Draft → Approval → Enable</td>
+<td><strong>Governance</strong></td>
+<td>Lifecycle lives in core; cloud only adds central policy</td>
+</tr>
+<tr class="even">
+<td>Many users, long multi-step runs</td>
+<td><strong>Scale + no timeouts</strong></td>
+<td>Long-lived containers or long sessions, not short-lived functions; async front door</td>
+</tr>
+<tr class="odd">
+<td>Ollama, Azure OpenAI, Bedrock</td>
+<td><strong>Model swappability</strong></td>
+<td>Model choice is configuration behind <code>LlmProvider</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>A design lever worth noticing:</strong> <em>the desktop app is already the reference implementation.</em> Because every capability (memory, tools, knowledge, models) already works locally, the cloud version is <strong>not new features</strong> — it is <strong>new adapters</strong>. That reframing alone removes most of the migration risk.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> “Our loop is the differentiator” is an architectural driver. It rules out managed agent harnesses <em>before</em> you compare their features — exactly as “short-staffed” ruled out EMR in Chapter 11.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-boundary" class="level2">
+<h2 class="anchored" data-anchor-id="sec-boundary">15.3 Draw the boundary: core vs environment</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ What must be identical everywhere, and what is allowed to differ?</li>
+</ul>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph Core["xAgents Core owns BEHAVIOUR&lt;br&gt;(identical everywhere)"]
+        direction TB
+        C1["AgentLoop + observation loop"]
+        C2["Planning, orchestration,&lt;br&gt;workflow execution"]
+        C3["Agent definitions&lt;br&gt;5-file spec"]
+        C4["Tool dispatch +&lt;br&gt;multi-LLM routing"]
+        C5["Knowledge / RAG logic"]
+        C6["Skills governance lifecycle"]
+    end
+
+    subgraph Env["Environment owns INFRASTRUCTURE&lt;br&gt;(differs per deployment)"]
+        direction TB
+        E1["Compute + networking"]
+        E2["Persistence + vector stores"]
+        E3["Tool + LLM connectivity"]
+        E4["Identity, observability,&lt;br&gt;operations"]
+    end
+
+    Core --&gt;|"talks only through&lt;br&gt;provider interfaces"| Env
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Layer</th>
+<th>Owns</th>
+<th>Changes per deployment?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>xAgents Core</strong></td>
+<td>AgentLoop, planning, workflows, agent spec, tool dispatch, LLM routing, RAG logic, skills governance</td>
+<td><strong>Never</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Providers (adapters)</strong></td>
+<td>Translating a core request into SQLite, Postgres, LanceDB, OpenSearch, MCP, Bedrock…</td>
+<td><strong>Yes — this is the only thing that changes</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Environment</strong></td>
+<td>Compute, network, managed services, identity plumbing, monitoring</td>
+<td><strong>Yes</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>⚠️ The anti-pattern this boundary prevents:</strong> moving business logic <em>into</em> the cloud — e.g.&nbsp;encoding approval rules in Step Functions, or retry/planning logic in a managed harness. Each such move makes the desktop and cloud versions <strong>behave differently</strong>, and you end up maintaining two products — exactly the forked core from the naive first draft.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> <em>xAgents Core owns the behaviour. Providers own the integrations. AWS owns the managed infrastructure.</em> If a proposed change blurs those three, reject it.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-providers" class="level2">
+<h2 class="anchored" data-anchor-id="sec-providers">15.4 Refactor for portability: provider interfaces</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ How does one AgentLoop talk to SQLite on a laptop and PostgreSQL in AWS without an <code>if cloud {}</code> in sight?</li>
+</ul>
+</blockquote>
+<p>Today the loop is <strong>hard-wired</strong> to its infrastructure. The refactor inserts <strong>provider traits</strong> (the Rust word for interfaces) between the loop and everything it touches — the classic <strong>ports-and-adapters</strong> (hexagonal) pattern.</p>
+<p><strong>Before — direct coupling</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    LOOP["AgentLoop"] --&gt; SQL[("SQLite")]
+    LOOP --&gt; LAN[("LanceDB")]
+    LOOP --&gt; LLM["llm.rs&lt;br&gt;match provider"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>After — the loop sees only interfaces</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    LOOP["AgentLoop"] --&gt; P1["PersistenceProvider"]
+    LOOP --&gt; P2["MemoryProvider"]
+    LOOP --&gt; P3["VectorStoreProvider"]
+    LOOP --&gt; P4["RegistryProvider"]
+    LOOP --&gt; P5["ToolProvider"]
+    LOOP --&gt; P6["LlmProvider"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>A provider is just a small contract. For example:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> MemoryProvider <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">async</span> <span class="kw">fn</span> store(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> event<span class="op">:</span> MemoryEvent)<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">async</span> <span class="kw">fn</span> retrieve(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> query<span class="op">:</span> Query) <span class="op">-&gt;</span> <span class="dt">Vec</span><span class="op">&lt;</span>MemoryEvent<span class="op">&gt;;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="one-core-many-bindings-the-coreprovider-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="one-core-many-bindings-the-coreprovider-architecture">15.4.1 One core, many bindings: the Core–Provider architecture</h3>
+<p>Each deployment is the <strong>same core plus a different set of adapters</strong>, chosen at start-up by configuration.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    CORE["SAME xAgents Core&lt;br&gt;owns behaviour"]
+    CORE --&gt;|"provider interfaces"| B["Adapters own integrations"]
+
+    subgraph Desktop["Desktop"]
+        D1[("SQLite + LanceDB")]
+        D2["Local MCP · Ollama"]
+    end
+
+    subgraph AWS["AWS Cloud - now&lt;br&gt;(EKS)"]
+        A1[("RDS PostgreSQL ·&lt;br&gt;Bedrock KB")]
+        A2["AgentCore Gateway ·&lt;br&gt;Bedrock"]
+    end
+
+    subgraph Azure["Azure - future&lt;br&gt;(AKS)"]
+        Z1[("Azure PostgreSQL ·&lt;br&gt;Azure AI Search")]
+        Z2["MCP servers ·&lt;br&gt;Azure OpenAI"]
+    end
+
+    B --&gt; Desktop
+    B --&gt; AWS
+    B -.-&gt; Azure
+
+    classDef core fill:#FFE0B2,stroke:#FB8C00,stroke-width:2px
+    class CORE core
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Provider</th>
+<th>Desktop</th>
+<th>AWS Cloud (now)</th>
+<th>Azure (future, indicative)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>PersistenceProvider</code></td>
+<td>SQLite</td>
+<td>RDS PostgreSQL</td>
+<td>Azure Database for PostgreSQL</td>
+</tr>
+<tr class="even">
+<td><code>MemoryProvider</code></td>
+<td>SQLite</td>
+<td>AgentCore Memory <em>or</em> Postgres-backed</td>
+<td>Postgres-backed</td>
+</tr>
+<tr class="odd">
+<td><code>VectorStoreProvider</code></td>
+<td>LanceDB</td>
+<td>Bedrock Knowledge Bases, OpenSearch Serverless <em>or</em> pgvector on RDS</td>
+<td>Azure AI Search <em>or</em> pgvector</td>
+</tr>
+<tr class="even">
+<td><code>ToolProvider</code></td>
+<td>Local MCP</td>
+<td>AgentCore Gateway</td>
+<td>MCP servers</td>
+</tr>
+<tr class="odd">
+<td><code>RegistryProvider</code></td>
+<td>Local YAML / SQLite</td>
+<td>AWS Agent Registry</td>
+<td>Postgres-backed registry</td>
+</tr>
+<tr class="even">
+<td><code>LlmProvider</code></td>
+<td>Ollama, Azure OpenAI, Bedrock</td>
+<td>Bedrock, Azure OpenAI</td>
+<td>Azure OpenAI</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Key nuance — contract tests are the real portability guarantee.</strong> An interface only promises <em>shape</em>. Two memory providers can both compile and still disagree on ordering, deduplication or empty results. A shared <strong>contract test suite</strong> that every adapter must pass is what makes “the same agent behaves the same everywhere” true.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Key nuance — managed AWS adapters are the least portable ones.</strong> AgentCore Memory, Gateway and Agent Registry have no direct Azure twin. That is fine <em>because</em> they sit behind providers — but it is also why the Postgres-backed options stay valid: they are the ones that move to Azure unchanged.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Portability is not a deployment feature; it is a <strong>dependency direction</strong>. Once the core points at interfaces instead of infrastructure, “add AWS” and “add Azure” become adapter work — not core work.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-runtime" class="level2">
+<h2 class="anchored" data-anchor-id="sec-runtime">15.5 Choose the cloud runtime: EKS or AgentCore Runtime?</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ Where does an unchanged Rust core run in AWS for many users and long, multi-step runs — without locking out Azure later?</li>
+</ul>
+</blockquote>
+<p>Two candidates survive a first pass. Both can host the <strong>same Rust container</strong>, so this choice is about <strong>operating model</strong>, not code.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    W["Run the unchanged&lt;br&gt;xAgents Rust Core in AWS"] --&gt; Q1{"Does the service&lt;br&gt;replace our AgentLoop?"}
+    Q1 --&gt;|Yes| H["AgentCore Harness&lt;br&gt;REJECTED: AWS runs the loop;&lt;br&gt;GOAP core and 5-file spec lost"]
+    Q1 --&gt;|No| Q2{"Survives long, multi-step&lt;br&gt;runs without timeouts?"}
+    Q2 --&gt;|No| L["AWS Lambda&lt;br&gt;REJECTED: 15-min cap,&lt;br&gt;cold starts mid-run"]
+    Q2 --&gt;|Yes| Q3{"Must the SAME runtime model&lt;br&gt;also run in Azure later?"}
+    Q3 --&gt;|Yes| EKS["Amazon EKS - CHOSEN&lt;br&gt;Kubernetes: EKS now,&lt;br&gt;AKS later"]
+    Q3 --&gt;|"No - AWS only"| ACR["AgentCore Runtime - STRONG ALTERNATIVE&lt;br&gt;serverless, microVM per session"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="what-agentcore-runtime-actually-offers" class="level3">
+<h3 class="anchored" data-anchor-id="what-agentcore-runtime-actually-offers">15.5.1 What AgentCore Runtime actually offers</h3>
+<p>It is easy to reject Runtime for the wrong reason, so state its contract precisely. Runtime is <strong>framework- and language-agnostic</strong>: any container that listens on <strong>port 8080</strong>, answers <code>POST /invocations</code> and <code>GET /ping</code>, and is built for <strong>ARM64</strong> can run in it — no Python SDK required. A Rust binary qualifies.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Runtime property</th>
+<th>Why it matters for xAgents</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>One microVM per session</strong> (own CPU, memory, filesystem; destroyed after)</td>
+<td>Strong isolation for untrusted tool work (PDF/Excel parsing, MCP calls) — without building it yourself</td>
+</tr>
+<tr class="even">
+<td><strong>Serverless, consumption billing</strong></td>
+<td>No cluster to run; agents mostly <em>wait</em> on LLMs, and Runtime bills active CPU, not idle wait</td>
+</tr>
+<tr class="odd">
+<td><strong>Long sessions</strong> (default max lifetime 8 h, idle timeout 15 min, both configurable)</td>
+<td>Fits multi-step runs that Lambda cannot</td>
+</tr>
+<tr class="even">
+<td><strong>Built-in inbound JWT auth, streaming, WebSocket</strong></td>
+<td>Can accept Entra tokens directly — fewer front-door components</td>
+</tr>
+<tr class="odd">
+<td><strong>Per-session limits</strong> (e.g.&nbsp;2 vCPU / 8 GB, 2 GB image)</td>
+<td>Fine for a reasoning loop; tight for very large batch runs</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="head-to-head" class="level3">
+<h3 class="anchored" data-anchor-id="head-to-head">15.5.2 Head-to-head</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    IMG["Same xAgents container&lt;br&gt;ARM64, port 8080,&lt;br&gt;/invocations + /ping"]
+    IMG --&gt; EKS["Amazon EKS&lt;br&gt;you run the platform"]
+    IMG --&gt; ACR["AgentCore Runtime&lt;br&gt;AWS runs the platform"]
+    EKS --&gt; E1["+ same model on AKS later&lt;br&gt;+ no per-session caps&lt;br&gt;- you build isolation&lt;br&gt;- cluster ops + idle cost"]
+    ACR --&gt; A1["+ microVM isolation free&lt;br&gt;+ serverless, pay when active&lt;br&gt;- AWS-only hosting model&lt;br&gt;- per-session size caps"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Criterion</th>
+<th>Amazon EKS</th>
+<th>AgentCore Runtime</th>
+<th>Winner</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Same runtime model in Azure</strong></td>
+<td>Kubernetes runs as AKS on Azure</td>
+<td>No Azure equivalent</td>
+<td><strong>EKS</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Session isolation</strong></td>
+<td>Pods share a node kernel; needs sandboxed runtimes or per-tenant isolation work</td>
+<td>microVM per session out of the box</td>
+<td><strong>Runtime</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Operational burden</strong></td>
+<td>Cluster upgrades, node scaling (Karpenter), patching</td>
+<td>None — serverless</td>
+<td><strong>Runtime</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Cost shape</strong></td>
+<td>Pay for nodes even when idle</td>
+<td>Pay per active session; waiting on LLMs is cheap</td>
+<td><strong>Runtime</strong> (spiky use) / <strong>EKS</strong> (steady high use)</td>
+</tr>
+<tr class="odd">
+<td><strong>Resource ceiling per run</strong></td>
+<td>Size pods as large as needed</td>
+<td>Capped per session</td>
+<td><strong>EKS</strong> for 1000s-of-files batch runs</td>
+</tr>
+<tr class="even">
+<td><strong>Network / sidecar control</strong></td>
+<td>Full</td>
+<td>Managed, with VPC support</td>
+<td><strong>EKS</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Team skills</strong></td>
+<td>Needs Kubernetes skills</td>
+<td>Needs only container skills</td>
+<td><strong>Runtime</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Decision for this case: Amazon EKS</strong> — <em>because, and only because,</em> the brief makes <strong>Azure</strong> a future target and wants <strong>one runtime model</strong> across clouds, and because org-wide <strong>batch runs over hundreds to thousands of files</strong> can outgrow a per-session cap.</p>
+<blockquote class="blockquote">
+<p><strong>Key nuance — “Kubernetes is portable” is mostly, not fully, true.</strong> The container image and most deployment manifests carry over from EKS to AKS. Workload identity, ingress/load balancers, node autoscaling and storage classes are cloud-specific and must be re-done per cloud. Budget for that; don’t promise “zero-change” Azure.</p>
+</blockquote>
+<p><strong>Rejected — and why</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Rejected option</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>AgentCore Harness</strong></td>
+<td>It <em>is</em> a managed agent loop: you declare model, tools, skills and instructions, and AWS runs the orchestration. Lifecycle hooks and a bring-your-own container exist, and it exports to Strands code — but the loop is never <strong>ours</strong>. Adopting it discards the GOAP ReAct core and the 5-file spec</td>
+</tr>
+<tr class="even">
+<td><strong>AWS Lambda</strong></td>
+<td>Agent runs are long and stateful; a 15-minute execution cap and cold starts fight that shape</td>
+</tr>
+<tr class="odd">
+<td><strong>AgentCore Runtime</strong></td>
+<td><strong>Not rejected on capability</strong> — it fits the Rust container and gives better isolation for less effort. Set aside only because it is an AWS-only hosting model and the brief wants the same model on Azure later</td>
+</tr>
+<tr class="even">
+<td><strong>ECS Fargate</strong></td>
+<td>A simpler middle ground for AWS-only, but offers neither cross-cloud parity (EKS → AKS) nor per-session microVMs (Runtime)</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>⚠️ Keep the door open — it is nearly free.</strong> Build the core’s HTTP server to satisfy Runtime’s contract (port 8080, <code>/invocations</code>, <code>/ping</code>, ARM64) <em>even on EKS</em>. Then the runtime becomes a <strong>deployment decision you can reverse</strong>, not an architectural lock-in. A sensible split: <strong>EKS for long batch runs and cross-cloud parity, AgentCore Runtime for interactive, per-user sessions that need strong isolation.</strong></p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Key nuance — if Azure slips, flip the decision.</strong> Remove the Azure requirement and Runtime wins most rows of the table above. Write that condition into the ADR so the choice is revisited, not inherited.</p>
+</blockquote>
+</section>
+<section id="using-agentcore-à-la-carte" class="level3">
+<h3 class="anchored" data-anchor-id="using-agentcore-à-la-carte">15.5.3 Using AgentCore à la carte</h3>
+<p>AgentCore is a <strong>family</strong> of services, each usable on its own — including by agents that are <em>not</em> hosted in AgentCore Runtime. Treat each one as a candidate <em>implementation</em>, never as the platform.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph No["Not adopted&lt;br&gt;(replaces the loop)"]
+        N2["Harness"]
+    end
+    subgraph Alt["Alternative runtime&lt;br&gt;(see 15.5.2)"]
+        N1["Runtime"]
+    end
+    subgraph Rec["Recommended&lt;br&gt;(control, no behaviour)"]
+        R1["Identity"]
+        R2["Policy&lt;br&gt;(for Gateway tool calls)"]
+        R3["Observability"]
+    end
+    subgraph Opt["Optional&lt;br&gt;(behind a provider)"]
+        O1["Memory"]
+        O2["Gateway"]
+        O3["Agent Registry"]
+    end
+    subgraph Fut["Future"]
+        F1["Browser"]
+        F2["Code Interpreter"]
+        F3["Evaluations,&lt;br&gt;Optimization"]
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>AgentCore service</th>
+<th>Decision</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Harness</td>
+<td><strong>No</strong></td>
+<td>Replaces the AgentLoop</td>
+</tr>
+<tr class="even">
+<td>Runtime</td>
+<td><strong>Alternative</strong></td>
+<td>Valid host for the same container; see trade-off above</td>
+</tr>
+<tr class="odd">
+<td>Identity</td>
+<td><strong>Recommended</strong></td>
+<td>Outbound OAuth token brokerage; agents never hold raw secrets</td>
+</tr>
+<tr class="even">
+<td>Policy</td>
+<td><strong>Recommended</strong></td>
+<td>Cedar rules checked on every tool call <strong>through Gateway</strong></td>
+</tr>
+<tr class="odd">
+<td>Observability</td>
+<td><strong>Recommended</strong></td>
+<td>OpenTelemetry-based agent traces in CloudWatch</td>
+</tr>
+<tr class="even">
+<td>Memory, Gateway, Agent Registry</td>
+<td><strong>Optional</strong></td>
+<td>One implementation of a provider; Postgres-backed alternatives stay valid (and move to Azure)</td>
+</tr>
+<tr class="odd">
+<td>Browser, Code Interpreter</td>
+<td><strong>Future</strong></td>
+<td>Sandboxed tools behind <code>ToolProvider</code> — also the easy answer for untrusted code on EKS</td>
+</tr>
+<tr class="even">
+<td>Evaluations, Optimization</td>
+<td><strong>Future</strong></td>
+<td>Score and improve agents from production traces</td>
+</tr>
+<tr class="odd">
+<td>Payments</td>
+<td><strong>Not required</strong></td>
+<td>Agent micropayments are outside platform scope</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Reject the service that provides <strong>behaviour</strong> (Harness). Treat the <strong>runtime</strong> as a reversible hosting decision driven by cross-cloud parity versus isolation and ops effort. Adopt the services that provide <strong>capabilities</strong> behind your own interfaces.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="sec-frontdoor" class="level2">
+<h2 class="anchored" data-anchor-id="sec-frontdoor">15.6 Design the front door and identity</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ How do users reach org-wide agents, and how do we reuse the identity the desktop already uses?</li>
+</ul>
+</blockquote>
+<p>Agent runs take minutes, not milliseconds. API Gateway integrations time out in about 30 seconds, so the front door must be <strong>asynchronous</strong>: submit a run, get a run ID back immediately, and stream progress separately.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant User as Enterprise User
+    participant Web as React Web UI (Amplify)
+    participant Entra as Azure Entra ID
+    participant APIGW as API Gateway (JWT authorizer)
+    participant Core as xAgents Core (EKS)
+
+    User-&gt;&gt;Web: Open xAgents web app
+    Web-&gt;&gt;Entra: Sign in (OAuth2 + PKCE)
+    Entra--&gt;&gt;Web: Access token with groups
+    Web-&gt;&gt;APIGW: POST /runs with token
+    APIGW-&gt;&gt;APIGW: Validate token, throttle
+    APIGW-&gt;&gt;Core: Forward via VPC Link
+    Core--&gt;&gt;Web: 202 Accepted + runId
+    Core-)Web: Progress and result over WebSocket
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Hop</th>
+<th>Choice</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Web client</td>
+<td><strong>AWS Amplify</strong></td>
+<td>Host the React SPA with edge delivery and caching</td>
+</tr>
+<tr class="even">
+<td>Identity</td>
+<td><strong>Azure Entra ID</strong></td>
+<td>SSO, MFA, groups, RBAC — <strong>same tenant and app registration as desktop</strong> (and already native to the future Azure target)</td>
+</tr>
+<tr class="odd">
+<td>API layer</td>
+<td><strong>API Gateway HTTP API + JWT authorizer</strong></td>
+<td>Validate Entra tokens, throttle; reach EKS privately via <strong>VPC Link</strong> to an internal load balancer</td>
+</tr>
+<tr class="even">
+<td>Progress stream</td>
+<td><strong>API Gateway WebSocket API</strong> (or SSE through the load balancer)</td>
+<td>Push step-by-step progress for long runs</td>
+</tr>
+<tr class="odd">
+<td>Outbound credentials</td>
+<td><strong>AgentCore Identity</strong></td>
+<td>Broker OAuth tokens for downstream tools so agents never hold raw secrets</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Key nuance — two identity problems, not one.</strong> <em>Inbound</em>: “who is this user?” (Entra + JWT authorizer). <em>Outbound</em>: “what may this agent call <strong>on the user’s behalf</strong>?” (token brokerage). Mixing them is how agents end up with long-lived API keys in memory — the exposure the desktop design worked to avoid.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>If you choose AgentCore Runtime instead:</strong> Runtime can validate Entra JWTs itself and supports streaming and WebSocket, so the front door can shrink to Amplify → Runtime endpoint.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Reuse identity, don’t rebuild it — and never put a long-running agent behind a synchronous API call. <strong>Submit, acknowledge, stream.</strong></p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-state" class="level2">
+<h2 class="anchored" data-anchor-id="sec-state">15.7 Place state, memory and knowledge</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ Where does each kind of agent state live — and what is <em>never</em> shared between desktop and cloud?</li>
+</ul>
+</blockquote>
+<p>Agents produce three different kinds of state. Each has its own provider and its own store.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    S["Agent state"] --&gt; Q1{"What kind?"}
+    Q1 --&gt;|"Runs, steps, audit"| P["PersistenceProvider&lt;br&gt;Desktop: SQLite&lt;br&gt;AWS: RDS PostgreSQL"]
+    Q1 --&gt;|"What the agent remembers"| M["MemoryProvider&lt;br&gt;Desktop: SQLite&lt;br&gt;AWS: AgentCore Memory or Postgres"]
+    Q1 --&gt;|"What the agent can look up"| K["VectorStoreProvider&lt;br&gt;Desktop: LanceDB&lt;br&gt;AWS: Bedrock KB, OpenSearch or pgvector"]
+    LOOP["In-flight loop state&lt;br&gt;stays in memory, per run"] -.-&gt; S
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>State</th>
+<th>Desktop</th>
+<th>AWS</th>
+<th>Why this AWS choice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Persistence</strong> (runs, steps, audit)</td>
+<td>SQLite</td>
+<td><strong>RDS PostgreSQL</strong></td>
+<td>Relational, familiar to operate, and the same engine exists as Azure Database for PostgreSQL</td>
+</tr>
+<tr class="even">
+<td><strong>Memory</strong> (session, long-term, preference)</td>
+<td>SQLite</td>
+<td><strong>AgentCore Memory</strong> <em>or</em> Postgres-backed</td>
+<td>Managed memory types if wanted; Postgres keeps it portable to Azure</td>
+</tr>
+<tr class="odd">
+<td><strong>Knowledge / RAG</strong></td>
+<td>LanceDB</td>
+<td><strong>Bedrock Knowledge Bases</strong> (managed ingest), <strong>OpenSearch Serverless</strong> (retrieval control) <em>or</em> <strong>pgvector on RDS</strong> (most portable), docs in <strong>S3</strong></td>
+<td>Note: Bedrock KB is a managed pipeline that <em>sits on</em> a vector store such as OpenSearch Serverless or Aurora pgvector — not a rival to it</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>⚠️ Shared persistence vs “data stays on-device”.</strong> These two goals collide if you sync the desktop’s SQLite to the cloud by default — the naive first draft’s mistake. Resolve it with one rule: <strong>each deployment owns its own state.</strong> Desktop runs stay local; org-wide runs live in the cloud. What <em>is</em> shared is the <strong>definition plane</strong> — approved agents and skills from the registry. Data crosses the boundary only when a user explicitly routes it.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Key nuance — the loop itself stays in memory.</strong> A run is bounded (iteration and token limits), so its working state lives in the core’s RAM and is written out step by step. That is what lets a paused run (e.g.&nbsp;awaiting human approval, <a href="#sec-governance">15.10</a>) be resumed from Postgres.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Classify state before you place it. <strong>Run records, memory and knowledge</strong> are three different access patterns — and “shared across deployments” should apply to <em>definitions</em>, not <em>data</em>.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-tools" class="level2">
+<h2 class="anchored" data-anchor-id="sec-tools">15.8 Connect tools and the registry</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ How do cloud agents reach enterprise systems, and how does everyone discover approved agents, skills and tools?</li>
+</ul>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    CORE["AgentLoop"] --&gt; TP["ToolProvider"]
+    CORE --&gt; RP["RegistryProvider"]
+
+    TP --&gt;|"Desktop"| MCP["Local + external MCP&lt;br&gt;+ file, CSV, Excel, PDF"]
+    TP --&gt;|"AWS"| GW["AgentCore Gateway&lt;br&gt;MCP + OpenAPI wrapping, OAuth"]
+    GW --&gt; ENT["External tools&lt;br&gt;SAP, SharePoint,&lt;br&gt;M365, APIs"]
+    MCP --&gt; ENT
+
+    RP --&gt;|"Desktop"| LR[("Local YAML / SQLite")]
+    RP --&gt;|"AWS"| AR["AWS Agent Registry&lt;br&gt;agents, MCP servers, skills"]
+    LR -.-&gt;|"pull approved&lt;br&gt;agents and skills"| AR
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Concern</th>
+<th>Desktop</th>
+<th>AWS</th>
+<th>What the cloud adds</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Tools</strong></td>
+<td>Local MCP + built-in file tools; external MCP tools directly</td>
+<td><strong>AgentCore Gateway</strong></td>
+<td>One MCP entry point; turns APIs and Lambda functions into tools, connects existing MCP servers, handles OAuth to targets</td>
+</tr>
+<tr class="even">
+<td><strong>Tool policy</strong></td>
+<td>—</td>
+<td><strong>AgentCore Policy</strong> on the Gateway</td>
+<td>Cedar rules (default deny) on who may call which tool with which inputs</td>
+</tr>
+<tr class="odd">
+<td><strong>Registry</strong></td>
+<td>Local YAML / SQLite</td>
+<td><strong>AWS Agent Registry</strong></td>
+<td>Org-wide catalogue of agents, MCP servers and skills with an approval workflow; the desktop pulls approved definitions from it</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Key nuance — Gateway is a door, not a brain.</strong> Tool <em>dispatch</em> (which tool, when, with what arguments) stays in the core’s <code>tools.rs</code>. The Gateway only decides <em>how</em> the call reaches the target and, with Policy attached, <em>whether it is allowed</em>.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>⚠️ Policy only sees what passes through the Gateway.</strong> Desktop agents calling external tools directly, local file tools and CSV/Excel/PDF parsing all bypass it. Either route org-wide tool calls through the Gateway, or keep an equivalent check in the core’s dispatch.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Naming note:</strong> the registry service is <strong>AWS Agent Registry</strong>, part of AgentCore. It launched in preview in April 2026 — check its current status before committing a production design to it.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Put a <strong>managed gateway between cloud agents and enterprise systems</strong> — it centralises auth and policy for every tool call. Keep the <strong>decision</strong> to call a tool inside the core.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-models" class="level2">
+<h2 class="anchored" data-anchor-id="sec-models">15.9 Route models and guard them</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ How do we keep models swappable and still enforce enterprise controls on every call?</li>
+</ul>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    LOOP["AgentLoop"] --&gt; LP["LlmProvider&lt;br&gt;multi-LLM routing"]
+    LP --&gt; GR["Bedrock Guardrails&lt;br&gt;ApplyGuardrail API"]
+    GR --&gt; BR["Amazon Bedrock&lt;br&gt;Anthropic and others"]
+    GR --&gt; AZ["Azure OpenAI"]
+    LP -.-&gt;|"Desktop only"| OL["Ollama&lt;br&gt;local models"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li><strong><code>LlmProvider</code></strong> keeps model choice as configuration: an agent can move from Ollama on a laptop to Bedrock in AWS — or Azure OpenAI in Azure — without touching its spec.</li>
+<li><strong>Bedrock Guardrails</strong> add PII redaction and content filtering at the model boundary — a cloud control that the desktop didn’t need centrally.</li>
+<li><strong>Ollama</strong> remains a desktop-only option: fully local inference for the most sensitive personal work.</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>⚠️ Attach guardrails at the interface, not at the vendor.</strong> Guardrails configured <em>on a Bedrock model call</em> only cover Bedrock. Bedrock Guardrails also offers a standalone <strong><code>ApplyGuardrail</code></strong> API that checks any text, so <code>LlmProvider</code> can call it on the way in and out for <strong>every</strong> vendor — Azure OpenAI included. Otherwise “governed” depends on which model the agent picked.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Route models through <strong>one interface</strong> and enforce controls <strong>at that interface</strong> — not per vendor — so swapping a model never silently drops a guardrail.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-governance" class="level2">
+<h2 class="anchored" data-anchor-id="sec-governance">15.10 Keep governance in the core, add central policy</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ Who decides which skills may run, and who approves a risky action mid-run?</li>
+</ul>
+</blockquote>
+<p>The <strong>skills lifecycle</strong> already exists in the core and stays the <strong>source of truth</strong> in every deployment:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+stateDiagram-v2
+    [*] --&gt; Draft
+    Draft --&gt; Validation
+    Validation --&gt; Approval
+    Approval --&gt; Enabled
+    Enabled --&gt; Deprecated
+    Deprecated --&gt; Retired
+    Retired --&gt; [*]
+    Validation --&gt; Draft: fails checks
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>The cloud adds <strong>human-in-the-loop</strong> for critical actions during a run:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant Core as xAgents Core (EKS)
+    participant EB as EventBridge
+    participant SF as Step Functions
+    participant Approver
+    participant DB as RDS PostgreSQL
+
+    Core-&gt;&gt;DB: Save run state, pause
+    Core-&gt;&gt;EB: Emit "approval needed" event
+    EB-&gt;&gt;SF: Start approval workflow
+    SF-&gt;&gt;Approver: Request decision
+    Approver--&gt;&gt;SF: Approve or reject
+    SF-&gt;&gt;Core: Resume with decision (task token callback)
+    Core-&gt;&gt;DB: Load state, continue run
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Control</th>
+<th>Lives in</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Skills lifecycle (Draft → Retired)</td>
+<td><strong>xAgents Core</strong></td>
+<td>Same rules on desktop and in every cloud</td>
+</tr>
+<tr class="even">
+<td>Skill and agent publication</td>
+<td><strong>AWS Agent Registry</strong> approval workflow</td>
+<td>Only approved records are discoverable org-wide</td>
+</tr>
+<tr class="odd">
+<td>Tool-call authorisation</td>
+<td><strong>AgentCore Policy</strong> on Gateway</td>
+<td>Deterministic Cedar rules outside the prompt and the code</td>
+</tr>
+<tr class="even">
+<td>Approvals and escalations</td>
+<td><strong>Step Functions + EventBridge</strong></td>
+<td>Durable waiting for humans; the core does not block on a person</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>⚠️ Keep the decision rule in the core.</strong> Step Functions should <em>carry</em> the approval, not <em>define</em> when an approval is needed. If the “needs approval” rule lives in a workflow definition, the desktop version — and the future Azure version — will behave differently.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Governance <strong>rules</strong> live in the core; governance <strong>plumbing</strong> (policy stores, approval workflows) lives in the environment.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-observability" class="level2">
+<h2 class="anchored" data-anchor-id="sec-observability">15.11 Make the agents observable</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ An agent can “succeed” with the wrong answer after 12 tool calls. How do you see inside the loop?</li>
+</ul>
+</blockquote>
+<p>A backend fails loudly; a pipeline fails silently (<a href="11-serverless-data-analytics.html">Chapter 11</a>); an <strong>agent fails plausibly</strong> — it returns a confident result after a wrong turn. Observability must therefore trace <strong>each step of the reasoning loop</strong>, not just the request — on the desktop as well as in the cloud.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph RUN["One agent run&lt;br&gt;(desktop or cloud)"]
+        direction TB
+        S1["Plan step"] --&gt; S2["Tool call"] --&gt; S3["Observation"] --&gt; S4["LLM call"] --&gt; S5["Result"]
+    end
+
+    AOBS["AgentCore Observability&lt;br&gt;agent traces and spans"]
+    CW["CloudWatch&lt;br&gt;metrics, logs, alarms"]
+
+    RUN -.-&gt;|"OpenTelemetry step traces"| AOBS
+    RUN -.-&gt;|"tokens, latency, errors"| CW
+    AOBS -.-&gt; CW
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Signals worth watching</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Signal</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Iterations per run hitting the cap</td>
+<td>The agent is looping without converging</td>
+</tr>
+<tr class="even">
+<td>Tool-call error rate per tool</td>
+<td>A broken integration, not a bad model</td>
+</tr>
+<tr class="odd">
+<td>Tokens and cost per run / per agent</td>
+<td>Runaway agents are runaway bills</td>
+</tr>
+<tr class="even">
+<td>Approvals pending too long</td>
+<td>Runs silently parked on a human</td>
+</tr>
+<tr class="odd">
+<td>Guardrail interventions</td>
+<td>Agents probing sensitive data or content</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Key nuance — instrument once with OpenTelemetry.</strong> AgentCore Observability builds on OpenTelemetry and CloudWatch. Emit OTel spans from the core once, and the same instrumentation serves the desktop, EKS and — later — an Azure-side collector.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>⚠️ Desktop traces must respect data residency.</strong> When the desktop core sends traces to the cloud, send <strong>step metadata</strong> (tool name, tokens, latency, errors) — not prompts, file contents or tool outputs. Otherwise observability quietly becomes the “sync all data up” path the design rejected.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Key nuance — traces are also an asset.</strong> Step-level traces of real runs are the raw material for later <strong>evaluation and fine-tuning</strong>. Store them deliberately (with the same data-residency rule as <a href="#sec-state">15.7</a>), not as an accident of logging.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> For agents, observe the <strong>loop</strong>, not just the endpoint — alarm on non-convergence, tool failures and cost per run.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-delivery" class="level2">
+<h2 class="anchored" data-anchor-id="sec-delivery">15.12 Deliver it: build order and pipeline</h2>
+<blockquote class="blockquote">
+<ul>
+<li>❓ In what order do you do all this without breaking the desktop product?</li>
+</ul>
+</blockquote>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    B1["1. Extract provider traits&lt;br&gt;from the core"] --&gt; B2["2. Wrap existing desktop&lt;br&gt;implementations"]
+    B2 --&gt; B3["3. Contract tests&lt;br&gt;for every provider"]
+    B3 --&gt; B4["4. Build AWS providers&lt;br&gt;Postgres, KB, Gateway, Registry"]
+    B4 --&gt; B5["5. Deploy the UNCHANGED&lt;br&gt;core on EKS"]
+    B5 --&gt; B6["6. Add central governance&lt;br&gt;and observability"]
+    B6 -.-&gt;|"later"| B7["7. Azure providers +&lt;br&gt;same core on AKS"]
+    B2 -.-&gt;|"desktop ships as before"| SAFE["No user-visible change&lt;br&gt;until step 5"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>One codebase, every target</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    DEV["Developer"] --&gt; GIT["ONE Rust&lt;br&gt;codebase in Git"] --&gt; CI["CI/CD&lt;br&gt;cargo build + tests"]
+    CI --&gt; DESK["Desktop installer&lt;br&gt;Tauri bundle"]
+    CI --&gt; ECR["Amazon ECR&lt;br&gt;ARM64 container image"]
+    ECR --&gt; EKS["Amazon EKS"]
+    ECR -.-&gt;|"same image, optional"| ACR["AgentCore Runtime"]
+    CI -.-&gt;|"future"| AKS["Azure AKS"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> <strong>Refactor first, cloud second.</strong> Steps 1–3 are invisible to users and de-risk everything after them; by step 5, “deploying to AWS” is just running a container that already passed the same tests as the desktop — and step 7 repeats only steps 4–5 for Azure.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-reference" class="level2">
+<h2 class="anchored" data-anchor-id="sec-reference">15.13 The reference architecture</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    USER["Enterprise user"]
+    ENTRA["Azure Entra ID&lt;br&gt;SSO, MFA, groups"]
+
+    subgraph DESKTOP["Desktop harness - personal agents"]
+        TAURI["Tauri + React UI"] --&gt; DCORE["xAgents Core"]
+        DCORE --&gt; DSTORE[("SQLite + LanceDB")]
+    end
+
+    subgraph CLOUD["AWS harness - org-wide agents"]
+        AMP["Amplify&lt;br&gt;React web UI"] --&gt; APIGW["API Gateway&lt;br&gt;JWT authorizer,&lt;br&gt;async + WebSocket"]
+        subgraph EKS["Amazon EKS"]
+            CCORE["SAME xAgents Core"]
+        end
+        APIGW --&gt; CCORE
+        CCORE --&gt; RDS[("RDS PostgreSQL")]
+        CCORE --&gt; KB[("Bedrock KB")]
+        CCORE --&gt; GW["AgentCore Gateway&lt;br&gt;+ Policy"]
+        CCORE --&gt; REG["AWS Agent Registry"]
+        CCORE --&gt; GRD["Bedrock Guardrails"] --&gt; LLM["Bedrock ·&lt;br&gt;Azure OpenAI"]
+        OBS["AgentCore Observability&lt;br&gt;+ CloudWatch"]
+    end
+
+    USER --&gt; TAURI
+    USER --&gt; AMP
+    TAURI &lt;-.-&gt;|"sign-in"| ENTRA
+    AMP &lt;-.-&gt;|"sign-in"| ENTRA
+    GW --&gt; ENT["External Tools&lt;br&gt;SAP, SharePoint,&lt;br&gt;M365, APIs"]
+    DCORE --&gt; ENT
+    DCORE -.-&gt;|"pull approved&lt;br&gt;agents and skills"| REG
+    CCORE -.-&gt;|"OpenTelemetry step traces"|OBS
+    DCORE -.-&gt;|"OpenTelemetry step traces"|OBS
+
+    classDef core fill:#FFE0B2,stroke:#FB8C00,stroke-width:2px
+    class DCORE,CCORE core
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><em>Left out for readability: Step Functions approvals (<a href="#sec-governance">15.10</a>), AgentCore Identity for outbound tokens (<a href="#sec-frontdoor">15.6</a>), and the future Azure harness, which mirrors the AWS one on AKS (<a href="#sec-providers">15.4.1</a>).</em></p>
+<p><strong>How each driver is satisfied</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Driver</th>
+<th>Where it is met</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Portability</td>
+<td>One Rust codebase; provider traits + contract tests; same core on Desktop and EKS now, AKS later</td>
+</tr>
+<tr class="even">
+<td>Runtime ownership</td>
+<td>xAgents AgentLoop everywhere; Harness rejected; Runtime kept as a reversible hosting option</td>
+</tr>
+<tr class="odd">
+<td>Data residency</td>
+<td>Each deployment owns its state; only approved definitions are shared; desktop traces carry metadata only</td>
+</tr>
+<tr class="even">
+<td>Identity reuse</td>
+<td>Same Entra tenant/app; JWT authorizer inbound, AgentCore Identity outbound</td>
+</tr>
+<tr class="odd">
+<td>Governance</td>
+<td>Skills lifecycle in core; Agent Registry approvals; Cedar policy on Gateway tool calls; Step Functions for run-time approvals</td>
+</tr>
+<tr class="even">
+<td>Scale, no timeouts</td>
+<td>Long-lived pods on EKS with Karpenter; async submit-and-stream front door</td>
+</tr>
+<tr class="odd">
+<td>Model swappability</td>
+<td><code>LlmProvider</code> over Bedrock, Azure OpenAI, Ollama; Guardrails at the boundary</td>
+</tr>
+<tr class="even">
+<td>Observability</td>
+<td>OpenTelemetry step-level traces from desktop and cloud into AgentCore Observability / CloudWatch</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="sec-not" class="level2">
+<h2 class="anchored" data-anchor-id="sec-not">15.14 When <em>not</em> to architect it this way</h2>
+<p>An honest architect states the boundaries of their own recommendation.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symptom</th>
+<th>Why this design struggles</th>
+<th>Better fit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AWS-only, no Azure plans</td>
+<td>EKS is heavier than needed</td>
+<td><strong>AgentCore Runtime</strong> for the same container</td>
+</tr>
+<tr class="even">
+<td>Small team, no Kubernetes skills</td>
+<td>EKS operations are real work</td>
+<td><strong>AgentCore Runtime</strong>; revisit EKS when Azure becomes real</td>
+</tr>
+<tr class="odd">
+<td>Mostly interactive, spiky per-user sessions</td>
+<td>Idle nodes cost money; isolation is DIY</td>
+<td><strong>AgentCore Runtime</strong> (microVM per session, pay when active)</td>
+</tr>
+<tr class="even">
+<td>The loop is <em>not</em> your differentiator</td>
+<td>Owning a harness is cost without advantage</td>
+<td><strong>AgentCore Harness</strong> / Strands — buy the loop</td>
+</tr>
+<tr class="odd">
+<td>Untrusted code per session (code exec, browsing)</td>
+<td>Pods share a node kernel</td>
+<td>Offload to <strong>AgentCore Code Interpreter / Browser</strong> as tools, or host those sessions on <strong>AgentCore Runtime</strong></td>
+</tr>
+<tr class="even">
+<td>Only one deployment target, ever</td>
+<td>Provider traits add indirection you won’t use</td>
+<td>Keep it simple, couple directly</td>
+</tr>
+<tr class="odd">
+<td>Strict “no data leaves the device” for all work</td>
+<td>Cloud agents can’t meet it</td>
+<td>Desktop harness only, with <strong>Ollama</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Architect’s takeaway:</strong> Ports-and-adapters pays off <strong>only when there are genuinely multiple targets</strong>. xAgents has Desktop and AWS now, with Azure next — that is what justifies the refactor <em>and</em> the choice of EKS. Remove the Azure requirement and the winning runtime changes.</p>
+</blockquote>
+<hr>
+</section>
+<section id="sec-cheatsheet" class="level2">
+<h2 class="anchored" data-anchor-id="sec-cheatsheet">15.15 Architect’s cheat sheet</h2>
+<p>The cloud decision-making for the requirement mentioned at the beginning of this chapter:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    ROOT["Agent harness&lt;br&gt;Desktop to AWS"]
+
+    ROOT --&gt; B["Boundary"]
+    B --&gt; B1["One Rust codebase"]
+    B --&gt; B2["Core owns behaviour"]
+    B --&gt; B3["Providers own&lt;br&gt;integrations"]
+
+    ROOT --&gt; R["Runtime"]
+    R --&gt; R1["EKS: AKS later,&lt;br&gt;big batch runs"]
+    R --&gt; R2["AgentCore Runtime:&lt;br&gt;isolation, no ops"]
+    R --&gt; R3["Reject Harness:&lt;br&gt;replaces the loop"]
+    R --&gt; R4["Same container&lt;br&gt;fits both"]
+
+    ROOT --&gt; S["State + tools"]
+    S --&gt; S1["SQLite to RDS Postgres"]
+    S --&gt; S2["LanceDB to KB /&lt;br&gt;OpenSearch"]
+    S --&gt; S3["MCP to&lt;br&gt;AgentCore Gateway"]
+    S --&gt; S4["Share definitions,&lt;br&gt;not data"]
+
+    ROOT --&gt; X["Cross-cutting"]
+    X --&gt; X1["Async: submit,&lt;br&gt;202, stream"]
+    X --&gt; X2["Guardrails at&lt;br&gt;LlmProvider"]
+    X --&gt; X3["Trace every&lt;br&gt;loop step"]
+    X --&gt; X4["Refactor first,&lt;br&gt;cloud second"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Boundary</strong>
+<ul>
+<li>A harness = <strong>behaviour</strong> (AgentLoop, planning, spec, dispatch, routing, RAG logic, skills governance) + <strong>infrastructure</strong>. Draw that line first.</li>
+<li><em>Core owns behaviour. Providers own integrations. AWS owns managed infrastructure.</em></li>
+<li>A forked cloud core is the failure mode: <strong>one codebase</strong>, minimal desktop refactoring.</li>
+</ul></li>
+<li><strong>Portability</strong>
+<ul>
+<li>Extract <strong>provider traits</strong>: Persistence, Memory, VectorStore, Registry, Tool, Llm.</li>
+<li><strong>Contract tests</strong> make “same behaviour everywhere” true, not just “same interface”.</li>
+<li>Managed AWS adapters (AgentCore Memory, Gateway, Registry) are the least portable — keep Postgres-backed options for Azure.</li>
+</ul></li>
+<li><strong>Runtime</strong>
+<ul>
+<li><strong>AgentCore Runtime</strong> runs any ARM64 container on port 8080 with <code>/invocations</code> and <code>/ping</code> — Rust included. It gives microVM-per-session isolation and serverless billing.</li>
+<li><strong>EKS</strong> wins <em>here</em> only because of <strong>Azure (AKS) later</strong> and <strong>large batch runs</strong>. Drop Azure and Runtime wins.</li>
+<li>Kubernetes moves the container and most manifests — not identity, ingress or autoscaling.</li>
+<li>Build the container to Runtime’s contract anyway, so the runtime choice stays <strong>reversible</strong>.</li>
+<li><strong>AgentCore Harness</strong> rejected — AWS runs the loop. <strong>Lambda</strong> rejected — 15-minute cap.</li>
+<li>Use <strong>AgentCore à la carte</strong>: Identity, Policy, Observability recommended; Memory, Gateway, Agent Registry optional behind providers.</li>
+</ul></li>
+<li><strong>Front door and identity</strong>
+<ul>
+<li><strong>Amplify</strong> hosts the web UI; <strong>API Gateway JWT authorizer</strong> validates <strong>Entra ID</strong> tokens.</li>
+<li>Agent runs outlast API Gateway’s ~30 s integration timeout — <strong>submit, return a run ID, stream progress</strong>.</li>
+<li>Inbound identity (who is the user) ≠ outbound identity (what can the agent call for them).</li>
+</ul></li>
+<li><strong>State, tools, models</strong>
+<ul>
+<li>Persistence → <strong>RDS PostgreSQL</strong>; memory → <strong>AgentCore Memory</strong> or Postgres; knowledge → <strong>Bedrock KB</strong> (on OpenSearch Serverless) or <strong>pgvector</strong> for portability.</li>
+<li><strong>Each deployment owns its data</strong>; share approved <strong>definitions</strong>, not runs.</li>
+<li><strong>AgentCore Gateway</strong> is the door to enterprise systems; the <strong>decision</strong> to call a tool stays in the core.</li>
+<li>Call <strong><code>ApplyGuardrail</code></strong> from <code>LlmProvider</code> so Bedrock <em>and</em> Azure OpenAI paths are covered.</li>
+<li><strong>AgentCore Policy</strong> only governs calls that go <strong>through Gateway</strong> — desktop direct calls bypass it.</li>
+</ul></li>
+<li><strong>Governance and observability</strong>
+<ul>
+<li>Skills lifecycle (<strong>Draft → Validation → Approval → Enable → Deprecation → Retirement</strong>) stays in core.</li>
+<li><strong>Step Functions + EventBridge</strong> carry approvals; the core decides when one is needed.</li>
+<li>Agents fail <strong>plausibly</strong> — trace each loop step with <strong>OpenTelemetry</strong>, from desktop and cloud; alarm on non-convergence, tool errors, cost per run.</li>
+<li>Desktop traces carry <strong>metadata, not content</strong>.</li>
+</ul></li>
+<li><strong>Final conclusion</strong>
+<ul>
+<li><strong>Refactor first. Cloud second.</strong> One Rust codebase runs on Desktop, in AWS now and in Azure later — only the providers change. AWS provides infrastructure and managed implementations, <strong>not business logic</strong>.</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="sources" class="level2">
+<h2 class="anchored" data-anchor-id="sources">Sources</h2>
+<p><em>Based on internal xAgents architecture notes — “xAgents: Current and Future Expected State” (desktop architecture, core-and-adapters refactor, AWS target architecture and AgentCore recommendations). Format follows Chapters 10 and 11 of this series.</em></p>
+<p><em>AWS service facts checked against AWS documentation and announcements in October 2026:</em></p>
+<ul>
+<li><a href="https://docs.aws.amazon.com/bedrock-agentcore/">Amazon Bedrock AgentCore documentation</a> and <a href="https://aws.amazon.com/bedrock/agentcore/faqs/">FAQs</a></li>
+<li><a href="https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-http-protocol-contract.html">AgentCore Runtime HTTP protocol contract</a> and <a href="https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-lifecycle-settings.html">lifecycle settings</a></li>
+<li><a href="https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/bedrock-agentcore-limits.html">AgentCore quotas</a></li>
+<li><a href="https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness.html">AgentCore harness</a> and <a href="https://aws.amazon.com/about-aws/whats-new/2026/06/amazon-bedrock-agentcore-harness-generally-available/">GA announcement (June 2026)</a></li>
+<li><a href="https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/policy.html">Policy in AgentCore</a></li>
+<li><a href="https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/registry.html">AWS Agent Registry</a></li>
+<li><a href="https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/payments.html">AgentCore payments</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

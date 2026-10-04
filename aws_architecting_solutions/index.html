@@ -171,6 +171,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#hybrid-container-based-workloads" id="toc-hybrid-container-based-workloads" class="nav-link" data-scroll-target="#hybrid-container-based-workloads">🔗 <strong>12. Hybrid, Container-Based Workloads</strong></a></li>
   <li><a href="#account-governance-and-multi-account-management" id="toc-account-governance-and-multi-account-management" class="nav-link" data-scroll-target="#account-governance-and-multi-account-management">🏛️ <strong>13. Account Governance and Multi-Account Management</strong></a></li>
   <li><a href="#capstone-decoupled-app-emr-analytics" id="toc-capstone-decoupled-app-emr-analytics" class="nav-link" data-scroll-target="#capstone-decoupled-app-emr-analytics">🎯 <strong>14. Capstone: Decoupled App + EMR Analytics</strong></a></li>
+  <li><a href="#agentic-ai-harness-desktop-to-aws" id="toc-agentic-ai-harness-desktop-to-aws" class="nav-link" data-scroll-target="#agentic-ai-harness-desktop-to-aws">🤖 <strong>15. Agentic AI Harness: Desktop to AWS</strong></a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">🏁 4. Conclusion</a></li>
   <li><a href="#source-attribution" id="toc-source-attribution" class="nav-link" data-scroll-target="#source-attribution">📜 5. Source &amp; Attribution</a></li>
@@ -504,7 +505,7 @@ flowchart TD
 <h3 class="anchored" data-anchor-id="hybrid-container-based-workloads">🔗 <a href="12-hybrid-container-workloads.html"><strong>12. Hybrid, Container-Based Workloads</strong></a></h3>
 <ul>
 <li><strong>Problem</strong>: Half a company’s workloads stay on-premises, half move to AWS.</li>
-<li>Need: Connecting the On-prm Data Center with AWS infra, keeping containers portable, and migrating a database with near-zero downtime.</li>
+<li>Need: Connecting the On-prem Data Center with AWS infra, keeping containers portable, and migrating a database with near-zero downtime.</li>
 </ul>
 <p><strong>The Naive First Draft</strong>: “Spin up a new cluster in AWS, connect over the internet, dump-and-restore the database.”</p>
 <div class="cell" data-layout-align="default">
@@ -577,9 +578,9 @@ flowchart LR
         SGW["S3 File Gateway&lt;br&gt;local cache"]
         OFS --&gt; SGW
     end
-    &nbsp;
+     
     DCn &lt;==&gt;|"Direct Connect&lt;br&gt;plus VPN failover"| AWS
-    &nbsp;
+     
     subgraph AWS["AWS Cloud VPC"]
         subgraph A1["AZ 1"]
             ECS1["ECS on EC2&lt;br&gt;private subnet"] --&gt; NAT1["NAT gateway 1"]
@@ -596,7 +597,7 @@ flowchart LR
         ECS2 -.-&gt; VPE
         SGW -.-&gt;|async| S3
     end
-    &nbsp;
+     
     ODB -.-&gt;|"DMS data + pg_dump schema"| RDS
     OPS["ECS Anywhere · Systems&lt;br&gt;Manager · AWS Backup"] -.-&gt; DCn
     OPS -.-&gt; AWS
@@ -731,14 +732,6 @@ flowchart LR
         BE1 --&gt; DB1[("MySQL")]
         HAD["Hadoop cluster&lt;br&gt;+ visualisation tools"]
     end
-    %% OnPrem --&gt;|"decouple + migrate"| Cloud
-
-    %% subgraph Cloud["Goal: on AWS"]
-    %%     FE2["Frontend tier"]
-    %%     BE2["Backend tier"]
-    %%     DB2[("Database tier")]
-    %%     EMR2["EMR analytics&lt;br&gt;tier"]
-    %% end
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -843,6 +836,190 @@ flowchart LR
 </div>
 <hr>
 </section>
+<section id="agentic-ai-harness-desktop-to-aws" class="level3">
+<h3 class="anchored" data-anchor-id="agentic-ai-harness-desktop-to-aws">🤖 <a href="15-architecting-agentic-ai-harness-desktop-to-aws.html"><strong>15. Agentic AI Harness: Desktop to AWS</strong></a></h3>
+<ul>
+<li><strong>Problem</strong>: An enterprise agent harness (xAgents) already runs as a desktop app: a Rust core running a custom GOAP-inspired ReAct loop over local SQLite, LanceDB, MCP tools and multiple LLMs.</li>
+<li>Need: Org-wide agents in <strong>AWS now</strong> (and <strong>Azure in future</strong>), running the <strong>same Rust codebase</strong>, with one governance model, enterprise identity and central observability — while personal agents stay on the desktop.</li>
+<li>Unlike Chapters 10–14, the hard problem is not scale or migration — it is <strong>portability without a rewrite</strong>.</li>
+</ul>
+<p><strong>What xAgents is today</strong>:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    UI["React + TS UI"] &lt;--&gt; IPC["Tauri IPC"] &lt;--&gt; CORE["Rust Core&lt;br/&gt;GOAP ReAct Loop"]
+    CORE --&gt; LLM["LLM Gateway&lt;br/&gt;Bedrock · Azure · Ollama"]
+    CORE --&gt; TOOLS["Tools&lt;br/&gt;File · CSV · Excel · PDF · MCP"]
+    CORE --&gt; DB[("SQLite&lt;br/&gt;State + Audit")]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>The Naive First Draft</strong>: “Fork the core for the cloud, hard-wire it to cloud services, sync every desktop’s data up, and call it from a web UI.”</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    USER["User"] --&gt; DESKAPP["Desktop app&lt;br&gt;React FE"] --&gt; DESK["Desktop core&lt;br&gt;with SQLite, LanceDB"]
+    USER --&gt; WEB["Web UI"]
+    DESK --&gt;|"sync all data up"| S3[("S3 / cloud DB")]
+    WEB --&gt;|"sync API call,&lt;br&gt;waits for whole run"| FORK["Forked cloud core&lt;br&gt;with Postgres, OpenSearch, Gateway"]
+    FORK --&gt; S3
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Why the First Draft Fails</strong> → <strong>What it needs</strong>:</p>
+<ul>
+<li>A forked cloud core means two codebases that drift apart; every fix and every skills-governance rule must be made twice → <strong>one Rust codebase</strong>; desktop and cloud differ only in the adapters plugged into it.</li>
+<li>The forked core is hard-wired to its stores (today the AgentLoop calls SQLite, LanceDB and a <code>match</code> on the LLM provider directly), so moving to cloud means editing the loop → extract <strong>provider interfaces</strong> (Persistence, Memory, VectorStore, Registry, Tool, LLM), wrap the existing desktop implementations behind them, and add cloud implementations alongside.</li>
+<li>Syncing all desktop data up breaks the rule that sensitive data stays on-device unless explicitly routed → desktop runs keep their data locally; <strong>org-wide agents</strong> use cloud persistence; data moves from desktop to cloud only when a user routes it.</li>
+<li>A synchronous API call that waits for the whole multi-step run outlasts API Gateway’s ~30 s integration timeout → <strong>submit the run, return a run ID, stream progress</strong>.</li>
+<li>A web UI calling the core directly has no enterprise auth → reuse the desktop’s <strong>Azure Entra ID</strong> tenant, validated by an <strong>API Gateway JWT authorizer</strong> in front of the core.</li>
+</ul>
+<p><strong>After an Architect’s Intervention</strong> (over-simplified version): <strong>Core - Provider Architecture</strong></p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    CORE["SAME xAgents Core&lt;br&gt;owns behaviour"]
+    CORE --&gt;|"provider interfaces"| B["Adapters own integrations"]
+
+    subgraph Desktop["Desktop"]
+        D1[("SQLite + LanceDB")]
+        D2["Local MCP · Ollama"]
+    end
+
+    subgraph AWS["AWS Cloud - now&lt;br&gt;(EKS)"]
+        A1[("RDS PostgreSQL ·&lt;br&gt;Bedrock KB")]
+        A2["AgentCore Gateway ·&lt;br&gt;Bedrock"]
+    end
+
+    subgraph Azure["Azure - future&lt;br&gt;(AKS)"]
+        Z1[("Azure PostgreSQL ·&lt;br&gt;Azure AI Search")]
+        Z2["MCP servers ·&lt;br&gt;Azure OpenAI"]
+    end
+
+    B --&gt; Desktop
+    B --&gt; AWS
+    B -.-&gt; Azure
+
+    classDef core fill:#FFE0B2,stroke:#FB8C00,stroke-width:2px
+    class CORE core
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>After an Architect’s Intervention</strong> (medium complexity):</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    U["Enterprise users"] --&gt; D["Desktop app&lt;br&gt;Tauri + React"]
+    U --&gt; W["Web UI&lt;br&gt;org-wide agents"]
+    CB["ONE Rust&lt;br&gt;codebase in Git"] -.-&gt; DCORE
+    CB -.-&gt; CCORE
+    CB -.-&gt; ZCORE
+
+    D --&gt; DCORE["Rust Core&lt;br&gt;AgentLoop"]
+    DCORE --&gt; SQL[("SQLite")]
+    DCORE --&gt; LAN[("LanceDB")]
+    W --&gt; CCORE["Same Rust Core&lt;br&gt;in AWS"]
+
+    subgraph Current["Current state&lt;br&gt;(minimal refactoring only,&lt;br&gt;to keep one codebase for cloud)"]
+        D
+        DCORE
+        SQL
+        LAN
+    end
+
+    subgraph InScope["In scope&lt;br&gt;(newly added)"]
+        W
+        CCORE
+        ZCORE["Same Rust Core&lt;br&gt;in Azure (future)"]
+        AWSRDS[("Amazon RDS PostgreSQL")]
+        AWSOPEN[("Amazon OpenSearch")]
+    end
+    CCORE --&gt; AWSRDS
+    CCORE --&gt; AWSOPEN
+    CCORE --&gt; MCP["External MCP tools"]
+    DCORE --&gt; MCP["External MCP tools"]
+    
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>After an Architect’s Intervention</strong> (detailed version):</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    USER["Enterprise user"]
+    ENTRA["Azure Entra ID&lt;br&gt;SSO, MFA, groups"]
+
+    subgraph DESKTOP["Desktop harness - personal agents"]
+        TAURI["Tauri + React UI"] --&gt; DCORE["xAgents Core"]
+        DCORE --&gt; DSTORE[("SQLite + LanceDB")]
+    end
+
+    subgraph CLOUD["AWS harness - org-wide agents"]
+        AMP["Amplify&lt;br&gt;React web UI"] --&gt; APIGW["API Gateway&lt;br&gt;JWT authorizer,&lt;br&gt;async + WebSocket"]
+        subgraph EKS["Amazon EKS"]
+            CCORE["SAME xAgents Core"]
+        end
+        APIGW --&gt; CCORE
+        CCORE --&gt; RDS[("RDS PostgreSQL")]
+        CCORE --&gt; KB[("Bedrock KB")]
+        CCORE --&gt; GW["AgentCore Gateway&lt;br&gt;+ Policy"]
+        CCORE --&gt; REG["AWS Agent Registry"]
+        CCORE --&gt; GRD["Bedrock Guardrails"] --&gt; LLM["Bedrock ·&lt;br&gt;Azure OpenAI"]
+        OBS["AgentCore Observability&lt;br&gt;+ CloudWatch"]
+    end
+
+    USER --&gt; TAURI
+    USER --&gt; AMP
+    TAURI &lt;-.-&gt;|"sign-in"| ENTRA
+    AMP &lt;-.-&gt;|"sign-in"| ENTRA
+    GW --&gt; ENT["External Tools&lt;br&gt;SAP, SharePoint,&lt;br&gt;M365, APIs"]
+    DCORE --&gt; ENT
+    DCORE -.-&gt;|"pull approved&lt;br&gt;agents and skills"| REG
+    CCORE -.-&gt;|"OpenTelemetry step traces"|OBS
+    DCORE -.-&gt;|"OpenTelemetry step traces"|OBS
+
+    classDef core fill:#FFE0B2,stroke:#FB8C00,stroke-width:2px
+    class DCORE,CCORE core
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<hr>
+</section>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">🏁 4. Conclusion</h2>
@@ -881,19 +1058,26 @@ flowchart LR
 <td>“Transactional relational store” → RDS/Aurora/EC2-hosted DB</td>
 <td>Resilience + cost → RDS <strong>Multi-AZ</strong> over single-AZ or self-managed</td>
 </tr>
+<tr class="even">
+<td><strong><a href="15-architecting-agentic-ai-harness-desktop-to-aws.html">15. Agentic Harness in both Desktop &amp; AWS Cloud</a></strong></td>
+<td>“Run a long, tool-calling agent loop for many users” → AgentCore Runtime, EKS, ECS Fargate, Lambda</td>
+<td>Portability + one codebase + AWS-now/Azure-later → unchanged core on EKS behind provider interfaces (Kubernetes carries over to AKS); AgentCore Runtime if AWS-only</td>
+</tr>
 </tbody>
 </table>
 <p>The repeated message across the chapters:</p>
 <ul>
 <li>Start with the smallest sufficient set of blocks and add one piece of complexity per pain point (a failure to isolate, a burst to absorb, idle resources you should not pay for).</li>
 <li>Blast radius isn’t always a resource sitting inside an account, sometimes the blast radius <em>is</em> the account, and the account boundary is the fix.</li>
+<li>When the same system must run in more than one place, the first decision is not a service but a <strong>boundary</strong>: what the platform <em>is</em> (behaviour) versus what it <em>uses</em> (infrastructure). Adopt managed services that provide capabilities; reject the ones that would take over the behaviour (Ch. 15).</li>
 <li>None of these decisions are made in isolation on a real system: a single build typically decouples its tiers (Ch. 14), picks an ingest/store/query path for its data (Ch. 11), and sits inside an account structure that contains the blast radius of all of it (Ch. 13) — at the same time, not in sequence.</li>
 </ul>
 <hr>
 </section>
 <section id="source-attribution" class="level2">
 <h2 class="anchored" data-anchor-id="source-attribution">📜 5. Source &amp; Attribution</h2>
-<p>The intuition and examples in this book are inspired by the <code>Architecting Solutions in AWS</code> Coursera course.</p>
+<p>The intuition and examples in Chapters 10–14 are inspired by the <code>Architecting Solutions in AWS</code> Coursera course.</p>
+<p>Chapter 15 applies the same method to a an imaginary Agentic harness app - xAgents, with AWS service facts checked against AWS documentation in October 2026.</p>
 <p><img src="images/coursera_certificate.png" class="img-fluid"></p>
 <hr>
 
