@@ -633,10 +633,11 @@ flowchart LR
 
     subgraph CLOUD["AWS harness - org-wide agents"]
         AMP["Amplify<br>React web UI"] --> APIGW["API Gateway<br>JWT authorizer,<br>async + WebSocket"]
+        APIGW -->|"VPC Link"| ALB["Internal<br>Application<br>Load Balancer"]
         subgraph EKS["Amazon EKS"]
             CCORE["SAME xAgents Core"]
         end
-        APIGW --> CCORE
+        ALB --> CCORE
         CCORE --> RDS[("RDS PostgreSQL")]
         CCORE --> KB[("Bedrock KB")]
         CCORE --> GW["AgentCore Gateway<br>+ Policy"]
