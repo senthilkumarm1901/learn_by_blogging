@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2026-09-30">
 <meta name="description" content="A state-by-state phrasebook to think on your feet and speak with clarity in everyday meeting room conversations">
 
-<title>The Meeting Fluency Playbook: What to Say at Every Stage of a Meeting – Learn by Blogging</title>
+<title>The Meeting Fluency Playbook: What PHRASE to Say at Every STATE of a Meeting – Learn by Blogging</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -126,7 +126,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">The Meeting Fluency Playbook: What to Say at Every Stage of a Meeting</h1>
+      <h1 class="title">The Meeting Fluency Playbook: What PHRASE to Say at Every STATE of a Meeting</h1>
                   <div>
         <div class="description">
           A state-by-state phrasebook to think on your feet and speak with clarity in everyday meeting room conversations
@@ -241,7 +241,7 @@ ul.task-list li input[type="checkbox"] {
 <blockquote class="blockquote">
 <p>This post continues my blog from a year ago: <a href="../../posts/formal_communication/2025-09-17-engineers-communication-hacks.html">An Engineer’s Playbook for Formal Communication in the AI Age</a>. That post ended with a nudge to stop chasing public-speaking perfection and instead make everyday <strong>meeting room conversations</strong> effective. This post is the practical companion: a phrasebook organized by <em>where you are</em> in a meeting.</p>
 </blockquote>
-<p><img src="meeting_fluency_playbook_3.png" class="img-fluid"></p>
+<p><img src="meeting_fluency_playbook_4.png" class="img-fluid"></p>
 <hr>
 <section id="communication-is-a-systems-problem" class="level2">
 <h2 class="anchored" data-anchor-id="communication-is-a-systems-problem">🔌 Communication Is a Systems Problem</h2>
@@ -423,19 +423,39 @@ flowchart LR
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
-flowchart TD
-    A["Which state are we in?"]:::opening --&gt; B{"Detour?"}:::neutral
-    B -- Yes --&gt; R["Fix the detour first&lt;br/&gt;(Detours Radar)"]:::risk --&gt; A
-    B -- No --&gt; T{"Exit signal?"}:::neutral
-    T -- Yes --&gt; BR["Say a BRIDGE phrase"]:::deciding
-    T -- No --&gt; I["Pick INTENT → say its ⭐ anchor phrase"]:::exploring
+<pre class="mermaid mermaid-js">---
+title: STATE → DETOUR check → pick INTENT → say anchor PHRASE
+---
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+stateDiagram-v2
+    direction LR
 
-    classDef opening fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px;
-    classDef exploring fill:#E8F5E9,stroke:#43A047,stroke-width:1px;
-    classDef deciding fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px;
-    classDef risk fill:#FFEBEE,stroke:#E53935,stroke-width:1px;
-    classDef neutral fill:#FAFAFA,stroke:#9E9E9E,stroke-width:1px;
+    state "Name the STATE&lt;br&gt;(we're in State X)" as InState
+    state "Fix the detour first&lt;br&gt;(Detours Radar)" as Fix
+    state "Pick INTENT&lt;br&gt;→ say its ⭐&lt;br&gt;anchor phrase" as Intent
+    state "Say a&lt;br&gt;BRIDGE phrase" as Bridge
+    state isDetour &lt;&lt;choice&gt;&gt;
+    state isExit &lt;&lt;choice&gt;&gt;
+
+    [*] --&gt; InState : enter meeting
+    InState --&gt; isDetour : Detour?
+    isDetour --&gt; Fix : yes
+    Fix --&gt; InState : back on track
+    isDetour --&gt; isExit : no
+    isExit --&gt; Bridge : exit signal
+    isExit --&gt; Intent : stay
+    Intent --&gt; InState : keep listening
+    Bridge --&gt; [*] : next STATE
+
+    classDef opening fill:#E3F2FD,stroke:#1E88E5,stroke-width:1px
+    classDef exploring fill:#E8F5E9,stroke:#43A047,stroke-width:1px
+    classDef deciding fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
+    classDef risk fill:#FFEBEE,stroke:#E53935,stroke-width:1px
+
+    class InState opening
+    class Fix risk
+    class Intent exploring
+    class Bridge deciding
 </pre>
 </div>
 <p></p></figure><p></p>
