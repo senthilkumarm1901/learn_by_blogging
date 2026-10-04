@@ -258,7 +258,7 @@ flowchart TD
 ### 🔗 [**12. Hybrid, Container-Based Workloads**](12-hybrid-container-workloads.html)
 
 * **Problem**: Half a company's workloads stay on-premises, half move to AWS. 
-* Need: Connecting the On-prm Data Center with AWS infra, keeping containers portable, and migrating a database with near-zero downtime.
+* Need: Connecting the On-prem Data Center with AWS infra, keeping containers portable, and migrating a database with near-zero downtime.
 
 **The Naive First Draft**: "Spin up a new cluster in AWS, connect over the internet, dump-and-restore the database."
 
@@ -314,9 +314,9 @@ flowchart LR
         SGW["S3 File Gateway<br>local cache"]
         OFS --> SGW
     end
-     
+     
     DCn <==>|"Direct Connect<br>plus VPN failover"| AWS
-     
+     
     subgraph AWS["AWS Cloud VPC"]
         subgraph A1["AZ 1"]
             ECS1["ECS on EC2<br>private subnet"] --> NAT1["NAT gateway 1"]
@@ -333,7 +333,7 @@ flowchart LR
         ECS2 -.-> VPE
         SGW -.->|async| S3
     end
-     
+     
     ODB -.->|"DMS data + pg_dump schema"| RDS
     OPS["ECS Anywhere · Systems<br>Manager · AWS Backup"] -.-> DCn
     OPS -.-> AWS
@@ -435,14 +435,6 @@ flowchart LR
         BE1 --> DB1[("MySQL")]
         HAD["Hadoop cluster<br>+ visualisation tools"]
     end
-    %% OnPrem -->|"decouple + migrate"| Cloud
-
-    %% subgraph Cloud["Goal: on AWS"]
-    %%     FE2["Frontend tier"]
-    %%     BE2["Backend tier"]
-    %%     DB2[("Database tier")]
-    %%     EMR2["EMR analytics<br>tier"]
-    %% end
 ```
 
 **The Naive First Draft**: "Lift and shift as-is."
@@ -517,6 +509,160 @@ flowchart LR
 
 ---
 
+
+### 🤖 [**15. Agentic AI Harness: Desktop to AWS**](15-architecting-agentic-ai-harness-desktop-to-aws.html)
+
+* **Problem**: An enterprise agent harness (xAgents) already runs as a desktop app: a Rust core running a custom GOAP-inspired ReAct loop over local SQLite, LanceDB, MCP tools and multiple LLMs.
+* Need: Org-wide agents in **AWS now** (and **Azure in future**), running the **same Rust codebase**, with one governance model, enterprise identity and central observability — while personal agents stay on the desktop.
+* Unlike Chapters 10–14, the hard problem is not scale or migration — it is **portability without a rewrite**.
+
+**What xAgents is today**:
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    UI["React + TS UI"] <--> IPC["Tauri IPC"] <--> CORE["Rust Core<br/>GOAP ReAct Loop"]
+    CORE --> LLM["LLM Gateway<br/>Bedrock · Azure · Ollama"]
+    CORE --> TOOLS["Tools<br/>File · CSV · Excel · PDF · MCP"]
+    CORE --> DB[("SQLite<br/>State + Audit")]
+```
+
+
+**The Naive First Draft**: "Fork the core for the cloud, hard-wire it to cloud services, sync every desktop's data up, and call it from a web UI."
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    USER["User"] --> DESKAPP["Desktop app<br>React FE"] --> DESK["Desktop core<br>with SQLite, LanceDB"]
+    USER --> WEB["Web UI"]
+    DESK -->|"sync all data up"| S3[("S3 / cloud DB")]
+    WEB -->|"sync API call,<br>waits for whole run"| FORK["Forked cloud core<br>with Postgres, OpenSearch, Gateway"]
+    FORK --> S3
+```
+
+**Why the First Draft Fails**  → **What it needs**:
+
+- A forked cloud core means two codebases that drift apart; every fix and every skills-governance rule must be made twice → **one Rust codebase**; desktop and cloud differ only in the adapters plugged into it.
+- The forked core is hard-wired to its stores (today the AgentLoop calls SQLite, LanceDB and a `match` on the LLM provider directly), so moving to cloud means editing the loop → extract **provider interfaces** (Persistence, Memory, VectorStore, Registry, Tool, LLM), wrap the existing desktop implementations behind them, and add cloud implementations alongside.
+- Syncing all desktop data up breaks the rule that sensitive data stays on-device unless explicitly routed → desktop runs keep their data locally; **org-wide agents** use cloud persistence; data moves from desktop to cloud only when a user routes it.
+- A synchronous API call that waits for the whole multi-step run outlasts API Gateway's ~30 s integration timeout → **submit the run, return a run ID, stream progress**.
+- A web UI calling the core directly has no enterprise auth → reuse the desktop's **Azure Entra ID** tenant, validated by an **API Gateway JWT authorizer** in front of the core.
+
+**After an Architect's Intervention** (over-simplified version): **Core - Provider Architecture**
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    CORE["SAME xAgents Core<br>owns behaviour"]
+    CORE -->|"provider interfaces"| B["Adapters own integrations"]
+
+    subgraph Desktop["Desktop"]
+        D1[("SQLite + LanceDB")]
+        D2["Local MCP · Ollama"]
+    end
+
+    subgraph AWS["AWS Cloud - now<br>(EKS)"]
+        A1[("RDS PostgreSQL ·<br>Bedrock KB")]
+        A2["AgentCore Gateway ·<br>Bedrock"]
+    end
+
+    subgraph Azure["Azure - future<br>(AKS)"]
+        Z1[("Azure PostgreSQL ·<br>Azure AI Search")]
+        Z2["MCP servers ·<br>Azure OpenAI"]
+    end
+
+    B --> Desktop
+    B --> AWS
+    B -.-> Azure
+
+    classDef core fill:#FFE0B2,stroke:#FB8C00,stroke-width:2px
+    class CORE core
+```
+
+
+**After an Architect's Intervention** (medium complexity):
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    U["Enterprise users"] --> D["Desktop app<br>Tauri + React"]
+    U --> W["Web UI<br>org-wide agents"]
+    CB["ONE Rust<br>codebase in Git"] -.-> DCORE
+    CB -.-> CCORE
+    CB -.-> ZCORE
+
+    D --> DCORE["Rust Core<br>AgentLoop"]
+    DCORE --> SQL[("SQLite")]
+    DCORE --> LAN[("LanceDB")]
+    W --> CCORE["Same Rust Core<br>in AWS"]
+
+    subgraph Current["Current state<br>(minimal refactoring only,<br>to keep one codebase for cloud)"]
+        D
+        DCORE
+        SQL
+        LAN
+    end
+
+    subgraph InScope["In scope<br>(newly added)"]
+        W
+        CCORE
+        ZCORE["Same Rust Core<br>in Azure (future)"]
+        AWSRDS[("Amazon RDS PostgreSQL")]
+        AWSOPEN[("Amazon OpenSearch")]
+    end
+    CCORE --> AWSRDS
+    CCORE --> AWSOPEN
+    CCORE --> MCP["External MCP tools"]
+    DCORE --> MCP["External MCP tools"]
+    
+```
+
+
+**After an Architect's Intervention** (detailed version):
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    USER["Enterprise user"]
+    ENTRA["Azure Entra ID<br>SSO, MFA, groups"]
+
+    subgraph DESKTOP["Desktop harness - personal agents"]
+        TAURI["Tauri + React UI"] --> DCORE["xAgents Core"]
+        DCORE --> DSTORE[("SQLite + LanceDB")]
+    end
+
+    subgraph CLOUD["AWS harness - org-wide agents"]
+        AMP["Amplify<br>React web UI"] --> APIGW["API Gateway<br>JWT authorizer,<br>async + WebSocket"]
+        subgraph EKS["Amazon EKS"]
+            CCORE["SAME xAgents Core"]
+        end
+        APIGW --> CCORE
+        CCORE --> RDS[("RDS PostgreSQL")]
+        CCORE --> KB[("Bedrock KB")]
+        CCORE --> GW["AgentCore Gateway<br>+ Policy"]
+        CCORE --> REG["AWS Agent Registry"]
+        CCORE --> GRD["Bedrock Guardrails"] --> LLM["Bedrock ·<br>Azure OpenAI"]
+        OBS["AgentCore Observability<br>+ CloudWatch"]
+    end
+
+    USER --> TAURI
+    USER --> AMP
+    TAURI <-.->|"sign-in"| ENTRA
+    AMP <-.->|"sign-in"| ENTRA
+    GW --> ENT["External Tools<br>SAP, SharePoint,<br>M365, APIs"]
+    DCORE --> ENT
+    DCORE -.->|"pull approved<br>agents and skills"| REG
+    CCORE -.->|"OpenTelemetry step traces"|OBS
+    DCORE -.->|"OpenTelemetry step traces"|OBS
+
+    classDef core fill:#FFE0B2,stroke:#FB8C00,stroke-width:2px
+    class DCORE,CCORE core
+```
+
+
+
+---
+
 ## 🏁 4. Conclusion
 
 How the functional and non-functional drivers dictated the architecture decisions across the chapters:
@@ -528,18 +674,22 @@ How the functional and non-functional drivers dictated the architecture decision
 | **[12. Containers](12-hybrid-container-workloads.html)** | "Run containerized microservices" → ECS/EKS, Fargate/EC2 | Ops burden + scale → **ECS + Fargate** unless the K8s ecosystem is genuinely needed |
 | **[13. Multi-account](13-multi-account-strategies.html)** | "Isolate clients/environments" → single account, per-client accounts, per-env accounts | Blast radius + billing clarity → **Organizations + OUs** over one shared account |
 | **[14. Capstone (monolith)](14-capstone-decoupled-app-and-emr-analytics.html)** | "Transactional relational store" → RDS/Aurora/EC2-hosted DB | Resilience + cost → RDS **Multi-AZ** over single-AZ or self-managed |
+| **[15. Agentic Harness in both Desktop & AWS Cloud](15-architecting-agentic-ai-harness-desktop-to-aws.html)** | "Run a long, tool-calling agent loop for many users" → AgentCore Runtime, EKS, ECS Fargate, Lambda | Portability + one codebase + AWS-now/Azure-later → unchanged core on EKS behind provider interfaces (Kubernetes carries over to AKS); AgentCore Runtime if AWS-only |
 
 The repeated message across the chapters:
 
 - Start with the smallest sufficient set of blocks and add one piece of complexity per pain point (a failure to isolate, a burst to absorb, idle resources you should not pay for).
 - Blast radius isn't always a resource sitting inside an account, sometimes the blast radius *is* the account, and the account boundary is the fix.
+- When the same system must run in more than one place, the first decision is not a service but a **boundary**: what the platform *is* (behaviour) versus what it *uses* (infrastructure). Adopt managed services that provide capabilities; reject the ones that would take over the behaviour (Ch. 15).
 - None of these decisions are made in isolation on a real system: a single build typically decouples its tiers (Ch. 14), picks an ingest/store/query path for its data (Ch. 11), and sits inside an account structure that contains the blast radius of all of it (Ch. 13) — at the same time, not in sequence.
 
 ---
 
 ## 📜 5. Source & Attribution
 
-The intuition and examples in this book are inspired by the `Architecting Solutions in AWS` Coursera course.
+The intuition and examples in Chapters 10–14 are inspired by the `Architecting Solutions in AWS` Coursera course.
+
+Chapter 15 applies the same method to a an imaginary Agentic harness app - xAgents, with AWS service facts checked against AWS documentation in October 2026.
 
 ![](images/coursera_certificate.png)
 

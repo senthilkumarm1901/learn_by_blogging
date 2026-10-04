@@ -1,0 +1,850 @@
+---
+title: "15. One Core, Many Runtimes: Architecting an Agentic AI Harness from Desktop to AWS"
+author: "Senthil Kumar"
+mermaid:
+  theme: neutral
+format:
+  html:
+    navbar:
+      right:
+        - text: "Blog"
+          href: "https://senthilkumarm1901.github.io/learn_by_blogging/blog.html"
+          target: _self
+        - text: "LinkedIn"
+          href: "https://www.linkedin.com/in/senthilkumarm1901"
+          target: _blank
+        - text: "Medium"
+          href: "https://medium.com/@senthilkumar.m1901"
+          target: _blank
+---
+
+
+👈 **Back to:** [📝 Blog](https://senthilkumarm1901.github.io/learn_by_blogging/blog.html) | [💼 LinkedIn](https://www.linkedin.com/in/senthilkumarm1901) | [✍️ Medium](https://medium.com/@senthilkumar.m1901)
+
+---
+
+## How to Architect an Agentic AI Harness that Runs on Desktop and in AWS
+
+> * ❓ Key Question of this chapter: Given an agent harness that already works on a laptop, how do you take it to the cloud **without rewriting it** — and how do you decide which managed AWS services to adopt and which to reject?
+> * Workflow followed in all chapters: **requirements → architectural drivers → candidate services → trade-offs → decision → justified rejections**.
+> * What changes is the shape of the workload: it is no longer a request/response backend or a data pipeline. It is a **long-running, tool-calling reasoning loop** — and the hard problem is **portability without a rewrite**, not scale or migration.
+
+**Running example used throughout this chapter**
+
+> **xAgents** is an enterprise Agentic AI platform that already ships as a **desktop app**. A Tauri shell and React UI sit on a **Rust core** that runs a bounded, GOAP-inspired ReAct loop (the *AgentLoop*). Non-developers define agents through a 5-file spec (`agent.yaml`, `agent.md`, `soul.md`, `context.md`, `memory.md`) using a guided wizard. Locally it uses **SQLite** for state, **LanceDB** for knowledge, **MCP** for tools, and **Ollama / Azure OpenAI / Bedrock** for models. Users sign in with **Azure Entra ID**.
+>
+> The organisation now wants two kinds of agents:
+>
+> 1. **Personal agents** that keep running on the user's desktop, close to local files.
+> 2. **Org-wide agents** that run in the cloud for everyone to use — in **AWS now**, and in **Azure in future**.
+>
+> **Goal:** run the **same Rust codebase** on Desktop and in AWS (and later Azure), with **one governance model**, **enterprise identity** and **central observability**.
+>
+> *In scope:* the core/infrastructure boundary, the cloud runtime, identity, state, tools, models, governance and observability. *Out of scope:* rewriting the AgentLoop, the 5-file spec format and the desktop UI — the desktop gets **minimal refactoring only**, just enough to share one codebase with the cloud.
+
+**What xAgents is today**
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    UI["React + TS UI"] <--> IPC["Tauri IPC"] <--> CORE["Rust Core<br/>GOAP ReAct Loop"]
+    CORE --> LLM["LLM Gateway<br/>Bedrock · Azure · Ollama"]
+    CORE --> TOOLS["Tools<br/>File · CSV · Excel · PDF · MCP"]
+    CORE --> DB[("SQLite<br/>State + Audit")]
+```
+
+**What is in scope**
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    U["Enterprise users"] --> D["Desktop app<br>Tauri + React"]
+    U --> W["Web UI<br>org-wide agents"]
+    CB["ONE Rust<br>codebase in Git"] -.-> DCORE
+    CB -.-> CCORE
+    CB -.-> ZCORE
+
+    D --> DCORE["Rust Core<br>AgentLoop"]
+    DCORE --> SQL[("SQLite")]
+    DCORE --> LAN[("LanceDB")]
+    W --> CCORE["Same Rust Core<br>in AWS"]
+
+    subgraph Current["Current state<br>(minimal refactoring only,<br>to keep one codebase for cloud)"]
+        D
+        DCORE
+        SQL
+        LAN
+    end
+
+    subgraph InScope["In scope<br>(newly added)"]
+        W
+        CCORE
+        ZCORE["Same Rust Core<br>in Azure (future)"]
+        AWSRDS[("Amazon RDS PostgreSQL")]
+        AWSOPEN[("Amazon OpenSearch")]
+    end
+    CCORE --> AWSRDS
+    CCORE --> AWSOPEN
+    CCORE --> MCP["External MCP tools"]
+    DCORE --> MCP["External MCP tools"]
+```
+
+### The naive first draft
+
+"Fork the core for the cloud, hard-wire it to cloud services, sync every desktop's data up, and call it from a web UI."
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    USER["User"] --> DESKAPP["Desktop app<br>React FE"] --> DESK["Desktop core<br>with SQLite, LanceDB"]
+    USER --> WEB["Web UI"]
+    DESK -->|"sync all data up"| S3[("S3 / cloud DB")]
+    WEB -->|"sync API call,<br>waits for whole run"| FORK["Forked cloud core<br>with Postgres, OpenSearch, Gateway"]
+    FORK --> S3
+```
+
+**Why the first draft fails → what it needs** (each fix is a section of this chapter):
+
+| Why it fails | What it needs | Section |
+| --- | --- | --- |
+| A forked cloud core means two codebases that drift apart; every fix and every skills-governance rule must be made twice | **One Rust codebase**; desktop and cloud differ only in the adapters plugged into it | [15.3](#sec-boundary) |
+| The core is hard-wired to its stores (today the AgentLoop calls SQLite, LanceDB and a `match` on the LLM provider directly), so moving to cloud means editing the loop | Extract **provider interfaces**, wrap the desktop implementations behind them, add cloud implementations alongside | [15.4](#sec-providers) |
+| Syncing all desktop data up breaks the rule that sensitive data stays on-device unless explicitly routed | Desktop runs keep their data locally; **org-wide agents** use cloud persistence; data moves only when a user routes it | [15.7](#sec-state) |
+| A synchronous API call that waits for the whole multi-step run outlasts API Gateway's ~30 s integration timeout | **Submit the run, return a run ID, stream progress** | [15.6](#sec-frontdoor) |
+| A web UI calling the core directly has no enterprise auth | Reuse the desktop's **Azure Entra ID** tenant, validated by an **API Gateway JWT authorizer** | [15.6](#sec-frontdoor) |
+
+> **The one-line thesis of this chapter:** *Refactor for portability first; add cloud infrastructure second.* AWS should provide **managed implementations**, not take over the **behaviour** of the harness.
+
+---
+
+## 15.1 The Method: draw the boundary, then bind each environment {#sec-method}
+
+Most "move it to the cloud" designs start with services. A harness design must start with a **boundary**: what the platform *is* (its behaviour) versus what it *uses* (its infrastructure). Every service decision after that is just choosing an implementation for one side of that boundary.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    A["Working desktop<br>harness"] --> B["1. Draw the boundary<br>core vs environment"]
+    B --> C["2. Extract interfaces<br>provider traits"]
+    C --> D["3. Pick a cloud runtime<br>for the unchanged core"]
+    D --> E["4. Bind each provider<br>to a managed service"]
+    E --> F["5. Same core on Desktop,<br>AWS now, Azure later"]
+    X["Cross-cutting: identity, governance,<br>observability, delivery"] -.-> C
+    X -.-> D
+    X -.-> E
+```
+
+| Step | Question the architect answers | Winning choice (this case) | Section |
+| --- | --- | --- | --- |
+| 1 | What are the real **architectural drivers?** | — | [15.2](#sec-drivers) |
+| 2 | **Boundary**: what does the core own vs the environment? | Core owns behaviour; environment owns infrastructure | [15.3](#sec-boundary) |
+| 3 | **Portability**: how does one core talk to many backends? | Provider traits (ports and adapters) | [15.4](#sec-providers) |
+| 4 | **Runtime**: where does the core run in AWS? | **Amazon EKS** (AgentCore Runtime = strong alternative; Harness rejected) | [15.5](#sec-runtime) |
+| 5 | **Front door**: how do users and tokens get in? | **Amplify** + **Entra ID** + **API Gateway** (async submit, stream progress) | [15.6](#sec-frontdoor) |
+| 6 | **State**: where do persistence, memory and knowledge live? | **RDS PostgreSQL**, AgentCore Memory (optional), **OpenSearch / Bedrock KB** | [15.7](#sec-state) |
+| 7 | **Tools and registry**: how are tools reached and catalogued? | **AgentCore Gateway** + **AWS Agent Registry** (optional) | [15.8](#sec-tools) |
+| 8 | **Models**: how are LLMs reached and controlled? | **Bedrock** + Azure OpenAI behind `LlmProvider`; **Bedrock Guardrails** | [15.9](#sec-models) |
+| 9 | **Governance**: who approves skills and risky actions? | Skills lifecycle in core; **Step Functions + EventBridge** for approvals | [15.10](#sec-governance) |
+| 10 | **Observability**: how do we see inside a loop? | **OpenTelemetry → AgentCore Observability / CloudWatch** | [15.11](#sec-observability) |
+| 11 | **Delivery**: in what order do we build it? | Refactor → contract tests → cloud providers → deploy | [15.12](#sec-delivery) |
+
+> **Architect's takeaway:** A harness is **behaviour wrapped around infrastructure**. Draw that line first; every AWS decision then becomes "which implementation sits behind this interface?" — a far smaller, safer decision than "where does the agent live?".
+
+---
+
+## 15.2 Turn requirements into architectural drivers {#sec-drivers}
+
+> * ❓ How do "run it on desktop *and* in the cloud" wishes become design constraints?
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    R1["Same agents on desktop,<br>AWS now, Azure later"] --> D1["Portability:<br>one codebase, many bindings"]
+    R2["Custom GOAP ReAct loop<br>is the differentiator"] --> D2["Runtime ownership:<br>no managed harness"]
+    R3["Sensitive data stays<br>on-device unless routed"] --> D3["Data residency<br>by deployment"]
+    R4["Entra ID already in use"] --> D4["Reuse enterprise identity"]
+    R5["Skills need approval<br>before use"] --> D5["Governance as<br>source of truth"]
+    R6["Org-wide agents for<br>many users"] --> D6["Multi-user scale<br>+ central observability"]
+    R7["Multiple LLM vendors"] --> D7["Model swappability"]
+```
+
+| Customer requirement | Architectural driver | Implication |
+| --- | --- | --- |
+| Same agents on Desktop and AWS, with Azure to follow | **Portability** | Core depends on interfaces, never on SQLite/LanceDB/Bedrock directly; cloud runtime should not lock in to one provider |
+| The custom AgentLoop is the product | **Runtime ownership** | Reject anything that replaces the loop (managed harnesses) |
+| Sensitive data stays on-device by default | **Data residency** | Each deployment owns its own state; no silent desktop→cloud sync |
+| Entra ID SSO already works on desktop | **Identity reuse** | Same tenant and app registration in the cloud |
+| Skills go Draft → Approval → Enable | **Governance** | Lifecycle lives in core; cloud only adds central policy |
+| Many users, long multi-step runs | **Scale + no timeouts** | Long-lived containers or long sessions, not short-lived functions; async front door |
+| Ollama, Azure OpenAI, Bedrock | **Model swappability** | Model choice is configuration behind `LlmProvider` |
+
+> **A design lever worth noticing:** *the desktop app is already the reference implementation.* Because every capability (memory, tools, knowledge, models) already works locally, the cloud version is **not new features** — it is **new adapters**. That reframing alone removes most of the migration risk.
+
+> **Architect's takeaway:** "Our loop is the differentiator" is an architectural driver. It rules out managed agent harnesses *before* you compare their features — exactly as "short-staffed" ruled out EMR in Chapter 11.
+
+---
+
+## 15.3 Draw the boundary: core vs environment {#sec-boundary}
+
+> * ❓ What must be identical everywhere, and what is allowed to differ?
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph Core["xAgents Core owns BEHAVIOUR<br>(identical everywhere)"]
+        direction TB
+        C1["AgentLoop + observation loop"]
+        C2["Planning, orchestration,<br>workflow execution"]
+        C3["Agent definitions<br>5-file spec"]
+        C4["Tool dispatch +<br>multi-LLM routing"]
+        C5["Knowledge / RAG logic"]
+        C6["Skills governance lifecycle"]
+    end
+
+    subgraph Env["Environment owns INFRASTRUCTURE<br>(differs per deployment)"]
+        direction TB
+        E1["Compute + networking"]
+        E2["Persistence + vector stores"]
+        E3["Tool + LLM connectivity"]
+        E4["Identity, observability,<br>operations"]
+    end
+
+    Core -->|"talks only through<br>provider interfaces"| Env
+```
+
+| Layer | Owns | Changes per deployment? |
+| --- | --- | --- |
+| **xAgents Core** | AgentLoop, planning, workflows, agent spec, tool dispatch, LLM routing, RAG logic, skills governance | **Never** |
+| **Providers (adapters)** | Translating a core request into SQLite, Postgres, LanceDB, OpenSearch, MCP, Bedrock… | **Yes — this is the only thing that changes** |
+| **Environment** | Compute, network, managed services, identity plumbing, monitoring | **Yes** |
+
+> **⚠️ The anti-pattern this boundary prevents:** moving business logic *into* the cloud — e.g. encoding approval rules in Step Functions, or retry/planning logic in a managed harness. Each such move makes the desktop and cloud versions **behave differently**, and you end up maintaining two products — exactly the forked core from the naive first draft.
+
+> **Architect's takeaway:** *xAgents Core owns the behaviour. Providers own the integrations. AWS owns the managed infrastructure.* If a proposed change blurs those three, reject it.
+
+---
+
+## 15.4 Refactor for portability: provider interfaces {#sec-providers}
+
+> * ❓ How does one AgentLoop talk to SQLite on a laptop and PostgreSQL in AWS without an `if cloud {}` in sight?
+
+Today the loop is **hard-wired** to its infrastructure. The refactor inserts **provider traits** (the Rust word for interfaces) between the loop and everything it touches — the classic **ports-and-adapters** (hexagonal) pattern.
+
+**Before — direct coupling**
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    LOOP["AgentLoop"] --> SQL[("SQLite")]
+    LOOP --> LAN[("LanceDB")]
+    LOOP --> LLM["llm.rs<br>match provider"]
+```
+
+**After — the loop sees only interfaces**
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    LOOP["AgentLoop"] --> P1["PersistenceProvider"]
+    LOOP --> P2["MemoryProvider"]
+    LOOP --> P3["VectorStoreProvider"]
+    LOOP --> P4["RegistryProvider"]
+    LOOP --> P5["ToolProvider"]
+    LOOP --> P6["LlmProvider"]
+```
+
+A provider is just a small contract. For example:
+
+```rust
+trait MemoryProvider {
+    async fn store(&self, event: MemoryEvent);
+    async fn retrieve(&self, query: Query) -> Vec<MemoryEvent>;
+}
+```
+
+### 15.4.1 One core, many bindings: the Core–Provider architecture
+
+Each deployment is the **same core plus a different set of adapters**, chosen at start-up by configuration.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    CORE["SAME xAgents Core<br>owns behaviour"]
+    CORE -->|"provider interfaces"| B["Adapters own integrations"]
+
+    subgraph Desktop["Desktop"]
+        D1[("SQLite + LanceDB")]
+        D2["Local MCP · Ollama"]
+    end
+
+    subgraph AWS["AWS Cloud - now<br>(EKS)"]
+        A1[("RDS PostgreSQL ·<br>Bedrock KB")]
+        A2["AgentCore Gateway ·<br>Bedrock"]
+    end
+
+    subgraph Azure["Azure - future<br>(AKS)"]
+        Z1[("Azure PostgreSQL ·<br>Azure AI Search")]
+        Z2["MCP servers ·<br>Azure OpenAI"]
+    end
+
+    B --> Desktop
+    B --> AWS
+    B -.-> Azure
+
+    classDef core fill:#FFE0B2,stroke:#FB8C00,stroke-width:2px
+    class CORE core
+```
+
+| Provider | Desktop | AWS Cloud (now) | Azure (future, indicative) |
+| --- | --- | --- | --- |
+| `PersistenceProvider` | SQLite | RDS PostgreSQL | Azure Database for PostgreSQL |
+| `MemoryProvider` | SQLite | AgentCore Memory *or* Postgres-backed | Postgres-backed |
+| `VectorStoreProvider` | LanceDB | Bedrock Knowledge Bases, OpenSearch Serverless *or* pgvector on RDS | Azure AI Search *or* pgvector |
+| `ToolProvider` | Local MCP | AgentCore Gateway | MCP servers |
+| `RegistryProvider` | Local YAML / SQLite | AWS Agent Registry | Postgres-backed registry |
+| `LlmProvider` | Ollama, Azure OpenAI, Bedrock | Bedrock, Azure OpenAI | Azure OpenAI |
+
+> **Key nuance — contract tests are the real portability guarantee.** An interface only promises *shape*. Two memory providers can both compile and still disagree on ordering, deduplication or empty results. A shared **contract test suite** that every adapter must pass is what makes "the same agent behaves the same everywhere" true.
+
+> **Key nuance — managed AWS adapters are the least portable ones.** AgentCore Memory, Gateway and Agent Registry have no direct Azure twin. That is fine *because* they sit behind providers — but it is also why the Postgres-backed options stay valid: they are the ones that move to Azure unchanged.
+
+> **Architect's takeaway:** Portability is not a deployment feature; it is a **dependency direction**. Once the core points at interfaces instead of infrastructure, "add AWS" and "add Azure" become adapter work — not core work.
+
+---
+
+## 15.5 Choose the cloud runtime: EKS or AgentCore Runtime? {#sec-runtime}
+
+> * ❓ Where does an unchanged Rust core run in AWS for many users and long, multi-step runs — without locking out Azure later?
+
+Two candidates survive a first pass. Both can host the **same Rust container**, so this choice is about **operating model**, not code.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    W["Run the unchanged<br>xAgents Rust Core in AWS"] --> Q1{"Does the service<br>replace our AgentLoop?"}
+    Q1 -->|Yes| H["AgentCore Harness<br>REJECTED: AWS runs the loop;<br>GOAP core and 5-file spec lost"]
+    Q1 -->|No| Q2{"Survives long, multi-step<br>runs without timeouts?"}
+    Q2 -->|No| L["AWS Lambda<br>REJECTED: 15-min cap,<br>cold starts mid-run"]
+    Q2 -->|Yes| Q3{"Must the SAME runtime model<br>also run in Azure later?"}
+    Q3 -->|Yes| EKS["Amazon EKS - CHOSEN<br>Kubernetes: EKS now,<br>AKS later"]
+    Q3 -->|"No - AWS only"| ACR["AgentCore Runtime - STRONG ALTERNATIVE<br>serverless, microVM per session"]
+```
+
+### 15.5.1 What AgentCore Runtime actually offers
+
+It is easy to reject Runtime for the wrong reason, so state its contract precisely. Runtime is **framework- and language-agnostic**: any container that listens on **port 8080**, answers `POST /invocations` and `GET /ping`, and is built for **ARM64** can run in it — no Python SDK required. A Rust binary qualifies.
+
+| Runtime property | Why it matters for xAgents |
+| --- | --- |
+| **One microVM per session** (own CPU, memory, filesystem; destroyed after) | Strong isolation for untrusted tool work (PDF/Excel parsing, MCP calls) — without building it yourself |
+| **Serverless, consumption billing** | No cluster to run; agents mostly *wait* on LLMs, and Runtime bills active CPU, not idle wait |
+| **Long sessions** (default max lifetime 8 h, idle timeout 15 min, both configurable) | Fits multi-step runs that Lambda cannot |
+| **Built-in inbound JWT auth, streaming, WebSocket** | Can accept Entra tokens directly — fewer front-door components |
+| **Per-session limits** (e.g. 2 vCPU / 8 GB, 2 GB image) | Fine for a reasoning loop; tight for very large batch runs |
+
+### 15.5.2 Head-to-head
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    IMG["Same xAgents container<br>ARM64, port 8080,<br>/invocations + /ping"]
+    IMG --> EKS["Amazon EKS<br>you run the platform"]
+    IMG --> ACR["AgentCore Runtime<br>AWS runs the platform"]
+    EKS --> E1["+ same model on AKS later<br>+ no per-session caps<br>- you build isolation<br>- cluster ops + idle cost"]
+    ACR --> A1["+ microVM isolation free<br>+ serverless, pay when active<br>- AWS-only hosting model<br>- per-session size caps"]
+```
+
+| Criterion | Amazon EKS | AgentCore Runtime | Winner |
+| --- | --- | --- | --- |
+| **Same runtime model in Azure** | Kubernetes runs as AKS on Azure | No Azure equivalent | **EKS** |
+| **Session isolation** | Pods share a node kernel; needs sandboxed runtimes or per-tenant isolation work | microVM per session out of the box | **Runtime** |
+| **Operational burden** | Cluster upgrades, node scaling (Karpenter), patching | None — serverless | **Runtime** |
+| **Cost shape** | Pay for nodes even when idle | Pay per active session; waiting on LLMs is cheap | **Runtime** (spiky use) / **EKS** (steady high use) |
+| **Resource ceiling per run** | Size pods as large as needed | Capped per session | **EKS** for 1000s-of-files batch runs |
+| **Network / sidecar control** | Full | Managed, with VPC support | **EKS** |
+| **Team skills** | Needs Kubernetes skills | Needs only container skills | **Runtime** |
+
+**Decision for this case: Amazon EKS** — *because, and only because,* the brief makes **Azure** a future target and wants **one runtime model** across clouds, and because org-wide **batch runs over hundreds to thousands of files** can outgrow a per-session cap.
+
+> **Key nuance — "Kubernetes is portable" is mostly, not fully, true.** The container image and most deployment manifests carry over from EKS to AKS. Workload identity, ingress/load balancers, node autoscaling and storage classes are cloud-specific and must be re-done per cloud. Budget for that; don't promise "zero-change" Azure.
+
+**Rejected — and why**
+
+| Rejected option | Reason |
+| --- | --- |
+| **AgentCore Harness** | It *is* a managed agent loop: you declare model, tools, skills and instructions, and AWS runs the orchestration. Lifecycle hooks and a bring-your-own container exist, and it exports to Strands code — but the loop is never **ours**. Adopting it discards the GOAP ReAct core and the 5-file spec |
+| **AWS Lambda** | Agent runs are long and stateful; a 15-minute execution cap and cold starts fight that shape |
+| **AgentCore Runtime** | **Not rejected on capability** — it fits the Rust container and gives better isolation for less effort. Set aside only because it is an AWS-only hosting model and the brief wants the same model on Azure later |
+| **ECS Fargate** | A simpler middle ground for AWS-only, but offers neither cross-cloud parity (EKS → AKS) nor per-session microVMs (Runtime) |
+
+> **⚠️ Keep the door open — it is nearly free.** Build the core's HTTP server to satisfy Runtime's contract (port 8080, `/invocations`, `/ping`, ARM64) *even on EKS*. Then the runtime becomes a **deployment decision you can reverse**, not an architectural lock-in. A sensible split: **EKS for long batch runs and cross-cloud parity, AgentCore Runtime for interactive, per-user sessions that need strong isolation.**
+
+> **Key nuance — if Azure slips, flip the decision.** Remove the Azure requirement and Runtime wins most rows of the table above. Write that condition into the ADR so the choice is revisited, not inherited.
+
+### 15.5.3 Using AgentCore à la carte
+
+AgentCore is a **family** of services, each usable on its own — including by agents that are *not* hosted in AgentCore Runtime. Treat each one as a candidate *implementation*, never as the platform.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph No["Not adopted<br>(replaces the loop)"]
+        N2["Harness"]
+    end
+    subgraph Alt["Alternative runtime<br>(see 15.5.2)"]
+        N1["Runtime"]
+    end
+    subgraph Rec["Recommended<br>(control, no behaviour)"]
+        R1["Identity"]
+        R2["Policy<br>(for Gateway tool calls)"]
+        R3["Observability"]
+    end
+    subgraph Opt["Optional<br>(behind a provider)"]
+        O1["Memory"]
+        O2["Gateway"]
+        O3["Agent Registry"]
+    end
+    subgraph Fut["Future"]
+        F1["Browser"]
+        F2["Code Interpreter"]
+        F3["Evaluations,<br>Optimization"]
+    end
+```
+
+| AgentCore service | Decision | Why |
+| --- | --- | --- |
+| Harness | **No** | Replaces the AgentLoop |
+| Runtime | **Alternative** | Valid host for the same container; see trade-off above |
+| Identity | **Recommended** | Outbound OAuth token brokerage; agents never hold raw secrets |
+| Policy | **Recommended** | Cedar rules checked on every tool call **through Gateway** |
+| Observability | **Recommended** | OpenTelemetry-based agent traces in CloudWatch |
+| Memory, Gateway, Agent Registry | **Optional** | One implementation of a provider; Postgres-backed alternatives stay valid (and move to Azure) |
+| Browser, Code Interpreter | **Future** | Sandboxed tools behind `ToolProvider` — also the easy answer for untrusted code on EKS |
+| Evaluations, Optimization | **Future** | Score and improve agents from production traces |
+| Payments | **Not required** | Agent micropayments are outside platform scope |
+
+> **Architect's takeaway:** Reject the service that provides **behaviour** (Harness). Treat the **runtime** as a reversible hosting decision driven by cross-cloud parity versus isolation and ops effort. Adopt the services that provide **capabilities** behind your own interfaces.
+
+---
+
+## 15.6 Design the front door and identity {#sec-frontdoor}
+
+> * ❓ How do users reach org-wide agents, and how do we reuse the identity the desktop already uses?
+
+Agent runs take minutes, not milliseconds. API Gateway integrations time out in about 30 seconds, so the front door must be **asynchronous**: submit a run, get a run ID back immediately, and stream progress separately.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant User as Enterprise User
+    participant Web as React Web UI (Amplify)
+    participant Entra as Azure Entra ID
+    participant APIGW as API Gateway (JWT authorizer)
+    participant Core as xAgents Core (EKS)
+
+    User->>Web: Open xAgents web app
+    Web->>Entra: Sign in (OAuth2 + PKCE)
+    Entra-->>Web: Access token with groups
+    Web->>APIGW: POST /runs with token
+    APIGW->>APIGW: Validate token, throttle
+    APIGW->>Core: Forward via VPC Link
+    Core-->>Web: 202 Accepted + runId
+    Core-)Web: Progress and result over WebSocket
+```
+
+| Hop | Choice | Responsibility |
+| --- | --- | --- |
+| Web client | **AWS Amplify** | Host the React SPA with edge delivery and caching |
+| Identity | **Azure Entra ID** | SSO, MFA, groups, RBAC — **same tenant and app registration as desktop** (and already native to the future Azure target) |
+| API layer | **API Gateway HTTP API + JWT authorizer** | Validate Entra tokens, throttle; reach EKS privately via **VPC Link** to an internal load balancer |
+| Progress stream | **API Gateway WebSocket API** (or SSE through the load balancer) | Push step-by-step progress for long runs |
+| Outbound credentials | **AgentCore Identity** | Broker OAuth tokens for downstream tools so agents never hold raw secrets |
+
+> **Key nuance — two identity problems, not one.** *Inbound*: "who is this user?" (Entra + JWT authorizer). *Outbound*: "what may this agent call **on the user's behalf**?" (token brokerage). Mixing them is how agents end up with long-lived API keys in memory — the exposure the desktop design worked to avoid.
+
+> **If you choose AgentCore Runtime instead:** Runtime can validate Entra JWTs itself and supports streaming and WebSocket, so the front door can shrink to Amplify → Runtime endpoint.
+
+> **Architect's takeaway:** Reuse identity, don't rebuild it — and never put a long-running agent behind a synchronous API call. **Submit, acknowledge, stream.**
+
+---
+
+## 15.7 Place state, memory and knowledge {#sec-state}
+
+> * ❓ Where does each kind of agent state live — and what is *never* shared between desktop and cloud?
+
+Agents produce three different kinds of state. Each has its own provider and its own store.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    S["Agent state"] --> Q1{"What kind?"}
+    Q1 -->|"Runs, steps, audit"| P["PersistenceProvider<br>Desktop: SQLite<br>AWS: RDS PostgreSQL"]
+    Q1 -->|"What the agent remembers"| M["MemoryProvider<br>Desktop: SQLite<br>AWS: AgentCore Memory or Postgres"]
+    Q1 -->|"What the agent can look up"| K["VectorStoreProvider<br>Desktop: LanceDB<br>AWS: Bedrock KB, OpenSearch or pgvector"]
+    LOOP["In-flight loop state<br>stays in memory, per run"] -.-> S
+```
+
+| State | Desktop | AWS | Why this AWS choice |
+| --- | --- | --- | --- |
+| **Persistence** (runs, steps, audit) | SQLite | **RDS PostgreSQL** | Relational, familiar to operate, and the same engine exists as Azure Database for PostgreSQL |
+| **Memory** (session, long-term, preference) | SQLite | **AgentCore Memory** *or* Postgres-backed | Managed memory types if wanted; Postgres keeps it portable to Azure |
+| **Knowledge / RAG** | LanceDB | **Bedrock Knowledge Bases** (managed ingest), **OpenSearch Serverless** (retrieval control) *or* **pgvector on RDS** (most portable), docs in **S3** | Note: Bedrock KB is a managed pipeline that *sits on* a vector store such as OpenSearch Serverless or Aurora pgvector — not a rival to it |
+
+> **⚠️ Shared persistence vs "data stays on-device".** These two goals collide if you sync the desktop's SQLite to the cloud by default — the naive first draft's mistake. Resolve it with one rule: **each deployment owns its own state.** Desktop runs stay local; org-wide runs live in the cloud. What *is* shared is the **definition plane** — approved agents and skills from the registry. Data crosses the boundary only when a user explicitly routes it.
+
+> **Key nuance — the loop itself stays in memory.** A run is bounded (iteration and token limits), so its working state lives in the core's RAM and is written out step by step. That is what lets a paused run (e.g. awaiting human approval, [15.10](#sec-governance)) be resumed from Postgres.
+
+> **Architect's takeaway:** Classify state before you place it. **Run records, memory and knowledge** are three different access patterns — and "shared across deployments" should apply to *definitions*, not *data*.
+
+---
+
+## 15.8 Connect tools and the registry {#sec-tools}
+
+> * ❓ How do cloud agents reach enterprise systems, and how does everyone discover approved agents, skills and tools?
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    CORE["AgentLoop"] --> TP["ToolProvider"]
+    CORE --> RP["RegistryProvider"]
+
+    TP -->|"Desktop"| MCP["Local + external MCP<br>+ file, CSV, Excel, PDF"]
+    TP -->|"AWS"| GW["AgentCore Gateway<br>MCP + OpenAPI wrapping, OAuth"]
+    GW --> ENT["External tools<br>SAP, SharePoint,<br>M365, APIs"]
+    MCP --> ENT
+
+    RP -->|"Desktop"| LR[("Local YAML / SQLite")]
+    RP -->|"AWS"| AR["AWS Agent Registry<br>agents, MCP servers, skills"]
+    LR -.->|"pull approved<br>agents and skills"| AR
+```
+
+| Concern | Desktop | AWS | What the cloud adds |
+| --- | --- | --- | --- |
+| **Tools** | Local MCP + built-in file tools; external MCP tools directly | **AgentCore Gateway** | One MCP entry point; turns APIs and Lambda functions into tools, connects existing MCP servers, handles OAuth to targets |
+| **Tool policy** | — | **AgentCore Policy** on the Gateway | Cedar rules (default deny) on who may call which tool with which inputs |
+| **Registry** | Local YAML / SQLite | **AWS Agent Registry** | Org-wide catalogue of agents, MCP servers and skills with an approval workflow; the desktop pulls approved definitions from it |
+
+> **Key nuance — Gateway is a door, not a brain.** Tool *dispatch* (which tool, when, with what arguments) stays in the core's `tools.rs`. The Gateway only decides *how* the call reaches the target and, with Policy attached, *whether it is allowed*.
+
+> **⚠️ Policy only sees what passes through the Gateway.** Desktop agents calling external tools directly, local file tools and CSV/Excel/PDF parsing all bypass it. Either route org-wide tool calls through the Gateway, or keep an equivalent check in the core's dispatch.
+
+> **Naming note:** the registry service is **AWS Agent Registry**, part of AgentCore. It launched in preview in April 2026 — check its current status before committing a production design to it.
+
+> **Architect's takeaway:** Put a **managed gateway between cloud agents and enterprise systems** — it centralises auth and policy for every tool call. Keep the **decision** to call a tool inside the core.
+
+---
+
+## 15.9 Route models and guard them {#sec-models}
+
+> * ❓ How do we keep models swappable and still enforce enterprise controls on every call?
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    LOOP["AgentLoop"] --> LP["LlmProvider<br>multi-LLM routing"]
+    LP --> GR["Bedrock Guardrails<br>ApplyGuardrail API"]
+    GR --> BR["Amazon Bedrock<br>Anthropic and others"]
+    GR --> AZ["Azure OpenAI"]
+    LP -.->|"Desktop only"| OL["Ollama<br>local models"]
+```
+
+- **`LlmProvider`** keeps model choice as configuration: an agent can move from Ollama on a laptop to Bedrock in AWS — or Azure OpenAI in Azure — without touching its spec.
+- **Bedrock Guardrails** add PII redaction and content filtering at the model boundary — a cloud control that the desktop didn't need centrally.
+- **Ollama** remains a desktop-only option: fully local inference for the most sensitive personal work.
+
+> **⚠️ Attach guardrails at the interface, not at the vendor.** Guardrails configured *on a Bedrock model call* only cover Bedrock. Bedrock Guardrails also offers a standalone **`ApplyGuardrail`** API that checks any text, so `LlmProvider` can call it on the way in and out for **every** vendor — Azure OpenAI included. Otherwise "governed" depends on which model the agent picked.
+
+> **Architect's takeaway:** Route models through **one interface** and enforce controls **at that interface** — not per vendor — so swapping a model never silently drops a guardrail.
+
+---
+
+## 15.10 Keep governance in the core, add central policy {#sec-governance}
+
+> * ❓ Who decides which skills may run, and who approves a risky action mid-run?
+
+The **skills lifecycle** already exists in the core and stays the **source of truth** in every deployment:
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> Validation
+    Validation --> Approval
+    Approval --> Enabled
+    Enabled --> Deprecated
+    Deprecated --> Retired
+    Retired --> [*]
+    Validation --> Draft: fails checks
+```
+
+The cloud adds **human-in-the-loop** for critical actions during a run:
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+sequenceDiagram
+    participant Core as xAgents Core (EKS)
+    participant EB as EventBridge
+    participant SF as Step Functions
+    participant Approver
+    participant DB as RDS PostgreSQL
+
+    Core->>DB: Save run state, pause
+    Core->>EB: Emit "approval needed" event
+    EB->>SF: Start approval workflow
+    SF->>Approver: Request decision
+    Approver-->>SF: Approve or reject
+    SF->>Core: Resume with decision (task token callback)
+    Core->>DB: Load state, continue run
+```
+
+| Control | Lives in | Why |
+| --- | --- | --- |
+| Skills lifecycle (Draft → Retired) | **xAgents Core** | Same rules on desktop and in every cloud |
+| Skill and agent publication | **AWS Agent Registry** approval workflow | Only approved records are discoverable org-wide |
+| Tool-call authorisation | **AgentCore Policy** on Gateway | Deterministic Cedar rules outside the prompt and the code |
+| Approvals and escalations | **Step Functions + EventBridge** | Durable waiting for humans; the core does not block on a person |
+
+> **⚠️ Keep the decision rule in the core.** Step Functions should *carry* the approval, not *define* when an approval is needed. If the "needs approval" rule lives in a workflow definition, the desktop version — and the future Azure version — will behave differently.
+
+> **Architect's takeaway:** Governance **rules** live in the core; governance **plumbing** (policy stores, approval workflows) lives in the environment.
+
+---
+
+## 15.11 Make the agents observable {#sec-observability}
+
+> * ❓ An agent can "succeed" with the wrong answer after 12 tool calls. How do you see inside the loop?
+
+A backend fails loudly; a pipeline fails silently ([Chapter 11](11-serverless-data-analytics.html)); an **agent fails plausibly** — it returns a confident result after a wrong turn. Observability must therefore trace **each step of the reasoning loop**, not just the request — on the desktop as well as in the cloud.
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph RUN["One agent run<br>(desktop or cloud)"]
+        direction TB
+        S1["Plan step"] --> S2["Tool call"] --> S3["Observation"] --> S4["LLM call"] --> S5["Result"]
+    end
+
+    AOBS["AgentCore Observability<br>agent traces and spans"]
+    CW["CloudWatch<br>metrics, logs, alarms"]
+
+    RUN -.->|"OpenTelemetry step traces"| AOBS
+    RUN -.->|"tokens, latency, errors"| CW
+    AOBS -.-> CW
+```
+
+**Signals worth watching**
+
+| Signal | Why it matters |
+| --- | --- |
+| Iterations per run hitting the cap | The agent is looping without converging |
+| Tool-call error rate per tool | A broken integration, not a bad model |
+| Tokens and cost per run / per agent | Runaway agents are runaway bills |
+| Approvals pending too long | Runs silently parked on a human |
+| Guardrail interventions | Agents probing sensitive data or content |
+
+> **Key nuance — instrument once with OpenTelemetry.** AgentCore Observability builds on OpenTelemetry and CloudWatch. Emit OTel spans from the core once, and the same instrumentation serves the desktop, EKS and — later — an Azure-side collector.
+
+> **⚠️ Desktop traces must respect data residency.** When the desktop core sends traces to the cloud, send **step metadata** (tool name, tokens, latency, errors) — not prompts, file contents or tool outputs. Otherwise observability quietly becomes the "sync all data up" path the design rejected.
+
+> **Key nuance — traces are also an asset.** Step-level traces of real runs are the raw material for later **evaluation and fine-tuning**. Store them deliberately (with the same data-residency rule as [15.7](#sec-state)), not as an accident of logging.
+
+> **Architect's takeaway:** For agents, observe the **loop**, not just the endpoint — alarm on non-convergence, tool failures and cost per run.
+
+---
+
+## 15.12 Deliver it: build order and pipeline {#sec-delivery}
+
+> * ❓ In what order do you do all this without breaking the desktop product?
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart TD
+    B1["1. Extract provider traits<br>from the core"] --> B2["2. Wrap existing desktop<br>implementations"]
+    B2 --> B3["3. Contract tests<br>for every provider"]
+    B3 --> B4["4. Build AWS providers<br>Postgres, KB, Gateway, Registry"]
+    B4 --> B5["5. Deploy the UNCHANGED<br>core on EKS"]
+    B5 --> B6["6. Add central governance<br>and observability"]
+    B6 -.->|"later"| B7["7. Azure providers +<br>same core on AKS"]
+    B2 -.->|"desktop ships as before"| SAFE["No user-visible change<br>until step 5"]
+```
+
+**One codebase, every target**
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    DEV["Developer"] --> GIT["ONE Rust<br>codebase in Git"] --> CI["CI/CD<br>cargo build + tests"]
+    CI --> DESK["Desktop installer<br>Tauri bundle"]
+    CI --> ECR["Amazon ECR<br>ARM64 container image"]
+    ECR --> EKS["Amazon EKS"]
+    ECR -.->|"same image, optional"| ACR["AgentCore Runtime"]
+    CI -.->|"future"| AKS["Azure AKS"]
+```
+
+> **Architect's takeaway:** **Refactor first, cloud second.** Steps 1–3 are invisible to users and de-risk everything after them; by step 5, "deploying to AWS" is just running a container that already passed the same tests as the desktop — and step 7 repeats only steps 4–5 for Azure.
+
+---
+
+## 15.13 The reference architecture {#sec-reference}
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    USER["Enterprise user"]
+    ENTRA["Azure Entra ID<br>SSO, MFA, groups"]
+
+    subgraph DESKTOP["Desktop harness - personal agents"]
+        TAURI["Tauri + React UI"] --> DCORE["xAgents Core"]
+        DCORE --> DSTORE[("SQLite + LanceDB")]
+    end
+
+    subgraph CLOUD["AWS harness - org-wide agents"]
+        AMP["Amplify<br>React web UI"] --> APIGW["API Gateway<br>JWT authorizer,<br>async + WebSocket"]
+        subgraph EKS["Amazon EKS"]
+            CCORE["SAME xAgents Core"]
+        end
+        APIGW --> CCORE
+        CCORE --> RDS[("RDS PostgreSQL")]
+        CCORE --> KB[("Bedrock KB")]
+        CCORE --> GW["AgentCore Gateway<br>+ Policy"]
+        CCORE --> REG["AWS Agent Registry"]
+        CCORE --> GRD["Bedrock Guardrails"] --> LLM["Bedrock ·<br>Azure OpenAI"]
+        OBS["AgentCore Observability<br>+ CloudWatch"]
+    end
+
+    USER --> TAURI
+    USER --> AMP
+    TAURI <-.->|"sign-in"| ENTRA
+    AMP <-.->|"sign-in"| ENTRA
+    GW --> ENT["External Tools<br>SAP, SharePoint,<br>M365, APIs"]
+    DCORE --> ENT
+    DCORE -.->|"pull approved<br>agents and skills"| REG
+    CCORE -.->|"OpenTelemetry step traces"|OBS
+    DCORE -.->|"OpenTelemetry step traces"|OBS
+
+    classDef core fill:#FFE0B2,stroke:#FB8C00,stroke-width:2px
+    class DCORE,CCORE core
+```
+
+*Left out for readability: Step Functions approvals ([15.10](#sec-governance)), AgentCore Identity for outbound tokens ([15.6](#sec-frontdoor)), and the future Azure harness, which mirrors the AWS one on AKS ([15.4.1](#sec-providers)).*
+
+**How each driver is satisfied**
+
+| Driver | Where it is met |
+| --- | --- |
+| Portability | One Rust codebase; provider traits + contract tests; same core on Desktop and EKS now, AKS later |
+| Runtime ownership | xAgents AgentLoop everywhere; Harness rejected; Runtime kept as a reversible hosting option |
+| Data residency | Each deployment owns its state; only approved definitions are shared; desktop traces carry metadata only |
+| Identity reuse | Same Entra tenant/app; JWT authorizer inbound, AgentCore Identity outbound |
+| Governance | Skills lifecycle in core; Agent Registry approvals; Cedar policy on Gateway tool calls; Step Functions for run-time approvals |
+| Scale, no timeouts | Long-lived pods on EKS with Karpenter; async submit-and-stream front door |
+| Model swappability | `LlmProvider` over Bedrock, Azure OpenAI, Ollama; Guardrails at the boundary |
+| Observability | OpenTelemetry step-level traces from desktop and cloud into AgentCore Observability / CloudWatch |
+
+---
+
+## 15.14 When *not* to architect it this way {#sec-not}
+
+An honest architect states the boundaries of their own recommendation.
+
+| Symptom | Why this design struggles | Better fit |
+| --- | --- | --- |
+| AWS-only, no Azure plans | EKS is heavier than needed | **AgentCore Runtime** for the same container |
+| Small team, no Kubernetes skills | EKS operations are real work | **AgentCore Runtime**; revisit EKS when Azure becomes real |
+| Mostly interactive, spiky per-user sessions | Idle nodes cost money; isolation is DIY | **AgentCore Runtime** (microVM per session, pay when active) |
+| The loop is *not* your differentiator | Owning a harness is cost without advantage | **AgentCore Harness** / Strands — buy the loop |
+| Untrusted code per session (code exec, browsing) | Pods share a node kernel | Offload to **AgentCore Code Interpreter / Browser** as tools, or host those sessions on **AgentCore Runtime** |
+| Only one deployment target, ever | Provider traits add indirection you won't use | Keep it simple, couple directly |
+| Strict "no data leaves the device" for all work | Cloud agents can't meet it | Desktop harness only, with **Ollama** |
+
+> **Architect's takeaway:** Ports-and-adapters pays off **only when there are genuinely multiple targets**. xAgents has Desktop and AWS now, with Azure next — that is what justifies the refactor *and* the choice of EKS. Remove the Azure requirement and the winning runtime changes.
+
+---
+
+## 15.15 Architect's cheat sheet {#sec-cheatsheet}
+
+The cloud decision-making for the requirement mentioned at the beginning of this chapter:
+
+```{mermaid}
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1E88E5', 'lineColor': '#424242', 'fontSize': '14px'}}}%%
+flowchart LR
+    ROOT["Agent harness<br>Desktop to AWS"]
+
+    ROOT --> B["Boundary"]
+    B --> B1["One Rust codebase"]
+    B --> B2["Core owns behaviour"]
+    B --> B3["Providers own<br>integrations"]
+
+    ROOT --> R["Runtime"]
+    R --> R1["EKS: AKS later,<br>big batch runs"]
+    R --> R2["AgentCore Runtime:<br>isolation, no ops"]
+    R --> R3["Reject Harness:<br>replaces the loop"]
+    R --> R4["Same container<br>fits both"]
+
+    ROOT --> S["State + tools"]
+    S --> S1["SQLite to RDS Postgres"]
+    S --> S2["LanceDB to KB /<br>OpenSearch"]
+    S --> S3["MCP to<br>AgentCore Gateway"]
+    S --> S4["Share definitions,<br>not data"]
+
+    ROOT --> X["Cross-cutting"]
+    X --> X1["Async: submit,<br>202, stream"]
+    X --> X2["Guardrails at<br>LlmProvider"]
+    X --> X3["Trace every<br>loop step"]
+    X --> X4["Refactor first,<br>cloud second"]
+```
+
+* **Boundary**
+    * A harness = **behaviour** (AgentLoop, planning, spec, dispatch, routing, RAG logic, skills governance) + **infrastructure**. Draw that line first.
+    * *Core owns behaviour. Providers own integrations. AWS owns managed infrastructure.*
+    * A forked cloud core is the failure mode: **one codebase**, minimal desktop refactoring.
+
+* **Portability**
+    * Extract **provider traits**: Persistence, Memory, VectorStore, Registry, Tool, Llm.
+    * **Contract tests** make "same behaviour everywhere" true, not just "same interface".
+    * Managed AWS adapters (AgentCore Memory, Gateway, Registry) are the least portable — keep Postgres-backed options for Azure.
+
+* **Runtime**
+    * **AgentCore Runtime** runs any ARM64 container on port 8080 with `/invocations` and `/ping` — Rust included. It gives microVM-per-session isolation and serverless billing.
+    * **EKS** wins *here* only because of **Azure (AKS) later** and **large batch runs**. Drop Azure and Runtime wins.
+    * Kubernetes moves the container and most manifests — not identity, ingress or autoscaling.
+    * Build the container to Runtime's contract anyway, so the runtime choice stays **reversible**.
+    * **AgentCore Harness** rejected — AWS runs the loop. **Lambda** rejected — 15-minute cap.
+    * Use **AgentCore à la carte**: Identity, Policy, Observability recommended; Memory, Gateway, Agent Registry optional behind providers.
+
+* **Front door and identity**
+    * **Amplify** hosts the web UI; **API Gateway JWT authorizer** validates **Entra ID** tokens.
+    * Agent runs outlast API Gateway's ~30 s integration timeout — **submit, return a run ID, stream progress**.
+    * Inbound identity (who is the user) ≠ outbound identity (what can the agent call for them).
+
+* **State, tools, models**
+    * Persistence → **RDS PostgreSQL**; memory → **AgentCore Memory** or Postgres; knowledge → **Bedrock KB** (on OpenSearch Serverless) or **pgvector** for portability.
+    * **Each deployment owns its data**; share approved **definitions**, not runs.
+    * **AgentCore Gateway** is the door to enterprise systems; the **decision** to call a tool stays in the core.
+    * Call **`ApplyGuardrail`** from `LlmProvider` so Bedrock *and* Azure OpenAI paths are covered.
+    * **AgentCore Policy** only governs calls that go **through Gateway** — desktop direct calls bypass it.
+
+* **Governance and observability**
+    * Skills lifecycle (**Draft → Validation → Approval → Enable → Deprecation → Retirement**) stays in core.
+    * **Step Functions + EventBridge** carry approvals; the core decides when one is needed.
+    * Agents fail **plausibly** — trace each loop step with **OpenTelemetry**, from desktop and cloud; alarm on non-convergence, tool errors, cost per run.
+    * Desktop traces carry **metadata, not content**.
+
+* **Final conclusion**
+    * **Refactor first. Cloud second.** One Rust codebase runs on Desktop, in AWS now and in Azure later — only the providers change. AWS provides infrastructure and managed implementations, **not business logic**.
+
+---
+
+## Sources
+
+*Based on internal xAgents architecture notes — "xAgents: Current and Future Expected State" (desktop architecture, core-and-adapters refactor, AWS target architecture and AgentCore recommendations). Format follows Chapters 10 and 11 of this series.*
+
+*AWS service facts checked against AWS documentation and announcements in October 2026:*
+
+* [Amazon Bedrock AgentCore documentation](https://docs.aws.amazon.com/bedrock-agentcore/) and [FAQs](https://aws.amazon.com/bedrock/agentcore/faqs/)
+* [AgentCore Runtime HTTP protocol contract](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-http-protocol-contract.html) and [lifecycle settings](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-lifecycle-settings.html)
+* [AgentCore quotas](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/bedrock-agentcore-limits.html)
+* [AgentCore harness](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness.html) and [GA announcement (June 2026)](https://aws.amazon.com/about-aws/whats-new/2026/06/amazon-bedrock-agentcore-harness-generally-available/)
+* [Policy in AgentCore](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/policy.html)
+* [AWS Agent Registry](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/registry.html)
+* [AgentCore payments](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/payments.html)
