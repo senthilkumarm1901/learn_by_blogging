@@ -36,6 +36,62 @@ flowchart LR
     RDI --> DS --> AL --> OS
 ```
 
+### Contents of the blog in 1 Pic:
+
+```{mermaid}
+flowchart LR
+    %% Left Subgraph: Algorithm Patterns
+    subgraph PAT ["Algorithm Patterns"]
+        direction TB
+        Start{"What kind of<br>problem is it?"}
+        Start -->|"Sorted Array<br>/ Pairs"| TP["Two Pointers<br>Pattern"]
+        Start -->|"Contiguous<br>Subarray"| SW["Sliding Window<br>Pattern"]
+        Start -->|"Fast Counting<br>/ Duplicates"| HM["Hash Map<br>Frequency Pattern"]
+        Start -->|"Sorted Data /<br>Search Space"| BS["Binary Search<br>Pattern"]
+        Start -->|"Shortest Path /<br>Level-by-Level"| BFS["Breadth-First<br>Search (BFS)"]
+        Start -->|"All Combinations<br>/ Paths"| DFS["Depth-First<br>Search<br>/ Backtracking"]
+    end
+
+    %% Right Subgraph: Core Data Structures (Unlinked)
+    subgraph DS ["Core Data<br>Structures"]
+        direction TB
+        A["1. Arrays & Strings<br><br>Contiguous memory,<br>index-based"]
+        B["2. Hash Maps & Sets<br><br>Key-value pairs,<br>O(1) instant<br>lookups"]
+        C["3. Linked Lists<br><br>Nodes connected<br>via pointers"]
+        D["4. Stacks & Queues<br><br>LIFO vs.<br>FIFO ordering"]
+        E["5. Trees & Graphs<br><br>Hierarchical &<br>networked data"]
+    end
+
+    %% Connections: Patterns -> Data Structures
+    TP -->|"uses"| A 
+    TP --> |"uses"| C
+    SW -->|"uses"| A 
+    SW --> |"uses"| B
+    HM -->|"uses"| B
+    BS -->|"uses"| A
+    BFS -->|"uses Queue<br>(FIFO)"| D
+    BFS -->|"traverses"| E
+    DFS -->|"uses Stack /<br>Recursion"| D
+    DFS -->|"traverses"| E
+
+    %% Styling Patterns
+    style PAT fill:#f8fafc,stroke:#94a3b8,stroke-width:2px
+    style Start fill:#1e293b,color:#ffffff,stroke:#0f172a
+    style TP fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style SW fill:#e0e7ff,stroke:#4f46e5,stroke-width:2px
+    style HM fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+    style BS fill:#fef9c3,stroke:#ca8a04,stroke-width:2px
+    style BFS fill:#fae8ff,stroke:#a21caf,stroke-width:2px
+    style DFS fill:#ffe4e6,stroke:#e11d48,stroke-width:2px
+
+    %% Styling Data Structures
+    style DS fill:#f8fafc,stroke:#94a3b8,stroke-width:2px
+    style A fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
+    style B fill:#eff6ff,stroke:#2563eb,stroke-width:2px
+    style C fill:#fefce8,stroke:#ca8a04,stroke-width:2px
+    style D fill:#faf5ff,stroke:#9333ea,stroke-width:2px
+    style E fill:#fff1f2,stroke:#e11d48,stroke-width:2px
+```
 
 --- 
 
