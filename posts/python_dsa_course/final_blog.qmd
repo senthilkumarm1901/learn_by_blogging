@@ -109,28 +109,28 @@ flowchart LR
 
 ![](./images/big_o_complexity.png)
 
- ### Understanding the intuition behind `cut the problem size in half`
+### II. 1. Understanding the intuition behind `cut the problem size in half`
  
- **Explaining the intuition `cut the problem size in half` complexity with an example: Search 11 in [1, 3, 5, 7, 11, 15, 19]
- 
- - Check 7. Since 11 > 7, everything at or to the left of 7 is too small. Keep [11, 15, 19].
- - Check 15. Since 11 < 15, everything at or to the right of 15 is too large. Keep [11].
- - Check 11. Found it.
- 
- Search space: 7 → 3 → 1 candidates.
- 
- **Explaining $O(\log N)$ logic:
- 
- - Because $log⁡2N\log_2 N$ :
-     - if N=16, log⁡2(16)=k
-     - ⇒2^k=16⇒k=4:
- 
- How many times can I halve N=16 to reach 1 element?
- 
- - For example, if N=16, 16→8→4→2→116 \to 8 \to 4 \to 2 \to 1 takes 4 halvings. Doubling the array size adds at most one more comparison in the worst case.
+**Explaining the intuition `cut the problem size in half` complexity with an example: Search 11 in [1, 3, 5, 7, 11, 15, 19]
+
+- Check 7. Since 11 > 7, everything at or to the left of 7 is too small. Keep [11, 15, 19].
+- Check 15. Since 11 < 15, everything at or to the right of 15 is too large. Keep [11].
+- Check 11. Found it.
+
+Search space: 7 → 3 → 1 candidates.
+
+**Explaining $O(\log N)$ logic:
+
+- Because $log⁡2N\log_2 N$ :
+ - if N=16, log⁡2(16)=k
+ - ⇒2^k=16⇒k=4:
+
+How many times can I halve N=16 to reach 1 element?
+
+- For example, if N=16, 16→8→4→2→116 \to 8 \to 4 \to 2 \to 1 takes 4 halvings. Doubling the array size adds at most one more comparison in the worst case.
 
 
-### Understanding the Intuition behind MergeSort O(N log N)
+### II. 2. Understanding the Intuition behind MergeSort O(N log N)
 
 - **Problem**: Sorting entries in a huge log file using timestamps. Constraint: The entire file cannot fit in memory at once. Solution: Use **Merge Sort** to sort the file in chunks.
 
@@ -150,7 +150,7 @@ flowchart LR
 > Contrast with Binary Search: Binary Search discards one half; merge sort keeps and sorts both halves
 
 
-### Understanding the Intuition behind QuickSort O(N log N)
+### II. 3. Understanding the Intuition behind QuickSort O(N log N)
 
 Example: Sort 7 numbers [7, 2, 6, 4, 1, 5, 3]. 
 
@@ -370,8 +370,7 @@ print(queue.popleft())   # Dequeue from front -> "User A" (First In, First Out)
 
 - **Trees:** Hierarchical structures starting from a single **Root** node, branching down to **Child** nodes with **no cycles**. In a **Binary Search Tree (BST)**, left children are smaller and right children are larger, enabling $O(\log N)$ search.
     
-      
-    
+       
 - **Graphs:** Flexible networks of **Vertices (Nodes)** connected by **Edges**. Unlike trees, graphs have no single root, can contain **cycles** (loops), and edges can be one-way (directed) or two-way (undirected).
     
 
@@ -402,6 +401,7 @@ flowchart LR
 
 #### Concrete Example
 
+**Trees**:
 
 ```python
 # 1. TREE: Node with left and right children
@@ -414,14 +414,49 @@ class TreeNode:
 root = TreeNode(8)
 root.left = TreeNode(3)
 root.right = TreeNode(10)
+```
 
+**Graph**:
+
+```python
 # 2. GRAPH: Adjacency List (Hash Map mapping each node to its neighbors)
-graph = {
-    "City A": ["City B"],
-    "City B": ["City A", "City C"],
-    "City C": ["City A"]   # Cycle back to City A
-}
-print(graph["City B"])     # Output: ['City A', 'City C']
+class Graph:
+    def __init__(self):
+        self.adjacency = {}
+
+    def add_node(self, node):
+        if node not in self.adjacency:
+            self.adjacency[node] = []
+
+    def add_edge(self, source, destination, relation):
+        self.add_node(source)
+        self.add_node(destination)
+
+        self.adjacency[source].append({
+            "to": destination,
+            "relation": relation
+        })
+
+    def neighbors(self, node):
+        return self.adjacency.get(node, [])
+
+
+# Build the graph shown in the Mermaid diagram
+graph = Graph()
+
+graph.add_edge("City A", "City B", "Flight")
+graph.add_edge("City B", "City A", "Flight")
+graph.add_edge("City B", "City C", "Train")
+graph.add_edge("City C", "City A", "Bus")    # Creates a cycle
+
+
+print(graph.neighbors("City B"))
+
+# Output:
+# [
+#     {"to": "City A", "relation": "Flight"},
+#     {"to": "City C", "relation": "Train"}
+# ]
 ```
 
 ---
@@ -853,7 +888,7 @@ def search(nums: list[int], target: int) -> int:
 
 The **Breadth-First Search (BFS)** pattern explores a tree or graph **level by level**, visiting all immediate neighbors before moving deeper. It relies on a **Queue (FIFO)** and is the go-to pattern for finding the **shortest path** in unweighted graphs or grouping tree nodes by depth.
 
-### Visualizing BFS (Level-by-Level Traversal)
+#### Visualizing BFS (Level-by-Level Traversal)
 
 ```{mermaid}
 graph TD
@@ -882,7 +917,7 @@ graph TD
 
 ```
 
-### Example Problem: Binary Tree Level Order Traversal
+#### Example Problem: Binary Tree Level Order Traversal
 
 Given the `root` of a binary tree, return the level-by-level traversal of its nodes' values (i.e., from left to right, level by level).
 
@@ -891,8 +926,6 @@ Given the `root` of a binary tree, return the level-by-level traversal of its no
 * Place the `root` node into a double-ended queue (`collections.deque`).
 * While the queue is not empty, record `level_size = len(queue)` to isolate the exact number of nodes on the current level.
 * Pop `level_size` nodes from the front of the queue, record their values, and push their `left` and `right` children to the back of the queue for the next level.
-
-### IV.5. Breadth-First Search (Binary Tree Level Order Traversal)
 
 #### ❌ Naive / Suboptimal Approach (Using a Python `list` as a Queue)
 
@@ -996,7 +1029,7 @@ graph TD
 
 ```
 
-### Example Problem: Subsets (Power Set)
+#### Example Problem: Subsets (Power Set)
 
 Given an integer array `nums` of unique elements, return all possible subsets (the power set) without duplicate subsets.
 
@@ -1007,7 +1040,6 @@ Given an integer array `nums` of unique elements, return all possible subsets (t
 * **Backtrack (Undo):** Pop `nums[i]` off the path so you can explore the branch where `nums[i]` was excluded.
 * When `i` reaches the end of the array, save a copy of the current path to `result`.
 
-### IV.6. DFS / Backtracking (Subsets / Power Set)
 
 #### ❌ Naive / Brute-Force Approach (Copying & Mutating Lists at Every Step)
 
@@ -1066,6 +1098,7 @@ def subsets(nums: list[int]) -> list[list[int]]:
 * **Space Complexity Calculation — $O(N)$ auxiliary (or $O(N \cdot 2^N)$ including output):**
 * **Auxiliary Space (Excluding Output):** The `path` list holds at most $N$ elements, and the recursion call stack goes at most $N$ levels deep (`index` from `0` to `N`). Thus, extra working memory is $O(N) + O(N) = O(N)$.
 * **Total Space (Including Output):** Since we must store and return $2^N$ subsets, each of average length $\frac{N}{2}$, the `result` list itself occupies $O(N \cdot 2^N)$ memory. *(Interviewers usually distinguish these by saying "$O(N)$ auxiliary space, $O(N \cdot 2^N)$ total space").*
+
 ---
 
 ### Complete 6-Pattern Quick Reference
