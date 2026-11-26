@@ -95,7 +95,7 @@ flowchart LR
 
 --- 
 
-## 2. Measuring Efficiency via Big-O Notation
+## II. Measuring Efficiency via Big-O Notation
 
 **Big O Notation** measures how the runtime or memory of your algorithm grows as the input size ($N$) grows.
 
@@ -109,13 +109,78 @@ flowchart LR
 
 ![](./images/big_o_complexity.png)
 
+ ### Understanding the intuition behind `cut the problem size in half`
+ 
+ **Explaining the intuition `cut the problem size in half` complexity with an example: Search 11 in [1, 3, 5, 7, 11, 15, 19]
+ 
+ - Check 7. Since 11 > 7, everything at or to the left of 7 is too small. Keep [11, 15, 19].
+ - Check 15. Since 11 < 15, everything at or to the right of 15 is too large. Keep [11].
+ - Check 11. Found it.
+ 
+ Search space: 7 → 3 → 1 candidates.
+ 
+ **Explaining $O(\log N)$ logic:
+ 
+ - Because $log⁡2N\log_2 N$ :
+     - if N=16, log⁡2(16)=k
+     - ⇒2^k=16⇒k=4:
+ 
+ How many times can I halve N=16 to reach 1 element?
+ 
+ - For example, if N=16, 16→8→4→2→116 \to 8 \to 4 \to 2 \to 1 takes 4 halvings. Doubling the array size adds at most one more comparison in the worst case.
+
+
+### Understanding the Intuition behind MergeSort O(N log N)
+
+- **Problem**: Sorting entries in a huge log file using timestamps. Constraint: The entire file cannot fit in memory at once. Solution: Use **Merge Sort** to sort the file in chunks.
+
+**No. of entries in the log file**: $N=16$
+
+| Merge Level | What happens | No. of elements looked into |
+| ----------- | ------------ | --------------------------- |
+| 1           | Split into 2 halves | 8 items X 2 groups = 16 |
+| 2           | Split each half into 2 halves | 4 items X 4 groups = 16 |
+| 3           | Split each quarter into 2 halves | 2 items X 8 groups = 16 |
+| 4          | Split each eighth into 2 halves | 1 item X 16 groups = 16 |
+
+- So we have sorted the 16 log entries by processing 16 items at each of the 4 levels. Total work done = $16 * 4 = 64$ operations.
+
+- **Generalizing**: For $N$ entries, the number of levels is $log_2 N$, and at each level we process $N$ items. Total work done = $N * log_2 N$ operations.
+
+> Contrast with Binary Search: Binary Search discards one half; merge sort keeps and sorts both halves
+
+
+### Understanding the Intuition behind QuickSort O(N log N)
+
+Example: Sort 7 numbers [7, 2, 6, 4, 1, 5, 3]. 
+
+Pick 4 as the pivot and compare each of the other six numbers with it:
+
+| Level | Group being processed | Pivot | Result: smaller values → pivot → larger values | Comparisons |
+| ----- | ---------------------------------------------- | ----: | ------------------------------------------------------------------------------------- | ----------: |
+| 1 | `[7, 2, 6, 4, 1, 5, 3]` | `4` | `[2, 1, 3]` → **`4`** → `[7, 6, 5]` | 6 |
+| 2 | Left group: `[2, 1, 3]` | `2` | `[1]` → **`2`** → `[3]` | 2 |
+| 2 | Right group: `[7, 6, 5]` | `6` | `[5]` → **`6`** → `[7]` | 2 |
+| 3 | Single-item groups: `[1]`, `[3]`, `[5]`, `[7]` | None | Already sorted. Read left to right, including the pivots: **`[1, 2, 3, 4, 5, 6, 7]`** | 0 |
+
+
+
+- Where $N \log N$ comes from: Each partition compares the pivot with every other item in its group. 
+- Across all groups at a level, that's at most N comparisons (6 at level 1, then 2+2=4; 2 + 2 = 4 at level 2). 
+- When pivots split groups roughly in half, the groups shrink 7 → 3 → 1, giving about $N\log_2 N$ levels. That's $O(N \log N)$ for balanced splits. If pivots repeatedly leave nearly everything on one side, the worst case is $O(N^2)$.
+
+Unlike merge sort, there's no separate merge step: each pivot already separates smaller values on its left from larger values on its right.
+
 ---
 
-## 3. Data Structures
+## III. Data Structures
 
-### 3.1. Arrays & Strings (Contiguous Memory)
+### III.1. Arrays & Strings (Contiguous Memory)
 
-An **Array** (a `list` in Python) stores elements side-by-side in adjacent memory slots, allowing instant $O(1)$ access by index. However, inserting or deleting in the middle requires shifting subsequent elements ($O(N)$). A **String** behaves identically, except it is immutable.
+- An **Array** (a `list` in Python) stores elements side-by-side in adjacent memory slots, 
+    - allowing instant $O(1)$ access by index 
+    - but, inserting or deleting in the middle requires shifting subsequent elements ($O(N)$). 
+- A **String** behaves identically, except it is immutable.
 
   
 #### Visualizing Memory Layout & Shifting
@@ -137,7 +202,7 @@ flowchart LR
     style Insert fill:#fef9c3,stroke:#ca8a04,stroke-width:2px
 ```
 
-### Concrete Example
+#### Concrete Example
 
 
 ```python
@@ -153,17 +218,18 @@ arr.append(50)       # [10, 20, 30, 40, 50]
 arr.insert(1, 99)    # [10, 99, 20, 30, 40, 50]
 ```
 
-### 3.2. Hash Maps & Sets (Instant Key-Value Lookups)
+### III.2. Hash Maps & Sets (Instant Key-Value Lookups)
 
-A **Hash Map** (Python `dict`) passes a key through a **hash function** to compute an exact memory address. This gives $O(1)$ average time for lookups, insertions, and deletions—eliminating the need to scan through items one by one. A **Hash Set** (`set`) is simply a Hash Map that stores only keys (no values) to enforce uniqueness.
-
+- A **Hash Map** (Python `dict`) passes a key through a **hash function** to compute an exact memory address. 
+    - This gives $O(1)$ average time for lookups, insertions, and deletions—eliminating the need to scan through items one by one. 
+- A **Hash Set** (`set`) is simply a Hash Map that stores only keys (no values) to enforce uniqueness.
   
 
 #### Visualizing the Hashing Pipeline
 
 ```{mermaid}
 flowchart LR
-    K1(["Key: 'apple'"]) --> HF["Hash Function<br>hash('apple') % size"]
+    K1(["Key: 'apple'"]) --> HF["Hash Function"]
     K2(["Key: 'banana'"]) --> HF
 
     subgraph Table ["Hash Table Buckets (O(1) Direct Jump)"]
@@ -182,7 +248,7 @@ flowchart LR
     style B2 fill:#ffffff,stroke:#2563eb
 ```
 
-### Concrete Example
+#### Concrete Example
 
 
 ```python
@@ -198,9 +264,11 @@ seen = set([1, 2, 2, 3])     # {1, 2, 3}
 print(2 in seen)             # Output: True (no loop required!)
 ```
 
-### 3.3. Linked Lists (Pointer-Connected Nodes)
+### III.3. Linked Lists (Pointer-Connected Nodes)
 
-Unlike arrays, **Linked List** nodes are scattered randomly in memory. Each node holds two things: its **data** and a **`next` pointer** referencing the address of the following node. Inserting or deleting a node is $O(1)$ once you are at that position because you only re-wire pointers—no shifting needed.
+- Unlike arrays, **Linked List** nodes are scattered randomly in memory. 
+- Each node holds two things: its **data** and a **`next` pointer** referencing the address of the following node. Inserting or deleting a node is $O(1)$
+- Once you are at that position because you only re-wire pointers—no shifting needed.
 
   
 
@@ -225,7 +293,7 @@ flowchart LR
     style New fill:#dcfce7,stroke:#16a34a,stroke-width:2px
 ```
 
-### Concrete Example
+#### Concrete Example
 
 
 ```python
@@ -244,18 +312,13 @@ node_20.next = new_node                # 20 points to 99
 # Chain is now: 10 -> 20 -> 99 -> 30
 ```
 
-### 3.4. Stacks & Queues (Ordered Access Rules)
+### III.4. Stacks & Queues (Ordered Access Rules)
 
 **Stacks** and **Queues** restrict _where_ you can add or remove items to enforce strict processing order in $O(1)$ time:
 
-  
-
 - **Stack (LIFO — Last In, First Out):** Like a vertical stack of plates. The last item pushed on top is the first one popped off.
     
-      
-    
 - **Queue (FIFO — First In, First Out):** Like a checkout line. The first item added to the back is the first one served from the front.
-    
       
     
 
@@ -284,7 +347,7 @@ flowchart LR
     style Q_Out fill:#dbeafe,stroke:#2563eb
 ```
 
-### Concrete Example
+#### Concrete Example
 
 
 ```python
@@ -303,7 +366,7 @@ queue.append("User B")   # Enqueue at back
 print(queue.popleft())   # Dequeue from front -> "User A" (First In, First Out)
 ```
 
-### 3.55. Trees & Graphs (Hierarchical vs. Networked Data)
+### III.5. Trees & Graphs (Hierarchical vs. Networked Data)
 
 - **Trees:** Hierarchical structures starting from a single **Root** node, branching down to **Child** nodes with **no cycles**. In a **Binary Search Tree (BST)**, left children are smaller and right children are larger, enabling $O(\log N)$ search.
     
@@ -337,7 +400,7 @@ flowchart LR
     style R fill:#ffe4e6,stroke:#e11d48,stroke-width:2px
 ```
 
-### Concrete Example
+#### Concrete Example
 
 
 ```python
@@ -363,7 +426,7 @@ print(graph["City B"])     # Output: ['City A', 'City C']
 
 ---
 
-## 4. DSA Patterns
+## IV. DSA Patterns
 
 ```{mermaid}
 
@@ -387,7 +450,7 @@ flowchart TD
 ```
 
 
-### 1. Pattern: Two Pointers
+### IV.1. Pattern: Two Pointers
 
 The **Two Pointers** pattern uses two indices to iterate through a data structure simultaneously. It is typically applied to **sorted arrays** or **linked lists** to search for pairs or perform in-place modifications in $O(N)$ time and $O(1)$ space.
 
@@ -431,9 +494,29 @@ Given a 1-indexed array of integers `numbers` that is already sorted in non-decr
 * If the sum is **too small**, increment `left` to increase the value.
 * If the sum is **too large**, decrement `right` to decrease the value.
 
-**Python Implementation**
+#### ❌ Naive / Brute-Force Approach (Nested Loops)
 
-```python
+
+
+```Python
+def twoSum_naive(numbers: list[int], target: int) -> list[int]:
+    n = len(numbers)
+    # Check every possible pair using two nested loops
+    for i in range(n):
+        for j in range(i + 1, n):
+            if numbers[i] + numbers[j] == target:
+                return [i + 1, j + 1]
+    return []
+```
+
+- **Why it's slow:** It ignores the fact that the array is already sorted. For every element $i$, it scans all remaining elements $j$, resulting in roughly $\frac{N(N-1)}{2}$ comparisons.
+    
+- **Complexity:** **Time:** $O(N^2)$ | **Space:** $O(1)$
+    
+
+#### ✅ Optimal Approach (Two Pointers)
+
+```Python
 def twoSum(numbers: list[int], target: int) -> list[int]:
     left, right = 0, len(numbers) - 1
     
@@ -441,21 +524,28 @@ def twoSum(numbers: list[int], target: int) -> list[int]:
         current_sum = numbers[left] + numbers[right]
         
         if current_sum == target:
-            return [left + 1, right + 1]  # Returning 1-based indices
+            return [left + 1, right + 1]
         elif current_sum < target:
-            left += 1   # Need a larger sum -> move left pointer right
+            left += 1
         else:
-            right -= 1  # Need a smaller sum -> move right pointer left
+            right -= 1
             
     return []
-
-# Complexity: Time: O(N) | Space: O(1)
-
 ```
+
+- **Time Complexity Calculation — $O(N)$:**
+    - `left` starts at `0` and only moves right (`left += 1`).
+    - `right` starts at `N - 1` and only moves left (`right -= 1`).
+    - In every iteration of the `while` loop, the distance between `left` and `right` shrinks by 1. Thus, the loop runs at most $N - 1$ times, and each iteration does $O(1)$ arithmetic.
+        
+- **Space Complexity Calculation — $O(1)$:**
+    - We only allocate three integer variables (`left`, `right`, `current_sum`) regardless of whether the input array has 10 elements or 10 million. No auxiliary data structures are created.
+        
+
 
 ---
 
-### 2. Pattern: Sliding Window
+### IV.2. Pattern: Sliding Window
 
 The **Sliding Window** pattern performs required operations on a specific window size of a given array or linked list (e.g., finding the longest subarray containing all 1s). Windows can be of **fixed size** or **dynamic size**.
 
@@ -495,33 +585,67 @@ Given an array of positive integers and a positive number `k`, find the maximum 
 * Slide the window forward one element at a time: **add** the new element entering the window, and **subtract** the old element leaving it.
 * Keep track of the maximum sum seen so far. Avoid re-calculating the entire window sum from scratch!
 
-**Python Implementation**
+### IV.2. Sliding Window (Maximum Sum Subarray of Size K)
+
+#### ❌ Naive / Brute-Force Approach (Re-summing Every Window)
+
+```python
+def max_sub_array_naive(k: int, arr: list[int]) -> int:
+    n = len(arr)
+    if n < k:
+        return 0
+        
+    max_sum = float('-inf')
+    # Start a new window at every possible index i
+    for i in range(n - k + 1):
+        current_sum = 0
+        # Re-calculate the sum of all k elements from scratch
+        for j in range(i, i + k):
+            current_sum += arr[j]
+        max_sum = max(max_sum, current_sum)
+        
+    return max_sum
+
+```
+
+* **Why it's slow:** Overlapping elements between adjacent windows are added repeatedly. When $k$ is close to $N/2$, this degrades to quadratic performance.
+* **Complexity:** **Time:** $O(N \times K)$ | **Space:** $O(1)$
+
+---
+
+#### ✅ Optimal Approach (Sliding Window)
 
 ```python
 def max_sub_array_of_size_k(k: int, arr: list[int]) -> int:
     if len(arr) < k:
         return 0
         
-    window_sum = sum(arr[:k])  # Calculate initial window
+    window_sum = sum(arr[:k])
     max_sum = window_sum
     
-    # Slide the window across the array
     for i in range(len(arr) - k):
-        # Subtract element exiting, add element entering
         window_sum = window_sum - arr[i] + arr[i + k]
         max_sum = max(max_sum, window_sum)
         
     return max_sum
 
-# Example Usage:
-# arr = [2, 1, 5, 1, 3, 2], k = 3 -> Output: 9 (subarray [5, 1, 3])
-# Complexity: Time: O(N) | Space: O(1)
-
 ```
+
+* **Time Complexity Calculation — $O(N)$:**
+* `sum(arr[:k])` takes $O(K)$ operations to build the first window.
+* The `for` loop runs $N - K$ times, and each step does only one subtraction and one addition ($O(1)$).
+* Total operations: $O(K) + O(N - K) = O(N)$.
+
+
+* **Space Complexity Calculation — $O(1)$:**
+* *(Note: `arr[:k]` creates a temporary slice of size $K$, which technically takes $O(K)$ space. To make it strictly $O(1)$ space in interviews, initialize `window_sum` with a simple `for` loop over `range(k)` instead of slicing).* Aside from that, only two scalar integers (`window_sum`, `max_sum`) are stored.
+
+
+
 
 ---
 
-## Identifying the Patterns
+### IV.1-2.Summary. Identifying the Patterns
 
 | Use Two Pointers When:                                   | Use Sliding Window When:                                        |
 | -------------------------------------------------------- | --------------------------------------------------------------- |
@@ -533,7 +657,7 @@ def max_sub_array_of_size_k(k: int, arr: list[int]) -> int:
 
 ---
 
-## 3. Pattern: Hash Map Frequency Pattern
+### IV.3. Pattern: Hash Map Frequency Pattern
 
 The **Hash Map Frequency Pattern** uses a hash table (a Python `dict` or `collections.Counter`) to store element counts, indices, or seen values. It trades $O(N)$ extra space to eliminate nested loops, turning slow $O(N^2)$ searches into fast $O(N)$ lookups.
 
@@ -573,7 +697,25 @@ Given two strings `s` and `t`, return `True` if `t` is an anagram of `s` (uses t
 * Loop through string `t` and decrement the count for each character (`count[char] -= 1`).
 * If a character is missing or its count drops below `0`, return `False`.
 
-**Python Implementation**
+### IV.3. Hash Map Frequency Pattern (Valid Anagram)
+
+#### ❌ Naive / Brute-Force Approach (Sorting or Repeated Scanning)
+
+```python
+def isAnagram_naive(s: str, t: str) -> bool:
+    if len(s) != len(t):
+        return False
+    # Sorting both strings takes O(N log N) time
+    return sorted(s) == sorted(t)
+
+```
+
+* **Why it's slower:** Sorting requires rearranging every character in both strings, which hits a mathematical lower bound of $O(N \log N)$ time, and `sorted()` allocates two brand-new lists of size $N$ in memory.
+* **Complexity:** **Time:** $O(N \log N)$ | **Space:** $O(N)$
+
+---
+
+#### ✅ Optimal Approach (Hash Map Frequency)
 
 ```python
 def isAnagram(s: str, t: str) -> bool:
@@ -582,11 +724,9 @@ def isAnagram(s: str, t: str) -> bool:
         
     freq = {}
     
-    # Count characters in s
     for char in s:
         freq[char] = freq.get(char, 0) + 1
         
-    # Subtract characters using t
     for char in t:
         if char not in freq or freq[char] == 0:
             return False
@@ -594,13 +734,22 @@ def isAnagram(s: str, t: str) -> bool:
         
     return True
 
-# Complexity: Time: O(N) | Space: O(1) (at most 26 lowercase letters)
-
 ```
+
+* **Time Complexity Calculation — $O(N)$:**
+* Let $N$ be the length of string `s` (and `t`).
+* The first loop visits every character in `s` once ($N$ steps), doing $O(1)$ dictionary insertions/updates.
+* The second loop visits every character in `t` once ($N$ steps), doing $O(1)$ dictionary lookups/decrements.
+* Total time: $O(N) + O(N) = O(2N)$, which simplifies to $O(N)$.
+
+
+* **Space Complexity Calculation — $O(1)$ (or $O(K)$ for Unicode):**
+* The dictionary `freq` stores one key per unique character.
+* Because standard English lowercase text has at most **26** unique characters, the dictionary never grows beyond 26 entries even if the input string has 10 million characters. A fixed upper bound of 26 keys is constant space: $O(1)$. *(If the input allows arbitrary Unicode characters, space is $O(K)$ where $K$ is the number of unique characters, up to $O(N)$).*
 
 ---
 
-## 4. Pattern: Binary Search Pattern
+### IV.4. Pattern: Binary Search Pattern
 
 The **Binary Search Pattern** repeatedly divides a sorted search space in half. Instead of scanning every element one by one in $O(N)$ time, it inspects the middle element and eliminates half of the remaining candidates on every step, achieving $O(\log N)$ time complexity.
 
@@ -648,32 +797,59 @@ Given a sorted array of distinct integers `nums` and a `target` value, return th
 * If `nums[mid] == target`, return `mid`.
 * If `nums[mid] < target`, the target must be in the right half—set `left = mid + 1`.
 * If `nums[mid] > target`, the target must be in the left half—set `right = mid - 1`.
+### IV.4. Binary Search Pattern (Classic Binary Search)
 
-**Python Implementation**
+#### ❌ Naive / Brute-Force Approach (Linear Scan)
+
+```python
+def search_naive(nums: list[int], target: int) -> int:
+    # Check every element one by one from left to right
+    for i in range(len(nums)):
+        if nums[i] == target:
+            return i
+    return -1
+
+```
+
+* **Why it's slow:** It ignores the sorted order of `nums`. If `target` is at the very end (or missing), it must inspect all $N$ elements.
+* **Complexity:** **Time:** $O(N)$ | **Space:** $O(1)$
+
+---
+
+#### ✅ Optimal Approach (Binary Search)
 
 ```python
 def search(nums: list[int], target: int) -> int:
     left, right = 0, len(nums) - 1
     
     while left <= right:
-        mid = left + (right - left) // 2  # Prevents integer overflow
+        mid = left + (right - left) // 2
         
         if nums[mid] == target:
             return mid
         elif nums[mid] < target:
-            left = mid + 1   # Discard left half
+            left = mid + 1
         else:
-            right = mid - 1  # Discard right half
+            right = mid - 1
             
     return -1
 
-# Complexity: Time: O(log N) | Space: O(1)
-
 ```
+
+* **Time Complexity Calculation — $O(\log N)$:**
+* We start with $N$ candidate elements.
+* After 1 comparison, we eliminate half, leaving $\frac{N}{2}$ elements.
+* After 2 comparisons, $\frac{N}{4}$ elements remain. After $k$ comparisons, $\frac{N}{2^k}$ elements remain.
+* The loop terminates when only 1 element is left: $\frac{N}{2^k} = 1 \implies 2^k = N \implies k = \log_2(N)$. Thus, the loop runs at most $\log_2(N)$ times.
+
+
+* **Space Complexity Calculation — $O(1)$:**
+* This iterative version only stores three integer pointers (`left`, `right`, `mid`). No extra arrays or recursive call frames are created. *(Note: A recursive implementation of Binary Search would take $O(\log N)$ space due to the call stack).*
+
 
 ---
 
-## 5. Pattern: Breadth-First Search (BFS)
+### IV.5. Pattern: Breadth-First Search (BFS)
 
 The **Breadth-First Search (BFS)** pattern explores a tree or graph **level by level**, visiting all immediate neighbors before moving deeper. It relies on a **Queue (FIFO)** and is the go-to pattern for finding the **shortest path** in unweighted graphs or grouping tree nodes by depth.
 
@@ -716,16 +892,44 @@ Given the `root` of a binary tree, return the level-by-level traversal of its no
 * While the queue is not empty, record `level_size = len(queue)` to isolate the exact number of nodes on the current level.
 * Pop `level_size` nodes from the front of the queue, record their values, and push their `left` and `right` children to the back of the queue for the next level.
 
-**Python Implementation**
+### IV.5. Breadth-First Search (Binary Tree Level Order Traversal)
+
+#### ❌ Naive / Suboptimal Approach (Using a Python `list` as a Queue)
+
+```python
+def levelOrder_naive(root: TreeNode | None) -> list[list[int]]:
+    if not root:
+        return []
+        
+    result = []
+    queue = [root]  # ❌ Using a standard Python list instead of deque
+    
+    while queue:
+        level_size = len(queue)
+        current_level = []
+        
+        for _ in range(level_size):
+            node = queue.pop(0)  # ❌ O(N) operation! Shifts all remaining items left
+            current_level.append(node.val)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+                
+        result.append(current_level)
+    return result
+
+```
+
+* **Why it's slow:** Calling `list.pop(0)` removes the first element from contiguous memory, forcing Python to shift every remaining element in the queue one slot to the left ($O(N)$ per pop). Across $N$ nodes, this degrades the entire traversal to $O(N^2)$ time.
+* **Complexity:** **Time:** $O(N^2)$ | **Space:** $O(N)$
+
+---
+
+#### ✅ Optimal Approach (BFS with `collections.deque`)
 
 ```python
 from collections import deque
-
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
 
 def levelOrder(root: TreeNode | None) -> list[list[int]]:
     if not root:
@@ -739,7 +943,7 @@ def levelOrder(root: TreeNode | None) -> list[list[int]]:
         current_level = []
         
         for _ in range(level_size):
-            node = queue.popleft()  # FIFO: pop from front
+            node = queue.popleft()  # ✅ O(1) operation via doubly-linked list
             current_level.append(node.val)
             
             if node.left:
@@ -751,13 +955,22 @@ def levelOrder(root: TreeNode | None) -> list[list[int]]:
         
     return result
 
-# Complexity: Time: O(N) | Space: O(N)
-
 ```
+
+* **Time Complexity Calculation — $O(N)$:**
+* Let $N$ be the total number of nodes in the tree.
+* Every node is pushed (`append`) onto `queue` **once** and popped (`popleft`) from `queue` **once**.
+* Because `collections.deque` is implemented as a doubly-linked list under the hood, both `append` and `popleft` take $O(1)$ time. $N \text{ nodes} \times O(1) = O(N)$.
+
+
+* **Space Complexity Calculation — $O(N)$:**
+* Two structures consume memory:
+1. `result` stores all $N$ node values ($O(N)$).
+2. `queue` holds at most one full level of the tree at any time. In a perfectly balanced binary tree, the bottom level contains $\frac{N}{2}$ nodes, which simplifies to $O(N)$ auxiliary space.
 
 ---
 
-## 6. Pattern: Depth-First Search (DFS) / Backtracking
+### IV.6. Pattern: Depth-First Search (DFS) / Backtracking
 
 The **Depth-First Search (DFS) / Backtracking** pattern plunges as deep as possible down one path before turning back (backtracking) to explore alternative branches. It uses **recursion** (the call stack) or an explicit **Stack (LIFO)** and is ideal for exploring mazes, trees, and generating all valid subsets or combinations.
 
@@ -794,7 +1007,30 @@ Given an integer array `nums` of unique elements, return all possible subsets (t
 * **Backtrack (Undo):** Pop `nums[i]` off the path so you can explore the branch where `nums[i]` was excluded.
 * When `i` reaches the end of the array, save a copy of the current path to `result`.
 
-**Python Implementation**
+### IV.6. DFS / Backtracking (Subsets / Power Set)
+
+#### ❌ Naive / Brute-Force Approach (Copying & Mutating Lists at Every Step)
+
+```python
+def subsets_naive(nums: list[int]) -> list[list[int]]:
+    result = [[]]
+    # Iteratively clone every existing subset and concatenate a new list
+    for num in nums:
+        new_subsets = []
+        for curr in result:
+            # ❌ Creates brand-new list copies on every intermediate step
+            new_subsets = new_subsets + [curr + [num]]
+        result = result + new_subsets
+    return result
+
+```
+
+* **Why it's slower / memory-heavy:** Reassigning `new_subsets = new_subsets + [...]` inside the inner loop allocates and copies an increasingly large list on *every single iteration*, leading to $O(N \cdot 2^{2N})$ time and heavy intermediate garbage-collection overhead instead of modifying a single path in-place.
+* **Complexity:** **Time:** $O(N \cdot 2^{2N})$ | **Space:** $O(N \cdot 2^N)$
+
+---
+
+#### ✅ Optimal Approach (DFS / Backtracking with In-Place Path)
 
 ```python
 def subsets(nums: list[int]) -> list[list[int]]:
@@ -802,7 +1038,6 @@ def subsets(nums: list[int]) -> list[list[int]]:
     path = []
     
     def backtrack(index: int):
-        # Base case: reached the end of the decision tree
         if index == len(nums):
             result.append(path.copy())
             return
@@ -820,15 +1055,20 @@ def subsets(nums: list[int]) -> list[list[int]]:
     backtrack(0)
     return result
 
-# Example Usage:
-# nums = [1, 2] -> Output: [[1, 2], [1], [2], []]
-# Complexity: Time: O(N * 2^N) | Space: O(N) recursion stack
-
 ```
 
+* **Time Complexity Calculation — $O(N \cdot 2^N)$:**
+* For each of the $N$ elements in `nums`, we make **2** recursive choices (include or exclude). This generates $2 \times 2 \times \dots \times 2 = 2^N$ total leaf nodes (subsets).
+* At each of the $2^N$ leaves, we execute `path.copy()`, which iterates over up to $N$ elements to clone the list ($O(N)$ work per leaf).
+* Multiplying the number of leaves by the work done at each leaf gives $O(N \cdot 2^N)$.
+
+
+* **Space Complexity Calculation — $O(N)$ auxiliary (or $O(N \cdot 2^N)$ including output):**
+* **Auxiliary Space (Excluding Output):** The `path` list holds at most $N$ elements, and the recursion call stack goes at most $N$ levels deep (`index` from `0` to `N`). Thus, extra working memory is $O(N) + O(N) = O(N)$.
+* **Total Space (Including Output):** Since we must store and return $2^N$ subsets, each of average length $\frac{N}{2}$, the `result` list itself occupies $O(N \cdot 2^N)$ memory. *(Interviewers usually distinguish these by saying "$O(N)$ auxiliary space, $O(N \cdot 2^N)$ total space").*
 ---
 
-## Complete 6-Pattern Quick Reference
+### Complete 6-Pattern Quick Reference
 
 | Pattern | Core Data Structure | Time Complexity | Primary Trigger Clues in Interviews |
 | --- | --- | --- | --- |
