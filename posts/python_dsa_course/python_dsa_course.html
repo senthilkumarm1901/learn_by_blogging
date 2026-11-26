@@ -237,7 +237,11 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#contents-of-the-blog-in-1-pic" id="toc-contents-of-the-blog-in-1-pic" class="nav-link" data-scroll-target="#contents-of-the-blog-in-1-pic">Contents of the blog in 1 Pic:</a></li>
   </ul></li>
-  <li><a href="#ii.-measuring-efficiency-via-big-o-notation" id="toc-ii.-measuring-efficiency-via-big-o-notation" class="nav-link" data-scroll-target="#ii.-measuring-efficiency-via-big-o-notation">II. Measuring Efficiency via Big-O Notation</a></li>
+  <li><a href="#ii.-measuring-efficiency-via-big-o-notation" id="toc-ii.-measuring-efficiency-via-big-o-notation" class="nav-link" data-scroll-target="#ii.-measuring-efficiency-via-big-o-notation">II. Measuring Efficiency via Big-O Notation</a>
+  <ul class="collapse">
+  <li><a href="#understanding-the-intuition-behind-mergesort-on-log-n" id="toc-understanding-the-intuition-behind-mergesort-on-log-n" class="nav-link" data-scroll-target="#understanding-the-intuition-behind-mergesort-on-log-n">Understanding the Intuition behind MergeSort O(N log N)</a></li>
+  <li><a href="#understanding-the-intuition-behind-quicksort-on-log-n" id="toc-understanding-the-intuition-behind-quicksort-on-log-n" class="nav-link" data-scroll-target="#understanding-the-intuition-behind-quicksort-on-log-n">Understanding the Intuition behind QuickSort O(N log N)</a></li>
+  </ul></li>
   <li><a href="#iii.-data-structures" id="toc-iii.-data-structures" class="nav-link" data-scroll-target="#iii.-data-structures">III. Data Structures</a>
   <ul class="collapse">
   <li><a href="#iii.1.-arrays-strings-contiguous-memory" id="toc-iii.1.-arrays-strings-contiguous-memory" class="nav-link" data-scroll-target="#iii.1.-arrays-strings-contiguous-memory">III.1. Arrays &amp; Strings (Contiguous Memory)</a></li>
@@ -432,13 +436,149 @@ window.Quarto = {
 </tbody>
 </table>
 <p><img src="./images/big_o_complexity.png" class="img-fluid"></p>
+<p>### Understanding the intuition behind <code>cut the problem size in half</code></p>
+<p>**Explaining the intuition <code>cut the problem size in half</code> complexity with an example: Search 11 in [1, 3, 5, 7, 11, 15, 19]</p>
+<ul>
+<li>Check 7. Since 11 &gt; 7, everything at or to the left of 7 is too small. Keep [11, 15, 19].</li>
+<li>Check 15. Since 11 &lt; 15, everything at or to the right of 15 is too large. Keep [11].</li>
+<li>Check 11. Found it.</li>
+</ul>
+<p>Search space: 7 → 3 → 1 candidates.</p>
+<p>**Explaining <span class="math inline">\(O(\log N)\)</span> logic:</p>
+<ul>
+<li>Because <span class="math inline">\(log⁡2N\log_2 N\)</span> :
+<ul>
+<li>if N=16, log⁡2(16)=k</li>
+<li>⇒2^k=16⇒k=4:</li>
+</ul></li>
+</ul>
+<p>How many times can I halve N=16 to reach 1 element?</p>
+<ul>
+<li>For example, if N=16, 16→8→4→2→116 takes 4 halvings. Doubling the array size adds at most one more comparison in the worst case.</li>
+</ul>
+<section id="understanding-the-intuition-behind-mergesort-on-log-n" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-the-intuition-behind-mergesort-on-log-n">Understanding the Intuition behind MergeSort O(N log N)</h3>
+<ul>
+<li><strong>Problem</strong>: Sorting entries in a huge log file using timestamps. Constraint: The entire file cannot fit in memory at once. Solution: Use <strong>Merge Sort</strong> to sort the file in chunks.</li>
+</ul>
+<p><strong>No.&nbsp;of entries in the log file</strong>: <span class="math inline">\(N=16\)</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 24%">
+<col style="width: 54%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Merge Level</th>
+<th>What happens</th>
+<th>No.&nbsp;of elements looked into</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Split into 2 halves</td>
+<td>8 items X 2 groups = 16</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Split each half into 2 halves</td>
+<td>4 items X 4 groups = 16</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Split each quarter into 2 halves</td>
+<td>2 items X 8 groups = 16</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Split each eighth into 2 halves</td>
+<td>1 item X 16 groups = 16</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>So we have sorted the 16 log entries by processing 16 items at each of the 4 levels. Total work done = <span class="math inline">\(16 * 4 = 64\)</span> operations.</p></li>
+<li><p><strong>Generalizing</strong>: For <span class="math inline">\(N\)</span> entries, the number of levels is <span class="math inline">\(log_2 N\)</span>, and at each level we process <span class="math inline">\(N\)</span> items. Total work done = <span class="math inline">\(N * log_2 N\)</span> operations.</p></li>
+</ul>
+<blockquote class="blockquote">
+<p>Contrast with Binary Search: Binary Search discards one half; merge sort keeps and sorts both halves</p>
+</blockquote>
+</section>
+<section id="understanding-the-intuition-behind-quicksort-on-log-n" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-the-intuition-behind-quicksort-on-log-n">Understanding the Intuition behind QuickSort O(N log N)</h3>
+<p>Example: Sort 7 numbers [7, 2, 6, 4, 1, 5, 3].</p>
+<p>Pick 4 as the pivot and compare each of the other six numbers with it:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 3%">
+<col style="width: 30%">
+<col style="width: 3%">
+<col style="width: 55%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Level</th>
+<th>Group being processed</th>
+<th style="text-align: right;">Pivot</th>
+<th>Result: smaller values → pivot → larger values</th>
+<th style="text-align: right;">Comparisons</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><code>[7, 2, 6, 4, 1, 5, 3]</code></td>
+<td style="text-align: right;"><code>4</code></td>
+<td><code>[2, 1, 3]</code> → <strong><code>4</code></strong> → <code>[7, 6, 5]</code></td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Left group: <code>[2, 1, 3]</code></td>
+<td style="text-align: right;"><code>2</code></td>
+<td><code>[1]</code> → <strong><code>2</code></strong> → <code>[3]</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Right group: <code>[7, 6, 5]</code></td>
+<td style="text-align: right;"><code>6</code></td>
+<td><code>[5]</code> → <strong><code>6</code></strong> → <code>[7]</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Single-item groups: <code>[1]</code>, <code>[3]</code>, <code>[5]</code>, <code>[7]</code></td>
+<td style="text-align: right;">None</td>
+<td>Already sorted. Read left to right, including the pivots: <strong><code>[1, 2, 3, 4, 5, 6, 7]</code></strong></td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Where <span class="math inline">\(N \log N\)</span> comes from: Each partition compares the pivot with every other item in its group.</li>
+<li>Across all groups at a level, that’s at most N comparisons (6 at level 1, then 2+2=4; 2 + 2 = 4 at level 2).</li>
+<li>When pivots split groups roughly in half, the groups shrink 7 → 3 → 1, giving about <span class="math inline">\(N\log_2 N\)</span> levels. That’s <span class="math inline">\(O(N \log N)\)</span> for balanced splits. If pivots repeatedly leave nearly everything on one side, the worst case is <span class="math inline">\(O(N^2)\)</span>.</li>
+</ul>
+<p>Unlike merge sort, there’s no separate merge step: each pivot already separates smaller values on its left from larger values on its right.</p>
 <hr>
+</section>
 </section>
 <section id="iii.-data-structures" class="level2">
 <h2 class="anchored" data-anchor-id="iii.-data-structures">III. Data Structures</h2>
 <section id="iii.1.-arrays-strings-contiguous-memory" class="level3">
 <h3 class="anchored" data-anchor-id="iii.1.-arrays-strings-contiguous-memory">III.1. Arrays &amp; Strings (Contiguous Memory)</h3>
-<p>An <strong>Array</strong> (a <code>list</code> in Python) stores elements side-by-side in adjacent memory slots, allowing instant <span class="math inline">\(O(1)\)</span> access by index. However, inserting or deleting in the middle requires shifting subsequent elements (<span class="math inline">\(O(N)\)</span>). A <strong>String</strong> behaves identically, except it is immutable.</p>
+<ul>
+<li>An <strong>Array</strong> (a <code>list</code> in Python) stores elements side-by-side in adjacent memory slots,
+<ul>
+<li>allowing instant <span class="math inline">\(O(1)\)</span> access by index</li>
+<li>but, inserting or deleting in the middle requires shifting subsequent elements (<span class="math inline">\(O(N)\)</span>).</li>
+</ul></li>
+<li>A <strong>String</strong> behaves identically, except it is immutable.</li>
+</ul>
 <section id="visualizing-memory-layout-shifting" class="level4">
 <h4 class="anchored" data-anchor-id="visualizing-memory-layout-shifting">Visualizing Memory Layout &amp; Shifting</h4>
 <div class="cell" data-layout-align="default">
@@ -484,7 +624,13 @@ window.Quarto = {
 </section>
 <section id="iii.2.-hash-maps-sets-instant-key-value-lookups" class="level3">
 <h3 class="anchored" data-anchor-id="iii.2.-hash-maps-sets-instant-key-value-lookups">III.2. Hash Maps &amp; Sets (Instant Key-Value Lookups)</h3>
-<p>A <strong>Hash Map</strong> (Python <code>dict</code>) passes a key through a <strong>hash function</strong> to compute an exact memory address. This gives <span class="math inline">\(O(1)\)</span> average time for lookups, insertions, and deletions—eliminating the need to scan through items one by one. A <strong>Hash Set</strong> (<code>set</code>) is simply a Hash Map that stores only keys (no values) to enforce uniqueness.</p>
+<ul>
+<li>A <strong>Hash Map</strong> (Python <code>dict</code>) passes a key through a <strong>hash function</strong> to compute an exact memory address.
+<ul>
+<li>This gives <span class="math inline">\(O(1)\)</span> average time for lookups, insertions, and deletions—eliminating the need to scan through items one by one.</li>
+</ul></li>
+<li>A <strong>Hash Set</strong> (<code>set</code>) is simply a Hash Map that stores only keys (no values) to enforce uniqueness.</li>
+</ul>
 <section id="visualizing-the-hashing-pipeline" class="level4">
 <h4 class="anchored" data-anchor-id="visualizing-the-hashing-pipeline">Visualizing the Hashing Pipeline</h4>
 <div class="cell" data-layout-align="default">
@@ -494,7 +640,7 @@ window.Quarto = {
 <div>
 
 <pre class="mermaid mermaid-js">flowchart LR
-    K1(["Key: 'apple'"]) --&gt; HF["Hash Function&lt;br&gt;hash('apple') % size"]
+    K1(["Key: 'apple'"]) --&gt; HF["Hash Function"]
     K2(["Key: 'banana'"]) --&gt; HF
 
     subgraph Table ["Hash Table Buckets (O(1) Direct Jump)"]
@@ -534,7 +680,11 @@ window.Quarto = {
 </section>
 <section id="iii.3.-linked-lists-pointer-connected-nodes" class="level3">
 <h3 class="anchored" data-anchor-id="iii.3.-linked-lists-pointer-connected-nodes">III.3. Linked Lists (Pointer-Connected Nodes)</h3>
-<p>Unlike arrays, <strong>Linked List</strong> nodes are scattered randomly in memory. Each node holds two things: its <strong>data</strong> and a <strong><code>next</code> pointer</strong> referencing the address of the following node. Inserting or deleting a node is <span class="math inline">\(O(1)\)</span> once you are at that position because you only re-wire pointers—no shifting needed.</p>
+<ul>
+<li>Unlike arrays, <strong>Linked List</strong> nodes are scattered randomly in memory.</li>
+<li>Each node holds two things: its <strong>data</strong> and a <strong><code>next</code> pointer</strong> referencing the address of the following node. Inserting or deleting a node is <span class="math inline">\(O(1)\)</span></li>
+<li>Once you are at that position because you only re-wire pointers—no shifting needed.</li>
+</ul>
 <section id="visualizing-node-wiring-insertion" class="level4">
 <h4 class="anchored" data-anchor-id="visualizing-node-wiring-insertion">Visualizing Node Wiring &amp; Insertion</h4>
 <div class="cell" data-layout-align="default">
